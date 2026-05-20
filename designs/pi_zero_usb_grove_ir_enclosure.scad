@@ -57,14 +57,15 @@ usb_hat_left_usb_cutout_y_mm = 0;
 usb_hat_right_usb_cutout_width_mm = 14;
 usb_hat_right_usb_cutout_height_mm = 9;
 usb_hat_right_usb_cutout_y_mm = 0;
-usb_hat_bottom_bridge_clearance_width_mm = 13;
-usb_hat_bottom_bridge_clearance_height_mm = 5;
+usb_hat_bottom_bridge_clearance_width_mm = 8.5;
+usb_hat_bottom_bridge_clearance_height_mm = 12;
+usb_hat_stack_clearance_mm = 11.20;
 
 // Grove HAT dimensions
 grove_hat_length_mm = 65;
 grove_hat_width_mm = 30;
 grove_hat_thickness_mm = 1.6;
-grove_hat_stack_clearance_mm = 10;
+grove_hat_stack_clearance_mm = 10.5;
 grove_gpio_access_length_mm = 54;
 grove_gpio_access_width_mm = 9;
 grove_gpio_access_x_mm = 0;
@@ -123,7 +124,7 @@ case_outer_length_mm = case_inner_length_mm + 2 * case_wall_thickness_mm;
 case_outer_width_mm = case_inner_width_mm + 2 * case_wall_thickness_mm;
 
 pi_board_z_mm = case_base_thickness_mm + pi_bottom_header_pin_protrusion_clearance_mm + 3;
-usb_hat_board_z_mm = pi_board_z_mm + pi_board_thickness_mm + 9;
+usb_hat_board_z_mm = pi_board_z_mm + pi_board_thickness_mm + usb_hat_stack_clearance_mm;
 grove_hat_board_z_mm = usb_hat_board_z_mm + usb_hat_thickness_mm + grove_hat_stack_clearance_mm;
 electronics_top_z_mm = grove_hat_board_z_mm + grove_hat_thickness_mm + grove_connector_height_mm;
 tray_wall_height_mm = electronics_top_z_mm + case_internal_stack_height_clearance_mm;

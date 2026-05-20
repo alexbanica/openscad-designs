@@ -263,3 +263,55 @@ Correct the USB HAT port model for Kiwi Electronics product code WS-16595. The p
   - one USB on the left long side,
   - one USB on the right long side,
   - no grouped three-USB cutout on a single face.
+
+## Iteration: Measured USB Bridge And Stack Clearances
+
+Status: Approved
+
+### Requested Change
+
+Update the default Pi Zero enclosure dimensions to reflect measured hardware clearances for the Micro USB bridge adapter between the Raspberry Pi Zero and Waveshare USB Ethernet HUB HAT, and the measured vertical board gaps in the assembled stack.
+
+### Behavior Changed
+
+- The Micro USB bridge adapter between the Pi Zero USB port and the USB HAT bottom interface must be represented with a measured vertical clearance height of 12 mm.
+- The Micro USB bridge adapter clearance width must default to 8.5 mm.
+- The vertical distance between the Raspberry Pi Zero board and the USB bridge adapter or USB HAT board must default to 11.20 mm.
+- The vertical distance between the USB bridge adapter or USB HAT board and the Grove HAT must default to 10.5 mm.
+- The Pi-to-USB-HAT vertical spacing must be an explicit adjustable parameter instead of a hard-coded derived value.
+- README documentation must describe the measured Micro USB bridge adapter clearance and measured board-to-board gaps as defaults that should still be verified against the user's hardware.
+
+### Behavior Preserved
+
+- The enclosure remains openable through the screw-fastened top cover for electronics installation and service.
+- The existing WS-16595 connector topology remains unchanged: RJ45 plus one USB on the front edge, one USB on each long side.
+- The Grove sockets remain enclosed.
+- The IR emitter remains internal with only the IR LED exposed externally.
+- The design remains one editable OpenSCAD 2021.01-compatible `.scad` file with no external library dependency.
+- Generated STL, STEP, 3MF, or other mesh exports remain out of scope.
+
+### Out Of Scope For This Iteration
+
+- Electrical validation of the Micro USB bridge adapter.
+- Vendor-accurate cosmetic modeling of the Micro USB bridge adapter.
+- Changes to Pi port, USB HAT port, Grove HAT socket, IR emitter, GPIO hatch, screw boss, or printable layout behavior except where stack height changes require preserving existing clearance.
+- Generated STL, STEP, 3MF, or other mesh exports.
+
+### Acceptance Criteria
+
+- The OpenSCAD adjustable parameter section includes an explicit Pi-to-USB-HAT stack clearance parameter defaulting to 11.20 mm.
+- The existing Grove HAT stack clearance defaults to 10.5 mm.
+- The USB HAT bottom bridge clearance defaults to 8.5 mm wide and 12 mm high.
+- Derived board z positions use the explicit stack clearance parameters rather than a hard-coded Pi-to-USB-HAT gap.
+- The top cover, tray wall height, electronics preview, and port cutout z positions continue to derive from the updated stack dimensions.
+- README component assumptions or tuning guidance document the measured Micro USB bridge adapter and stack gap defaults.
+
+### Validation Delta
+
+- A code review is sufficient repository validation unless the user explicitly requests QA or unit tests.
+- If OpenSCAD is available during implementation, render checks may still be run for syntax and geometry sanity.
+- Manual/code-review inspection must specifically check:
+  - bridge clearance defaults are 8.5 mm wide and 12 mm high,
+  - Pi-to-USB-HAT stack spacing is parameterized and defaults to 11.20 mm,
+  - USB-HAT-to-Grove-HAT stack spacing defaults to 10.5 mm,
+  - derived tray height and port preview/cutout z positions respond to the updated stack values.

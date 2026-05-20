@@ -89,6 +89,9 @@ Default dimensions are configurable at the top of `designs/pi_zero_usb_grove_ir_
 - Waveshare ETH/USB HUB HAT, Kiwi product code `WS-16595`, footprint: 65 mm x 30 mm, with RJ45 plus one USB port on the front edge and one USB port on each long side.
 - Seeed Grove Base Hat for Raspberry Pi Zero mounted above the USB HAT.
 - Seeed Grove Infrared Emitter board: 20 mm x 20 mm with a 5 mm IR LED.
+- Measured Micro USB bridge adapter clearance: 8.5 mm wide by 12 mm high.
+- Measured Pi-to-USB-HAT stack gap: 11.20 mm.
+- Measured USB-HAT-to-Grove-HAT stack gap: 10.5 mm.
 - Common M2.5 fasteners for board standoffs and enclosure screws.
 - Conservative bottom clearance for manually inserted GPIO header pins protruding below the Pi Zero.
 
@@ -112,6 +115,7 @@ Common edits:
 - Set `show_electronics = false` for printable-only previews.
 - Adjust Pi, USB HAT, and Grove HAT connector cutout positions after a test fit.
 - Tune the USB HAT front, left-side, and right-side USB cutout positions independently for the measured `WS-16595` board.
+- Tune `usb_hat_bottom_bridge_clearance_width_mm`, `usb_hat_bottom_bridge_clearance_height_mm`, `usb_hat_stack_clearance_mm`, and `grove_hat_stack_clearance_mm` after measuring or test-fitting the assembled hardware.
 - Increase `fit_tolerance_mm`, `sliding_hatch_clearance_mm`, or `case_port_cutout_extra_width_mm` for looser fit.
 - Increase `pi_bottom_header_pin_protrusion_clearance_mm` if the manually inserted GPIO header pins protrude farther below the Pi.
 
@@ -186,6 +190,10 @@ Manual inspection for the Pi Zero USB Grove IR enclosure:
 - USB HAT RJ45 plus one USB connector are exposed on the front edge.
 - One USB HAT USB connector is exposed on each long side, with no obsolete grouped three-USB opening on a single face.
 - The front IR LED aperture does not overlap or block the RJ45 or front USB openings.
+- Micro USB bridge clearance defaults are 8.5 mm wide by 12 mm high.
+- Pi-to-USB-HAT stack spacing is parameterized and defaults to 11.20 mm.
+- USB-HAT-to-Grove-HAT stack spacing defaults to 10.5 mm.
+- Tray height and port preview/cutout positions respond to the stack clearance parameters.
 - Sliding top hatch exposes only the GPIO header area.
 - Grove sockets remain enclosed.
 - IR emitter cable path is internal.

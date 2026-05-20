@@ -12,7 +12,7 @@ Approved spec: `specs/spec-pi-zero-usb-grove-ir-enclosure.md`
 
 ## Scope
 
-Update the existing approved OpenSCAD design and supporting documentation for the WS-16595 USB HAT connector layout correction:
+Update the existing approved OpenSCAD design and supporting documentation for the measured Micro USB bridge adapter and stack clearances:
 
 - `designs/pi_zero_usb_grove_ir_enclosure.scad`
 - `README.md`
@@ -26,12 +26,12 @@ Automated unit tests are not applicable and QA is not required for this project 
 Validation for this iteration:
 
 - `git diff --check`.
-- Code review of the OpenSCAD and README changes against the approved spec, focused on the WS-16595 connector topology:
-  - RJ45 plus one USB on the front edge,
-  - one USB on the left long side,
-  - one USB on the right long side,
-  - no grouped three-USB cutout on a single face,
-  - no overlap between the front IR LED aperture and the RJ45/front USB openings.
+- Code review of the OpenSCAD and README changes against the approved spec, focused on:
+  - Micro USB bridge clearance defaults of 8.5 mm width and 12 mm vertical height,
+  - explicit Pi-to-USB-HAT stack clearance parameter defaulting to 11.20 mm,
+  - Grove HAT stack clearance defaulting to 10.5 mm,
+  - derived z positions using the stack clearance parameters,
+  - tray height, cover placement, port cutouts, and previews deriving from the updated stack.
 - Optional OpenSCAD render checks may be run when available for syntax and geometry sanity, but they are not required acceptance gates for this iteration.
 
 ## Implementation Steps
@@ -44,36 +44,30 @@ Validation for this iteration:
 2. Update `designs/pi_zero_usb_grove_ir_enclosure.scad` adjustable parameters.
    - Target OpenSCAD 2021.01-compatible syntax only.
    - Preserve the existing one-file design structure and render modes.
-   - Replace the grouped `usb_hat_usb_cutout_*` assumptions with independently tunable front, left-side, and right-side USB cutout parameters.
+   - Set `usb_hat_bottom_bridge_clearance_width_mm` default to 8.5.
+   - Set `usb_hat_bottom_bridge_clearance_height_mm` default to 12.
+   - Add an explicit Pi-to-USB-HAT stack clearance parameter defaulting to 11.20 mm in the USB HAT or stack-related adjustable parameter group.
+   - Set `grove_hat_stack_clearance_mm` default to 10.5.
    - Keep linear dimension variables suffixed with `_mm`.
    - Keep user-adjustable variables in the existing `Adjustable Parameters` section and derived values in the existing `Derived Values` section.
 
-3. Update USB HAT port cutout geometry.
-   - Keep the RJ45 opening on the front edge.
-   - Add one front USB opening beside the RJ45 opening.
-   - Add one USB opening on the left long side.
-   - Add one USB opening on the right long side.
-   - Remove the obsolete loop that places all three USB openings as a grouped set on one face.
-   - Preserve existing Pi Zero, Grove HAT, hatch, standoff, bottom bridge clearance, and IR emitter behavior unless a small front-opening adjustment is needed to avoid overlap.
+3. Update derived stack geometry.
+   - Replace the hard-coded Pi-to-USB-HAT vertical gap in `usb_hat_board_z_mm` with the new explicit stack clearance parameter.
+   - Preserve the existing derivation pattern for `grove_hat_board_z_mm`, `electronics_top_z_mm`, `tray_wall_height_mm`, and `top_cover_z_mm`.
+   - Preserve existing port cutout and preview behavior so z positions automatically follow the updated board stack dimensions.
 
-4. Update electronics preview geometry.
-   - Show the RJ45 connector on the front edge.
-   - Show one USB connector on the front edge beside the RJ45 connector.
-   - Show one USB connector on each long side.
-   - Keep previews non-printing and controlled by `show_electronics`.
+4. Update `README.md`.
+   - Document the measured Micro USB bridge adapter clearance defaults.
+   - Document the measured Pi-to-USB-HAT and USB-HAT-to-Grove-HAT stack gap defaults.
+   - Update tuning guidance to mention changing these measured stack and bridge clearance parameters after test fitting.
+   - Update the manual/code-review checklist to include the measured bridge and stack clearances.
 
-5. Update `README.md`.
-   - Document the USB HAT as Kiwi product code `WS-16595`.
-   - Correct the component assumptions from three USB ports on one side to RJ45 plus one USB on the front edge and one USB on each long side.
-   - Update common tuning guidance to mention independent front, left-side, and right-side USB HAT cutout positions.
-   - Update the manual/code-review checklist to include the corrected connector topology and front IR aperture non-overlap.
-
-6. Validate and review.
+5. Validate and review.
    - Run `git diff --check`.
    - Perform code review against the approved spec and implementation plan.
    - Optional: run OpenSCAD render checks for changed render modes if available and useful.
 
-7. Commit and push.
+6. Commit and push.
    - Commit only the approved spec/plan and implementation files required for this iteration.
    - A non-draft commit is acceptable when `git diff --check` passes and code review finds no unresolved issues.
    - Commit and push directly to `main` if otherwise unspecified, per repository guidance.
@@ -86,18 +80,18 @@ No implementation subagents are required. The design and documentation changes a
 
 The implementation is not accepted until code review confirms:
 
-- OpenSCAD adjustable parameters include independent front, left-side, and right-side USB HAT cutout positions.
-- Bottom tray cutouts expose RJ45 plus one USB on the front edge.
-- Bottom tray cutouts expose one USB on the left long side and one USB on the right long side.
-- The obsolete grouped three-USB cutout pattern is removed.
-- Electronics preview geometry matches the corrected connector topology.
-- The front IR aperture does not overlap RJ45 or front USB openings.
-- Unrelated Pi Zero, Grove HAT, hatch, standoff, bottom bridge, and IR emitter behavior is preserved.
-- README documents the corrected WS-16595 connector layout.
+- OpenSCAD adjustable parameters include explicit measured bridge and stack clearance defaults.
+- `usb_hat_bottom_bridge_clearance_width_mm` defaults to 8.5.
+- `usb_hat_bottom_bridge_clearance_height_mm` defaults to 12.
+- Pi-to-USB-HAT stack clearance is parameterized and defaults to 11.20 mm.
+- `grove_hat_stack_clearance_mm` defaults to 10.5.
+- Derived z positions use the explicit stack clearance parameters rather than a hard-coded Pi-to-USB-HAT gap.
+- Tray height, cover placement, port cutouts, and previews remain derived from the updated stack values.
+- README documents the measured bridge adapter and stack clearance defaults.
 
 ## Documentation Requirements
 
-- `README.md` must document the corrected WS-16595 USB HAT connector layout and tuning/checklist updates.
+- `README.md` must document the measured Micro USB bridge adapter clearance and stack gap defaults.
 - Documentation must match implemented file names and render modes.
 
 ## Completion Criteria
