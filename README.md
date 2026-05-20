@@ -92,6 +92,7 @@ Default dimensions are configurable at the top of `designs/pi_zero_usb_grove_ir_
 - Measured Micro USB bridge adapter clearance: 8.5 mm wide by 12 mm high.
 - Measured Pi-to-USB-HAT stack gap: 11.20 mm.
 - Measured USB-HAT-to-Grove-HAT stack gap: 10.5 mm.
+- Measured Pi side-port edge-to-edge margins: 20 mm from Mini HDMI to the first Micro USB cutout, and 5 mm between the two Micro USB cutouts.
 - Common M2.5 fasteners for board standoffs and enclosure screws.
 - Conservative bottom clearance for manually inserted GPIO header pins protruding below the Pi Zero.
 
@@ -114,6 +115,7 @@ Common edits:
 - Change `render_mode` to export a printable part.
 - Set `show_electronics = false` for printable-only previews.
 - Adjust Pi, USB HAT, and Grove HAT connector cutout positions after a test fit.
+- Tune `pi_mini_hdmi_to_micro_usb_margin_mm` and `pi_micro_usb_between_margin_mm` if the measured Pi side-port spacing or cable clearance needs differ.
 - Tune the USB HAT front, left-side, and right-side USB cutout positions independently for the measured `WS-16595` board.
 - Tune `usb_hat_bottom_bridge_clearance_width_mm`, `usb_hat_bottom_bridge_clearance_height_mm`, `usb_hat_stack_clearance_mm`, and `grove_hat_stack_clearance_mm` after measuring or test-fitting the assembled hardware.
 - Increase `fit_tolerance_mm`, `sliding_hatch_clearance_mm`, or `case_port_cutout_extra_width_mm` for looser fit.
@@ -193,6 +195,7 @@ Manual inspection for the Pi Zero USB Grove IR enclosure:
 - Micro USB bridge clearance defaults are 8.5 mm wide by 12 mm high.
 - Pi-to-USB-HAT stack spacing is parameterized and defaults to 11.20 mm.
 - USB-HAT-to-Grove-HAT stack spacing defaults to 10.5 mm.
+- Pi side-port margins default to 20 mm from Mini HDMI to first Micro USB and 5 mm between Micro USB cutouts.
 - Tray height and port preview/cutout positions respond to the stack clearance parameters.
 - Sliding top hatch exposes only the GPIO header area.
 - Grove sockets remain enclosed.

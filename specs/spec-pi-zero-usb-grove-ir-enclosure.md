@@ -315,3 +315,57 @@ Update the default Pi Zero enclosure dimensions to reflect measured hardware cle
   - Pi-to-USB-HAT stack spacing is parameterized and defaults to 11.20 mm,
   - USB-HAT-to-Grove-HAT stack spacing defaults to 10.5 mm,
   - derived tray height and port preview/cutout z positions respond to the updated stack values.
+
+## Iteration: Pi Side Port Margin Measurements
+
+Status: Approved
+
+### Requested Change
+
+Update the default Raspberry Pi Zero side-port cutout positions to use measured edge-to-edge margins between the Micro HDMI and Micro USB connector openings.
+
+### Behavior Changed
+
+- The Micro HDMI cutout and first Micro USB cutout must have a default edge-to-edge margin of 20 mm.
+- The two Micro USB cutouts must have a default edge-to-edge margin of 5 mm.
+- The side-port cutout positions must remain configurable near the top of the OpenSCAD file.
+- The Micro USB cutout positions should be derived from the Micro HDMI position, cutout widths, and explicit margin parameters so the measured spacing remains stable when cutout widths are tuned.
+- README documentation must describe the measured side-port margin defaults and note that they should be verified against the user's Pi Zero board and cable clearance needs.
+
+### Behavior Preserved
+
+- The Pi Zero, USB HAT, and Grove HAT stacking order remains unchanged.
+- Existing USB HAT connector topology remains unchanged.
+- Existing measured Micro USB bridge and vertical stack clearance defaults remain unchanged.
+- The enclosure remains a bottom tray plus screw-fastened top cover with sliding GPIO hatch.
+- The Grove sockets remain enclosed.
+- The IR emitter remains internal with only the IR LED exposed externally.
+- The design remains one editable OpenSCAD 2021.01-compatible `.scad` file with no external library dependency.
+- Generated STL, STEP, 3MF, or other mesh exports remain out of scope.
+
+### Out Of Scope For This Iteration
+
+- Vendor-accurate cosmetic modeling of Pi Zero side connectors.
+- Changes to side-port cutout widths, heights, z positions, or y/depth placement except where needed to derive x positions from measured margins.
+- Changes to USB HAT ports, Grove HAT sockets, IR emitter, GPIO hatch, screw bosses, stack clearances, or printable layout behavior.
+- Generated STL, STEP, 3MF, or other mesh exports.
+
+### Acceptance Criteria
+
+- The OpenSCAD adjustable parameter section includes explicit margin parameters for:
+  - Micro HDMI to first Micro USB edge-to-edge margin, defaulting to 20 mm,
+  - first Micro USB to second Micro USB edge-to-edge margin, defaulting to 5 mm.
+- The first Micro USB x position derives from the Micro HDMI x position, Micro HDMI cutout width, Micro USB cutout width, and the 20 mm margin parameter.
+- The second Micro USB x position derives from the first Micro USB x position, Micro USB cutout width, and the 5 mm margin parameter.
+- The Pi side-port cutouts and electronics preview use the derived Micro USB x positions.
+- README component assumptions or tuning guidance document the measured side-port margin defaults.
+
+### Validation Delta
+
+- A code review is sufficient repository validation unless the user explicitly requests QA or unit tests.
+- If OpenSCAD is available during implementation, render checks may still be run for syntax and geometry sanity.
+- Manual/code-review inspection must specifically check:
+  - Micro HDMI to first Micro USB edge-to-edge margin defaults to 20 mm,
+  - first Micro USB to second Micro USB edge-to-edge margin defaults to 5 mm,
+  - Micro USB x positions are derived from the margin parameters and cutout widths,
+  - existing USB HAT, bridge clearance, stack clearance, hatch, and IR emitter behavior is unchanged.

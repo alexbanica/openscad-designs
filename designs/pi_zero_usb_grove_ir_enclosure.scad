@@ -25,11 +25,11 @@ pi_micro_sd_cutout_height_mm = 4;
 pi_micro_sd_cutout_y_mm = 0;
 pi_mini_hdmi_cutout_width_mm = 12;
 pi_mini_hdmi_cutout_height_mm = 7;
-pi_mini_hdmi_cutout_x_mm = -9;
+pi_mini_hdmi_cutout_x_mm = -18.5;
 pi_micro_usb_cutout_width_mm = 10;
 pi_micro_usb_cutout_height_mm = 6;
-pi_micro_usb_power_x_mm = 12;
-pi_micro_usb_data_x_mm = 25;
+pi_mini_hdmi_to_micro_usb_margin_mm = 20;
+pi_micro_usb_between_margin_mm = 5;
 pi_camera_cutout_width_mm = 18;
 pi_camera_cutout_height_mm = 5;
 pi_camera_cutout_x_mm = 4;
@@ -129,6 +129,14 @@ grove_hat_board_z_mm = usb_hat_board_z_mm + usb_hat_thickness_mm + grove_hat_sta
 electronics_top_z_mm = grove_hat_board_z_mm + grove_hat_thickness_mm + grove_connector_height_mm;
 tray_wall_height_mm = electronics_top_z_mm + case_internal_stack_height_clearance_mm;
 top_cover_z_mm = tray_wall_height_mm + case_lid_thickness_mm / 2;
+
+pi_micro_usb_power_x_mm = pi_mini_hdmi_cutout_x_mm
+    + pi_mini_hdmi_cutout_width_mm / 2
+    + pi_mini_hdmi_to_micro_usb_margin_mm
+    + pi_micro_usb_cutout_width_mm / 2;
+pi_micro_usb_data_x_mm = pi_micro_usb_power_x_mm
+    + pi_micro_usb_cutout_width_mm
+    + pi_micro_usb_between_margin_mm;
 
 post_center_x_mm = pi_board_length_mm / 2 - pi_mount_hole_offset_x_mm;
 post_center_y_mm = pi_board_width_mm / 2 - pi_mount_hole_offset_y_mm;
