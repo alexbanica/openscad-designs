@@ -4,7 +4,7 @@ This repository contains editable OpenSCAD designs. The current primary design i
 
 ## Design File
 
-- `rpi5_ai_hat_dual_heatsink_vision_case.scad`
+- `designs/rpi5_ai_hat_dual_heatsink_vision_case.scad`
 
 The file targets OpenSCAD 2021.01 and has no external library dependencies.
 
@@ -54,13 +54,13 @@ Set `render_mode` to one of:
 Example export command:
 
 ```sh
-openscad -o tower.stl -D 'render_mode="tower"' rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o tower.stl -D 'render_mode="tower"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
 ```
 
 For inspection with electronics hidden:
 
 ```sh
-openscad -o assembly.off -D 'render_mode="assembly"' -D 'show_electronics=false' rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o assembly.off -D 'render_mode="assembly"' -D 'show_electronics=false' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
 ```
 
 ## Bambu Lab Print Notes
@@ -78,11 +78,11 @@ When `openscad` is installed:
 
 ```sh
 openscad --version
-openscad -o /tmp/rpi5_ai_hat_dual_heatsink_vision_case.off -D 'render_mode="assembly"' rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_tower.off -D 'render_mode="tower"' rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_camera_arm.off -D 'render_mode="camera_arm"' rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_camera_holder.off -D 'render_mode="camera_holder"' rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_printable_layout.off -D 'render_mode="printable_layout"' rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o /tmp/rpi5_ai_hat_dual_heatsink_vision_case.off -D 'render_mode="assembly"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o /tmp/rpi5_ai_hat_tower.off -D 'render_mode="tower"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o /tmp/rpi5_ai_hat_camera_arm.off -D 'render_mode="camera_arm"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o /tmp/rpi5_ai_hat_camera_holder.off -D 'render_mode="camera_holder"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o /tmp/rpi5_ai_hat_printable_layout.off -D 'render_mode="printable_layout"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
 git diff --check
 ```
 

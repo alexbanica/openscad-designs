@@ -26,11 +26,11 @@ These instructions apply to this OpenSCAD design repository.
 When OpenSCAD is installed, validate changed `.scad` files with syntax or preview/export checks for each documented render mode. For this design, useful checks are:
 
 ```sh
-openscad -o /tmp/rpi5_ai_hat_dual_heatsink_vision_case.off -D 'render_mode="assembly"' rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_tower.off -D 'render_mode="tower"' rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_camera_arm.off -D 'render_mode="camera_arm"' rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_camera_holder.off -D 'render_mode="camera_holder"' rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_printable_layout.off -D 'render_mode="printable_layout"' rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o /tmp/rpi5_ai_hat_dual_heatsink_vision_case.off -D 'render_mode="assembly"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o /tmp/rpi5_ai_hat_tower.off -D 'render_mode="tower"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o /tmp/rpi5_ai_hat_camera_arm.off -D 'render_mode="camera_arm"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o /tmp/rpi5_ai_hat_camera_holder.off -D 'render_mode="camera_holder"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o /tmp/rpi5_ai_hat_printable_layout.off -D 'render_mode="printable_layout"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
 git diff --check
 ```
 

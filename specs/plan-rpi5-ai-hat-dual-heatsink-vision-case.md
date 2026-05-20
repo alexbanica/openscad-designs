@@ -14,7 +14,7 @@ Approved spec: `specs/spec-rpi5-ai-hat-dual-heatsink-vision-case.md`
 
 Implement the approved OpenSCAD design and repository documentation:
 
-- `rpi5_ai_hat_dual_heatsink_vision_case.scad`
+- `designs/rpi5_ai_hat_dual_heatsink_vision_case.scad`
 - `README.md`
 - `AGENTS.md`
 
@@ -36,7 +36,7 @@ Before production modeling work, define the validation checklist from the approv
    - Check current branch and worktree state first.
    - Create `feature/rpi5-ai-hat-vision-case` from `main` unless directed otherwise.
 
-2. Add `rpi5_ai_hat_dual_heatsink_vision_case.scad`.
+2. Add `designs/rpi5_ai_hat_dual_heatsink_vision_case.scad`.
    - Target OpenSCAD 2021.01-compatible syntax only.
    - Use one primary file with same-file helper modules.
    - Add a clearly labeled `Adjustable Parameters` section near the top.
