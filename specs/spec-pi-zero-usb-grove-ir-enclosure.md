@@ -42,7 +42,7 @@ The assembled Pi Zero stack has exposed boards, side-facing Pi and USB/Ethernet 
 ## Definitions
 
 - Pi Zero: Raspberry Pi Zero v1.3 board from Kiwi Electronics, using the standard Zero footprint, with manually inserted GPIO headers protruding slightly below the board.
-- USB HAT: Waveshare ETH/USB HUB HAT sold by Kiwi Electronics as USB Ethernet HUB HAT for Raspberry Pi Zero, 65 mm x 30 mm, with RJ45 and 3 USB ports.
+- USB HAT: Waveshare ETH/USB HUB HAT sold by Kiwi Electronics as USB Ethernet HUB HAT for Raspberry Pi Zero, product code WS-16595, 65 mm x 30 mm, with RJ45 and 3 USB ports.
 - Grove HAT: Seeed Grove Base Hat for Raspberry Pi Zero, mounted above the USB HAT.
 - IR emitter: Seeed Grove - Infrared Emitter module, 20 mm x 20 mm board with a 5 mm IR LED.
 - Enclosure: A closed protective case made from a bottom tray and screw-fastened top cover.
@@ -55,6 +55,11 @@ The assembled Pi Zero stack has exposed boards, side-facing Pi and USB/Ethernet 
 - Units: millimetres.
 - Default Pi Zero footprint: 65 mm x 30 mm, with standard Zero mounting hole positions parameterized.
 - USB HAT documented dimensions: 65 mm x 30 mm, 3 mm mounting holes, 1x RJ45, and 3x USB 2.0 ports.
+- USB HAT connector layout for product code WS-16595:
+  - one RJ45 Ethernet connector exits the front edge,
+  - one USB connector exits the front edge next to the RJ45 connector,
+  - one USB connector exits the left long side,
+  - one USB connector exits the right long side.
 - Grove IR emitter documented dimensions: 20 mm x 20 mm x 18 mm, 5 mm LED, 940 nm emitter.
 - Grove Base Hat provides a top GPIO pinout matching the Raspberry Pi header and multiple Grove sockets.
 - The Pi Zero manually inserted GPIO header pins protrude downward from the bottom of the Pi and require bottom clearance.
@@ -83,7 +88,7 @@ The OpenSCAD source must include a clearly labeled `Adjustable Parameters` secti
   - board length, width, thickness,
   - mounting hole diameter and offsets,
   - RJ45 cutout dimensions and position,
-  - three USB cutout dimensions and positions,
+  - independent front, left-side, and right-side USB cutout dimensions and positions,
   - bottom micro-USB bridge clearance.
 - Grove HAT dimensions:
   - board length, width, thickness,
@@ -121,10 +126,14 @@ Derived values must be placed in a separate `Derived Values` section below the a
 - With the hatch closed, the top of the enclosure protects the Grove HAT while allowing no external Grove socket access.
 - The IR emitter module is mounted inside the enclosure.
 - Only the IR LED is exposed outside the enclosure through a front aperture sized for the configured LED and tolerance.
+- The front IR LED aperture must be positioned so it does not overlap or obstruct the USB HAT front RJ45 and USB openings.
 - The IR emitter cable routes internally from the Grove HAT to the IR emitter mount without requiring an external cable loop.
 - The IR emitter mount includes optional internal screw holes for fastening the emitter board.
 - The Pi Zero port openings expose microSD, mini-HDMI, both micro-USB connectors, and camera connector access where mechanically practical.
 - The USB HAT port openings expose the RJ45 connector and all three USB connectors.
+- The USB HAT front port openings include the RJ45 connector and one USB connector beside it.
+- The USB HAT side port openings include one USB connector on the left long side and one USB connector on the right long side.
+- The design must not place all three USB HAT USB openings on the same enclosure face.
 - Board mounting holes remain usable via internal standoffs or through-screw features.
 - Port cutouts include configurable clearance so cables can be inserted without removing the case.
 - Bottom internal clearance accommodates manually inserted GPIO header pins protruding below the Pi Zero.
@@ -142,6 +151,7 @@ Derived values must be placed in a separate `Derived Values` section below the a
 - The Pi Zero target is Raspberry Pi Zero v1.3 with the standard 65 mm x 30 mm board footprint.
 - Header pin protrusion below the Pi Zero will default to a conservative configurable clearance rather than a fixed measured value.
 - Exact connector cutout positions and sizes will be parameterized so they can be adjusted after test fitting.
+- Default USB HAT connector openings will model the WS-16595 physical topology: RJ45 plus one USB on the front edge, one USB on the left long side, and one USB on the right long side.
 - The camera connector access requirement can be satisfied by a case opening or removable-cover access path rather than by making the camera connector usable with the cover fully closed.
 - The Grove Base Hat sockets remain enclosed after assembly; only the already-connected IR emitter cable is routed internally.
 - The IR emitter points forward from the case by default.
@@ -155,6 +165,7 @@ Derived values must be placed in a separate `Derived Values` section below the a
 - The new design should follow the same repository conventions for specs, render modes, OpenSCAD 2021.01 syntax, parameter grouping, and README documentation.
 - The existing `AGENTS.md` guidance should remain compatible with this design, including Bambu Lab P2S and AMS 2 Pro print compatibility.
 - Physical fit cannot be proven without measuring the actual stack and printing or test-fitting parts; the design must therefore make stack height, connector positions, and tolerances adjustable.
+- The existing implementation currently models the three USB HAT USB openings as a grouped set on one face; this iteration changes that behavior and requires independently parameterized front, left-side, and right-side USB openings.
 
 ## Validation Plan
 
@@ -163,7 +174,10 @@ Derived values must be placed in a separate `Derived Values` section below the a
 - Manually inspect the OpenSCAD preview for:
   - correct Pi Zero, USB HAT, and Grove HAT stacking order,
   - unobstructed Pi port openings,
-  - unobstructed RJ45 and 3x USB openings,
+  - unobstructed RJ45 opening and USB HAT openings matching the WS-16595 topology,
+  - one USB HAT USB opening on the front edge beside RJ45,
+  - one USB HAT USB opening on each long side,
+  - no obsolete grouped three-USB opening on a single face,
   - sliding hatch exposing only the GPIO header area,
   - enclosed Grove sockets and internal IR cable path,
   - only the IR LED exposed outside,
@@ -190,7 +204,62 @@ Derived values must be placed in a separate `Derived Values` section below the a
 - Kiwi Electronics, Raspberry Pi Zero v1.3 product page: https://www.kiwi-electronics.com/nl/raspberry-pi-zero-versie-1-3-2840
 - Kiwi Electronics, USB Ethernet HUB HAT for Raspberry Pi Zero: https://www.kiwi-electronics.com/nl/usb-ethernet-hub-hat-voor-raspberry-pi-zero-10305
 - Waveshare, ETH/USB HUB HAT: https://www.waveshare.com/eth-usb-hub-hat.htm
+- Waveshare Wiki, ETH/USB HUB HAT resources and interfaces: https://www.waveshare.com/wiki/ETH/USB_HUB_HAT
 - Kiwi Electronics, Grove Base Hat for Raspberry Pi Zero: https://www.kiwi-electronics.com/nl/grove-base-hat-voor-raspberry-pi-zero-3931
 - Seeed Studio Wiki, Grove Base Hat for Raspberry Pi Zero: https://wiki.seeedstudio.com/Grove_Base_Hat_for_Raspberry_Pi_Zero/
 - Kiwi Electronics, Grove - Infrared Emitter: https://www.kiwi-electronics.com/nl/grove-infrared-emitter-2043
 - Seeed Studio Wiki, Grove - Infrared Emitter: https://wiki.seeedstudio.com/Grove-Infrared_Emitter/
+
+## Iteration: WS-16595 USB HAT Connector Layout Correction
+
+Status: Approved
+
+### Requested Change
+
+Correct the USB HAT port model for Kiwi Electronics product code WS-16595. The prior spec allowed the implementation to place all three USB HAT USB openings together on one enclosure face. That is incorrect for the referenced hardware.
+
+### Behavior Changed
+
+- The USB HAT must be modeled as the Waveshare ETH/USB HUB HAT sold by Kiwi Electronics under product code WS-16595.
+- The USB HAT must expose one front RJ45 connector.
+- The USB HAT must expose one front USB connector next to the RJ45 connector.
+- The USB HAT must expose one USB connector on each long side of the board/enclosure.
+- The USB HAT USB cutouts and preview geometry must be independently parameterized by face instead of using a single grouped three-port front or side pattern.
+- README documentation must describe this corrected WS-16595 connector layout.
+
+### Behavior Preserved
+
+- The Pi Zero, USB HAT, and Grove HAT stacking order remains unchanged.
+- The enclosure remains a bottom tray plus screw-fastened top cover with sliding GPIO hatch.
+- The Grove sockets remain enclosed.
+- The IR emitter remains internal with only the IR LED exposed externally.
+- The front IR aperture remains allowed, provided it does not overlap or block the RJ45 and front USB openings.
+- The design remains one editable OpenSCAD 2021.01-compatible `.scad` file with no external library dependency.
+- Generated mesh exports remain out of scope.
+
+### Out Of Scope For This Iteration
+
+- Vendor-accurate cosmetic connector models.
+- Fixed measured connector coordinates beyond configurable defaults.
+- Changes to the Grove HAT, Pi Zero, IR emitter, hatch, fastener, or print-orientation behavior except where needed to prevent front opening overlap.
+- Generated STL, STEP, 3MF, or other mesh exports.
+
+### Acceptance Criteria
+
+- The spec and implementation plan no longer describe all three USB HAT USB connectors as a single grouped set on one face.
+- The OpenSCAD adjustable parameter section includes independently tunable USB HAT front, left-side, and right-side USB cutout positions.
+- The bottom tray cutouts expose RJ45 plus one USB on the front edge.
+- The bottom tray cutouts expose one USB on the left long side and one USB on the right long side.
+- The electronics preview, when enabled, shows the same corrected connector topology.
+- The front IR LED aperture does not overlap the RJ45 or front USB openings.
+- README component assumptions and manual inspection checklist mention the corrected WS-16595 USB HAT connector layout.
+
+### Validation Delta
+
+- A code review is sufficient repository validation unless the user explicitly requests QA or unit tests.
+- If OpenSCAD is available during implementation, render checks may still be run for syntax and geometry sanity, but this iteration does not require unit tests.
+- Manual/code-review inspection must specifically check the WS-16595 connector topology:
+  - RJ45 plus one USB on the front edge,
+  - one USB on the left long side,
+  - one USB on the right long side,
+  - no grouped three-USB cutout on a single face.

@@ -48,10 +48,15 @@ usb_hat_mount_hole_offset_y_mm = 3.5;
 usb_hat_rj45_cutout_width_mm = 17;
 usb_hat_rj45_cutout_height_mm = 15;
 usb_hat_rj45_cutout_x_mm = -20;
-usb_hat_usb_cutout_width_mm = 14;
-usb_hat_usb_cutout_height_mm = 9;
-usb_hat_usb_cutout_spacing_mm = 15;
-usb_hat_usb_cutout_center_x_mm = 14;
+usb_hat_front_usb_cutout_width_mm = 14;
+usb_hat_front_usb_cutout_height_mm = 9;
+usb_hat_front_usb_cutout_x_mm = 4;
+usb_hat_left_usb_cutout_width_mm = 14;
+usb_hat_left_usb_cutout_height_mm = 9;
+usb_hat_left_usb_cutout_y_mm = 0;
+usb_hat_right_usb_cutout_width_mm = 14;
+usb_hat_right_usb_cutout_height_mm = 9;
+usb_hat_right_usb_cutout_y_mm = 0;
 usb_hat_bottom_bridge_clearance_width_mm = 13;
 usb_hat_bottom_bridge_clearance_height_mm = 5;
 
@@ -137,7 +142,7 @@ hatch_part_thickness_mm = case_lid_thickness_mm;
 hatch_rail_height_mm = 1.6;
 hatch_rail_width_mm = 2;
 
-ir_mount_x_mm = 0;
+ir_mount_x_mm = 22;
 ir_mount_y_mm = -case_inner_width_mm / 2 + case_wall_thickness_mm + ir_board_width_mm / 2 + 1;
 ir_mount_z_mm = grove_hat_board_z_mm + 4;
 ir_led_center_z_mm = ir_mount_z_mm + ir_board_thickness_mm / 2 + ir_led_diameter_mm / 2;
@@ -273,7 +278,7 @@ module bottom_header_clearance() {
 
 module port_cutouts() {
     pi_side_port_cutouts();
-    usb_hat_side_port_cutouts();
+    usb_hat_port_cutouts();
     front_end_cutouts();
 }
 
@@ -295,20 +300,27 @@ module pi_side_port_cutouts() {
         cube([pi_camera_cutout_width_mm + case_port_cutout_extra_width_mm, cutout_depth_mm, pi_camera_cutout_height_mm + case_port_cutout_extra_height_mm], center = true);
 }
 
-module usb_hat_side_port_cutouts() {
-    side_y = -case_outer_width_mm / 2 - 0.1;
+module usb_hat_port_cutouts() {
+    front_y = -case_outer_width_mm / 2 - 0.1;
+    left_x = -case_outer_length_mm / 2 - 0.1;
+    right_x = case_outer_length_mm / 2 + 0.1;
     cutout_depth_mm = case_wall_thickness_mm + 0.4;
-    cutout_z_mm = usb_hat_board_z_mm + usb_hat_thickness_mm + usb_hat_usb_cutout_height_mm / 2;
+    front_usb_cutout_z_mm = usb_hat_board_z_mm + usb_hat_thickness_mm + usb_hat_front_usb_cutout_height_mm / 2;
+    side_usb_cutout_z_mm = usb_hat_board_z_mm + usb_hat_thickness_mm + max(usb_hat_left_usb_cutout_height_mm, usb_hat_right_usb_cutout_height_mm) / 2;
 
-    translate([usb_hat_rj45_cutout_x_mm, side_y, cutout_z_mm])
+    translate([usb_hat_rj45_cutout_x_mm, front_y, usb_hat_board_z_mm + usb_hat_thickness_mm + usb_hat_rj45_cutout_height_mm / 2])
         cube([usb_hat_rj45_cutout_width_mm + case_port_cutout_extra_width_mm, cutout_depth_mm, usb_hat_rj45_cutout_height_mm + case_port_cutout_extra_height_mm], center = true);
 
-    for (usb_index = [-1, 0, 1]) {
-        translate([usb_hat_usb_cutout_center_x_mm + usb_index * usb_hat_usb_cutout_spacing_mm, side_y, cutout_z_mm])
-            cube([usb_hat_usb_cutout_width_mm + case_port_cutout_extra_width_mm, cutout_depth_mm, usb_hat_usb_cutout_height_mm + case_port_cutout_extra_height_mm], center = true);
-    }
+    translate([usb_hat_front_usb_cutout_x_mm, front_y, front_usb_cutout_z_mm])
+        cube([usb_hat_front_usb_cutout_width_mm + case_port_cutout_extra_width_mm, cutout_depth_mm, usb_hat_front_usb_cutout_height_mm + case_port_cutout_extra_height_mm], center = true);
 
-    translate([usb_hat_usb_cutout_center_x_mm, 0, usb_hat_board_z_mm - usb_hat_bottom_bridge_clearance_height_mm / 2])
+    translate([left_x, usb_hat_left_usb_cutout_y_mm, side_usb_cutout_z_mm])
+        cube([cutout_depth_mm, usb_hat_left_usb_cutout_width_mm + case_port_cutout_extra_width_mm, usb_hat_left_usb_cutout_height_mm + case_port_cutout_extra_height_mm], center = true);
+
+    translate([right_x, usb_hat_right_usb_cutout_y_mm, side_usb_cutout_z_mm])
+        cube([cutout_depth_mm, usb_hat_right_usb_cutout_width_mm + case_port_cutout_extra_width_mm, usb_hat_right_usb_cutout_height_mm + case_port_cutout_extra_height_mm], center = true);
+
+    translate([usb_hat_front_usb_cutout_x_mm, 0, usb_hat_board_z_mm - usb_hat_bottom_bridge_clearance_height_mm / 2])
         cube([usb_hat_bottom_bridge_clearance_width_mm, case_outer_width_mm + 0.2, usb_hat_bottom_bridge_clearance_height_mm], center = true);
 }
 
@@ -464,11 +476,17 @@ module usb_hat_ports_preview() {
         translate([usb_hat_rj45_cutout_x_mm, -usb_hat_width_mm / 2 - 5, usb_hat_board_z_mm + usb_hat_thickness_mm + usb_hat_rj45_cutout_height_mm / 2])
             cube([usb_hat_rj45_cutout_width_mm, 10, usb_hat_rj45_cutout_height_mm], center = true);
 
-    for (usb_index = [-1, 0, 1]) {
-        color([0.75, 0.75, 0.75, 0.55])
-            translate([usb_hat_usb_cutout_center_x_mm + usb_index * usb_hat_usb_cutout_spacing_mm, -usb_hat_width_mm / 2 - 4, usb_hat_board_z_mm + usb_hat_thickness_mm + usb_hat_usb_cutout_height_mm / 2])
-                cube([usb_hat_usb_cutout_width_mm, 8, usb_hat_usb_cutout_height_mm], center = true);
-    }
+    color([0.75, 0.75, 0.75, 0.55])
+        translate([usb_hat_front_usb_cutout_x_mm, -usb_hat_width_mm / 2 - 4, usb_hat_board_z_mm + usb_hat_thickness_mm + usb_hat_front_usb_cutout_height_mm / 2])
+            cube([usb_hat_front_usb_cutout_width_mm, 8, usb_hat_front_usb_cutout_height_mm], center = true);
+
+    color([0.75, 0.75, 0.75, 0.55])
+        translate([-usb_hat_length_mm / 2 - 4, usb_hat_left_usb_cutout_y_mm, usb_hat_board_z_mm + usb_hat_thickness_mm + usb_hat_left_usb_cutout_height_mm / 2])
+            cube([8, usb_hat_left_usb_cutout_width_mm, usb_hat_left_usb_cutout_height_mm], center = true);
+
+    color([0.75, 0.75, 0.75, 0.55])
+        translate([usb_hat_length_mm / 2 + 4, usb_hat_right_usb_cutout_y_mm, usb_hat_board_z_mm + usb_hat_thickness_mm + usb_hat_right_usb_cutout_height_mm / 2])
+            cube([8, usb_hat_right_usb_cutout_width_mm, usb_hat_right_usb_cutout_height_mm], center = true);
 }
 
 module pi_ports_preview() {

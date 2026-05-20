@@ -86,7 +86,7 @@ The Pi Zero design is a printable enclosed case for a Raspberry Pi Zero v1.3 wit
 Default dimensions are configurable at the top of `designs/pi_zero_usb_grove_ir_enclosure.scad`. The initial defaults assume:
 
 - Raspberry Pi Zero v1.3 board: 65 mm x 30 mm.
-- Waveshare ETH/USB HUB HAT footprint: 65 mm x 30 mm, with one RJ45 port and three USB ports exposed on the side.
+- Waveshare ETH/USB HUB HAT, Kiwi product code `WS-16595`, footprint: 65 mm x 30 mm, with RJ45 plus one USB port on the front edge and one USB port on each long side.
 - Seeed Grove Base Hat for Raspberry Pi Zero mounted above the USB HAT.
 - Seeed Grove Infrared Emitter board: 20 mm x 20 mm with a 5 mm IR LED.
 - Common M2.5 fasteners for board standoffs and enclosure screws.
@@ -111,6 +111,7 @@ Common edits:
 - Change `render_mode` to export a printable part.
 - Set `show_electronics = false` for printable-only previews.
 - Adjust Pi, USB HAT, and Grove HAT connector cutout positions after a test fit.
+- Tune the USB HAT front, left-side, and right-side USB cutout positions independently for the measured `WS-16595` board.
 - Increase `fit_tolerance_mm`, `sliding_hatch_clearance_mm`, or `case_port_cutout_extra_width_mm` for looser fit.
 - Increase `pi_bottom_header_pin_protrusion_clearance_mm` if the manually inserted GPIO header pins protrude farther below the Pi.
 
@@ -182,7 +183,9 @@ Manual inspection for the Pi Zero USB Grove IR enclosure:
 
 - Pi Zero, USB HAT, and Grove HAT render in the correct vertical order.
 - Pi Zero microSD, mini-HDMI, both micro-USB ports, and camera connector access are not blocked by the enclosure.
-- USB HAT RJ45 and all three USB connectors are exposed.
+- USB HAT RJ45 plus one USB connector are exposed on the front edge.
+- One USB HAT USB connector is exposed on each long side, with no obsolete grouped three-USB opening on a single face.
+- The front IR LED aperture does not overlap or block the RJ45 or front USB openings.
 - Sliding top hatch exposes only the GPIO header area.
 - Grove sockets remain enclosed.
 - IR emitter cable path is internal.
