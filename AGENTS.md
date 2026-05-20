@@ -10,6 +10,7 @@ These instructions apply to this OpenSCAD design repository.
 - Keep generated mesh exports such as STL, STEP, and 3MF files out of source control unless an approved plan explicitly adds them.
 - Prefer one editable `.scad` source file per coherent design unless a spec approves a multi-file split.
 - Design and printing guidance should maintain compatibility with the Bambu Lab P2S printer and AMS 2 Pro unless an approved spec explicitly narrows or changes printer support.
+- If otherwise unspecified, committing and pushing directly to the `main` branch is acceptable for this repository.
 
 ## OpenSCAD Rules
 
@@ -23,6 +24,8 @@ These instructions apply to this OpenSCAD design repository.
 - Use named modules for major printable parts, previews, and repeated helper geometry.
 
 ## Validation
+
+This project does not require QA or unit tests unless a spec or user request explicitly asks for them. A code review is sufficient validation for repository changes.
 
 When OpenSCAD is installed, validate changed `.scad` files with syntax or preview/export checks for each documented render mode. For this design, useful checks are:
 
