@@ -43,7 +43,7 @@ Default dimensions are configurable at the top of the `.scad` file. The initial 
 - LED preview set: PWR, ACT, and D1-D3 visual reference blocks.
 - Micro USB bridge adapter clearance envelope: 13.3 mm x 9.0 mm x 14.8 mm, derived from the official Waveshare 3D drawing and left adjustable for physical measurement.
 
-Connector bodies, LEDs, GPIO pins, and component blocks are simplified clearance volumes. Positions and sizes should be adjusted after measuring the actual hardware stack.
+Connector bodies, LEDs, GPIO pins, and component blocks are simplified clearance volumes. The default connector boxes are compact, edge-aligned fit references that avoid the default GPIO and component preview footprints. Positions and sizes should be adjusted after measuring the actual hardware stack.
 
 ### Adjustable Parameters
 
@@ -67,6 +67,7 @@ Common edits:
 - Set `show_gpio_header = false` to hide only the GPIO header/reference pins.
 - Tune connector and Micro USB adapter offsets after physical measurement.
 - Tune `hat_mounting_hole_edge_offset_mm` when measured hole positions differ; the default 3.5 mm edge offset derives the 58.0 mm x 23.0 mm hole-center span.
+- Tune `hat_rj45_width_x_mm`, `hat_rj45_depth_y_mm`, `hat_front_usb_a_width_x_mm`, and `hat_front_usb_a_depth_y_mm` for measured front-port clearance.
 - Tune `hat_side_usb_a_depth_x_mm`, `hat_side_usb_a_width_y_mm`, and `hat_side_usb_a_board_overlap_depth_mm` for side USB-A fit planning on the +/-X board edges.
 
 ### Render Modes
@@ -289,7 +290,8 @@ Manual inspection for the Waveshare ETH/USB HUB HAT reference:
 - Adjustable linear variables use `_mm`, and render modes dispatch deterministically.
 - Board defaults are 65.0 mm x 30.0 mm x 1.6 mm with 1.5 mm corner radius.
 - Mounting holes default to 3.0 mm diameter, 3.5 mm edge offsets, and 58.0 mm x 23.0 mm center span.
-- RJ45 and front USB-A clearances sit on the -Y edge opposite the +Y GPIO header, with one USB-A on each long side, bottom Micro USB interface, LEDs, and major clearance blocks visible when enabled.
+- RJ45 and front USB-A clearances are compact edge-aligned boxes on the -Y edge opposite the +Y GPIO header, with one USB-A on each long side, bottom Micro USB interface, LEDs, and major clearance blocks visible when enabled.
+- Major component preview blocks stay outside the default connector and GPIO header footprints.
 - Side USB-A previews use X as outward connector depth and Y as connector width, with default placement crossing the +/-X board edges.
 - `show_electronics`, `show_micro_usb_adapter`, and `show_gpio_header` independently control their intended visual groups.
 - Micro USB bridge adapter defaults to a 13.3 mm x 9.0 mm x 14.8 mm adjustable envelope, remains visually distinct, and aligns its plug to the HAT bottom Micro USB interface below the PCB in assembly mode.

@@ -41,18 +41,20 @@ hat_gpio_header_center_y_mm = 11.43;
 
 // Connector dimensions and positions
 hat_rj45_center_x_mm = -16.0;
-hat_rj45_center_y_mm = -13.0;
-hat_rj45_size_mm = [16.2, 21.5, 13.5];
+hat_rj45_width_x_mm = 16.0;
+hat_rj45_depth_y_mm = 15.0;
+hat_rj45_height_mm = 13.0;
 
 hat_front_usb_a_center_x_mm = 11.0;
-hat_front_usb_a_center_y_mm = -13.25;
-hat_front_usb_a_size_mm = [13.5, 16.0, 7.5];
+hat_front_usb_a_width_x_mm = 13.0;
+hat_front_usb_a_depth_y_mm = 12.0;
+hat_front_usb_a_height_mm = 7.0;
 
-hat_side_usb_a_center_y_mm = -3.0;
-hat_side_usb_a_depth_x_mm = 16.0;
-hat_side_usb_a_width_y_mm = 13.5;
-hat_side_usb_a_height_mm = 7.5;
-hat_side_usb_a_board_overlap_depth_mm = 9.5;
+hat_side_usb_a_center_y_mm = -4.5;
+hat_side_usb_a_depth_x_mm = 12.0;
+hat_side_usb_a_width_y_mm = 12.0;
+hat_side_usb_a_height_mm = 7.0;
+hat_side_usb_a_board_overlap_depth_mm = 7.0;
 
 hat_bottom_micro_usb_center_x_mm = 8.9;
 hat_bottom_micro_usb_center_y_mm = -13.0;
@@ -71,10 +73,10 @@ hat_led_positions_mm = [
 ];
 
 hat_component_clearance_blocks_mm = [
-    [-4.0, 2.0, 13.0, 13.0, 2.0, "DimGray"],
-    [14.0, -6.0, 10.0, 8.0, 1.6, "Black"],
-    [-20.0, -7.0, 11.0, 8.0, 1.8, "Black"],
-    [3.0, -9.5, 8.0, 4.0, 1.3, "DarkSlateGray"]
+    [-6.0, 5.6, 9.0, 4.0, 1.8, "DimGray"],
+    [14.5, 5.2, 7.0, 4.0, 1.4, "Black"],
+    [-24.0, 5.4, 5.0, 4.0, 1.4, "Black"],
+    [3.0, 4.4, 6.0, 3.0, 1.2, "DarkSlateGray"]
 ];
 
 // Micro USB bridge adapter dimensions
@@ -118,6 +120,18 @@ hat_gpio_header_origin_x_mm = hat_gpio_header_center_x_mm - hat_gpio_header_bloc
 hat_gpio_header_origin_y_mm = hat_gpio_header_center_y_mm - hat_gpio_header_block_width_mm / 2;
 hat_gpio_pin_first_x_mm = hat_gpio_header_center_x_mm - (hat_gpio_pin_columns - 1) * hat_gpio_pin_pitch_mm / 2;
 hat_gpio_pin_first_y_mm = hat_gpio_header_center_y_mm - hat_gpio_pin_pitch_mm / 2;
+hat_rj45_center_y_mm = -hat_board_half_width_mm + hat_rj45_depth_y_mm / 2;
+hat_rj45_size_mm = [
+    hat_rj45_width_x_mm,
+    hat_rj45_depth_y_mm,
+    hat_rj45_height_mm
+];
+hat_front_usb_a_center_y_mm = -hat_board_half_width_mm + hat_front_usb_a_depth_y_mm / 2;
+hat_front_usb_a_size_mm = [
+    hat_front_usb_a_width_x_mm,
+    hat_front_usb_a_depth_y_mm,
+    hat_front_usb_a_height_mm
+];
 hat_side_usb_a_size_mm = [
     hat_side_usb_a_depth_x_mm,
     hat_side_usb_a_width_y_mm,
