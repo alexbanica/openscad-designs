@@ -92,6 +92,7 @@ The repository currently has Raspberry Pi reference models but no standalone Wav
   - LEDs labelled or positioned as visual reference blocks for PWR, ACT, and D1-D3,
   - major IC/component clearance blocks sufficient to see the likely top-side height envelope.
 - The adapter reference must align to the HAT bottom Micro USB interface in assembly mode and must be visually distinct from the HAT connectors.
+- The adapter plug shells must extend only toward the board interior from the bridge body; they must not straddle both sides of the bridge body or project past the board edge in the default assembly.
 - The source must expose dimensions and offsets for adjusting connector placement after physical measurement.
 - The model must remain usable as a child design reference through `use <...>` and named module calls.
 
@@ -117,6 +118,7 @@ The repository currently has Raspberry Pi reference models but no standalone Wav
 - The file provides named modules for the full reference, HAT board, connector/component previews, GPIO reference, Micro USB adapter, and helper geometry.
 - Default board dimensions match the researched Waveshare values: 65.0 mm x 30.0 mm board, 3.0 mm mounting holes, 3.5 mm hole edge offsets, 58.0 mm x 23.0 mm hole center span, and 1.5 mm corner radius.
 - Default adapter dimensions include an adjustable 8.6 mm x 9.0 mm x 12.2 mm solid envelope derived from the official 3D drawing vertices, with separate body and two plug-shell blocks.
+- The Micro USB bridge adapter plug-shell blocks are placed on the interior side of the bridge body so the exterior body face remains flush and the default adapter preview stays inside the board outline.
 - Render modes include `assembly`, `hat`, `micro_usb_adapter`, and `printable_layout`.
 - README documents the new design file, assumptions, render modes, common adjustable parameters, optional OpenSCAD commands, and manual inspection checklist.
 - `git diff --check` passes.

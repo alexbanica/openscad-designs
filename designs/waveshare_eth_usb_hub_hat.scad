@@ -143,6 +143,8 @@ micro_usb_adapter_center_y_mm = hat_bottom_micro_usb_center_y_mm;
 micro_usb_adapter_top_plug_offset_z_mm = micro_usb_adapter_plug_center_spacing_z_mm / 2;
 micro_usb_adapter_bottom_plug_offset_z_mm = -micro_usb_adapter_plug_center_spacing_z_mm / 2;
 micro_usb_adapter_center_z_mm = hat_bottom_micro_usb_center_z_mm - micro_usb_adapter_top_plug_offset_z_mm;
+micro_usb_adapter_plug_center_y_offset_mm =
+    (micro_usb_adapter_plug_depth_y_mm - micro_usb_adapter_body_depth_y_mm) / 2;
 
 // ======================================================
 // Render Dispatch
@@ -321,7 +323,7 @@ module waveshare_micro_usb_bridge_adapter_reference(
         color(micro_usb_adapter_plug_colour)
         translate([
             center_x_mm,
-            center_y_mm,
+            center_y_mm + micro_usb_adapter_plug_center_y_offset_mm,
             center_z_mm + plug_offset_z_mm
         ])
             cube([
