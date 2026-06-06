@@ -6,6 +6,7 @@ This repository contains editable OpenSCAD designs.
 
 - `designs/pi_zero.scad`
 - `designs/rpi5.scad`
+- `designs/waveshare_eth_usb_hub_hat.scad`
 - `designs/rpi5_ai_hat_dual_heatsink_vision_case.scad`
 - `designs/pi_zero_usb_grove_ir_enclosure.scad`
 
@@ -26,6 +27,73 @@ rpi5_reference_model(show_reference = true, show_active_cooler = false);
 ```
 
 The Pi Zero reference exposes toggles for the full reference, test pads, GPIO header direction, optional sound/vision GPIO pads, and GPIO pin colouring. The Raspberry Pi 5 reference exposes toggles for the full reference, GPIO pins, microSD card preview, and active cooler preview.
+
+## Waveshare ETH/USB HUB HAT Reference
+
+`designs/waveshare_eth_usb_hub_hat.scad` provides an editable fit and clearance reference for the Waveshare ETH/USB HUB HAT, including the included Micro USB bridge adapter used with Raspberry Pi Zero-class boards. It is a simplified mechanical reference for enclosure and stack planning, not a vendor-certified cosmetic model.
+
+### Component Assumptions
+
+Default dimensions are configurable at the top of the `.scad` file. The initial defaults assume:
+
+- Waveshare ETH/USB HUB HAT board: 65.0 mm x 30.0 mm x 1.6 mm.
+- Board corner radius: 1.5 mm.
+- Four mounting holes: 3.0 mm diameter, 3.5 mm from board edges, with 58.0 mm x 23.0 mm center span.
+- Connector preview set: RJ45 and one USB-A on the front edge, one USB-A on each long side, and a bottom Micro USB HAT interface.
+- LED preview set: PWR, ACT, and D1-D3 visual reference blocks.
+- Micro USB bridge adapter clearance envelope: 13.3 mm x 9.0 mm x 14.8 mm, derived from the official Waveshare 3D drawing and left adjustable for physical measurement.
+
+Connector bodies, LEDs, GPIO pins, and component blocks are simplified clearance volumes. Positions and sizes should be adjusted after measuring the actual hardware stack.
+
+### Adjustable Parameters
+
+The OpenSCAD source starts with an `Adjustable Parameters` section grouped by:
+
+- render controls,
+- board dimensions,
+- mounting holes,
+- GPIO header/reference dimensions,
+- connector dimensions and positions,
+- LED and component preview dimensions,
+- Micro USB bridge adapter dimensions,
+- printable layout,
+- visual settings.
+
+Common edits:
+
+- Change `render_mode` to inspect the full assembly, HAT-only reference, adapter-only reference, or separated layout.
+- Set `show_electronics = false` to hide connector, LED, and component previews while keeping the PCB and mounting holes visible.
+- Set `show_micro_usb_adapter = false` to hide only the bridge adapter.
+- Set `show_gpio_header = false` to hide only the GPIO header/reference pins.
+- Tune connector and Micro USB adapter offsets after physical measurement.
+- Tune `hat_mounting_hole_edge_offset_mm` when measured hole positions differ; the default 3.5 mm edge offset derives the 58.0 mm x 23.0 mm hole-center span.
+- Tune `hat_side_usb_a_depth_x_mm`, `hat_side_usb_a_width_y_mm`, and `hat_side_usb_a_board_overlap_depth_mm` for side USB-A fit planning on the +/-X board edges.
+
+### Render Modes
+
+Set `render_mode` to one of:
+
+- `assembly`: HAT reference with optional electronics, GPIO header, and Micro USB bridge adapter.
+- `hat`: HAT reference without the Micro USB bridge adapter.
+- `micro_usb_adapter`: Micro USB bridge adapter reference only.
+- `printable_layout`: HAT reference and adapter separated for visual inspection.
+
+Optional inspection commands for users with OpenSCAD installed:
+
+```sh
+openscad -o /tmp/waveshare_eth_usb_hub_hat_assembly.off -D 'render_mode="assembly"' designs/waveshare_eth_usb_hub_hat.scad
+openscad -o /tmp/waveshare_eth_usb_hub_hat_only.off -D 'render_mode="hat"' designs/waveshare_eth_usb_hub_hat.scad
+openscad -o /tmp/waveshare_eth_usb_hub_hat_adapter.off -D 'render_mode="micro_usb_adapter"' designs/waveshare_eth_usb_hub_hat.scad
+openscad -o /tmp/waveshare_eth_usb_hub_hat_printable_layout.off -D 'render_mode="printable_layout"' designs/waveshare_eth_usb_hub_hat.scad
+```
+
+### Fit Notes
+
+- Use the model as a child design reference with `use <waveshare_eth_usb_hub_hat.scad>` and call `waveshare_eth_usb_hub_hat_reference_model(...)` explicitly.
+- Keep the Micro USB bridge adapter visible during early stack planning to confirm the adapter plug aligns with the underside HAT USB HUB interface below the PCB.
+- Side USB-A connector depth runs along X and intentionally crosses the +/-X board edges; side USB-A width runs along Y.
+- Leave additional printed-case clearance around RJ45, USB-A, and Micro USB features until measured against the actual board and adapter.
+- The design guidance remains compatible with Bambu Lab P2S and AMS 2 Pro fit-check workflows; no generated mesh exports are committed.
 
 ## Raspberry Pi 5 AI HAT+ Vision Case
 
@@ -176,12 +244,16 @@ openscad -o pi_zero_usb_grove_ir_assembly.off -D 'render_mode="assembly"' -D 'sh
 
 ## Validation Checklist
 
-When `openscad` is installed:
+Optional OpenSCAD inspection commands for users with OpenSCAD installed:
 
 ```sh
 openscad --version
 openscad -o /tmp/pi_zero_reference.off designs/pi_zero.scad
 openscad -o /tmp/rpi5_reference.off designs/rpi5.scad
+openscad -o /tmp/waveshare_eth_usb_hub_hat_assembly.off -D 'render_mode="assembly"' designs/waveshare_eth_usb_hub_hat.scad
+openscad -o /tmp/waveshare_eth_usb_hub_hat_only.off -D 'render_mode="hat"' designs/waveshare_eth_usb_hub_hat.scad
+openscad -o /tmp/waveshare_eth_usb_hub_hat_adapter.off -D 'render_mode="micro_usb_adapter"' designs/waveshare_eth_usb_hub_hat.scad
+openscad -o /tmp/waveshare_eth_usb_hub_hat_printable_layout.off -D 'render_mode="printable_layout"' designs/waveshare_eth_usb_hub_hat.scad
 openscad -o /tmp/rpi5_ai_hat_dual_heatsink_vision_case.off -D 'render_mode="assembly"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
 openscad -o /tmp/rpi5_ai_hat_tower.off -D 'render_mode="tower"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
 openscad -o /tmp/rpi5_ai_hat_camera_arm.off -D 'render_mode="camera_arm"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
@@ -192,6 +264,11 @@ openscad -o /tmp/pi_zero_usb_grove_ir_bottom_tray.off -D 'render_mode="bottom_tr
 openscad -o /tmp/pi_zero_usb_grove_ir_top_cover.off -D 'render_mode="top_cover"' designs/pi_zero_usb_grove_ir_enclosure.scad
 openscad -o /tmp/pi_zero_usb_grove_ir_gpio_hatch.off -D 'render_mode="gpio_hatch"' designs/pi_zero_usb_grove_ir_enclosure.scad
 openscad -o /tmp/pi_zero_usb_grove_ir_printable_layout.off -D 'render_mode="printable_layout"' designs/pi_zero_usb_grove_ir_enclosure.scad
+```
+
+Repository validation:
+
+```sh
 git diff --check
 ```
 
@@ -204,6 +281,19 @@ Manual inspection for the reusable Raspberry Pi reference models:
 - Pi Zero preview shows the board, configured optional features, GPIO header, test pads, and version-dependent components.
 - Raspberry Pi 5 preview shows the board, configured optional features, GPIO pins, microSD preview, and active cooler when enabled.
 - Child designs can show or hide each reference model and its major optional features without editing the base file.
+
+Manual inspection for the Waveshare ETH/USB HUB HAT reference:
+
+- `designs/waveshare_eth_usb_hub_hat.scad` has clearly labeled `Adjustable Parameters` and `Derived Values` sections.
+- Adjustable linear variables use `_mm`, and render modes dispatch deterministically.
+- Board defaults are 65.0 mm x 30.0 mm x 1.6 mm with 1.5 mm corner radius.
+- Mounting holes default to 3.0 mm diameter, 3.5 mm edge offsets, and 58.0 mm x 23.0 mm center span.
+- RJ45, one front USB-A, one USB-A on each long side, bottom Micro USB interface, LEDs, GPIO header, and major clearance blocks are visible when enabled.
+- Side USB-A previews use X as outward connector depth and Y as connector width, with default placement crossing the +/-X board edges.
+- `show_electronics`, `show_micro_usb_adapter`, and `show_gpio_header` independently control their intended visual groups.
+- Micro USB bridge adapter defaults to a 13.3 mm x 9.0 mm x 14.8 mm adjustable envelope, remains visually distinct, and aligns its plug to the HAT bottom Micro USB interface below the PCB in assembly mode.
+- `assembly`, `hat`, `micro_usb_adapter`, and `printable_layout` modes show the intended reference views.
+- No generated mesh or export artifacts are added.
 
 Manual inspection for the Pi 5 design:
 
