@@ -4,10 +4,28 @@ This repository contains editable OpenSCAD designs.
 
 ## Design Files
 
+- `designs/pi_zero.scad`
+- `designs/rpi5.scad`
 - `designs/rpi5_ai_hat_dual_heatsink_vision_case.scad`
 - `designs/pi_zero_usb_grove_ir_enclosure.scad`
 
-Both files target OpenSCAD 2021.01 and have no external library dependencies.
+All files target OpenSCAD 2021.01 and have no external library dependencies.
+
+## Reusable Raspberry Pi Reference Models
+
+`designs/pi_zero.scad` and `designs/rpi5.scad` provide reusable board reference models for fit and clearance work. They are preview references, not printable parts or vendor-certified mechanical models.
+
+Child designs should import the modules with `use` and call the reference module explicitly:
+
+```scad
+use <pi_zero.scad>
+use <rpi5.scad>
+
+pi_zero_reference_model(show_reference = true, show_gpio_header_position = 0);
+rpi5_reference_model(show_reference = true, show_active_cooler = false);
+```
+
+The Pi Zero reference exposes toggles for the full reference, test pads, GPIO header direction, optional sound/vision GPIO pads, and GPIO pin colouring. The Raspberry Pi 5 reference exposes toggles for the full reference, GPIO pins, microSD card preview, and active cooler preview.
 
 ## Raspberry Pi 5 AI HAT+ Vision Case
 
@@ -162,6 +180,8 @@ When `openscad` is installed:
 
 ```sh
 openscad --version
+openscad -o /tmp/pi_zero_reference.off designs/pi_zero.scad
+openscad -o /tmp/rpi5_reference.off designs/rpi5.scad
 openscad -o /tmp/rpi5_ai_hat_dual_heatsink_vision_case.off -D 'render_mode="assembly"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
 openscad -o /tmp/rpi5_ai_hat_tower.off -D 'render_mode="tower"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
 openscad -o /tmp/rpi5_ai_hat_camera_arm.off -D 'render_mode="camera_arm"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
@@ -174,6 +194,16 @@ openscad -o /tmp/pi_zero_usb_grove_ir_gpio_hatch.off -D 'render_mode="gpio_hatch
 openscad -o /tmp/pi_zero_usb_grove_ir_printable_layout.off -D 'render_mode="printable_layout"' designs/pi_zero_usb_grove_ir_enclosure.scad
 git diff --check
 ```
+
+Manual inspection for the reusable Raspberry Pi reference models:
+
+- `designs/pi_zero.scad` and `designs/rpi5.scad` have clearly labeled `Adjustable Parameters` and `Derived Values` sections.
+- Adjustable variables use descriptive `snake_case` names with `_mm` for linear dimensions and `_deg` for angles where applicable.
+- User-adjustable geometry values are not redefined inside implementation modules.
+- Major reference assemblies and repeated geometry are exposed through named modules.
+- Pi Zero preview shows the board, configured optional features, GPIO header, test pads, and version-dependent components.
+- Raspberry Pi 5 preview shows the board, configured optional features, GPIO pins, microSD preview, and active cooler when enabled.
+- Child designs can show or hide each reference model and its major optional features without editing the base file.
 
 Manual inspection for the Pi 5 design:
 

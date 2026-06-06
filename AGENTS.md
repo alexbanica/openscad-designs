@@ -22,6 +22,9 @@ These instructions apply to this OpenSCAD design repository.
 - Use `_mm` for linear dimensions and `_deg` for angles.
 - Do not redefine user-adjustable values inside modules.
 - Use named modules for major printable parts, previews, and repeated helper geometry.
+- Future `.scad` files that require Raspberry Pi Zero board geometry should use `designs/pi_zero.scad` as the fit and clearance reference instead of duplicating board models.
+- Future `.scad` files that require Raspberry Pi 5 board geometry should use `designs/rpi5.scad` as the fit and clearance reference instead of duplicating board models.
+- Dependent cases, supports, enclosures, and accessories should keep these Raspberry Pi reference models toggleable from child designs.
 
 ## Validation
 
@@ -30,6 +33,8 @@ This project does not require QA or unit tests unless a spec or user request exp
 When OpenSCAD is installed, validate changed `.scad` files with syntax or preview/export checks for each documented render mode. For this design, useful checks are:
 
 ```sh
+openscad -o /tmp/pi_zero_reference.off designs/pi_zero.scad
+openscad -o /tmp/rpi5_reference.off designs/rpi5.scad
 openscad -o /tmp/rpi5_ai_hat_dual_heatsink_vision_case.off -D 'render_mode="assembly"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
 openscad -o /tmp/rpi5_ai_hat_tower.off -D 'render_mode="tower"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
 openscad -o /tmp/rpi5_ai_hat_camera_arm.off -D 'render_mode="camera_arm"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
