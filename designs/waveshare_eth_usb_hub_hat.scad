@@ -2,7 +2,8 @@
 //
 // Units: mm
 // Origin: centre of PCB, bottom face. X follows board length, Y follows board width.
-// Orientation: RJ45 and front USB-A connectors face +Y; side USB-A connectors face +/-X.
+// Orientation: GPIO header is near +Y, RJ45 and front USB-A connectors face -Y,
+// side USB-A connectors face +/-X.
 // This is an adjustable fit and clearance reference, not a vendor-certified model.
 
 // ======================================================
@@ -40,11 +41,11 @@ hat_gpio_header_center_y_mm = 11.43;
 
 // Connector dimensions and positions
 hat_rj45_center_x_mm = -16.0;
-hat_rj45_center_y_mm = 13.0;
+hat_rj45_center_y_mm = -13.0;
 hat_rj45_size_mm = [16.2, 21.5, 13.5];
 
 hat_front_usb_a_center_x_mm = 11.0;
-hat_front_usb_a_center_y_mm = 13.25;
+hat_front_usb_a_center_y_mm = -13.25;
 hat_front_usb_a_size_mm = [13.5, 16.0, 7.5];
 
 hat_side_usb_a_center_y_mm = -3.0;
