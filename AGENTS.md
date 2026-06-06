@@ -28,27 +28,15 @@ These instructions apply to this OpenSCAD design repository.
 
 ## Validation
 
-This project does not require QA or unit tests unless a spec or user request explicitly asks for them. A code review is sufficient validation for repository changes.
+This project does not require QA or unit tests unless a spec or user request explicitly asks for them.
 
-When OpenSCAD is installed, validate changed `.scad` files with syntax or preview/export checks for each documented render mode. For this design, useful checks are:
+Do not run OpenSCAD validation commands for this repository. OpenSCAD is not installed in the local environment.
+
+A code review is sufficient validation for repository changes. When working in git, run:
 
 ```sh
-openscad -o /tmp/pi_zero_reference.off designs/pi_zero.scad
-openscad -o /tmp/rpi5_reference.off designs/rpi5.scad
-openscad -o /tmp/rpi5_ai_hat_dual_heatsink_vision_case.off -D 'render_mode="assembly"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_tower.off -D 'render_mode="tower"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_camera_arm.off -D 'render_mode="camera_arm"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_camera_holder.off -D 'render_mode="camera_holder"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_printable_layout.off -D 'render_mode="printable_layout"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/pi_zero_usb_grove_ir_assembly.off -D 'render_mode="assembly"' designs/pi_zero_usb_grove_ir_enclosure.scad
-openscad -o /tmp/pi_zero_usb_grove_ir_bottom_tray.off -D 'render_mode="bottom_tray"' designs/pi_zero_usb_grove_ir_enclosure.scad
-openscad -o /tmp/pi_zero_usb_grove_ir_top_cover.off -D 'render_mode="top_cover"' designs/pi_zero_usb_grove_ir_enclosure.scad
-openscad -o /tmp/pi_zero_usb_grove_ir_gpio_hatch.off -D 'render_mode="gpio_hatch"' designs/pi_zero_usb_grove_ir_enclosure.scad
-openscad -o /tmp/pi_zero_usb_grove_ir_printable_layout.off -D 'render_mode="printable_layout"' designs/pi_zero_usb_grove_ir_enclosure.scad
 git diff --check
 ```
-
-If OpenSCAD is unavailable, report that geometry validation was not run and provide the manual inspection checklist from the README.
 
 ## Documentation
 
