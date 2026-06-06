@@ -57,7 +57,7 @@ hat_side_usb_a_height_mm = 7.0;
 hat_side_usb_a_board_overlap_depth_mm = 7.0;
 
 hat_bottom_micro_usb_center_x_mm = 8.9;
-hat_bottom_micro_usb_center_y_mm = -13.0;
+hat_bottom_micro_usb_center_y_mm = -11.0;
 hat_bottom_micro_usb_size_mm = [7.5, 5.5, 3.0];
 
 // LED and component preview dimensions
@@ -139,12 +139,13 @@ hat_left_usb_a_center_x_mm = -hat_board_half_length_mm - hat_side_usb_a_depth_x_
 hat_right_usb_a_center_x_mm = hat_board_half_length_mm + hat_side_usb_a_depth_x_mm / 2 - hat_side_usb_a_board_overlap_depth_mm;
 hat_bottom_micro_usb_center_z_mm = -hat_bottom_micro_usb_size_mm[2] / 2;
 micro_usb_adapter_center_x_mm = hat_bottom_micro_usb_center_x_mm;
-micro_usb_adapter_center_y_mm = hat_bottom_micro_usb_center_y_mm;
+micro_usb_adapter_center_y_mm =
+    -hat_board_half_width_mm - micro_usb_adapter_body_depth_y_mm / 2;
 micro_usb_adapter_top_plug_offset_z_mm = micro_usb_adapter_plug_center_spacing_z_mm / 2;
 micro_usb_adapter_bottom_plug_offset_z_mm = -micro_usb_adapter_plug_center_spacing_z_mm / 2;
 micro_usb_adapter_center_z_mm = hat_bottom_micro_usb_center_z_mm - micro_usb_adapter_top_plug_offset_z_mm;
 micro_usb_adapter_plug_center_y_offset_mm =
-    (micro_usb_adapter_plug_depth_y_mm - micro_usb_adapter_body_depth_y_mm) / 2;
+    (micro_usb_adapter_plug_depth_y_mm + micro_usb_adapter_body_depth_y_mm) / 2;
 
 // ======================================================
 // Render Dispatch

@@ -42,7 +42,7 @@ Default dimensions are configurable at the top of the `.scad` file. The initial 
 - Connector preview set: RJ45 and one USB-A on the front edge opposite the GPIO header, one USB-A on each long side, and a bottom Micro USB HAT interface.
 - LED preview set: PWR, ACT, and D1-D3 visual reference blocks.
 - Micro USB bridge adapter solid envelope: 8.6 mm x 9.0 mm x 12.2 mm, measured from official Waveshare `0304-06.stp` solid vertices and left adjustable for physical measurement.
-- Micro USB bridge adapter detail: 8.6 mm x 1.0 mm x 12.2 mm bridge body with two about 6.5 mm x 8.0 mm x 1.46 mm plug shells on 8.70 mm centers. The plug shells extend only toward the board interior from the bridge body.
+- Micro USB bridge adapter detail: 8.6 mm x 1.0 mm x 12.2 mm bridge body with two about 6.5 mm x 8.0 mm x 1.46 mm plug shells on 8.70 mm centers. The bridge body sits outside the board edge by default, while the plug shells extend inward into the board-side Micro USB socket positions.
 
 Connector bodies, LEDs, GPIO pins, and component blocks are simplified clearance volumes. The default connector boxes are compact, edge-aligned fit references that avoid the default GPIO and component preview footprints. Positions and sizes should be adjusted after measuring the actual hardware stack.
 
@@ -93,7 +93,7 @@ openscad -o /tmp/waveshare_eth_usb_hub_hat_printable_layout.off -D 'render_mode=
 
 - Use the model as a child design reference with `use <waveshare_eth_usb_hub_hat.scad>` and call `waveshare_eth_usb_hub_hat_reference_model(...)` explicitly.
 - Keep the Micro USB bridge adapter visible during early stack planning to confirm the upper plug shell aligns with the underside HAT USB HUB interface below the PCB.
-- The Micro USB bridge adapter plug shells default to the board-interior side only; the exterior bridge-body face is flush so the adapter does not overhang the board edge by straddling the Micro USB centerline.
+- The Micro USB bridge adapter body defaults outside the -Y board edge like an external plug body; its plug shells extend inward from the edge into the HAT and Pi Zero Micro USB socket positions.
 - The GPIO header reference is near the +Y long edge; the RJ45 and front USB-A connector clearances face -Y so they do not overlap the header.
 - Side USB-A connector depth runs along X and intentionally crosses the +/-X board edges; side USB-A width runs along Y.
 - Leave additional printed-case clearance around RJ45, USB-A, and Micro USB features until measured against the actual board and adapter.
@@ -296,7 +296,7 @@ Manual inspection for the Waveshare ETH/USB HUB HAT reference:
 - Major component preview blocks stay outside the default connector and GPIO header footprints.
 - Side USB-A previews use X as outward connector depth and Y as connector width, with default placement crossing the +/-X board edges.
 - `show_electronics`, `show_micro_usb_adapter`, and `show_gpio_header` independently control their intended visual groups.
-- Micro USB bridge adapter defaults to an 8.6 mm x 9.0 mm x 12.2 mm solid envelope, uses separate body and two plug-shell blocks, keeps both plug shells on the board-interior side of the bridge body, remains visually distinct, and aligns its upper plug to the HAT bottom Micro USB interface below the PCB in assembly mode.
+- Micro USB bridge adapter defaults to an 8.6 mm x 9.0 mm x 12.2 mm solid envelope, uses separate body and two plug-shell blocks, places the bridge body outside the board edge with both plug shells extending inward, remains visually distinct, and aligns its upper plug to the HAT bottom Micro USB interface below the PCB in assembly mode.
 - `assembly`, `hat`, `micro_usb_adapter`, and `printable_layout` modes show the intended reference views.
 - No generated mesh or export artifacts are added.
 
