@@ -63,8 +63,11 @@ The repository currently has Raspberry Pi reference models but no standalone Wav
   - hole-center span 58.0 mm lengthwise and 23.0 mm widthwise,
   - board corner radius shown as 1.5 mm on the HAT drawing.
 - The official package contents include the Micro USB connector and Micro USB cable. The model must include the Micro USB bridge adapter, but not the loose cable.
-- The Micro USB bridge adapter does not have a published catalog dimension table in the researched product page or wiki. Its default clearance envelope must be derived from the official Waveshare STEP resource as an adjustable reference:
-  - approximate adapter envelope: 13.3 mm x 9.0 mm x 14.8 mm.
+- The Micro USB bridge adapter does not have a published catalog dimension table in the researched product page or wiki. Its default dimensions must be derived from the official Waveshare STEP resource as adjustable references:
+  - actual solid adapter envelope from `0304-06.stp` vertex coordinates: 8.6 mm x 9.0 mm x 12.2 mm,
+  - bridge body: 8.6 mm wide x 1.0 mm deep x 12.2 mm high,
+  - two Micro USB plug shells: about 6.5 mm wide x 8.0 mm deep x 1.46 mm high each,
+  - plug center spacing: about 8.70 mm.
 - USB Micro-B plug shell geometry should remain adjustable and should include enough extra clearance for printed enclosure fit checks.
 - Connector and component models may be simplified rectangular or rounded clearance volumes when exact cosmetic shape is unnecessary for fit-checking.
 - All linear dimension variables must use `_mm`; all angle variables must use `_deg`.
@@ -95,7 +98,7 @@ The repository currently has Raspberry Pi reference models but no standalone Wav
 ## Assumptions
 
 - The HAT is intended to align with Raspberry Pi Zero-class board dimensions and mounting-hole positions because Waveshare states the board is designed to fit Zero / Zero 2W / Zero W / Zero WH.
-- The official STEP-derived Micro USB adapter envelope is sufficient as the default adapter clearance model until the user's physical adapter is measured.
+- The official STEP-derived Micro USB adapter solid-vertex dimensions are sufficient as the default adapter reference until the user's physical adapter is measured.
 - Connector bodies can be simplified as clearance volumes while preserving board-side position, size, height, and port access intent.
 - The model should be a standalone HAT reference file rather than modifying `designs/pi_zero.scad`, because repository instructions say future dependent designs should use `designs/pi_zero.scad` as the Pi fit reference instead of duplicating Pi geometry.
 
@@ -113,7 +116,7 @@ The repository currently has Raspberry Pi reference models but no standalone Wav
 - The file uses OpenSCAD 2021.01-compatible syntax and no external library dependencies.
 - The file provides named modules for the full reference, HAT board, connector/component previews, GPIO reference, Micro USB adapter, and helper geometry.
 - Default board dimensions match the researched Waveshare values: 65.0 mm x 30.0 mm board, 3.0 mm mounting holes, 3.5 mm hole edge offsets, 58.0 mm x 23.0 mm hole center span, and 1.5 mm corner radius.
-- Default adapter dimensions include an adjustable 13.3 mm x 9.0 mm x 14.8 mm envelope derived from the official 3D drawing.
+- Default adapter dimensions include an adjustable 8.6 mm x 9.0 mm x 12.2 mm solid envelope derived from the official 3D drawing vertices, with separate body and two plug-shell blocks.
 - Render modes include `assembly`, `hat`, `micro_usb_adapter`, and `printable_layout`.
 - README documents the new design file, assumptions, render modes, common adjustable parameters, optional OpenSCAD commands, and manual inspection checklist.
 - `git diff --check` passes.

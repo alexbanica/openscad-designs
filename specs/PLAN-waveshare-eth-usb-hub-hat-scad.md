@@ -82,7 +82,10 @@ The test-first phase is replaced by deterministic pre-implementation checklist c
    - hole edge offsets: `3.5 mm`,
    - hole center span: `58.0 mm x 23.0 mm`,
    - corner radius: `1.5 mm`,
-   - Micro USB bridge adapter envelope: `13.3 mm x 9.0 mm x 14.8 mm`.
+   - Micro USB bridge adapter solid envelope: `8.6 mm x 9.0 mm x 12.2 mm`,
+   - Micro USB bridge adapter body: `8.6 mm x 1.0 mm x 12.2 mm`,
+   - two Micro USB bridge adapter plug shells: about `6.5 mm x 8.0 mm x 1.46 mm`,
+   - plug center spacing: about `8.70 mm`.
 9. Use simplified but adjustable clearance volumes for RJ45, USB-A, bottom Micro USB, LEDs, and major ICs.
 10. Ensure `show_electronics`, `show_micro_usb_adapter`, and `show_gpio_header` independently control their intended visual groups.
 11. Keep the file OpenSCAD 2021.01-compatible:
@@ -119,7 +122,8 @@ Review `designs/waveshare_eth_usb_hub_hat.scad` and confirm:
 - user-adjustable values are not redefined inside modules,
 - render modes dispatch deterministically,
 - board dimensions and mounting holes match the approved spec,
-- Micro USB adapter default envelope is adjustable and defaults to `13.3 x 9.0 x 14.8 mm`,
+- Micro USB adapter default solid envelope is adjustable and defaults to `8.6 x 9.0 x 12.2 mm`,
+- Micro USB adapter is modeled as a bridge body plus two plug shells rather than a single envelope box,
 - connector and component previews are independently hideable through `show_electronics`,
 - Micro USB adapter visibility is independently controlled by `show_micro_usb_adapter`,
 - GPIO header visibility is independently controlled by `show_gpio_header`,

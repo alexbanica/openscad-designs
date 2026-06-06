@@ -80,14 +80,13 @@ hat_component_clearance_blocks_mm = [
 ];
 
 // Micro USB bridge adapter dimensions
-micro_usb_adapter_envelope_length_mm = 13.3;
-micro_usb_adapter_envelope_width_mm = 9.0;
-micro_usb_adapter_envelope_height_mm = 14.8;
-micro_usb_adapter_clearance_extra_mm = 0.4;
-micro_usb_adapter_plug_length_mm = 7.4;
-micro_usb_adapter_plug_width_mm = 5.2;
-micro_usb_adapter_plug_height_mm = 2.7;
-micro_usb_adapter_board_thickness_mm = 1.0;
+micro_usb_adapter_body_width_x_mm = 8.6;
+micro_usb_adapter_body_depth_y_mm = 1.0;
+micro_usb_adapter_body_height_z_mm = 12.2;
+micro_usb_adapter_plug_width_x_mm = 6.5;
+micro_usb_adapter_plug_depth_y_mm = 8.0;
+micro_usb_adapter_plug_height_z_mm = 1.46;
+micro_usb_adapter_plug_center_spacing_z_mm = 8.70;
 
 // Printable layout
 printable_layout_spacing_mm = 28.0;
@@ -100,7 +99,6 @@ hat_gpio_header_colour = "Black";
 hat_gpio_pin_colour = "Gold";
 hat_mounting_hole_colour = "White";
 hat_label_colour = "White";
-micro_usb_adapter_colour = [0.1, 0.25, 0.85, 0.45];
 micro_usb_adapter_plug_colour = "Silver";
 micro_usb_adapter_body_colour = "MidnightBlue";
 
@@ -142,12 +140,9 @@ hat_right_usb_a_center_x_mm = hat_board_half_length_mm + hat_side_usb_a_depth_x_
 hat_bottom_micro_usb_center_z_mm = -hat_bottom_micro_usb_size_mm[2] / 2;
 micro_usb_adapter_center_x_mm = hat_bottom_micro_usb_center_x_mm;
 micro_usb_adapter_center_y_mm = hat_bottom_micro_usb_center_y_mm;
-micro_usb_adapter_center_z_mm = hat_bottom_micro_usb_center_z_mm - micro_usb_adapter_envelope_height_mm / 2 - micro_usb_adapter_plug_height_mm / 2;
-micro_usb_adapter_fit_size_mm = [
-    micro_usb_adapter_envelope_length_mm + micro_usb_adapter_clearance_extra_mm,
-    micro_usb_adapter_envelope_width_mm + micro_usb_adapter_clearance_extra_mm,
-    micro_usb_adapter_envelope_height_mm + micro_usb_adapter_clearance_extra_mm
-];
+micro_usb_adapter_top_plug_offset_z_mm = micro_usb_adapter_plug_center_spacing_z_mm / 2;
+micro_usb_adapter_bottom_plug_offset_z_mm = -micro_usb_adapter_plug_center_spacing_z_mm / 2;
+micro_usb_adapter_center_z_mm = hat_bottom_micro_usb_center_z_mm - micro_usb_adapter_top_plug_offset_z_mm;
 
 // ======================================================
 // Render Dispatch
@@ -311,33 +306,30 @@ module waveshare_micro_usb_bridge_adapter_reference(
     center_y_mm = 0,
     center_z_mm = 0
 ) {
-    color(micro_usb_adapter_colour)
-    translate([center_x_mm, center_y_mm, center_z_mm])
-        cube(micro_usb_adapter_fit_size_mm, center = true);
-
     color(micro_usb_adapter_body_colour)
-    translate([
-        center_x_mm,
-        center_y_mm,
-        center_z_mm + micro_usb_adapter_envelope_height_mm / 2 - micro_usb_adapter_board_thickness_mm / 2
-    ])
+    translate([center_x_mm, center_y_mm, center_z_mm])
         cube([
-            micro_usb_adapter_envelope_length_mm,
-            micro_usb_adapter_envelope_width_mm,
-            micro_usb_adapter_board_thickness_mm
+            micro_usb_adapter_body_width_x_mm,
+            micro_usb_adapter_body_depth_y_mm,
+            micro_usb_adapter_body_height_z_mm
         ], center = true);
 
-    color(micro_usb_adapter_plug_colour)
-    translate([
-        center_x_mm,
-        center_y_mm,
-        center_z_mm + micro_usb_adapter_envelope_height_mm / 2 + micro_usb_adapter_plug_height_mm / 2
-    ])
-        cube([
-            micro_usb_adapter_plug_length_mm,
-            micro_usb_adapter_plug_width_mm,
-            micro_usb_adapter_plug_height_mm
-        ], center = true);
+    for (plug_offset_z_mm = [
+        micro_usb_adapter_top_plug_offset_z_mm,
+        micro_usb_adapter_bottom_plug_offset_z_mm
+    ]) {
+        color(micro_usb_adapter_plug_colour)
+        translate([
+            center_x_mm,
+            center_y_mm,
+            center_z_mm + plug_offset_z_mm
+        ])
+            cube([
+                micro_usb_adapter_plug_width_x_mm,
+                micro_usb_adapter_plug_depth_y_mm,
+                micro_usb_adapter_plug_height_z_mm
+            ], center = true);
+    }
 }
 
 module waveshare_eth_usb_hub_hat_printable_layout() {
@@ -351,7 +343,7 @@ module waveshare_eth_usb_hub_hat_printable_layout() {
     translate([
         hat_board_half_length_mm + printable_layout_spacing_mm / 2,
         0,
-        micro_usb_adapter_envelope_height_mm / 2
+        micro_usb_adapter_body_height_z_mm / 2
     ])
         waveshare_micro_usb_bridge_adapter_reference(
             center_x_mm = 0,
