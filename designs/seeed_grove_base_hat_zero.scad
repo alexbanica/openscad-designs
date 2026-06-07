@@ -56,13 +56,13 @@ grove_socket_label_offset_y_mm = -4.7;
 grove_socket_label_height_mm = 0.2;
 grove_socket_label_size_mm = 2.2;
 grove_digital_sockets_mm = [
-    ["D5", -24.0, 6.8],
+    ["D5", -24.0, 4.8],
     ["D16", -24.0, -9.5]
 ];
 grove_analog_sockets_mm = [
-    ["A0", -13.5, 6.8],
-    ["A2", -3.0, 6.8],
-    ["A4", 9.0, 6.8]
+    ["A0", -13.5, 4.8],
+    ["A2", -3.0, 4.8],
+    ["A4", 9.0, 4.8]
 ];
 grove_i2c_sockets_mm = [
     ["I2C", -3.0, -9.5]
@@ -87,14 +87,16 @@ grove_pwm_cable_exit_center_y_mm = -18.0;
 grove_uart_cable_exit_size_mm = [8.4, 10.0, 4.0];
 grove_uart_cable_exit_center_y_mm = -18.0;
 
-// SWD/debug header dimensions
-swd_debug_header_center_x_mm = 18.0;
-swd_debug_header_center_y_mm = 6.8;
-swd_debug_pin_columns = 5;
-swd_debug_pin_pitch_mm = 1.27;
-swd_debug_pin_size_mm = 0.45;
-swd_debug_pin_height_mm = 3.0;
-swd_debug_header_block_size_mm = [6.8, 2.0, 1.4];
+// Right-edge GPIO/SWD reference dimensions
+gpio_swd_reference_center_x_mm = 25.2;
+gpio_swd_reference_center_y_mm = -1.0;
+gpio_swd_reference_block_size_mm = [4.2, 10.8, 1.4];
+gpio_swd_pin_count = 6;
+gpio_swd_pin_pitch_mm = 1.55;
+gpio_swd_pin_size_mm = 0.48;
+gpio_swd_pin_height_mm = 2.8;
+gpio_swd_pad_diameter_mm = 1.1;
+gpio_swd_pad_height_mm = 0.12;
 
 // Controller, component, and LED preview dimensions
 controller_block_mm = [-4.5, -1.0, 8.0, 8.0, 1.4, "Black"];
@@ -122,7 +124,7 @@ hat_gpio_through_hole_colour = "Black";
 hat_gpio_pin_colour = "Gold";
 grove_socket_colour = "Ivory";
 grove_cable_exit_colour = "LightSkyBlue";
-swd_debug_header_colour = "Black";
+gpio_swd_reference_colour = "Navy";
 component_colour = "DimGray";
 height_envelope_colour = "LightSteelBlue";
 hat_label_colour = "White";
@@ -146,7 +148,7 @@ hat_gpio_pin_first_y_mm = hat_gpio_header_center_y_mm - hat_gpio_pin_pitch_mm / 
 hat_top_component_base_z_mm = hat_board_thickness_mm;
 hat_overall_height_center_z_mm = hat_overall_height_envelope_mm / 2;
 pi_zero_reference_z_mm = -(pi_zero_stack_gap_mm + hat_board_thickness_mm);
-swd_debug_pin_first_x_mm = swd_debug_header_center_x_mm - (swd_debug_pin_columns - 1) * swd_debug_pin_pitch_mm / 2;
+gpio_swd_pin_first_y_mm = gpio_swd_reference_center_y_mm - (gpio_swd_pin_count - 1) * gpio_swd_pin_pitch_mm / 2;
 
 // ======================================================
 // Render Dispatch
@@ -187,7 +189,7 @@ module seeed_grove_base_hat_zero_reference_model(
 
     if (show_hat_electronics) {
         seeed_grove_base_hat_zero_grove_socket_reference(show_labels = show_labels);
-        seeed_grove_base_hat_zero_swd_debug_header_reference(show_labels = show_labels);
+        seeed_grove_base_hat_zero_gpio_swd_reference(show_labels = show_labels);
         seeed_grove_base_hat_zero_component_reference(show_labels = show_labels);
         seeed_grove_base_hat_zero_led_reference(show_labels = show_labels);
         seeed_grove_base_hat_zero_height_envelope_reference();
@@ -205,7 +207,7 @@ module seeed_grove_base_hat_zero_connector_clearance_reference() {
 
     if (show_electronics) {
         seeed_grove_base_hat_zero_grove_socket_reference(show_labels = show_grove_labels);
-        seeed_grove_base_hat_zero_swd_debug_header_reference(show_labels = show_grove_labels);
+        seeed_grove_base_hat_zero_gpio_swd_reference(show_labels = show_grove_labels);
         seeed_grove_base_hat_zero_component_reference(show_labels = show_grove_labels);
         seeed_grove_base_hat_zero_led_reference(show_labels = show_grove_labels);
         seeed_grove_base_hat_zero_height_envelope_reference();
@@ -337,32 +339,43 @@ module seeed_grove_base_hat_zero_grove_socket_reference(show_labels = show_grove
     );
 }
 
-module seeed_grove_base_hat_zero_swd_debug_header_reference(show_labels = show_grove_labels) {
+module seeed_grove_base_hat_zero_gpio_swd_reference(show_labels = show_grove_labels) {
     seeed_top_component(
-        [swd_debug_header_center_x_mm, swd_debug_header_center_y_mm],
-        swd_debug_header_block_size_mm,
-        swd_debug_header_colour
+        [gpio_swd_reference_center_x_mm, gpio_swd_reference_center_y_mm],
+        gpio_swd_reference_block_size_mm,
+        gpio_swd_reference_colour
     );
 
-    for (pin_column = [0:swd_debug_pin_columns - 1]) {
+    for (pin_index = [0:gpio_swd_pin_count - 1]) {
+        pin_center_y_mm = gpio_swd_pin_first_y_mm + pin_index * gpio_swd_pin_pitch_mm;
+        pad_center_z_mm = hat_board_thickness_mm + gpio_swd_reference_block_size_mm[2] + gpio_swd_pad_height_mm / 2;
+
+        color(hat_gpio_pad_colour)
+        translate([
+            gpio_swd_reference_center_x_mm,
+            pin_center_y_mm,
+            pad_center_z_mm
+        ])
+            cylinder(h = gpio_swd_pad_height_mm, d = gpio_swd_pad_diameter_mm, center = true);
+
         color(hat_gpio_pin_colour)
         translate([
-            swd_debug_pin_first_x_mm + pin_column * swd_debug_pin_pitch_mm - swd_debug_pin_size_mm / 2,
-            swd_debug_header_center_y_mm - swd_debug_pin_size_mm / 2,
-            hat_board_thickness_mm + swd_debug_header_block_size_mm[2]
+            gpio_swd_reference_center_x_mm,
+            pin_center_y_mm,
+            hat_board_thickness_mm + gpio_swd_reference_block_size_mm[2] + gpio_swd_pad_height_mm + gpio_swd_pin_height_mm / 2
         ])
             cube([
-                swd_debug_pin_size_mm,
-                swd_debug_pin_size_mm,
-                swd_debug_pin_height_mm
-            ]);
+                gpio_swd_pin_size_mm,
+                gpio_swd_pin_size_mm,
+                gpio_swd_pin_height_mm
+            ], center = true);
     }
 
     if (show_labels) {
-        seeed_top_label("SWD", [
-            swd_debug_header_center_x_mm,
-            swd_debug_header_center_y_mm + 2.6,
-            hat_board_thickness_mm + swd_debug_header_block_size_mm[2] + 0.1
+        seeed_top_label("GPIO/SWD", [
+            gpio_swd_reference_center_x_mm,
+            gpio_swd_reference_center_y_mm + gpio_swd_reference_block_size_mm[1] / 2 + 2.2,
+            hat_board_thickness_mm + gpio_swd_reference_block_size_mm[2] + 0.1
         ], halign_value = "center");
     }
 }
