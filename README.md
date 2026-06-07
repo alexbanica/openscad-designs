@@ -6,6 +6,7 @@ This repository contains editable OpenSCAD designs.
 
 - `designs/pi_zero.scad`
 - `designs/rpi5.scad`
+- `designs/grove_infrared_emitter.scad`
 - `designs/seeed_grove_base_hat_zero.scad`
 - `designs/waveshare_eth_usb_hub_hat.scad`
 - `designs/rpi5_ai_hat_dual_heatsink_vision_case.scad`
@@ -28,6 +29,92 @@ rpi5_reference_model(show_reference = true, show_active_cooler = false);
 ```
 
 The Pi Zero reference exposes toggles for the full reference, test pads, GPIO header direction, optional sound/vision GPIO pads, and GPIO pin colouring. The Raspberry Pi 5 reference exposes toggles for the full reference, GPIO pins, microSD card preview, and active cooler preview.
+
+## Grove Infrared Emitter Reference
+
+`designs/grove_infrared_emitter.scad` provides an editable fit and clearance reference for the Seeed Studio Grove - Infrared Emitter module. It models the PCB, mounting holes, Grove connector, cable/plug clearance, IR LED body and extension, component clearance blocks, labels, and optional IR sightline guidance.
+
+### Component Assumptions
+
+Default dimensions are configurable at the top of the `.scad` file. The initial defaults assume:
+
+- Grove Infrared Emitter PCB: 20.0 mm x 24.0 mm x 1.6 mm.
+- IR LED extension beyond the +Y PCB edge: 7.5 mm.
+- Board corner radius: 1.5 mm.
+- Four mounting holes: 2.0 mm diameter, 2.5 mm from each board edge.
+- Simplified Grove connector body: 8.0 mm x 7.5 mm x 5.8 mm, centered near the -Y board edge.
+- Simplified Grove cable/plug clearance guide behind the connector.
+- Simplified 5.0 mm IR LED body, centered 4.0 mm above the PCB bottom face and pointing toward +Y.
+- Optional IR sightline guide using the public 17 degree half-intensity angle as visual clearance context only.
+- Simplified component clearance blocks and text labels.
+
+The selected mechanical default is the detailed source value of a 20.0 mm x 24.0 mm PCB with a 7.5 mm IR LED extension. Seeed's wiki also lists a conflicting 20.0 mm x 20.0 mm module size. Keep these dimensions adjustable and measure the actual module before precision enclosure work.
+
+Mounting-hole positions are Grove 20 mm-class planning assumptions, not certified dimensions. Tune `mounting_hole_diameter_mm`, `mounting_hole_edge_offset_x_mm`, and `mounting_hole_edge_offset_y_mm` after measuring the board.
+
+### Adjustable Parameters
+
+The OpenSCAD source starts with an `Adjustable Parameters` section grouped by:
+
+- render controls,
+- board dimensions,
+- mounting holes,
+- Grove connector dimensions and placement,
+- Grove cable/plug clearance dimensions,
+- IR LED body and extension dimensions,
+- component and label preview dimensions,
+- clearance and sightline guide dimensions,
+- printable layout,
+- visual settings.
+
+Common edits:
+
+- Change `render_mode` to inspect the full assembly, PCB-only reference, clearance view, or separated fit-check layout.
+- Set `show_electronics = false` to hide component clearance blocks while keeping the PCB and mounting holes visible.
+- Set `show_grove_connector = false` to hide only the Grove connector body and its guide-dependent cable clearance.
+- Set `show_ir_led = false` to hide only the IR LED body and guide-dependent LED extension/sightline previews.
+- Set `show_labels = false` to hide text labels.
+- Set `show_clearance_guides = false` to hide the Grove cable/plug clearance, IR LED extension envelope, and 17 degree sightline guides.
+- Tune `pcb_width_mm`, `pcb_length_mm`, `pcb_thickness_mm`, and `ir_led_extension_beyond_pcb_mm` after physical measurement.
+- Tune `grove_connector_*`, `grove_cable_clearance_*`, and `ir_led_*` parameters for enclosure clearance and cable routing.
+
+### Render Modes
+
+Set `render_mode` to one of:
+
+- `assembly`: full module reference with PCB, mounting holes, optional electronics, Grove connector, IR LED, labels, and clearance guides according to visibility toggles.
+- `pcb`: PCB and mounting holes only.
+- `clearance`: module reference with connector, cable clearance, IR LED extension, component blocks, and sightline guides emphasized.
+- `printable_layout`: reference body and clearance guides separated for visual inspection; this does not add generated printable exports to source control.
+
+Optional inspection commands for users with OpenSCAD installed:
+
+```sh
+openscad -o /tmp/grove_infrared_emitter_assembly.off -D 'render_mode="assembly"' designs/grove_infrared_emitter.scad
+openscad -o /tmp/grove_infrared_emitter_pcb.off -D 'render_mode="pcb"' designs/grove_infrared_emitter.scad
+openscad -o /tmp/grove_infrared_emitter_clearance.off -D 'render_mode="clearance"' designs/grove_infrared_emitter.scad
+openscad -o /tmp/grove_infrared_emitter_printable_layout.off -D 'render_mode="printable_layout"' designs/grove_infrared_emitter.scad
+```
+
+### Fit Notes
+
+- Use the model as a child design reference with `use <grove_infrared_emitter.scad>` and call `grove_infrared_emitter_reference_model(...)` explicitly.
+- The model coordinate origin is the PCB center on the bottom face. X runs across the 20.0 mm width, Y runs along the 24.0 mm length, and the IR LED points toward +Y.
+- Keep `show_clearance_guides = true` during early enclosure planning to account for the Grove cable/plug area, LED extension envelope, and 17 degree sightline guide.
+- Leave additional printed-case clearance around the Grove connector, cable exit, and LED opening until the actual board and Grove cable are measured.
+- Treat the 940 nm wavelength and 17 degree half-intensity angle as non-electrical visual context only; this file models mechanical fit and clearance.
+- The design guidance remains compatible with Bambu Lab P2S and AMS 2 Pro fit-check workflows; no generated mesh exports are committed.
+
+Manual inspection checklist:
+
+- Confirm the PCB footprint defaults to 20.0 mm x 24.0 mm x 1.6 mm.
+- Confirm the IR LED points toward +Y and extends 7.5 mm beyond the PCB edge by default.
+- Confirm the selected 20.0 mm x 24.0 mm source default and conflicting 20.0 mm x 20.0 mm wiki size are documented.
+- Confirm mounting-hole defaults are adjustable and documented as assumptions until measured.
+- Confirm `show_electronics`, `show_grove_connector`, `show_ir_led`, `show_labels`, and `show_clearance_guides` independently control their intended visual groups.
+- Confirm the simplified Grove connector and cable clearance are adjustable and visible in `assembly` and `clearance` modes when enabled.
+- Confirm the IR LED body, extension envelope, and 17 degree sightline guide are adjustable and visible when enabled.
+- Confirm no generated mesh exports are added. Repository validation remains manual review plus `git diff --check`; do not run OpenSCAD locally in this environment.
 
 ## Seeed Grove Base Hat For Raspberry Pi Zero Reference
 
@@ -373,6 +460,10 @@ Optional OpenSCAD inspection commands for users with OpenSCAD installed:
 openscad --version
 openscad -o /tmp/pi_zero_reference.off designs/pi_zero.scad
 openscad -o /tmp/rpi5_reference.off designs/rpi5.scad
+openscad -o /tmp/grove_infrared_emitter_assembly.off -D 'render_mode="assembly"' designs/grove_infrared_emitter.scad
+openscad -o /tmp/grove_infrared_emitter_pcb.off -D 'render_mode="pcb"' designs/grove_infrared_emitter.scad
+openscad -o /tmp/grove_infrared_emitter_clearance.off -D 'render_mode="clearance"' designs/grove_infrared_emitter.scad
+openscad -o /tmp/grove_infrared_emitter_printable_layout.off -D 'render_mode="printable_layout"' designs/grove_infrared_emitter.scad
 openscad -o /tmp/seeed_grove_base_hat_zero_assembly.off -D 'render_mode="assembly"' designs/seeed_grove_base_hat_zero.scad
 openscad -o /tmp/seeed_grove_base_hat_zero_hat.off -D 'render_mode="hat"' designs/seeed_grove_base_hat_zero.scad
 openscad -o /tmp/seeed_grove_base_hat_zero_connectors.off -D 'render_mode="connectors"' designs/seeed_grove_base_hat_zero.scad
@@ -408,6 +499,20 @@ Manual inspection for the reusable Raspberry Pi reference models:
 - Pi Zero preview shows the board, configured optional features, GPIO header, test pads, and version-dependent components.
 - Raspberry Pi 5 preview shows the board, configured optional features, GPIO pins, microSD preview, and active cooler when enabled.
 - Child designs can show or hide each reference model and its major optional features without editing the base file.
+
+Manual inspection for the Grove Infrared Emitter reference:
+
+- `designs/grove_infrared_emitter.scad` has clearly labeled `Adjustable Parameters` and `Derived Values` sections.
+- Adjustable linear variables use `_mm`, angle variables use `_deg`, and render modes dispatch deterministically.
+- Board defaults are 20.0 mm x 24.0 mm x 1.6 mm with a 1.5 mm corner radius.
+- IR LED extension beyond the +Y PCB edge defaults to 7.5 mm.
+- The source documents the selected detailed mechanical default and the conflicting 20.0 mm x 20.0 mm wiki size.
+- Mounting holes default to adjustable Grove 20 mm-class planning assumptions and are documented as assumptions until measured.
+- Grove connector body and cable/plug clearance guide are simplified, adjustable, and controlled by `show_grove_connector` and `show_clearance_guides`.
+- IR LED body, extension envelope, and 17 degree sightline guide are simplified, adjustable, and controlled by `show_ir_led` and `show_clearance_guides`.
+- `show_electronics`, `show_grove_connector`, `show_ir_led`, `show_labels`, and `show_clearance_guides` independently control their intended visual groups.
+- `assembly`, `pcb`, `clearance`, and `printable_layout` modes show the intended reference views.
+- No generated mesh or export artifacts are added.
 
 Manual inspection for the Seeed Grove Base Hat for Raspberry Pi Zero reference:
 
