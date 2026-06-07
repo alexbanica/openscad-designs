@@ -1,9 +1,12 @@
-// Seeed Grove Base Hat for Raspberry Pi Zero reference model.
-//
+// Seeed Grove Base Hat for Raspberry Pi Zero reference model
 // Units: mm
-// Origin: centre of PCB, bottom face. X follows board length, Y follows board width,
-// Z points upward from the PCB bottom face.
-// This is an adjustable fit and clearance reference, not a vendor-certified model.
+//
+// User Grove connector coordinates use the bottom-left PCB origin:
+// X runs across the 30 mm board width and Y runs along the 65 mm board length.
+// The OpenSCAD model origin is the board center on the PCB bottom face.
+//
+// This is an adjustable fit and clearance reference, not a vendor-certified
+// mechanical model.
 
 use <pi_zero.scad>
 
@@ -16,155 +19,157 @@ $fn = 48;
 render_mode = "assembly"; // [assembly/hat/connectors/printable_layout]
 show_electronics = true;
 show_gpio_header = true;
+show_gpio_socket_clearance = true;
 show_grove_labels = true;
 show_pi_zero_reference = false;
+show_height_envelope = false;
+gpio_pin_preview_mode = "above"; // [above/below/hidden]
 
 // Board dimensions
-hat_board_length_mm = 65.0;
 hat_board_width_mm = 30.0;
+hat_board_length_mm = 65.0;
 hat_board_thickness_mm = 1.6;
 hat_board_corner_radius_mm = 1.5;
 hat_overall_height_envelope_mm = 20.0;
 
 // Mounting holes
-hat_mounting_hole_diameter_mm = 3.0;
 hat_mounting_hole_edge_offset_mm = 3.5;
+hat_mounting_hole_diameter_mm = 3.0;
+hat_mounting_hole_clearance_radius_mm = 3.0;
 
-// Stack and Pi Zero reference offsets
-pi_zero_stack_gap_mm = 11.0;
-pi_zero_reference_header_position = 1;
+// Stack and optional Pi Zero reference offsets
+pi_zero_reference_z_offset_mm = -8.0;
+pi_zero_reference_rotation_deg = -90;
+pi_zero_reference_x_offset_mm = 0.0;
+pi_zero_reference_y_offset_mm = 0.0;
 
-// GPIO header/reference dimensions
-hat_gpio_pin_columns = 20;
-hat_gpio_pin_rows = 2;
-hat_gpio_pin_pitch_mm = 2.54;
-hat_gpio_pin_size_mm = 0.64;
-hat_gpio_pin_height_mm = 8.5;
-hat_gpio_pad_diameter_mm = 1.45;
-hat_gpio_pad_height_mm = 0.12;
-hat_gpio_through_hole_diameter_mm = 0.72;
-hat_gpio_header_block_length_mm = 51.0;
-hat_gpio_header_block_width_mm = 5.1;
-hat_gpio_header_block_height_mm = 0.45;
-hat_gpio_header_center_x_mm = 3.81;
-hat_gpio_header_center_y_mm = 11.43;
+// GPIO header/passthrough dimensions
+gpio_pin_columns = 20;
+gpio_pin_rows = 2;
+gpio_pin_pitch_mm = 2.54;
+gpio_pin_half_pitch_mm = 1.27;
+gpio_pad_width_mm = 2.5;
+gpio_pad_length_mm = 2.5;
+gpio_pad_height_mm = 0.35;
+gpio_hole_diameter_mm = 1.2;
+gpio_pin_width_mm = 0.7;
+gpio_pin_length_mm = 0.7;
+gpio_pin_height_mm = 11.75;
+gpio_pin_vertical_offset_mm = 3.0;
 
-// Grove connector dimensions and positions
-// Defaults are layout-based references; tune socket positions after physical measurement.
-grove_socket_size_mm = [8.2, 6.0, 5.0];
-grove_socket_label_offset_y_mm = -4.7;
-grove_socket_label_height_mm = 0.2;
-grove_socket_label_size_mm = 2.2;
-grove_digital_sockets_mm = [
-    ["D5", -24.0, 4.8],
-    ["D16", -24.0, -9.5]
+// Underside GPIO socket/receptacle clearance dimensions
+gpio_socket_clearance_size_x_mm = 5.8;
+gpio_socket_clearance_size_y_mm = 52.5;
+gpio_socket_clearance_height_mm = 8.5;
+gpio_socket_clearance_z_offset_mm = 0.0;
+
+// Grove connector coordinate table and transform offsets
+grove_coordinate_origin_x_mm = -hat_board_width_mm / 2;
+grove_coordinate_origin_y_mm = -hat_board_length_mm / 2;
+grove_coordinate_offset_x_mm = 0.0;
+grove_coordinate_offset_y_mm = 0.0;
+grove_socket_centers_mm = [
+    ["UART", 9.4, 12.6],
+    ["A3/A4", 17.8, 12.6],
+    ["I2C", 9.6, 28.3],
+    ["A2", 17.8, 28.3],
+    ["D16", 9.6, 44.1],
+    ["D26", 17.8, 44.1],
+    ["D5", 9.6, 59.1],
+    ["D6", 17.8, 59.1]
 ];
-grove_analog_sockets_mm = [
-    ["A0", -13.5, 4.8],
-    ["A2", -3.0, 4.8],
-    ["A4", 9.0, 4.8]
-];
-grove_i2c_sockets_mm = [
-    ["I2C", -3.0, -9.5]
-];
-grove_pwm_sockets_mm = [
-    ["PWM", -13.5, -9.5]
-];
-grove_uart_sockets_mm = [
-    ["UART", 9.0, -9.5]
-];
 
-// Grove cable-exit clearance dimensions and positions
-// Defaults are enclosure-planning references; tune cable exits after physical measurement.
-grove_digital_cable_exit_size_mm = [8.4, 10.0, 4.0];
-grove_digital_cable_exit_center_y_mm = -18.0;
-grove_analog_cable_exit_size_mm = [8.4, 10.0, 4.0];
-grove_analog_cable_exit_center_y_mm = 18.0;
-grove_i2c_cable_exit_size_mm = [8.4, 10.0, 4.0];
-grove_i2c_cable_exit_center_y_mm = -18.0;
-grove_pwm_cable_exit_size_mm = [8.4, 10.0, 4.0];
-grove_pwm_cable_exit_center_y_mm = -18.0;
-grove_uart_cable_exit_size_mm = [8.4, 10.0, 4.0];
-grove_uart_cable_exit_center_y_mm = -18.0;
+// Grove connector body dimensions
+grove_connector_body_width_mm = 8.0;
+grove_connector_body_length_mm = 10.0;
+grove_connector_body_height_mm = 8.0;
+grove_connector_corner_radius_mm = 0.8;
+grove_connector_z_clearance_mm = 0.0;
 
-// Right-edge GPIO/SWD reference dimensions
-gpio_swd_reference_center_x_mm = 25.2;
-gpio_swd_reference_center_y_mm = -1.0;
-gpio_swd_reference_block_size_mm = [4.2, 10.8, 1.4];
-gpio_swd_pin_count = 6;
-gpio_swd_pin_pitch_mm = 1.55;
-gpio_swd_pin_size_mm = 0.48;
-gpio_swd_pin_height_mm = 2.8;
-gpio_swd_pad_diameter_mm = 1.1;
-gpio_swd_pad_height_mm = 0.12;
+// UART printed-case cutout guidance
+uart_cutout_guidance_width_mm = 11.0;
+uart_cutout_guidance_length_mm = 9.0;
+show_uart_cutout_guidance = true;
 
-// Controller, component, and LED preview dimensions
-controller_block_mm = [-4.5, -1.0, 8.0, 8.0, 1.4, "Black"];
+// SWD/debug preview dimensions
+swd_debug_center_x_mm = 12.8;
+swd_debug_center_y_mm = 33.0;
+swd_debug_block_size_mm = [3.2, 10.0, 2.8];
+swd_debug_pin_diameter_mm = 0.75;
+swd_debug_pin_pitch_mm = 1.27;
+swd_debug_pin_count = 6;
+
+// Component, LED, and label preview dimensions
 component_clearance_blocks_mm = [
-    [-17.0, -1.2, 7.5, 4.0, 1.2, "DimGray"],
-    [9.0, -1.0, 6.0, 4.0, 1.1, "DarkSlateGray"],
-    [20.5, -4.2, 5.0, 3.0, 1.0, "DimGray"]
+    [14.0, 47.5, 5.0, 4.0, 1.3, "DimGray"],
+    [14.5, 20.8, 4.5, 3.5, 1.2, "DimGray"],
+    [23.5, 54.0, 3.0, 5.5, 1.4, "Silver"]
 ];
-led_size_mm = [1.4, 0.9, 0.6];
-led_positions_mm = [
-    ["PWR", 24.0, -5.8, "Red"],
-    ["TX", 21.5, -7.8, "GreenYellow"],
-    ["RX", 19.0, -7.8, "Lime"]
+led_markers_mm = [
+    [24.8, 9.0, 1.3, "GreenYellow"],
+    [24.8, 13.0, 1.3, "Red"]
 ];
+label_size_mm = 2.2;
+label_height_mm = 0.35;
+label_z_offset_mm = 0.2;
 
 // Printable layout
-printable_layout_spacing_mm = 24.0;
+printable_layout_spacing_mm = 44.0;
 
 // Visual settings
-hat_board_colour = "LimeGreen";
-hat_mounting_hole_colour = "White";
-hat_gpio_header_colour = "DarkSlateGray";
-hat_gpio_pad_colour = "Silver";
-hat_gpio_through_hole_colour = "Black";
-hat_gpio_pin_colour = "Gold";
-grove_socket_colour = "Ivory";
-grove_cable_exit_colour = "LightSkyBlue";
-gpio_swd_reference_colour = "Navy";
-component_colour = "DimGray";
-height_envelope_colour = "LightSteelBlue";
-hat_label_colour = "White";
+hat_board_colour = "ForestGreen";
+hat_hole_colour = "Silver";
+gpio_pad_colour = "Black";
+gpio_pin_colour = "Gold";
+gpio_socket_clearance_colour = "LightSteelBlue";
+grove_connector_colour = "White";
+uart_cutout_guidance_colour = "Orange";
+swd_debug_colour = "Black";
+height_envelope_colour = "LightCoral";
+label_colour = "Black";
 
 // ======================================================
 // Derived Values
 // ======================================================
 
-hat_board_half_length_mm = hat_board_length_mm / 2;
 hat_board_half_width_mm = hat_board_width_mm / 2;
+hat_board_half_length_mm = hat_board_length_mm / 2;
 hat_board_half_thickness_mm = hat_board_thickness_mm / 2;
 hat_mounting_hole_radius_mm = hat_mounting_hole_diameter_mm / 2;
-hat_mounting_hole_span_x_mm = hat_board_length_mm - 2 * hat_mounting_hole_edge_offset_mm;
-hat_mounting_hole_span_y_mm = hat_board_width_mm - 2 * hat_mounting_hole_edge_offset_mm;
-hat_mounting_hole_x_mm = hat_mounting_hole_span_x_mm / 2;
-hat_mounting_hole_y_mm = hat_mounting_hole_span_y_mm / 2;
-hat_gpio_header_origin_x_mm = hat_gpio_header_center_x_mm - hat_gpio_header_block_length_mm / 2;
-hat_gpio_header_origin_y_mm = hat_gpio_header_center_y_mm - hat_gpio_header_block_width_mm / 2;
-hat_gpio_pin_first_x_mm = hat_gpio_header_center_x_mm - (hat_gpio_pin_columns - 1) * hat_gpio_pin_pitch_mm / 2;
-hat_gpio_pin_first_y_mm = hat_gpio_header_center_y_mm - hat_gpio_pin_pitch_mm / 2;
-hat_top_component_base_z_mm = hat_board_thickness_mm;
-hat_overall_height_center_z_mm = hat_overall_height_envelope_mm / 2;
-pi_zero_reference_z_mm = -(pi_zero_stack_gap_mm + hat_board_thickness_mm);
-gpio_swd_pin_first_y_mm = gpio_swd_reference_center_y_mm - (gpio_swd_pin_count - 1) * gpio_swd_pin_pitch_mm / 2;
+hat_mounting_hole_x_mm = hat_board_half_width_mm - hat_mounting_hole_edge_offset_mm;
+hat_mounting_hole_y_mm = hat_board_half_length_mm - hat_mounting_hole_edge_offset_mm;
+gpio_column_span_half_mm = (gpio_pin_columns - 1) * gpio_pin_half_pitch_mm;
+gpio_pin_row_zero_x_mm = hat_mounting_hole_x_mm - gpio_pin_half_pitch_mm;
+gpio_pad_center_z_mm = hat_board_thickness_mm + gpio_pad_height_mm / 2;
+gpio_pin_center_above_z_mm = hat_board_thickness_mm + gpio_pin_height_mm / 2 - gpio_pin_vertical_offset_mm;
+gpio_pin_center_below_z_mm = -gpio_pin_height_mm / 2 + gpio_pin_vertical_offset_mm;
+gpio_grid_center_x_mm = gpio_pin_row_zero_x_mm + gpio_pin_half_pitch_mm;
+gpio_socket_clearance_center_x_mm = gpio_grid_center_x_mm;
+gpio_socket_clearance_center_y_mm = 0;
+gpio_socket_clearance_center_z_mm = -gpio_socket_clearance_height_mm / 2 + gpio_socket_clearance_z_offset_mm;
+grove_connector_center_z_mm = hat_board_thickness_mm + grove_connector_body_height_mm / 2 + grove_connector_z_clearance_mm;
+uart_cutout_guidance_center_z_mm = hat_board_thickness_mm + 0.12;
+height_envelope_center_z_mm = hat_overall_height_envelope_mm / 2;
 
 // ======================================================
-// Render Dispatch
+// Main Render Dispatch
 // ======================================================
 
 if (render_mode == "assembly") {
     seeed_grove_base_hat_zero_reference_model();
 } else if (render_mode == "hat") {
     seeed_grove_base_hat_zero_reference_model(
-        show_hat_electronics = false,
-        show_header = show_gpio_header,
-        show_labels = false,
-        show_pi_reference = false
+        show_electronics_preview = false,
+        show_gpio_socket_preview = false,
+        show_grove_label_preview = false,
+        show_pi_zero_preview = false
     );
 } else if (render_mode == "connectors") {
-    seeed_grove_base_hat_zero_connector_clearance_reference();
+    seeed_grove_base_hat_zero_reference_model(
+        show_electronics_preview = true,
+        show_gpio_header_preview = false,
+        show_pi_zero_preview = false
+    );
 } else if (render_mode == "printable_layout") {
     seeed_grove_base_hat_zero_printable_layout();
 } else {
@@ -176,395 +181,347 @@ if (render_mode == "assembly") {
 // ======================================================
 
 module seeed_grove_base_hat_zero_reference_model(
-    show_hat_electronics = show_electronics,
-    show_header = show_gpio_header,
-    show_labels = show_grove_labels,
-    show_pi_reference = show_pi_zero_reference
+    show_electronics_preview = show_electronics,
+    show_gpio_header_preview = show_gpio_header,
+    show_gpio_socket_preview = show_gpio_socket_clearance,
+    show_grove_label_preview = show_grove_labels,
+    show_pi_zero_preview = show_pi_zero_reference
 ) {
-    if (show_pi_reference) {
-        seeed_grove_base_hat_zero_pi_stack_reference();
+    if (show_pi_zero_preview) {
+        seeed_optional_pi_zero_stack_preview();
     }
 
-    seeed_grove_base_hat_zero_board_reference();
+    seeed_hat_board_reference();
 
-    if (show_hat_electronics) {
-        seeed_grove_base_hat_zero_grove_socket_reference(show_labels = show_labels);
-        seeed_grove_base_hat_zero_gpio_swd_reference(show_labels = show_labels);
-        seeed_grove_base_hat_zero_component_reference(show_labels = show_labels);
-        seeed_grove_base_hat_zero_led_reference(show_labels = show_labels);
-        seeed_grove_base_hat_zero_height_envelope_reference();
-    } else if (show_labels) {
-        seeed_grove_base_hat_zero_board_label_reference();
+    if (show_gpio_header_preview) {
+        seeed_gpio_reference();
     }
 
-    if (show_header) {
-        seeed_grove_base_hat_zero_gpio_reference();
-    }
-}
-
-module seeed_grove_base_hat_zero_connector_clearance_reference() {
-    seeed_grove_base_hat_zero_board_reference();
-
-    if (show_electronics) {
-        seeed_grove_base_hat_zero_grove_socket_reference(show_labels = show_grove_labels);
-        seeed_grove_base_hat_zero_gpio_swd_reference(show_labels = show_grove_labels);
-        seeed_grove_base_hat_zero_component_reference(show_labels = show_grove_labels);
-        seeed_grove_base_hat_zero_led_reference(show_labels = show_grove_labels);
-        seeed_grove_base_hat_zero_height_envelope_reference();
+    if (show_gpio_socket_preview) {
+        seeed_gpio_socket_clearance();
     }
 
-    if (show_gpio_header) {
-        seeed_grove_base_hat_zero_gpio_reference();
+    if (show_electronics_preview) {
+        seeed_grove_connector_previews();
+        if (show_uart_cutout_guidance) {
+            seeed_uart_cutout_guidance_preview();
+        }
+        seeed_swd_debug_reference();
+        seeed_component_previews();
+        if (show_height_envelope) {
+            seeed_height_envelope_preview();
+        }
     }
 
-    if (show_pi_zero_reference) {
-        seeed_grove_base_hat_zero_pi_stack_reference();
+    if (show_grove_label_preview) {
+        seeed_label_previews(show_electronics_preview);
     }
 }
 
-module seeed_grove_base_hat_zero_board_reference() {
+// ======================================================
+// Board And Mounting Holes
+// ======================================================
+
+module seeed_hat_board_reference() {
     color(hat_board_colour)
     difference() {
-        seeed_centered_rounded_box(
-            [hat_board_length_mm, hat_board_width_mm, hat_board_thickness_mm],
-            hat_board_corner_radius_mm
+        seeed_rounded_box(
+            [hat_board_width_mm, hat_board_length_mm, hat_board_thickness_mm],
+            hat_board_corner_radius_mm,
+            [0, 0, hat_board_half_thickness_mm]
         );
 
-        for (hole_x_mm = [-hat_mounting_hole_x_mm, hat_mounting_hole_x_mm])
-        for (hole_y_mm = [-hat_mounting_hole_y_mm, hat_mounting_hole_y_mm]) {
-            seeed_pcb_hole(hole_x_mm, hole_y_mm, hat_mounting_hole_diameter_mm);
+        for (x_position_mm = [-hat_mounting_hole_x_mm, hat_mounting_hole_x_mm])
+        for (y_position_mm = [-hat_mounting_hole_y_mm, hat_mounting_hole_y_mm]) {
+            translate([x_position_mm, y_position_mm, hat_board_half_thickness_mm])
+                cylinder(
+                    h = hat_board_thickness_mm * 2.5,
+                    d = hat_mounting_hole_diameter_mm,
+                    center = true
+                );
+        }
+
+        for (pin_column = [0:gpio_pin_columns - 1])
+        for (pin_row = [0:gpio_pin_rows - 1]) {
+            translate([
+                seeed_gpio_pin_x_mm(pin_row),
+                seeed_gpio_pin_y_mm(pin_column),
+                hat_board_half_thickness_mm
+            ])
+                cylinder(
+                    h = hat_board_thickness_mm * 2.5,
+                    d = gpio_hole_diameter_mm,
+                    center = true
+                );
         }
     }
+}
 
-    for (hole_x_mm = [-hat_mounting_hole_x_mm, hat_mounting_hole_x_mm])
-    for (hole_y_mm = [-hat_mounting_hole_y_mm, hat_mounting_hole_y_mm]) {
-        color(hat_mounting_hole_colour)
-        translate([hole_x_mm, hole_y_mm, hat_board_thickness_mm + 0.03])
-            cylinder(h = 0.06, d = hat_mounting_hole_diameter_mm, center = true);
+// ======================================================
+// GPIO Header And Socket Clearance
+// ======================================================
+
+module seeed_gpio_reference() {
+    if (gpio_pin_preview_mode != "hidden") {
+        for (pin_column = [0:gpio_pin_columns - 1])
+        for (pin_row = [0:gpio_pin_rows - 1]) {
+            seeed_gpio_pin_reference(pin_column, pin_row, gpio_pin_preview_mode);
+        }
     }
 }
 
-module seeed_grove_base_hat_zero_pi_stack_reference() {
-    translate([0, 0, pi_zero_reference_z_mm])
-        pi_zero_reference_model(
-            show_reference = true,
-            show_test_pads = false,
-            show_gpio_header_position = pi_zero_reference_header_position,
-            show_gpio_sound_vision_pads = false,
-            show_gpio_pin_colours = false
-        );
+module seeed_gpio_pin_reference(pin_column, pin_row, pin_preview_mode) {
+    pin_x_mm = seeed_gpio_pin_x_mm(pin_row);
+    pin_y_mm = seeed_gpio_pin_y_mm(pin_column);
+    pin_center_z_mm = (pin_preview_mode == "below") ? gpio_pin_center_below_z_mm : gpio_pin_center_above_z_mm;
+
+    translate([pin_x_mm, pin_y_mm, gpio_pad_center_z_mm])
+        color(gpio_pad_colour)
+            cube([gpio_pad_width_mm, gpio_pad_length_mm, gpio_pad_height_mm], center = true);
+
+    translate([pin_x_mm, pin_y_mm, pin_center_z_mm])
+        color(gpio_pin_colour)
+            cube([gpio_pin_width_mm, gpio_pin_length_mm, gpio_pin_height_mm], center = true);
 }
 
-module seeed_grove_base_hat_zero_gpio_reference() {
-    color(hat_gpio_header_colour, 0.65)
+module seeed_gpio_socket_clearance() {
     translate([
-        hat_gpio_header_origin_x_mm,
-        hat_gpio_header_origin_y_mm,
-        hat_board_thickness_mm
+        gpio_socket_clearance_center_x_mm,
+        gpio_socket_clearance_center_y_mm,
+        gpio_socket_clearance_center_z_mm
     ])
-        cube([
-            hat_gpio_header_block_length_mm,
-            hat_gpio_header_block_width_mm,
-            hat_gpio_header_block_height_mm
-        ]);
-
-    for (pin_column = [0:hat_gpio_pin_columns - 1])
-    for (pin_row = [0:hat_gpio_pin_rows - 1]) {
-        pin_center_x_mm = hat_gpio_pin_first_x_mm + pin_column * hat_gpio_pin_pitch_mm;
-        pin_center_y_mm = hat_gpio_pin_first_y_mm + pin_row * hat_gpio_pin_pitch_mm;
-        pad_center_z_mm = hat_board_thickness_mm + hat_gpio_header_block_height_mm + hat_gpio_pad_height_mm / 2;
-
-        color(hat_gpio_pad_colour)
-        translate([pin_center_x_mm, pin_center_y_mm, pad_center_z_mm])
-            cylinder(h = hat_gpio_pad_height_mm, d = hat_gpio_pad_diameter_mm, center = true);
-
-        color(hat_gpio_through_hole_colour)
-        translate([pin_center_x_mm, pin_center_y_mm, pad_center_z_mm + 0.01])
-            cylinder(h = hat_gpio_pad_height_mm + 0.03, d = hat_gpio_through_hole_diameter_mm, center = true);
-
-        color(hat_gpio_pin_colour)
-        translate([
-            pin_center_x_mm,
-            pin_center_y_mm,
-            hat_board_thickness_mm + hat_gpio_header_block_height_mm + hat_gpio_pad_height_mm + hat_gpio_pin_height_mm / 2
-        ])
+        color(gpio_socket_clearance_colour, 0.45)
             cube([
-                hat_gpio_pin_size_mm,
-                hat_gpio_pin_size_mm,
-                hat_gpio_pin_height_mm
+                gpio_socket_clearance_size_x_mm,
+                gpio_socket_clearance_size_y_mm,
+                gpio_socket_clearance_height_mm
             ], center = true);
+}
+
+// ======================================================
+// Grove Connectors
+// ======================================================
+
+module seeed_grove_connector_previews() {
+    for (socket_data_mm = grove_socket_centers_mm) {
+        seeed_grove_connector_preview(socket_data_mm);
     }
 }
 
-module seeed_grove_base_hat_zero_grove_socket_reference(show_labels = show_grove_labels) {
-    seeed_grove_socket_group(
-        grove_digital_sockets_mm,
-        "Digital",
-        grove_digital_cable_exit_size_mm,
-        grove_digital_cable_exit_center_y_mm,
-        "row_edges",
-        show_labels
-    );
-    seeed_grove_socket_group(
-        grove_analog_sockets_mm,
-        "Analog",
-        grove_analog_cable_exit_size_mm,
-        grove_analog_cable_exit_center_y_mm,
-        "back",
-        show_labels
-    );
-    seeed_grove_socket_group(
-        grove_i2c_sockets_mm,
-        "I2C",
-        grove_i2c_cable_exit_size_mm,
-        grove_i2c_cable_exit_center_y_mm,
-        "back",
-        show_labels
-    );
-    seeed_grove_socket_group(
-        grove_pwm_sockets_mm,
-        "PWM",
-        grove_pwm_cable_exit_size_mm,
-        grove_pwm_cable_exit_center_y_mm,
-        "back",
-        show_labels
-    );
-    seeed_grove_socket_group(
-        grove_uart_sockets_mm,
-        "UART",
-        grove_uart_cable_exit_size_mm,
-        grove_uart_cable_exit_center_y_mm,
-        "back",
-        show_labels
-    );
+module seeed_grove_connector_preview(socket_data_mm) {
+    translate([
+        grove_center_x_mm(socket_data_mm),
+        grove_center_y_mm(socket_data_mm),
+        grove_connector_center_z_mm
+    ])
+        color(grove_connector_colour)
+            seeed_rounded_box(
+                [
+                    grove_connector_body_width_mm,
+                    grove_connector_body_length_mm,
+                    grove_connector_body_height_mm
+                ],
+                grove_connector_corner_radius_mm,
+                [0, 0, 0]
+            );
 }
 
-module seeed_grove_base_hat_zero_gpio_swd_reference(show_labels = show_grove_labels) {
-    seeed_top_component(
-        [gpio_swd_reference_center_x_mm, gpio_swd_reference_center_y_mm],
-        gpio_swd_reference_block_size_mm,
-        gpio_swd_reference_colour
-    );
-
-    for (pin_index = [0:gpio_swd_pin_count - 1]) {
-        pin_center_y_mm = gpio_swd_pin_first_y_mm + pin_index * gpio_swd_pin_pitch_mm;
-        pad_center_z_mm = hat_board_thickness_mm + gpio_swd_reference_block_size_mm[2] + gpio_swd_pad_height_mm / 2;
-
-        color(hat_gpio_pad_colour)
-        translate([
-            gpio_swd_reference_center_x_mm,
-            pin_center_y_mm,
-            pad_center_z_mm
-        ])
-            cylinder(h = gpio_swd_pad_height_mm, d = gpio_swd_pad_diameter_mm, center = true);
-
-        color(hat_gpio_pin_colour)
-        translate([
-            gpio_swd_reference_center_x_mm,
-            pin_center_y_mm,
-            hat_board_thickness_mm + gpio_swd_reference_block_size_mm[2] + gpio_swd_pad_height_mm + gpio_swd_pin_height_mm / 2
-        ])
+module seeed_uart_cutout_guidance_preview() {
+    uart_data_mm = grove_socket_centers_mm[0];
+    translate([
+        grove_center_x_mm(uart_data_mm),
+        grove_center_y_mm(uart_data_mm),
+        uart_cutout_guidance_center_z_mm
+    ])
+        color(uart_cutout_guidance_colour, 0.5)
             cube([
-                gpio_swd_pin_size_mm,
-                gpio_swd_pin_size_mm,
-                gpio_swd_pin_height_mm
+                uart_cutout_guidance_width_mm,
+                uart_cutout_guidance_length_mm,
+                0.24
             ], center = true);
-    }
+}
 
-    if (show_labels) {
-        seeed_top_label("GPIO/SWD", [
-            gpio_swd_reference_center_x_mm,
-            gpio_swd_reference_center_y_mm + gpio_swd_reference_block_size_mm[1] / 2 + 2.2,
-            hat_board_thickness_mm + gpio_swd_reference_block_size_mm[2] + 0.1
-        ], halign_value = "center");
+// ======================================================
+// Component References
+// ======================================================
+
+module seeed_swd_debug_reference() {
+    translate([
+        seeed_user_x_to_model_x_mm(swd_debug_center_x_mm),
+        seeed_user_y_to_model_y_mm(swd_debug_center_y_mm),
+        hat_board_thickness_mm + swd_debug_block_size_mm[2] / 2
+    ])
+        color(swd_debug_colour)
+            cube(swd_debug_block_size_mm, center = true);
+
+    for (pin_index = [0:swd_debug_pin_count - 1]) {
+        translate([
+            seeed_user_x_to_model_x_mm(swd_debug_center_x_mm),
+            seeed_user_y_to_model_y_mm(swd_debug_center_y_mm) - (swd_debug_pin_count - 1) * swd_debug_pin_pitch_mm / 2 + pin_index * swd_debug_pin_pitch_mm,
+            hat_board_thickness_mm + swd_debug_block_size_mm[2] + 0.2
+        ])
+            color(gpio_pin_colour)
+                cylinder(h = 0.4, d = swd_debug_pin_diameter_mm, center = true);
     }
 }
 
-module seeed_grove_base_hat_zero_component_reference(show_labels = show_grove_labels) {
-    seeed_top_component(
-        [controller_block_mm[0], controller_block_mm[1]],
-        [controller_block_mm[2], controller_block_mm[3], controller_block_mm[4]],
-        controller_block_mm[5]
-    );
-    if (show_labels) {
-        seeed_top_label("MCU", [
-            controller_block_mm[0],
-            controller_block_mm[1],
-            hat_board_thickness_mm + controller_block_mm[4] + 0.1
-        ], halign_value = "center");
+module seeed_component_previews() {
+    for (component_data_mm = component_clearance_blocks_mm) {
+        seeed_component_block(component_data_mm);
     }
 
-    for (component_mm = component_clearance_blocks_mm) {
-        seeed_top_component(
-            [component_mm[0], component_mm[1]],
-            [component_mm[2], component_mm[3], component_mm[4]],
-            component_mm[5]
-        );
+    for (led_data_mm = led_markers_mm) {
+        translate([
+            seeed_user_x_to_model_x_mm(led_data_mm[0]),
+            seeed_user_y_to_model_y_mm(led_data_mm[1]),
+            hat_board_thickness_mm + led_data_mm[2] / 2
+        ])
+            color(led_data_mm[3])
+                cube([led_data_mm[2], led_data_mm[2], led_data_mm[2]], center = true);
     }
 }
 
-module seeed_grove_base_hat_zero_led_reference(show_labels = show_grove_labels) {
-    for (led_mm = led_positions_mm) {
-        color(led_mm[3])
-        translate([led_mm[1], led_mm[2], hat_board_thickness_mm + led_size_mm[2] / 2])
-            cube(led_size_mm, center = true);
+module seeed_component_block(component_data_mm) {
+    translate([
+        seeed_user_x_to_model_x_mm(component_data_mm[0]),
+        seeed_user_y_to_model_y_mm(component_data_mm[1]),
+        hat_board_thickness_mm + component_data_mm[4] / 2
+    ])
+        color(component_data_mm[5])
+            cube([
+                component_data_mm[2],
+                component_data_mm[3],
+                component_data_mm[4]
+            ], center = true);
+}
 
-        if (show_labels) {
-            seeed_top_label(
-                led_mm[0],
-                [led_mm[1] - 1.9, led_mm[2], hat_board_thickness_mm + led_size_mm[2] + 0.1],
-                halign_value = "right"
+module seeed_height_envelope_preview() {
+    translate([0, 0, height_envelope_center_z_mm])
+        color(height_envelope_colour, 0.12)
+            cube([
+                hat_board_width_mm,
+                hat_board_length_mm,
+                hat_overall_height_envelope_mm
+            ], center = true);
+}
+
+// ======================================================
+// Labels
+// ======================================================
+
+module seeed_label_previews(show_electronics_preview) {
+    if (show_electronics_preview) {
+        for (socket_data_mm = grove_socket_centers_mm) {
+            seeed_text_label(
+                socket_data_mm[0],
+                [
+                    grove_center_x_mm(socket_data_mm),
+                    grove_center_y_mm(socket_data_mm),
+                    hat_board_thickness_mm + grove_connector_body_height_mm + label_z_offset_mm
+                ],
+                label_size_mm
             );
         }
+
+        seeed_text_label(
+            "SWD",
+            [
+                seeed_user_x_to_model_x_mm(swd_debug_center_x_mm),
+                seeed_user_y_to_model_y_mm(swd_debug_center_y_mm),
+                hat_board_thickness_mm + swd_debug_block_size_mm[2] + label_z_offset_mm
+            ],
+            label_size_mm
+        );
+
     }
-}
 
-module seeed_grove_base_hat_zero_height_envelope_reference() {
-    color(height_envelope_colour, 0.18)
-    translate([0, 0, hat_overall_height_center_z_mm])
-        cube([
-            hat_board_length_mm,
-            hat_board_width_mm,
-            hat_overall_height_envelope_mm
-        ], center = true);
-}
-
-module seeed_grove_base_hat_zero_board_label_reference() {
-    seeed_top_label("Grove Base HAT Zero", [
-        -2.0,
-        -1.0,
-        hat_board_thickness_mm + grove_socket_label_height_mm
-    ], halign_value = "center");
-}
-
-module seeed_grove_base_hat_zero_printable_layout() {
-    translate([
-        -hat_board_half_length_mm - printable_layout_spacing_mm / 2,
-        0,
-        0
-    ])
-        seeed_grove_base_hat_zero_reference_model(show_pi_reference = false);
-
-    if (show_pi_zero_reference) {
-        translate([
-            hat_board_half_length_mm + printable_layout_spacing_mm / 2,
+    seeed_text_label(
+        "GPIO",
+        [
+            gpio_grid_center_x_mm,
             0,
-            0
-        ])
+            hat_board_thickness_mm + label_z_offset_mm
+        ],
+        label_size_mm
+    );
+}
+
+// ======================================================
+// Optional Pi Zero Stack Preview And Layout
+// ======================================================
+
+module seeed_optional_pi_zero_stack_preview() {
+    translate([
+        pi_zero_reference_x_offset_mm,
+        pi_zero_reference_y_offset_mm,
+        pi_zero_reference_z_offset_mm
+    ])
+        rotate([0, 0, pi_zero_reference_rotation_deg])
             pi_zero_reference_model(
                 show_reference = true,
                 show_test_pads = false,
-                show_gpio_header_position = pi_zero_reference_header_position,
+                show_gpio_header_position = 1,
                 show_gpio_sound_vision_pads = false,
                 show_gpio_pin_colours = false
             );
+}
+
+module seeed_grove_base_hat_zero_printable_layout() {
+    translate([-printable_layout_spacing_mm / 2, 0, 0])
+        seeed_grove_base_hat_zero_reference_model(
+            show_electronics_preview = true,
+            show_gpio_header_preview = true,
+            show_gpio_socket_preview = true,
+            show_grove_label_preview = true,
+            show_pi_zero_preview = false
+        );
+
+    if (show_pi_zero_reference) {
+        translate([printable_layout_spacing_mm / 2, 0, 0])
+            seeed_optional_pi_zero_stack_preview();
     }
 }
 
 // ======================================================
-// Helper Modules
+// Helper Modules And Functions
 // ======================================================
 
-module seeed_grove_socket_group(
-    socket_data_mm,
-    group_name,
-    cable_exit_size_mm,
-    cable_exit_y_mm,
-    exit_side,
-    show_labels
-) {
-    for (socket_mm = socket_data_mm) {
-        seeed_grove_socket(socket_mm, cable_exit_size_mm, cable_exit_y_mm, exit_side);
-
-        if (show_labels) {
-            seeed_top_label(
-                socket_mm[0],
-                [
-                    socket_mm[1],
-                    socket_mm[2] + grove_socket_label_offset_y_mm,
-                    hat_board_thickness_mm + grove_socket_size_mm[2] + 0.1
-                ],
-                halign_value = "center"
-            );
-        }
-    }
-
-    if (show_labels) {
-        seeed_top_label(group_name, [
-            socket_data_mm[0][1],
-            socket_data_mm[0][2] + 4.9,
-            hat_board_thickness_mm + grove_socket_size_mm[2] + 0.1
-        ], halign_value = "center");
-    }
-}
-
-module seeed_grove_socket(socket_mm, cable_exit_size_mm, cable_exit_y_mm, exit_side) {
-    seeed_top_component(
-        [socket_mm[1], socket_mm[2]],
-        grove_socket_size_mm,
-        grove_socket_colour
-    );
-
-    if (exit_side == "row_edges") {
-        if (socket_mm[2] > 0) {
-            seeed_grove_front_back_cable_exit(socket_mm[1], abs(cable_exit_y_mm), cable_exit_size_mm);
-        } else {
-            seeed_grove_front_back_cable_exit(socket_mm[1], -abs(cable_exit_y_mm), cable_exit_size_mm);
-        }
-    } else {
-        seeed_grove_front_back_cable_exit(socket_mm[1], cable_exit_y_mm, cable_exit_size_mm);
-    }
-}
-
-module seeed_grove_front_back_cable_exit(center_x_mm, center_y_mm, size_mm) {
-    color(grove_cable_exit_colour, 0.35)
-    translate([
-        center_x_mm,
-        center_y_mm,
-        hat_board_thickness_mm + size_mm[2] / 2
-    ])
-        cube(size_mm, center = true);
-}
-
-module seeed_centered_rounded_box(size_mm, radius_mm) {
-    translate([0, 0, size_mm[2] / 2])
-    hull() {
-        for (x_position_mm = [
-            -size_mm[0] / 2 + radius_mm,
-            size_mm[0] / 2 - radius_mm
-        ])
-        for (y_position_mm = [
-            -size_mm[1] / 2 + radius_mm,
-            size_mm[1] / 2 - radius_mm
-        ]) {
+module seeed_rounded_box(size_mm, radius_mm, center_position_mm) {
+    translate(center_position_mm)
+        hull()
+        for (x_position_mm = [-size_mm[0] / 2 + radius_mm, size_mm[0] / 2 - radius_mm])
+        for (y_position_mm = [-size_mm[1] / 2 + radius_mm, size_mm[1] / 2 - radius_mm]) {
             translate([x_position_mm, y_position_mm, 0])
                 cylinder(h = size_mm[2], r = radius_mm, center = true);
         }
-    }
 }
 
-module seeed_pcb_hole(x_position_mm, y_position_mm, diameter_mm) {
-    translate([x_position_mm, y_position_mm, hat_board_half_thickness_mm])
-        cylinder(
-            h = hat_board_thickness_mm + 0.2,
-            d = diameter_mm,
-            center = true
-        );
+module seeed_text_label(label_text, label_position_mm, size_mm) {
+    translate(label_position_mm)
+        color(label_colour)
+            linear_extrude(height = label_height_mm)
+                text(
+                    label_text,
+                    size = size_mm,
+                    halign = "center",
+                    valign = "center"
+                );
 }
 
-module seeed_top_component(center_xy_mm, size_mm, colour = component_colour) {
-    color(colour)
-    translate([
-        center_xy_mm[0],
-        center_xy_mm[1],
-        hat_top_component_base_z_mm + size_mm[2] / 2
-    ])
-        cube(size_mm, center = true);
-}
+function seeed_user_x_to_model_x_mm(user_x_mm) =
+    grove_coordinate_origin_x_mm + user_x_mm + grove_coordinate_offset_x_mm;
 
-module seeed_top_label(label_text, origin_mm, halign_value = "left") {
-    color(hat_label_colour)
-    translate(origin_mm)
-        linear_extrude(height = grove_socket_label_height_mm)
-            text(label_text, size = grove_socket_label_size_mm, halign = halign_value, valign = "center");
-}
+function seeed_user_y_to_model_y_mm(user_y_mm) =
+    grove_coordinate_origin_y_mm + user_y_mm + grove_coordinate_offset_y_mm;
+
+function grove_center_x_mm(socket_data_mm) =
+    seeed_user_x_to_model_x_mm(socket_data_mm[1]);
+
+function grove_center_y_mm(socket_data_mm) =
+    seeed_user_y_to_model_y_mm(socket_data_mm[2]);
+
+function seeed_gpio_pin_x_mm(pin_row) =
+    gpio_pin_row_zero_x_mm + pin_row * gpio_pin_pitch_mm;
+
+function seeed_gpio_pin_y_mm(pin_column) =
+    -gpio_column_span_half_mm + pin_column * gpio_pin_pitch_mm;

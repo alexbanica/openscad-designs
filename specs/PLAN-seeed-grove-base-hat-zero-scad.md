@@ -1,4 +1,4 @@
-# PLAN: Correct Seeed Grove Base Hat Zero Visual Layout
+# PLAN: Seeed Grove Base Hat Zero OpenSCAD Reference Design
 
 Status: Approved
 
@@ -8,14 +8,15 @@ Approved Spec: `specs/SPEC-seeed-grove-base-hat-zero-scad.md`
 
 No dedicated branch is required. Repository instructions allow committing directly to `main` when otherwise unspecified.
 
-Implementation must not revert unrelated dirty worktree changes present at implementation time.
+Implementation must not revert unrelated dirty worktree changes present at implementation time. The current planning context observed staged deletions for the previous Seeed design/spec/plan paths; implementation must treat the approved spec and this plan as the authority for restoring/recreating only the approved Seeed artifacts.
 
 ## Affected Files
 
-- Update `designs/seeed_grove_base_hat_zero.scad`.
+- Create or replace `designs/seeed_grove_base_hat_zero.scad`.
 - Update `README.md`.
-- Update `specs/SPEC-seeed-grove-base-hat-zero-scad.md` only if implementation discovers a spec typo that blocks deterministic execution; otherwise do not change the approved spec.
+- Keep `specs/SPEC-seeed-grove-base-hat-zero-scad.md` unchanged except for mechanical status or typo fixes that do not alter behavior.
 - Do not edit existing Raspberry Pi reference source files.
+- Do not edit the Waveshare design/spec/plan.
 - Do not add generated mesh/export files.
 
 ## No-Research Constraint
@@ -23,9 +24,10 @@ Implementation must not revert unrelated dirty worktree changes present at imple
 Implementation must use only:
 
 - the approved spec,
-- this approved plan,
+- this approved plan after approval,
 - current repository instructions,
 - existing local code needed to match style,
+- `designs/pi_zero.scad` only as the GPIO and board-fit reference,
 - the source facts already captured in the approved spec.
 
 Implementation must not perform additional product, architecture, scope, or web research.
@@ -36,47 +38,107 @@ Automated unit tests are not applicable. This is an OpenSCAD reference design re
 
 The test-first phase is replaced by deterministic pre-implementation checklist creation:
 
-- map each approved visual-layout and GPIO-visibility requirement to `designs/seeed_grove_base_hat_zero.scad` or `README.md`,
+- map each approved model requirement to `designs/seeed_grove_base_hat_zero.scad` or `README.md`,
 - implement against that checklist,
 - use manual review and `git diff --check` as validation.
 
 ## Implementation Steps
 
-1. Inspect only the approved spec, this plan, `AGENTS.md`, `README.md`, and `designs/seeed_grove_base_hat_zero.scad`.
-2. In `designs/seeed_grove_base_hat_zero.scad`, change the default Grove socket data so the visible default layout matches the official wiki overview described by the approved spec:
-   - top row from left to right: `D5`, `A0`, `A2`, `A4`,
-   - bottom row from left to right: `D16`, `PWM`, `I2C`, `UART`.
-3. Remove extra default visible Grove sockets from the model:
-   - no `D18`,
-   - no duplicate `I2C`,
-   - no right-edge `A6`.
-4. Keep Grove connector positions and cable-exit sizes adjustable near the top of the file.
-5. Update Grove cable-exit defaults so each socket group has a plausible edge-facing clearance envelope consistent with the corrected two-row layout.
-6. Update the Grove socket grouping/module logic only as needed to support the corrected defaults without adding new behavior outside the approved spec.
-7. Update the GPIO reference so it is clearly visible by default when `show_gpio_header = true`:
-   - render metallic through-hole/pad references along the +Y edge,
-   - keep the row visually distinct from the PCB and component overlays,
-   - ensure it is visible in `assembly`, `hat`, and `connectors` render modes,
-   - ensure it renders after any translucent height envelope or other overlays that could obscure it.
-8. Preserve independent visibility toggles:
-   - `show_electronics` controls Grove sockets, cable exits, SWD/debug, component blocks, LEDs, and height envelope without hiding PCB or holes,
-   - `show_gpio_header` controls only the GPIO passthrough/header reference,
-   - `show_grove_labels` controls labels independently from connector bodies,
-   - `show_pi_zero_reference` controls optional Pi Zero reference geometry.
-9. Preserve render modes:
+1. Inspect only the approved spec, this plan, `AGENTS.md`, `README.md`, and `designs/pi_zero.scad`.
+2. Create `designs/seeed_grove_base_hat_zero.scad` as a standalone OpenSCAD 2021.01-compatible reference model.
+3. At the top of the new file, document:
+   - units are millimeters,
+   - the user connector coordinate system uses bottom-left PCB origin with X across 30 mm board width and Y along 65 mm board length,
+   - the OpenSCAD model origin is board center on the PCB bottom face,
+   - the model is an adjustable fit/clearance reference, not a vendor-certified model.
+4. Add grouped `Adjustable Parameters`:
+   - render controls,
+   - board dimensions,
+   - mounting holes,
+   - stack and optional Pi Zero reference offsets,
+   - GPIO header/passthrough dimensions,
+   - underside GPIO socket/receptacle clearance dimensions,
+   - Grove connector coordinate table and transform offsets,
+   - Grove connector body dimensions,
+   - SWD/debug, component, LED, and label preview dimensions,
+   - printable layout,
+   - visual settings.
+5. Add `Derived Values` for:
+   - board half dimensions,
+   - mounting-hole positions,
+   - Pi Zero GPIO grid-equivalent header pin positions,
+   - user-coordinate to board-centered coordinate transform,
+   - underside GPIO socket/receptacle center and Z placement,
+   - Grove connector centers after transform,
+   - repeated geometry constants.
+6. Implement render dispatch for:
    - `assembly`,
    - `hat`,
    - `connectors`,
    - `printable_layout`.
-10. Keep OpenSCAD 2021.01-compatible syntax:
+7. Implement named modules for:
+   - `seeed_grove_base_hat_zero_reference_model(...)`,
+   - board outline and mounting holes,
+   - Pi Zero-style GPIO passthrough/header reference,
+   - underside GPIO socket/receptacle clearance block,
+   - Grove connector previews,
+   - SWD/debug reference,
+   - component/LED previews,
+   - labels,
+   - optional Pi Zero stack preview using `use <pi_zero.scad>`,
+   - printable/fit-check layout,
+   - reusable helper geometry.
+8. Use default board and mounting values required by the approved spec:
+   - board footprint: 65.0 mm x 30.0 mm,
+   - board thickness: 1.6 mm,
+   - overall height envelope: 20.0 mm,
+   - mounting-hole edge offsets: 3.5 mm,
+   - mounting-hole span: 58.0 mm x 23.0 mm,
+   - mounting-hole diameter adjustable for Pi Zero M2.5 hardware.
+9. Implement GPIO placement to match the Pi Zero reference pattern:
+   - 20 columns by 2 rows,
+   - 2.54 mm pitch,
+   - X positions matching the same centered span used by `pi_zero_gpio_pin_x_mm`,
+   - Y positions using the same mounting-hole-derived edge relationship as `pi_zero_gpio_pin_y_mm`,
+   - adjustable pad/hole/pin dimensions,
+   - support above-board, below-board, and hidden pin preview modes.
+10. Implement the underside GPIO socket/receptacle clearance block:
+    - aligned with the same GPIO grid,
+    - below the HAT PCB where Pi Zero header pins enter,
+    - default visible through `show_gpio_socket_clearance = true`,
+    - independently adjustable in X/Y/Z size and Z offset.
+11. Implement the default Grove connector table exactly from the approved spec:
+    - `UART`: `(9.4, 12.6)`,
+    - `A3/A4`: `(17.8, 12.6)`,
+    - `I2C`: `(9.6, 28.6)`,
+    - `A2`: `(17.8, 28.3)`,
+    - `D16`: `(9.6, 44.7)`,
+    - `D26`: `(17.8, 44.1)`,
+    - `D5`: `(9.6, 59.9)`,
+    - `D6`: `(17.8, 59.1)`.
+12. Implement default Grove connector bodies as adjustable 8.0 mm x 10.0 mm x 8.0 mm clearance volumes.
+13. Include adjustable UART cutout guidance values of 11.0 mm x 9.0 mm centered on the UART connector for README/source documentation and optional clearance preview if practical without adding a separate printable enclosure.
+14. Preserve independent visibility toggles:
+    - `show_electronics`,
+    - `show_gpio_header`,
+    - `show_gpio_socket_clearance`,
+    - `show_grove_labels`,
+    - `show_pi_zero_reference`.
+15. Keep the file OpenSCAD 2021.01-compatible:
     - no external libraries,
     - no generated imports,
-    - no unsupported syntax.
-11. Update `README.md`:
-    - document that the default visual Grove socket layout follows the official wiki overview image,
-    - document that extra sockets implied only by conflicting text claims are not modeled by default,
-    - update component assumptions/common parameter notes if socket counts or labels change,
-    - update manual inspection checklist to include the corrected 8-socket two-row layout and visible GPIO pad/header row.
+    - no unsupported syntax,
+    - no user-adjustable value redefinitions inside modules.
+16. Update `README.md`:
+    - list `designs/seeed_grove_base_hat_zero.scad`,
+    - document the bottom-left PCB Grove coordinate table,
+    - document the board-centered OpenSCAD transform,
+    - document the Pi Zero-style GPIO header/passthrough behavior,
+    - document the underside GPIO socket/receptacle clearance block,
+    - document render modes and visibility toggles,
+    - document adjustable parameters and physical-measurement caveats,
+    - document optional OpenSCAD commands for users with OpenSCAD installed,
+    - keep validation guidance consistent with repository instructions.
 
 ## Validation Commands
 
@@ -94,32 +156,36 @@ Do not run OpenSCAD validation commands locally.
 
 Review `designs/seeed_grove_base_hat_zero.scad` and confirm:
 
-- it keeps `Adjustable Parameters` and `Derived Values` sections near the top,
+- it has `Adjustable Parameters` and `Derived Values` sections near the top,
 - all user-adjustable linear variables use `_mm`,
+- any angle variables use `_deg`,
 - user-adjustable values are not redefined inside modules,
 - render modes dispatch deterministically,
-- board dimensions and mounting holes remain unchanged from the approved spec,
-- `use <pi_zero.scad>` remains present for the optional Pi Zero reference,
-- optional Pi Zero reference visibility remains controlled by `show_pi_zero_reference`,
-- connector/component visibility remains controlled by `show_electronics`,
-- GPIO visibility remains controlled by `show_gpio_header`,
-- Grove label visibility remains controlled by `show_grove_labels`,
-- default Grove sockets are exactly `D5`, `A0`, `A2`, `A4`, `D16`, `PWM`, `I2C`, and `UART`,
-- top-row and bottom-row socket ordering matches the approved spec,
-- no extra default visible Grove sockets are present,
-- Grove socket bodies and cable-exit envelopes remain adjustable,
-- SWD/debug and controller/component references remain present,
-- GPIO passthrough/header pads are clearly visible in `assembly`, `hat`, and `connectors` when `show_gpio_header = true`,
-- major geometry remains organized through named modules,
+- board dimensions and mounting holes match the approved spec,
+- `use <pi_zero.scad>` is present only for the optional Pi Zero reference,
+- optional Pi Zero reference visibility is controlled by `show_pi_zero_reference`,
+- connector/component visibility is controlled by `show_electronics`,
+- GPIO header/passthrough visibility and above/below pin preview mode are controlled independently,
+- underside GPIO socket/receptacle clearance is controlled by `show_gpio_socket_clearance`,
+- GPIO placement matches the Pi Zero reference 20 x 2 grid and edge relationship,
+- underside GPIO socket/receptacle clearance is below the board and aligned with the GPIO grid,
+- Grove label visibility is controlled by `show_grove_labels`,
+- default Grove sockets are exactly `UART`, `A3/A4`, `I2C`, `A2`, `D16`, `D26`, `D5`, and `D6`,
+- default Grove socket coordinates match the approved bottom-left PCB coordinate table after transform,
+- Grove socket bodies default to adjustable 8.0 mm x 10.0 mm x 8.0 mm dimensions,
+- UART cutout guidance defaults to adjustable 11.0 mm x 9.0 mm centered on `UART`,
+- SWD/debug and component references are present,
+- major geometry is organized through named modules,
 - no generated mesh/export artifacts are present.
 
 Review `README.md` and confirm:
 
-- the corrected default visual layout is documented,
-- the source discrepancy around analog port count remains documented,
-- README does not claim extra sockets are modeled by default,
+- the new design is listed,
+- assumptions and coordinate table match the approved spec,
+- Pi Zero-style GPIO header placement is documented,
+- underside GPIO socket/receptacle clearance is documented,
 - render modes match the OpenSCAD source,
-- optional commands remain clearly optional for users with OpenSCAD installed,
+- optional commands are clearly optional for users with OpenSCAD installed,
 - validation guidance remains consistent with repository instructions.
 
 ## QA Requirements
@@ -136,8 +202,8 @@ Main-agent QA is manual review only:
 
 Required:
 
-- `README.md` Seeed Grove Base Hat for Raspberry Pi Zero section update.
-- `README.md` manual inspection checklist update.
+- `README.md` design list update.
+- `README.md` Seeed Grove Base Hat Zero component assumptions, coordinate basis, adjustable parameters, render modes, optional commands, GPIO/header notes, underside GPIO socket clearance notes, and manual inspection checklist.
 
 No `AGENTS.md` update is required.
 
