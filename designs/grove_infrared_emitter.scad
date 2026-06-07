@@ -158,9 +158,7 @@ module grove_infrared_emitter_reference_model(
     show_grove_connector_preview = show_grove_connector,
     show_ir_led_preview = show_ir_led,
     show_label_preview = show_labels,
-    show_clearance_preview = show_clearance_guides,
-    show_connector_clearance_preview = show_grove_connector_preview,
-    show_led_clearance_preview = show_ir_led_preview
+    show_clearance_preview = show_clearance_guides
 ) {
     grove_infrared_emitter_pcb_reference();
 
@@ -178,8 +176,8 @@ module grove_infrared_emitter_reference_model(
 
     if (show_clearance_preview) {
         grove_infrared_emitter_clearance_guides(
-            show_connector_clearance = show_connector_clearance_preview,
-            show_led_clearance = show_led_clearance_preview
+            show_connector_clearance = show_grove_connector_preview,
+            show_led_clearance = show_ir_led_preview
         );
     }
 
