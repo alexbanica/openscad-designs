@@ -42,11 +42,15 @@ Default dimensions are configurable at the top of the `.scad` file. The initial 
 - Board corner radius: 1.5 mm.
 - Four mounting holes: 3.0 mm diameter, 3.5 mm from board edges, with 58.0 mm x 23.0 mm center span.
 - Pi Zero-compatible 40-pin GPIO passthrough/header reference near the +Y edge.
+- Visible metallic GPIO through-hole/pad row plus pin references near the +Y edge.
 - Simplified Grove socket clearance groups for Digital, Analog, I2C, PWM, and UART.
+- Default Grove visual layout follows the official wiki overview image: top row left-to-right `D5`, `A0`, `A2`, `A4`; bottom row left-to-right `D16`, `PWM`, `I2C`, `UART`.
 - Simplified SWD/debug header, controller, LEDs, and component clearance blocks.
 - Grove operates at 3.3 V for electrical planning context, but this file models only mechanical fit and clearance.
 
-The public source notes captured in the approved spec are inconsistent about analog Grove count: the product title says 4x Analog, while the fetched wiki specification table says 3 Analog. This reference includes adjustable analog socket positions and labels for fit planning; it is not an electrical guarantee.
+The public source notes captured in the approved spec are inconsistent about analog Grove count: the product title says 4x Analog, while the fetched wiki specification table says 3 Analog and the official overview image visibly labels `A0`, `A2`, and `A4`. This reference defaults to the visible overview image for mechanical layout and is not an electrical guarantee.
+
+Extra sockets implied only by conflicting text or earlier over-modeled defaults are intentionally not shown by default: no `D18`, no duplicate `I2C`, and no right-edge `A6`.
 
 Connector bodies, cable exits, SWD/debug pins, labels, controller blocks, and LEDs are simplified clearance volumes. Grove socket positions and cable-exit envelopes are adjustable defaults based on visible layout and Pi Zero board constraints, and should be tuned after measuring the actual HAT.
 
@@ -74,7 +78,7 @@ Common edits:
 - Set `show_grove_labels = false` to hide only the Grove and component labels.
 - Set `show_pi_zero_reference = true` to show the reusable Pi Zero reference below the HAT.
 - Tune `grove_digital_sockets_mm`, `grove_analog_sockets_mm`, `grove_i2c_sockets_mm`, `grove_pwm_sockets_mm`, and `grove_uart_sockets_mm` after physical measurement.
-- Tune each Grove group's cable-exit variables, such as `grove_digital_cable_exit_size_mm`, `grove_digital_cable_exit_center_y_mm`, `grove_i2c_cable_exit_size_mm`, `grove_uart_cable_exit_center_y_mm`, `grove_analog_side_cable_exit_size_mm`, and `grove_analog_side_cable_exit_center_x_mm`, for enclosure cable clearance.
+- Tune each Grove group's cable-exit variables, such as `grove_digital_cable_exit_size_mm`, `grove_digital_cable_exit_center_y_mm`, `grove_analog_cable_exit_size_mm`, `grove_i2c_cable_exit_size_mm`, `grove_pwm_cable_exit_center_y_mm`, and `grove_uart_cable_exit_center_y_mm`, for enclosure cable clearance. Defaults route top-row socket envelopes toward +Y and bottom-row socket envelopes toward -Y.
 - Tune `hat_mounting_hole_diameter_mm` for specific M2.5 fastener clearance.
 
 ### Render Modes
@@ -99,6 +103,8 @@ openscad -o /tmp/seeed_grove_base_hat_zero_printable_layout.off -D 'render_mode=
 
 - Use the model as a child design reference with `use <seeed_grove_base_hat_zero.scad>` and call `seeed_grove_base_hat_zero_reference_model(...)` explicitly.
 - Keep `show_pi_zero_reference = true` during early stack planning to verify board footprint, mounting-hole alignment, and GPIO relationship against the reusable Pi Zero model.
+- Inspect the default Grove row order as `D5`, `A0`, `A2`, `A4` above `D16`, `PWM`, `I2C`, `UART` before using the model as an enclosure clearance reference.
+- Keep `show_gpio_header = true` when checking stack height so the metallic GPIO pad/header row remains visible above the board overlay.
 - Leave additional printed-case clearance around Grove sockets and cable exits until the actual HAT and Grove cables are measured.
 - The 20.0 mm overall height envelope is a planning volume; connector and component blocks remain independently adjustable.
 - The design guidance remains compatible with Bambu Lab P2S and AMS 2 Pro fit-check workflows; no generated mesh exports are committed.
@@ -374,6 +380,10 @@ Manual inspection for the Seeed Grove Base Hat for Raspberry Pi Zero reference:
 - The file uses `use <pi_zero.scad>` and can show the optional Pi Zero stack reference without duplicating board geometry.
 - `show_electronics`, `show_gpio_header`, `show_grove_labels`, and `show_pi_zero_reference` independently control their intended visual groups.
 - Grove socket bodies and cable-exit envelopes are adjustable for Digital, Analog, I2C, PWM, and UART groups.
+- Default visible Grove sockets are exactly `D5`, `A0`, `A2`, `A4`, `D16`, `PWM`, `I2C`, and `UART`.
+- The Grove visual layout is two rows with top row left-to-right `D5`, `A0`, `A2`, `A4` and bottom row left-to-right `D16`, `PWM`, `I2C`, `UART`.
+- No extra default Grove sockets such as `D18`, duplicate `I2C`, or right-edge `A6` are present.
+- GPIO passthrough/header pads are visible along the +Y edge in `assembly`, `hat`, and `connectors` modes when `show_gpio_header = true`.
 - SWD/debug header, controller/component blocks, LEDs, and labels are present as simplified clearance references.
 - The README documents the analog-count discrepancy and treats socket placement as a measurement-tunable reference.
 - `assembly`, `hat`, `connectors`, and `printable_layout` modes show the intended reference views.

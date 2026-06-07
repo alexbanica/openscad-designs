@@ -27,6 +27,21 @@ The repository has reusable Raspberry Pi reference models and a Waveshare HAT re
 - Keep derived values in a separate `Derived Values` section.
 - Update `README.md` with the new design file, assumptions, parameters, render modes, source references, fit notes, and validation checklist entries.
 
+## Iteration: Correct Visible Grove Socket Layout
+
+The first implementation over-modeled Grove sockets and did not visually match the official Seeed wiki overview image. This iteration changes the default visual layout to match the visible board overview:
+
+- The GPIO passthrough/header remains along the +Y edge.
+- The GPIO passthrough/header must be clearly visible in assembly, connectors, and HAT previews when `show_gpio_header = true`.
+- The default GPIO representation must read as the visible through-hole/pad row from the official overview image, not as a hidden or visually lost solid block.
+- The GPIO reference must render above any translucent height envelope or component overlay so it remains inspectable.
+- The SWD/debug header remains on the right side near +X.
+- Grove sockets are arranged as two visible rows below the GPIO header:
+  - top row from left to right: `D5`, `A0`, `A2`, `A4`,
+  - bottom row from left to right: `D16`, `PWM`, `I2C`, `UART`.
+- The default model must not add extra visible Grove sockets such as `D18`, duplicate `I2C`, or a right-edge `A6` socket unless a future approved spec is based on measured hardware or an authoritative mechanical drawing.
+- The README must describe that the default visual layout follows the official wiki overview image, while published text remains inconsistent about analog Grove count.
+
 ## Out Of Scope
 
 - Generated STL, STEP, 3MF, OFF, or other mesh/export files.
@@ -73,6 +88,13 @@ The repository has reusable Raspberry Pi reference models and a Waveshare HAT re
   - built-in MCU/controller,
   - 3.3 V Grove operation note for documentation.
 - Because the fetched public pages do not provide exact Grove socket center coordinates, all Grove socket positions and cable-exit envelopes must be adjustable defaults based on visible product layout and Pi Zero board constraints. The source and README must state that the defaults should be tuned after physical measurement.
+- The default Grove socket placement must prioritize the official Seeed wiki overview image over text-only port-count claims when those sources conflict, because this reference is a visual/mechanical clearance model.
+- Default Grove socket counts and labels must be:
+  - Digital: `D5`, `D16`,
+  - Analog: `A0`, `A2`, `A4`,
+  - I2C: `I2C`,
+  - PWM: `PWM`,
+  - UART: `UART`.
 - Connector and component models may be simplified rectangular or rounded clearance volumes when exact cosmetic shape is unnecessary for fit-checking.
 - All linear dimension variables must use `_mm`; all angle variables must use `_deg`.
 - User-adjustable values must not be redefined inside modules.
@@ -85,11 +107,13 @@ The repository has reusable Raspberry Pi reference models and a Waveshare HAT re
 - `render_mode = "connectors"` displays the HAT with Grove/socket/component clearance features emphasized for enclosure planning.
 - `render_mode = "printable_layout"` displays the HAT reference and optional Pi Zero reference separated for visual inspection; it must not imply generated printable parts are being committed.
 - `show_electronics` controls Grove sockets, SWD/debug header, controller/component blocks, and other component previews without hiding the PCB or mounting holes.
-- `show_gpio_header` controls the GPIO passthrough/header reference independently from other component previews.
+- `show_gpio_header` controls the GPIO passthrough/header reference independently from other component previews, and the enabled GPIO reference must remain visually obvious in the default `assembly`, `hat`, and `connectors` modes.
 - `show_grove_labels` controls simple text labels for Grove socket groups independently from connector bodies.
 - `show_pi_zero_reference` controls importing and showing the reusable Pi Zero reference model for stack/fit context.
 - The board outline must render as a 65 mm x 30 mm PCB with rounded corners and four Pi Zero-compatible mounting holes.
-- The reference must show grouped Grove socket clearance blocks for Digital, Analog, I2C, PWM, and UART ports, plus an SWD/debug header reference and main controller/component clearance blocks.
+- The GPIO passthrough/header area must be visible as a row of metallic through-hole/pad references along the +Y edge, matching the visual placement of the official wiki overview image.
+- The reference must show grouped Grove socket clearance blocks for Digital, Analog, I2C, PWM, and UART ports in the official wiki overview arrangement, plus an SWD/debug header reference and main controller/component clearance blocks.
+- The default visible socket arrangement must place `D5`, `A0`, `A2`, and `A4` in the top row, and `D16`, `PWM`, `I2C`, and `UART` in the bottom row.
 - Grove socket bodies and their cable-exit clearance envelopes must be adjustable independently, so physical measurements can be applied without changing module code.
 - The model must remain usable as a child design reference through `use <...>` and named module calls.
 
@@ -98,7 +122,7 @@ The repository has reusable Raspberry Pi reference models and a Waveshare HAT re
 - The HAT uses the Raspberry Pi Zero board footprint because published reseller dimensions are 65 mm x 30 mm and the product is explicitly for Raspberry Pi Zero-class use.
 - The Pi Zero mounting-hole positions in `designs/pi_zero.scad` are the repository authority for this HAT's default fit reference.
 - A simplified rectangular connector/component clearance model is acceptable for enclosure and stack planning.
-- Published pages are internally inconsistent about analog Grove count: the Seeed product title says 4x Analog, while the fetched wiki specification table says 3 Analog. The reference model will include adjustable Grove socket groups and document the source discrepancy instead of treating the modeled sockets as an electrical guarantee.
+- Published pages are internally inconsistent about analog Grove count: the Seeed product title says 4x Analog, the fetched wiki specification table says 3 Analog, and the official wiki overview image visibly labels `A0`, `A2`, and `A4`. The reference model will default to the visible overview image and document the discrepancy instead of treating the modeled sockets as an electrical guarantee.
 - The new design should be standalone rather than folded into the existing Pi Zero reference because repository instructions reserve `designs/pi_zero.scad` as a reusable base reference for child designs.
 
 ## Impact And Regression Considerations
@@ -118,6 +142,9 @@ The repository has reusable Raspberry Pi reference models and a Waveshare HAT re
 - Default mounting-hole positions match Pi Zero-compatible positions from the repository reference: 3.5 mm edge offsets and 58.0 mm x 23.0 mm hole-center span.
 - Render modes include `assembly`, `hat`, `connectors`, and `printable_layout`.
 - Visibility toggles independently control electronics/components, GPIO header/reference, Grove labels, and optional Pi Zero reference.
+- GPIO passthrough/header reference is clearly visible by default and remains visible in `assembly`, `hat`, and `connectors` render modes when `show_gpio_header = true`.
+- Default Grove socket layout visually matches the official Seeed wiki overview image with 8 visible Grove connectors: `D5`, `A0`, `A2`, `A4` on the top row and `D16`, `PWM`, `I2C`, `UART` on the bottom row.
+- README documents that the visual layout follows the official wiki overview image and does not model extra sockets implied only by conflicting text claims.
 - README documents the new design file, assumptions, source dimensions, source discrepancy around analog port count, render modes, common adjustable parameters, optional OpenSCAD commands, and manual inspection checklist.
 - `git diff --check` passes.
 - No generated mesh/export artifacts are added.
@@ -132,6 +159,9 @@ The repository has reusable Raspberry Pi reference models and a Waveshare HAT re
   - render modes select the intended assemblies,
   - the board outline and holes match researched and repository-reference dimensions,
   - Grove socket groups, cable clearances, SWD/debug header, GPIO reference, and component blocks are independently adjustable,
+  - default Grove socket labels and rows match the official wiki overview image,
+  - no extra default visible Grove sockets are modeled beyond the official overview layout,
+  - GPIO passthrough/header pads are visible and not obscured by component or envelope previews,
   - visibility toggles control the intended groups,
   - README entries match the implemented behavior.
 
@@ -139,5 +169,6 @@ The repository has reusable Raspberry Pi reference models and a Waveshare HAT re
 
 - Update `README.md` to add `designs/seeed_grove_base_hat_zero.scad` under design files.
 - Add a Seeed Grove Base Hat for Raspberry Pi Zero section with component assumptions, adjustable parameters, render modes, source notes, and print/fit notes.
+- Document that the default visual layout follows the official wiki overview image and intentionally excludes extra sockets from conflicting text-only claims.
 - Add optional OpenSCAD commands for the new render modes to the validation checklist.
 - Add manual inspection checklist items for the HAT footprint, Grove socket clearances, and optional Pi Zero stack reference.

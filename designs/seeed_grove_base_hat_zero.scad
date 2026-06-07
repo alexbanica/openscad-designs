@@ -40,9 +40,12 @@ hat_gpio_pin_rows = 2;
 hat_gpio_pin_pitch_mm = 2.54;
 hat_gpio_pin_size_mm = 0.64;
 hat_gpio_pin_height_mm = 8.5;
+hat_gpio_pad_diameter_mm = 1.45;
+hat_gpio_pad_height_mm = 0.12;
+hat_gpio_through_hole_diameter_mm = 0.72;
 hat_gpio_header_block_length_mm = 51.0;
 hat_gpio_header_block_width_mm = 5.1;
-hat_gpio_header_block_height_mm = 2.5;
+hat_gpio_header_block_height_mm = 0.45;
 hat_gpio_header_center_x_mm = 3.81;
 hat_gpio_header_center_y_mm = 11.43;
 
@@ -53,25 +56,22 @@ grove_socket_label_offset_y_mm = -4.7;
 grove_socket_label_height_mm = 0.2;
 grove_socket_label_size_mm = 2.2;
 grove_digital_sockets_mm = [
-    ["D5", -24.0, -9.5],
-    ["D16", -13.5, -9.5],
-    ["D18", -3.0, -9.5]
+    ["D5", -24.0, 6.8],
+    ["D16", -24.0, -9.5]
 ];
 grove_analog_sockets_mm = [
-    ["A0", 9.0, -9.5],
-    ["A2", 19.5, -9.5],
-    ["A4", 25.6, 0.8],
-    ["A6", 25.6, 9.1]
+    ["A0", -13.5, 6.8],
+    ["A2", -3.0, 6.8],
+    ["A4", 9.0, 6.8]
 ];
 grove_i2c_sockets_mm = [
-    ["I2C", -24.5, 6.8],
-    ["I2C", -14.0, 6.8]
+    ["I2C", -3.0, -9.5]
 ];
 grove_pwm_sockets_mm = [
-    ["PWM", -3.0, 6.8]
+    ["PWM", -13.5, -9.5]
 ];
 grove_uart_sockets_mm = [
-    ["UART", 9.0, 6.8]
+    ["UART", 9.0, -9.5]
 ];
 
 // Grove cable-exit clearance dimensions and positions
@@ -79,15 +79,13 @@ grove_uart_sockets_mm = [
 grove_digital_cable_exit_size_mm = [8.4, 10.0, 4.0];
 grove_digital_cable_exit_center_y_mm = -18.0;
 grove_analog_cable_exit_size_mm = [8.4, 10.0, 4.0];
-grove_analog_cable_exit_center_y_mm = -18.0;
-grove_analog_side_cable_exit_size_mm = [10.0, 8.4, 4.0];
-grove_analog_side_cable_exit_center_x_mm = 37.0;
+grove_analog_cable_exit_center_y_mm = 18.0;
 grove_i2c_cable_exit_size_mm = [8.4, 10.0, 4.0];
-grove_i2c_cable_exit_center_y_mm = 18.0;
+grove_i2c_cable_exit_center_y_mm = -18.0;
 grove_pwm_cable_exit_size_mm = [8.4, 10.0, 4.0];
-grove_pwm_cable_exit_center_y_mm = 18.0;
+grove_pwm_cable_exit_center_y_mm = -18.0;
 grove_uart_cable_exit_size_mm = [8.4, 10.0, 4.0];
-grove_uart_cable_exit_center_y_mm = 18.0;
+grove_uart_cable_exit_center_y_mm = -18.0;
 
 // SWD/debug header dimensions
 swd_debug_header_center_x_mm = 18.0;
@@ -118,7 +116,9 @@ printable_layout_spacing_mm = 24.0;
 // Visual settings
 hat_board_colour = "LimeGreen";
 hat_mounting_hole_colour = "White";
-hat_gpio_header_colour = "Black";
+hat_gpio_header_colour = "DarkSlateGray";
+hat_gpio_pad_colour = "Silver";
+hat_gpio_through_hole_colour = "Black";
 hat_gpio_pin_colour = "Gold";
 grove_socket_colour = "Ivory";
 grove_cable_exit_colour = "LightSkyBlue";
@@ -254,7 +254,7 @@ module seeed_grove_base_hat_zero_pi_stack_reference() {
 }
 
 module seeed_grove_base_hat_zero_gpio_reference() {
-    color(hat_gpio_header_colour)
+    color(hat_gpio_header_colour, 0.65)
     translate([
         hat_gpio_header_origin_x_mm,
         hat_gpio_header_origin_y_mm,
@@ -268,17 +268,29 @@ module seeed_grove_base_hat_zero_gpio_reference() {
 
     for (pin_column = [0:hat_gpio_pin_columns - 1])
     for (pin_row = [0:hat_gpio_pin_rows - 1]) {
+        pin_center_x_mm = hat_gpio_pin_first_x_mm + pin_column * hat_gpio_pin_pitch_mm;
+        pin_center_y_mm = hat_gpio_pin_first_y_mm + pin_row * hat_gpio_pin_pitch_mm;
+        pad_center_z_mm = hat_board_thickness_mm + hat_gpio_header_block_height_mm + hat_gpio_pad_height_mm / 2;
+
+        color(hat_gpio_pad_colour)
+        translate([pin_center_x_mm, pin_center_y_mm, pad_center_z_mm])
+            cylinder(h = hat_gpio_pad_height_mm, d = hat_gpio_pad_diameter_mm, center = true);
+
+        color(hat_gpio_through_hole_colour)
+        translate([pin_center_x_mm, pin_center_y_mm, pad_center_z_mm + 0.01])
+            cylinder(h = hat_gpio_pad_height_mm + 0.03, d = hat_gpio_through_hole_diameter_mm, center = true);
+
         color(hat_gpio_pin_colour)
         translate([
-            hat_gpio_pin_first_x_mm + pin_column * hat_gpio_pin_pitch_mm - hat_gpio_pin_size_mm / 2,
-            hat_gpio_pin_first_y_mm + pin_row * hat_gpio_pin_pitch_mm - hat_gpio_pin_size_mm / 2,
-            hat_board_thickness_mm + hat_gpio_header_block_height_mm
+            pin_center_x_mm,
+            pin_center_y_mm,
+            hat_board_thickness_mm + hat_gpio_header_block_height_mm + hat_gpio_pad_height_mm + hat_gpio_pin_height_mm / 2
         ])
             cube([
                 hat_gpio_pin_size_mm,
                 hat_gpio_pin_size_mm,
                 hat_gpio_pin_height_mm
-            ]);
+            ], center = true);
     }
 }
 
@@ -288,7 +300,7 @@ module seeed_grove_base_hat_zero_grove_socket_reference(show_labels = show_grove
         "Digital",
         grove_digital_cable_exit_size_mm,
         grove_digital_cable_exit_center_y_mm,
-        "front",
+        "row_edges",
         show_labels
     );
     seeed_grove_socket_group(
@@ -296,7 +308,7 @@ module seeed_grove_base_hat_zero_grove_socket_reference(show_labels = show_grove
         "Analog",
         grove_analog_cable_exit_size_mm,
         grove_analog_cable_exit_center_y_mm,
-        "mixed",
+        "back",
         show_labels
     );
     seeed_grove_socket_group(
@@ -480,8 +492,12 @@ module seeed_grove_socket(socket_mm, cable_exit_size_mm, cable_exit_y_mm, exit_s
         grove_socket_colour
     );
 
-    if (exit_side == "mixed" && socket_mm[1] > 22.0) {
-        seeed_grove_side_cable_exit(socket_mm[2]);
+    if (exit_side == "row_edges") {
+        if (socket_mm[2] > 0) {
+            seeed_grove_front_back_cable_exit(socket_mm[1], abs(cable_exit_y_mm), cable_exit_size_mm);
+        } else {
+            seeed_grove_front_back_cable_exit(socket_mm[1], -abs(cable_exit_y_mm), cable_exit_size_mm);
+        }
     } else {
         seeed_grove_front_back_cable_exit(socket_mm[1], cable_exit_y_mm, cable_exit_size_mm);
     }
@@ -495,16 +511,6 @@ module seeed_grove_front_back_cable_exit(center_x_mm, center_y_mm, size_mm) {
         hat_board_thickness_mm + size_mm[2] / 2
     ])
         cube(size_mm, center = true);
-}
-
-module seeed_grove_side_cable_exit(center_y_mm) {
-    color(grove_cable_exit_colour, 0.35)
-    translate([
-        grove_analog_side_cable_exit_center_x_mm,
-        center_y_mm,
-        hat_board_thickness_mm + grove_analog_side_cable_exit_size_mm[2] / 2
-    ])
-        cube(grove_analog_side_cable_exit_size_mm, center = true);
 }
 
 module seeed_centered_rounded_box(size_mm, radius_mm) {
