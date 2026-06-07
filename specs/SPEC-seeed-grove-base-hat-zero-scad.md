@@ -10,14 +10,14 @@ The design will provide a reusable mechanical fit and clearance reference for st
 
 ## Problem Statement
 
-The repository has reusable Raspberry Pi reference models and a Waveshare HAT reference, but the Seeed Grove Base Hat for Raspberry Pi Zero reference has been removed from the current worktree. Existing and future Pi Zero enclosure designs that include this HAT need a deterministic `.scad` source for the board outline, mounting holes, GPIO passthrough, Grove sockets, SWD/debug header, and component clearance without relying on generated mesh files or external OpenSCAD libraries.
+The repository has reusable Raspberry Pi reference models and a Waveshare HAT reference, but the Seeed Grove Base Hat for Raspberry Pi Zero reference has been removed from the current worktree. Existing and future Pi Zero enclosure designs that include this HAT need a deterministic `.scad` source for the board outline, mounting holes, GPIO passthrough, Grove sockets, and component clearance without relying on generated mesh files or external OpenSCAD libraries.
 
 The default Grove connector layout must reflect the user's image-derived coordinate estimates rather than the older over-modeled layout.
 
 ## Scope
 
 - Add one editable OpenSCAD source file for the Seeed Grove Base Hat for Raspberry Pi Zero reference design.
-- Model the HAT board outline, thickness, rounded corners, four Pi Zero-compatible mounting holes, 40-pin GPIO passthrough/header reference, underside GPIO socket/receptacle clearance block, Grove socket clearance blocks, SWD/debug header reference, component clearance blocks, and simple silkscreen/label reference markers.
+- Model the HAT board outline, thickness, rounded corners, four Pi Zero-compatible mounting holes, 40-pin GPIO passthrough/header reference, underside GPIO socket/receptacle clearance block, Grove socket clearance blocks, component clearance blocks, and simple silkscreen/label reference markers.
 - Use the user's estimated Grove connector coordinate table as the default visible Grove layout:
   - `UART`: `(9.4, 12.6)`,
   - `A3/A4`: `(17.8, 12.6)`,
@@ -27,7 +27,7 @@ The default Grove connector layout must reflect the user's image-derived coordin
   - `D26`: `(17.8, 44.1)`,
   - `D5`: `(9.6, 59.9)`,
   - `D6`: `(17.8, 59.1)`.
-- Include adjustable parameters that allow later physical calibration of connector centers, connector body dimensions, board dimensions, mounting holes, GPIO position, SWD/debug position, and component clearances.
+- Include adjustable parameters that allow later physical calibration of connector centers, connector body dimensions, board dimensions, mounting holes, GPIO position, and component clearances.
 - Include a Pi Zero-style 40-pin GPIO passthrough/header reference placed similarly to `designs/pi_zero.scad`.
 - Include an underside GPIO receptacle/socket clearance block where the Raspberry Pi Zero HAT pins enter the Grove HAT.
 - Include render modes for:
@@ -96,7 +96,6 @@ The default Grove connector layout must reflect the user's image-derived coordin
   - shaped as a simplified rectangular clearance volume unless future measurement justifies a more detailed socket model.
 - Public product/wiki facts to model as simplified, adjustable clearance features:
   - Grove interfaces for I2C, UART, Digital, Analog, and PWM-class expansion where visible or user-estimated,
-  - SWD/debug interface,
   - 3.3 V Grove operation note for documentation.
 - Because the researched public page does not provide exact Grove socket center coordinates, all Grove socket positions must be adjustable defaults based on the user's image-derived estimates.
 - The default Grove socket coordinate table must use the user's estimated centers:
@@ -122,11 +121,11 @@ The default Grove connector layout must reflect the user's image-derived coordin
 
 ## Deterministic Behavior
 
-- `render_mode = "assembly"` displays the HAT reference with optional Pi Zero reference, Grove sockets, GPIO header/reference, SWD/debug header, component blocks, and labels according to the visibility toggles.
+- `render_mode = "assembly"` displays the HAT reference with optional Pi Zero reference, Grove sockets, GPIO header/reference, component blocks, and labels according to the visibility toggles.
 - `render_mode = "hat"` displays only the HAT PCB and mounting/reference holes with optional GPIO reference.
 - `render_mode = "connectors"` displays the HAT with Grove/socket/component clearance features emphasized for enclosure planning.
 - `render_mode = "printable_layout"` displays the HAT reference and optional Pi Zero reference separated for visual inspection; it must not imply generated printable parts are being committed.
-- `show_electronics` controls Grove sockets, SWD/debug header, component blocks, LEDs, and other component previews without hiding the PCB or mounting holes.
+- `show_electronics` controls Grove sockets, component blocks, LEDs, and other component previews without hiding the PCB or mounting holes.
 - `show_gpio_header` controls the GPIO passthrough/header reference independently from other component previews, including whether the pin preview is above the board, below the board, or hidden.
 - `show_gpio_socket_clearance` controls the underside GPIO receptacle/socket clearance block independently from the Grove and component previews.
 - `show_grove_labels` controls simple text labels for Grove socket groups independently from connector bodies.
@@ -199,7 +198,7 @@ The default Grove connector layout must reflect the user's image-derived coordin
   - adjustable dimensions are grouped and not redefined inside modules,
   - render modes select the intended assemblies,
   - the board outline and holes match researched and repository-reference dimensions,
-  - Grove socket groups, cable clearances, SWD/debug header, GPIO reference, and component blocks are independently adjustable,
+  - Grove socket groups, GPIO reference, and component blocks are independently adjustable,
   - GPIO header/passthrough placement matches the Pi Zero reference pattern and edge relationship,
   - underside GPIO socket/receptacle clearance is present below the board and aligned with the GPIO reference,
   - default Grove socket labels and centers match the approved user-provided coordinate table,

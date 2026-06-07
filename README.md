@@ -45,10 +45,10 @@ Default dimensions are configurable at the top of the `.scad` file. The initial 
 - Visible metallic GPIO through-hole/pad row plus optional above-board, below-board, or hidden pin previews.
 - Underside GPIO socket/receptacle clearance block below the HAT PCB, aligned with the same GPIO grid.
 - Simplified Grove socket clearance blocks using the image-derived coordinate table below.
-- Simplified SWD/debug, LEDs, and component clearance blocks.
+- Simplified LEDs and component clearance blocks.
 - Grove operates at 3.3 V for electrical planning context, but this file models only mechanical fit and clearance.
 
-Connector bodies, SWD/debug markers, labels, component blocks, and LEDs are simplified clearance volumes. Grove socket positions are image-derived estimates supplied in the approved spec and should be tuned after measuring the actual HAT before precision enclosure work.
+Connector bodies, labels, component blocks, and LEDs are simplified clearance volumes. Grove socket positions are image-derived estimates supplied in the approved spec and should be tuned after measuring the actual HAT before precision enclosure work.
 
 ### Coordinate Basis
 
@@ -87,7 +87,6 @@ The OpenSCAD source starts with an `Adjustable Parameters` section grouped by:
 - Grove connector coordinate table and transform offsets,
 - Grove connector body dimensions,
 - UART printed-case cutout guidance,
-- SWD/debug reference dimensions,
 - component, LED, and label preview dimensions,
 - printable layout,
 - visual settings.
@@ -95,17 +94,16 @@ The OpenSCAD source starts with an `Adjustable Parameters` section grouped by:
 Common edits:
 
 - Change `render_mode` to inspect the full assembly, HAT-only reference, connector clearance view, or separated fit-check layout.
-- Set `show_electronics = false` to hide Grove sockets, SWD/debug, component blocks, LEDs, and UART cutout guidance while keeping the PCB and mounting holes visible.
+- Set `show_electronics = false` to hide Grove sockets, component blocks, LEDs, and UART cutout guidance while keeping the PCB and mounting holes visible.
 - Set `show_gpio_header = false` to hide only the GPIO passthrough/header pin and pad reference.
 - Set `show_gpio_socket_clearance = false` to hide only the underside GPIO socket/receptacle clearance block.
-- Set `show_grove_labels = false` to hide only the Grove, `GPIO/SWD`, and component labels.
+- Set `show_grove_labels = false` to hide only the Grove and `GPIO` labels.
 - Set `show_pi_zero_reference = true` to show the reusable Pi Zero reference below the HAT.
 - Set `show_height_envelope = true` to show the translucent 20.0 mm stack-height planning volume.
 - Set `gpio_pin_preview_mode` to `above`, `below`, or `hidden` for stack planning.
 - Tune `grove_socket_centers_mm`, `grove_coordinate_offset_x_mm`, and `grove_coordinate_offset_y_mm` after physical measurement.
 - Tune `grove_connector_body_width_mm`, `grove_connector_body_length_mm`, and `grove_connector_body_height_mm` for enclosure connector clearance.
 - Tune `uart_cutout_guidance_width_mm` and `uart_cutout_guidance_length_mm` for a printed-case opening around the UART connector.
-- Tune `swd_debug_center_x_mm`, `swd_debug_center_y_mm`, `swd_debug_block_size_mm`, and related `swd_debug_*` variables after measuring the SWD/debug feature on physical hardware.
 - Tune `gpio_socket_clearance_size_x_mm`, `gpio_socket_clearance_size_y_mm`, `gpio_socket_clearance_height_mm`, and `gpio_socket_clearance_z_offset_mm` for the underside receptacle and stack clearance.
 - Tune `hat_mounting_hole_diameter_mm` for specific M2.5 fastener clearance.
 
@@ -133,7 +131,7 @@ openscad -o /tmp/seeed_grove_base_hat_zero_printable_layout.off -D 'render_mode=
 - Keep `show_pi_zero_reference = true` during early stack planning to verify board footprint, mounting-hole alignment, and GPIO relationship against the reusable Pi Zero model.
 - Inspect the default Grove row order as `UART`, `A3/A4`, `I2C`, `A2`, `D16`, `D26`, `D5`, and `D6` before using the model as an enclosure clearance reference.
 - Confirm the Grove socket bodies leave clearance around the Pi Zero-style GPIO passthrough/header reference.
-- Confirm the SWD/debug reference and component blocks do not conflict with Grove connector planning.
+- Confirm the component blocks do not conflict with Grove connector planning.
 - Keep `show_gpio_header = true` when checking stack height so the metallic GPIO pad/header row remains visible above or below the board according to `gpio_pin_preview_mode`.
 - Keep `show_gpio_socket_clearance = true` during early stack planning to account for the underside receptacle where Pi Zero header pins enter the HAT.
 - Leave additional printed-case clearance around Grove sockets until the actual HAT and Grove cables are measured.
@@ -426,8 +424,7 @@ Manual inspection for the Seeed Grove Base Hat for Raspberry Pi Zero reference:
 - `gpio_pin_preview_mode` supports `above`, `below`, and `hidden` pin preview modes.
 - The underside GPIO socket/receptacle clearance block is below the HAT PCB, aligned with the GPIO grid, and controlled by `show_gpio_socket_clearance`.
 - Grove socket bodies leave visible board space around the Pi Zero-style GPIO passthrough/header reference.
-- The SWD/debug reference is visually distinct from Grove sockets and visible in `assembly` and `connectors` modes when `show_electronics = true`.
-- The Grove, SWD/debug, and GPIO labels follow `show_grove_labels`.
+- The Grove and GPIO labels follow `show_grove_labels`.
 - Component blocks, LEDs, and labels are present as simplified clearance references.
 - The README documents the image-derived Grove coordinates, UART cutout guidance, and physical-measurement caveat.
 - `assembly`, `hat`, `connectors`, and `printable_layout` modes show the intended reference views.

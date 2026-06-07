@@ -60,7 +60,7 @@ The test-first phase is replaced by deterministic pre-implementation checklist c
    - underside GPIO socket/receptacle clearance dimensions,
    - Grove connector coordinate table and transform offsets,
    - Grove connector body dimensions,
-   - SWD/debug, component, LED, and label preview dimensions,
+   - component, LED, and label preview dimensions,
    - printable layout,
    - visual settings.
 5. Add `Derived Values` for:
@@ -82,7 +82,6 @@ The test-first phase is replaced by deterministic pre-implementation checklist c
    - Pi Zero-style GPIO passthrough/header reference,
    - underside GPIO socket/receptacle clearance block,
    - Grove connector previews,
-   - SWD/debug reference,
    - component/LED previews,
    - labels,
    - optional Pi Zero stack preview using `use <pi_zero.scad>`,
@@ -174,7 +173,7 @@ Review `designs/seeed_grove_base_hat_zero.scad` and confirm:
 - default Grove socket coordinates match the approved bottom-left PCB coordinate table after transform,
 - Grove socket bodies default to adjustable 8.0 mm x 10.0 mm x 8.0 mm dimensions,
 - UART cutout guidance defaults to adjustable 11.0 mm x 9.0 mm centered on `UART`,
-- SWD/debug and component references are present,
+- component references are present,
 - major geometry is organized through named modules,
 - no generated mesh/export artifacts are present.
 

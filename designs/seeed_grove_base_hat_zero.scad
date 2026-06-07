@@ -91,14 +91,6 @@ uart_cutout_guidance_width_mm = 11.0;
 uart_cutout_guidance_length_mm = 9.0;
 show_uart_cutout_guidance = true;
 
-// SWD/debug preview dimensions
-swd_debug_center_x_mm = 12.8;
-swd_debug_center_y_mm = 33.0;
-swd_debug_block_size_mm = [3.2, 10.0, 2.8];
-swd_debug_pin_diameter_mm = 0.75;
-swd_debug_pin_pitch_mm = 1.27;
-swd_debug_pin_count = 6;
-
 // Component, LED, and label preview dimensions
 component_clearance_blocks_mm = [
     [14.0, 47.5, 5.0, 4.0, 1.3, "DimGray"],
@@ -124,7 +116,6 @@ gpio_pin_colour = "Gold";
 gpio_socket_clearance_colour = "LightSteelBlue";
 grove_connector_colour = "White";
 uart_cutout_guidance_colour = "Orange";
-swd_debug_colour = "Black";
 height_envelope_colour = "LightCoral";
 label_colour = "Black";
 
@@ -206,7 +197,6 @@ module seeed_grove_base_hat_zero_reference_model(
         if (show_uart_cutout_guidance) {
             seeed_uart_cutout_guidance_preview();
         }
-        seeed_swd_debug_reference();
         seeed_component_previews();
         if (show_height_envelope) {
             seeed_height_envelope_preview();
@@ -345,26 +335,6 @@ module seeed_uart_cutout_guidance_preview() {
 // Component References
 // ======================================================
 
-module seeed_swd_debug_reference() {
-    translate([
-        seeed_user_x_to_model_x_mm(swd_debug_center_x_mm),
-        seeed_user_y_to_model_y_mm(swd_debug_center_y_mm),
-        hat_board_thickness_mm + swd_debug_block_size_mm[2] / 2
-    ])
-        color(swd_debug_colour)
-            cube(swd_debug_block_size_mm, center = true);
-
-    for (pin_index = [0:swd_debug_pin_count - 1]) {
-        translate([
-            seeed_user_x_to_model_x_mm(swd_debug_center_x_mm),
-            seeed_user_y_to_model_y_mm(swd_debug_center_y_mm) - (swd_debug_pin_count - 1) * swd_debug_pin_pitch_mm / 2 + pin_index * swd_debug_pin_pitch_mm,
-            hat_board_thickness_mm + swd_debug_block_size_mm[2] + 0.2
-        ])
-            color(gpio_pin_colour)
-                cylinder(h = 0.4, d = swd_debug_pin_diameter_mm, center = true);
-    }
-}
-
 module seeed_component_previews() {
     for (component_data_mm = component_clearance_blocks_mm) {
         seeed_component_block(component_data_mm);
@@ -422,16 +392,6 @@ module seeed_label_previews(show_electronics_preview) {
                 label_size_mm
             );
         }
-
-        seeed_text_label(
-            "SWD",
-            [
-                seeed_user_x_to_model_x_mm(swd_debug_center_x_mm),
-                seeed_user_y_to_model_y_mm(swd_debug_center_y_mm),
-                hat_board_thickness_mm + swd_debug_block_size_mm[2] + label_z_offset_mm
-            ],
-            label_size_mm
-        );
 
     }
 
