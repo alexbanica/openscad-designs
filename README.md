@@ -6,6 +6,7 @@ This repository contains editable OpenSCAD designs.
 
 - `designs/pi_zero.scad`
 - `designs/rpi5.scad`
+- `designs/seeed_grove_base_hat_zero.scad`
 - `designs/waveshare_eth_usb_hub_hat.scad`
 - `designs/rpi5_ai_hat_dual_heatsink_vision_case.scad`
 - `designs/pi_zero_usb_grove_ir_enclosure.scad`
@@ -27,6 +28,80 @@ rpi5_reference_model(show_reference = true, show_active_cooler = false);
 ```
 
 The Pi Zero reference exposes toggles for the full reference, test pads, GPIO header direction, optional sound/vision GPIO pads, and GPIO pin colouring. The Raspberry Pi 5 reference exposes toggles for the full reference, GPIO pins, microSD card preview, and active cooler preview.
+
+## Seeed Grove Base Hat For Raspberry Pi Zero Reference
+
+`designs/seeed_grove_base_hat_zero.scad` provides an editable fit and clearance reference for the Seeed Studio Grove Base Hat for Raspberry Pi Zero. It uses `designs/pi_zero.scad` as the optional Raspberry Pi Zero stack reference and keeps the HAT model standalone for reuse in child designs.
+
+### Component Assumptions
+
+Default dimensions are configurable at the top of the `.scad` file. The initial defaults assume:
+
+- Seeed Grove Base Hat for Raspberry Pi Zero board: 65.0 mm x 30.0 mm x 1.6 mm.
+- Overall top-side height envelope: 20.0 mm.
+- Board corner radius: 1.5 mm.
+- Four mounting holes: 3.0 mm diameter, 3.5 mm from board edges, with 58.0 mm x 23.0 mm center span.
+- Pi Zero-compatible 40-pin GPIO passthrough/header reference near the +Y edge.
+- Simplified Grove socket clearance groups for Digital, Analog, I2C, PWM, and UART.
+- Simplified SWD/debug header, controller, LEDs, and component clearance blocks.
+- Grove operates at 3.3 V for electrical planning context, but this file models only mechanical fit and clearance.
+
+The public source notes captured in the approved spec are inconsistent about analog Grove count: the product title says 4x Analog, while the fetched wiki specification table says 3 Analog. This reference includes adjustable analog socket positions and labels for fit planning; it is not an electrical guarantee.
+
+Connector bodies, cable exits, SWD/debug pins, labels, controller blocks, and LEDs are simplified clearance volumes. Grove socket positions and cable-exit envelopes are adjustable defaults based on visible layout and Pi Zero board constraints, and should be tuned after measuring the actual HAT.
+
+### Adjustable Parameters
+
+The OpenSCAD source starts with an `Adjustable Parameters` section grouped by:
+
+- render controls,
+- board dimensions,
+- mounting holes,
+- stack and Pi Zero reference offsets,
+- GPIO header/reference dimensions,
+- Grove connector dimensions and positions,
+- Grove cable-exit clearance dimensions and positions,
+- SWD/debug header dimensions,
+- controller, component, LED, and label preview dimensions,
+- printable layout,
+- visual settings.
+
+Common edits:
+
+- Change `render_mode` to inspect the full assembly, HAT-only reference, connector clearance view, or separated fit-check layout.
+- Set `show_electronics = false` to hide Grove sockets, cable exits, SWD/debug header, controller blocks, LEDs, and the height envelope while keeping the PCB and mounting holes visible.
+- Set `show_gpio_header = false` to hide only the GPIO passthrough/header reference.
+- Set `show_grove_labels = false` to hide only the Grove and component labels.
+- Set `show_pi_zero_reference = true` to show the reusable Pi Zero reference below the HAT.
+- Tune `grove_digital_sockets_mm`, `grove_analog_sockets_mm`, `grove_i2c_sockets_mm`, `grove_pwm_sockets_mm`, and `grove_uart_sockets_mm` after physical measurement.
+- Tune each Grove group's cable-exit variables, such as `grove_digital_cable_exit_size_mm`, `grove_digital_cable_exit_center_y_mm`, `grove_i2c_cable_exit_size_mm`, `grove_uart_cable_exit_center_y_mm`, `grove_analog_side_cable_exit_size_mm`, and `grove_analog_side_cable_exit_center_x_mm`, for enclosure cable clearance.
+- Tune `hat_mounting_hole_diameter_mm` for specific M2.5 fastener clearance.
+
+### Render Modes
+
+Set `render_mode` to one of:
+
+- `assembly`: HAT reference with optional Pi Zero reference, electronics/components, GPIO header, Grove sockets, cable exits, and labels according to the visibility toggles.
+- `hat`: HAT PCB and mounting holes with optional GPIO reference.
+- `connectors`: HAT reference with Grove/socket/component clearance features emphasized.
+- `printable_layout`: HAT reference and optional Pi Zero fit reference separated for visual inspection.
+
+Optional inspection commands for users with OpenSCAD installed:
+
+```sh
+openscad -o /tmp/seeed_grove_base_hat_zero_assembly.off -D 'render_mode="assembly"' designs/seeed_grove_base_hat_zero.scad
+openscad -o /tmp/seeed_grove_base_hat_zero_hat.off -D 'render_mode="hat"' designs/seeed_grove_base_hat_zero.scad
+openscad -o /tmp/seeed_grove_base_hat_zero_connectors.off -D 'render_mode="connectors"' designs/seeed_grove_base_hat_zero.scad
+openscad -o /tmp/seeed_grove_base_hat_zero_printable_layout.off -D 'render_mode="printable_layout"' designs/seeed_grove_base_hat_zero.scad
+```
+
+### Fit Notes
+
+- Use the model as a child design reference with `use <seeed_grove_base_hat_zero.scad>` and call `seeed_grove_base_hat_zero_reference_model(...)` explicitly.
+- Keep `show_pi_zero_reference = true` during early stack planning to verify board footprint, mounting-hole alignment, and GPIO relationship against the reusable Pi Zero model.
+- Leave additional printed-case clearance around Grove sockets and cable exits until the actual HAT and Grove cables are measured.
+- The 20.0 mm overall height envelope is a planning volume; connector and component blocks remain independently adjustable.
+- The design guidance remains compatible with Bambu Lab P2S and AMS 2 Pro fit-check workflows; no generated mesh exports are committed.
 
 ## Waveshare ETH/USB HUB HAT Reference
 
@@ -254,6 +329,10 @@ Optional OpenSCAD inspection commands for users with OpenSCAD installed:
 openscad --version
 openscad -o /tmp/pi_zero_reference.off designs/pi_zero.scad
 openscad -o /tmp/rpi5_reference.off designs/rpi5.scad
+openscad -o /tmp/seeed_grove_base_hat_zero_assembly.off -D 'render_mode="assembly"' designs/seeed_grove_base_hat_zero.scad
+openscad -o /tmp/seeed_grove_base_hat_zero_hat.off -D 'render_mode="hat"' designs/seeed_grove_base_hat_zero.scad
+openscad -o /tmp/seeed_grove_base_hat_zero_connectors.off -D 'render_mode="connectors"' designs/seeed_grove_base_hat_zero.scad
+openscad -o /tmp/seeed_grove_base_hat_zero_printable_layout.off -D 'render_mode="printable_layout"' designs/seeed_grove_base_hat_zero.scad
 openscad -o /tmp/waveshare_eth_usb_hub_hat_assembly.off -D 'render_mode="assembly"' designs/waveshare_eth_usb_hub_hat.scad
 openscad -o /tmp/waveshare_eth_usb_hub_hat_only.off -D 'render_mode="hat"' designs/waveshare_eth_usb_hub_hat.scad
 openscad -o /tmp/waveshare_eth_usb_hub_hat_adapter.off -D 'render_mode="micro_usb_adapter"' designs/waveshare_eth_usb_hub_hat.scad
@@ -285,6 +364,20 @@ Manual inspection for the reusable Raspberry Pi reference models:
 - Pi Zero preview shows the board, configured optional features, GPIO header, test pads, and version-dependent components.
 - Raspberry Pi 5 preview shows the board, configured optional features, GPIO pins, microSD preview, and active cooler when enabled.
 - Child designs can show or hide each reference model and its major optional features without editing the base file.
+
+Manual inspection for the Seeed Grove Base Hat for Raspberry Pi Zero reference:
+
+- `designs/seeed_grove_base_hat_zero.scad` has clearly labeled `Adjustable Parameters` and `Derived Values` sections.
+- Adjustable linear variables use `_mm`, and render modes dispatch deterministically.
+- Board defaults are 65.0 mm x 30.0 mm x 1.6 mm with a 20.0 mm overall height envelope.
+- Mounting holes default to 3.0 mm diameter, 3.5 mm edge offsets, and 58.0 mm x 23.0 mm center span.
+- The file uses `use <pi_zero.scad>` and can show the optional Pi Zero stack reference without duplicating board geometry.
+- `show_electronics`, `show_gpio_header`, `show_grove_labels`, and `show_pi_zero_reference` independently control their intended visual groups.
+- Grove socket bodies and cable-exit envelopes are adjustable for Digital, Analog, I2C, PWM, and UART groups.
+- SWD/debug header, controller/component blocks, LEDs, and labels are present as simplified clearance references.
+- The README documents the analog-count discrepancy and treats socket placement as a measurement-tunable reference.
+- `assembly`, `hat`, `connectors`, and `printable_layout` modes show the intended reference views.
+- No generated mesh or export artifacts are added.
 
 Manual inspection for the Waveshare ETH/USB HUB HAT reference:
 
