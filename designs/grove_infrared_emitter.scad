@@ -48,7 +48,7 @@ grove_connector_z_clearance_mm = 0.0;
 grove_cable_clearance_width_mm = 12.0;
 grove_cable_clearance_length_mm = 12.0;
 grove_cable_clearance_height_mm = 7.0;
-grove_cable_clearance_exit_length_mm = 10.0;
+grove_cable_clearance_bottom_gap_mm = 0.2;
 
 // IR LED body and extension dimensions
 ir_led_diameter_mm = 5.0;
@@ -107,10 +107,15 @@ mounting_hole_centers_mm = [
 ];
 grove_connector_center_z_mm =
     pcb_thickness_mm + grove_connector_height_mm / 2 + grove_connector_z_clearance_mm;
+grove_connector_top_z_mm =
+    pcb_thickness_mm + grove_connector_z_clearance_mm + grove_connector_height_mm;
+grove_cable_clearance_center_x_mm = grove_connector_center_x_mm;
 grove_cable_clearance_center_y_mm =
-    -pcb_half_length_mm - grove_cable_clearance_exit_length_mm / 2;
+    grove_connector_center_y_mm;
 grove_cable_clearance_center_z_mm =
-    pcb_thickness_mm + grove_cable_clearance_height_mm / 2 + clearance_guide_lift_mm;
+    grove_connector_top_z_mm
+    + grove_cable_clearance_bottom_gap_mm
+    + grove_cable_clearance_height_mm / 2;
 ir_led_center_y_mm =
     pcb_half_length_mm + ir_led_extension_beyond_pcb_mm - ir_led_body_length_mm / 2;
 ir_led_front_y_mm = pcb_half_length_mm + ir_led_extension_beyond_pcb_mm;
@@ -248,7 +253,7 @@ module grove_infrared_emitter_grove_connector_preview() {
 module grove_infrared_emitter_grove_cable_clearance_preview() {
     color(grove_clearance_colour, 0.32)
     translate([
-        grove_connector_center_x_mm,
+        grove_cable_clearance_center_x_mm,
         grove_cable_clearance_center_y_mm,
         grove_cable_clearance_center_z_mm
     ])

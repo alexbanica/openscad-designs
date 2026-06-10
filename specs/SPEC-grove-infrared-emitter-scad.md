@@ -15,7 +15,7 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
 ## Scope
 
 - Add one editable OpenSCAD source file for the Grove - Infrared Emitter reference design.
-- Model the module PCB outline, thickness, corner radius, mounting holes, Grove connector body and cable clearance, IR emitter LED body, LED forward extension, major component clearance blocks, and simple label/reference markers.
+- Model the module PCB outline, thickness, corner radius, mounting holes, Grove connector body and perpendicular cable clearance, IR emitter LED body, LED forward extension, major component clearance blocks, and simple label/reference markers.
 - Use the detailed public mechanical default:
   - PCB width: 20.0 mm,
   - PCB length: 24.0 mm,
@@ -47,6 +47,7 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
 
 - Grove IR emitter: Seeed Studio Grove - Infrared Emitter module.
 - Grove connector: the 4-pin Grove cable socket represented as an adjustable clearance volume for the connector body and plug/cable access.
+- Perpendicular Grove cable clearance: the Grove cable/plug access volume that rises out of the top-mounted connector along the positive Z axis, perpendicular to the PCB plane.
 - IR LED extension: the portion of the infrared emitting LED that extends beyond the PCB edge, defaulting to 7.5 mm beyond the PCB.
 - Reference model: an editable OpenSCAD approximation for fit, clearance, and enclosure planning, not a certified vendor mechanical model.
 - Module coordinate system: origin at the board center on the PCB bottom face, X across the board width, Y along the board length, and Z upward from the PCB bottom face. The IR LED points toward the positive Y direction by default.
@@ -70,6 +71,11 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
 - Default board corner radius must be adjustable.
 - Mounting holes must be included as adjustable fit references. If exact published hole positions are not available in the approved sources, defaults must be documented as Grove 20 mm-class module assumptions and left adjustable.
 - The Grove connector body must be represented as a simplified adjustable clearance volume near one PCB edge, with separate adjustable cable/plug clearance guidance.
+- The Grove cable/plug clearance guide must model the actual cable exit direction as perpendicular to the PCB plane:
+  - centered in X/Y on the Grove connector by default,
+  - extending upward along positive Z from above the connector body,
+  - represented as a simplified adjustable rectangular clearance volume,
+  - not represented as a horizontal off-board side-exit clearance unless a future approved spec explicitly adds an alternate cable-routing mode.
 - The IR LED must be represented as a simplified LED body with:
   - adjustable diameter,
   - adjustable body length,
@@ -86,17 +92,18 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
 
 - `render_mode = "assembly"` displays the full module reference with PCB, mounting holes, Grove connector, IR LED, component clearance blocks, labels, and optional clearance/sightline guides according to visibility toggles.
 - `render_mode = "pcb"` displays only the PCB and mounting holes.
-- `render_mode = "clearance"` displays the module with Grove connector, cable clearance, IR LED extension, component blocks, and sightline/clearance guides emphasized for enclosure planning.
+- `render_mode = "clearance"` displays the module with Grove connector, perpendicular cable clearance, IR LED extension, component blocks, and sightline/clearance guides emphasized for enclosure planning.
 - `render_mode = "printable_layout"` displays the reference and clearance guides separated for visual inspection; it must not imply generated printable parts are being committed.
 - `show_electronics` controls component clearance blocks without hiding the PCB or mounting holes.
 - `show_grove_connector` controls the Grove connector body and cable/plug clearance guidance independently from other component previews.
 - `show_ir_led` controls the IR LED body and forward extension independently from other component previews.
 - `show_labels` controls simple text labels independently from connector and LED bodies.
-- `show_clearance_guides` controls IR sightline, LED extension envelope, and Grove cable/plug clearance guides independently from solid component bodies.
+- `show_clearance_guides` controls IR sightline, LED extension envelope, and Grove perpendicular cable/plug clearance guides independently from solid component bodies.
 - The board outline must render as a 20.0 mm x 24.0 mm PCB by default.
 - The IR LED must point out from the positive Y board edge by default and extend 7.5 mm beyond that edge by default.
 - The full default mechanical envelope must account for the PCB length plus the IR LED extension in positive Y, while keeping PCB dimensions distinct from extension dimensions.
 - The Grove connector must be positioned on the board as an adjustable clearance block suitable for cable access planning.
+- The default Grove cable/plug clearance guide must be a vertical clearance volume over the connector, with its bottom at or above the top of the connector body and its height adjustable.
 - Mounting-hole positions and diameters must be adjustable, and the source must document that defaults are mechanical planning assumptions until physically measured.
 - The model must remain usable as a child design reference through `use <...>` and named module calls.
 
@@ -129,7 +136,7 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
 - Visibility toggles independently control electronics/components, Grove connector, IR LED, labels, and clearance/sightline guides.
 - The source documents the selected detailed mechanical default and the conflicting public 20.0 mm x 20.0 mm wiki size.
 - Mounting-hole positions and diameters are adjustable and documented as assumptions until measured.
-- Grove connector body, cable clearance, IR LED body, IR LED extension, and major component clearance blocks are adjustable.
+- Grove connector body, perpendicular cable clearance, IR LED body, IR LED extension, and major component clearance blocks are adjustable.
 - README documents the new design file, assumptions, source dimensions, render modes, common adjustable parameters, optional OpenSCAD commands, fit notes, and manual inspection checklist.
 - `git diff --check` passes after implementation.
 - No generated mesh/export artifacts are added.
@@ -143,7 +150,7 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
   - adjustable dimensions are grouped and not redefined inside modules,
   - render modes select the intended assemblies,
   - the PCB dimensions and IR LED extension match the approved defaults,
-  - the Grove connector, IR LED, component blocks, labels, and clearance guides are independently adjustable and toggleable,
+  - the Grove connector, perpendicular cable clearance, IR LED, component blocks, labels, and clearance guides are independently adjustable and toggleable,
   - the implementation documents source conflicts and physical-measurement caveats,
   - README entries match the implemented behavior,
   - no generated mesh/export artifacts are present.
@@ -155,4 +162,4 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
 - Document the selected default dimensions: 20.0 mm x 24.0 mm PCB with 7.5 mm IR LED extension beyond the PCB.
 - Document that Seeed's wiki lists 20.0 mm x 20.0 mm, while the detailed mechanical PDF lists the selected larger PCB default.
 - Add optional OpenSCAD commands for the new render modes.
-- Add manual inspection checklist items for the PCB footprint, mounting-hole assumptions, Grove connector clearance, IR LED extension, and no generated mesh exports.
+- Add manual inspection checklist items for the PCB footprint, mounting-hole assumptions, perpendicular Grove connector cable clearance, IR LED extension, and no generated mesh exports.

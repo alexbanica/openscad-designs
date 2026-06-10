@@ -43,7 +43,7 @@ Default dimensions are configurable at the top of the `.scad` file. The initial 
 - Board corner radius: 1.5 mm.
 - Four mounting holes: 2.0 mm diameter, 2.5 mm from each board edge.
 - Simplified Grove connector body: 8.0 mm x 7.5 mm x 5.8 mm, centered near the -Y board edge.
-- Simplified Grove cable/plug clearance guide behind the connector.
+- Simplified Grove cable/plug clearance guide centered over the connector and extending upward perpendicular to the PCB.
 - Simplified 5.0 mm IR LED body, centered 4.0 mm above the PCB bottom face and pointing toward +Y.
 - Optional IR sightline guide using the public 17 degree half-intensity angle as visual clearance context only.
 - Simplified component clearance blocks and text labels.
@@ -84,7 +84,7 @@ Set `render_mode` to one of:
 
 - `assembly`: full module reference with PCB, mounting holes, optional electronics, Grove connector, IR LED, labels, and clearance guides according to visibility toggles.
 - `pcb`: PCB and mounting holes only.
-- `clearance`: module reference with connector, cable clearance, IR LED extension, component blocks, and sightline guides emphasized.
+- `clearance`: module reference with connector, perpendicular cable clearance, IR LED extension, component blocks, and sightline guides emphasized.
 - `printable_layout`: reference body and clearance guides separated for visual inspection; this does not add generated printable exports to source control.
 
 Optional inspection commands for users with OpenSCAD installed:
@@ -100,8 +100,8 @@ openscad -o /tmp/grove_infrared_emitter_printable_layout.off -D 'render_mode="pr
 
 - Use the model as a child design reference with `use <grove_infrared_emitter.scad>` and call `grove_infrared_emitter_reference_model(...)` explicitly.
 - The model coordinate origin is the PCB center on the bottom face. X runs across the 20.0 mm width, Y runs along the 24.0 mm length, and the IR LED points toward +Y.
-- Keep `show_clearance_guides = true` during early enclosure planning to account for the Grove cable/plug area, LED extension envelope, and 17 degree sightline guide.
-- Leave additional printed-case clearance around the Grove connector, cable exit, and LED opening until the actual board and Grove cable are measured.
+- Keep `show_clearance_guides = true` during early enclosure planning to account for the upward Grove cable/plug area, LED extension envelope, and 17 degree sightline guide.
+- Leave additional printed-case clearance above the Grove connector, around the cable/plug, and at the LED opening until the actual board and Grove cable are measured.
 - Treat the 940 nm wavelength and 17 degree half-intensity angle as non-electrical visual context only; this file models mechanical fit and clearance.
 - The design guidance remains compatible with Bambu Lab P2S and AMS 2 Pro fit-check workflows; no generated mesh exports are committed.
 
@@ -112,7 +112,7 @@ Manual inspection checklist:
 - Confirm the selected 20.0 mm x 24.0 mm source default and conflicting 20.0 mm x 20.0 mm wiki size are documented.
 - Confirm mounting-hole defaults are adjustable and documented as assumptions until measured.
 - Confirm `show_electronics`, `show_grove_connector`, `show_ir_led`, `show_labels`, and `show_clearance_guides` independently control their intended visual groups.
-- Confirm the simplified Grove connector and cable clearance are adjustable and visible in `assembly` and `clearance` modes when enabled.
+- Confirm the simplified Grove connector and perpendicular cable clearance are adjustable and visible in `assembly` and `clearance` modes when enabled.
 - Confirm the IR LED body, extension envelope, and 17 degree sightline guide are adjustable and visible when enabled.
 - Confirm no generated mesh exports are added. Repository validation remains manual review plus `git diff --check`; do not run OpenSCAD locally in this environment.
 

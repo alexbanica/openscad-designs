@@ -12,9 +12,9 @@ Implementation must not revert unrelated dirty worktree changes present at imple
 
 ## Affected Files
 
-- Create `designs/grove_infrared_emitter.scad`.
+- Update `designs/grove_infrared_emitter.scad`.
 - Update `README.md`.
-- Keep `specs/SPEC-grove-infrared-emitter-scad.md` unchanged except for mechanical status or typo fixes that do not alter behavior.
+- Update `specs/SPEC-grove-infrared-emitter-scad.md` only for the approved Grove cable-clearance correction.
 - Do not edit existing Raspberry Pi reference source files.
 - Do not edit existing HAT design/spec/plan files.
 - Do not add generated mesh/export files.
@@ -44,7 +44,7 @@ The test-first phase is replaced by deterministic pre-implementation checklist c
 ## Implementation Steps
 
 1. Inspect only the approved spec, this plan, `AGENTS.md`, `README.md`, and one or two existing `.scad` files needed to match repository style.
-2. Create `designs/grove_infrared_emitter.scad` as a standalone OpenSCAD 2021.01-compatible reference model.
+2. Update `designs/grove_infrared_emitter.scad` in place as a standalone OpenSCAD 2021.01-compatible reference model.
 3. At the top of the new file, document:
    - units are millimeters,
    - the module coordinate system origin is the board center on the PCB bottom face,
@@ -56,7 +56,7 @@ The test-first phase is replaced by deterministic pre-implementation checklist c
    - board dimensions,
    - mounting holes,
    - Grove connector dimensions and placement,
-   - Grove cable/plug clearance dimensions,
+   - Grove perpendicular cable/plug clearance dimensions,
    - IR LED body and extension dimensions,
    - component and label preview dimensions,
    - clearance and sightline guide dimensions,
@@ -65,7 +65,7 @@ The test-first phase is replaced by deterministic pre-implementation checklist c
 5. Add `Derived Values` for:
    - board half dimensions,
    - mounting-hole positions,
-   - Grove connector and cable clearance placement,
+   - Grove connector and perpendicular cable clearance placement,
    - IR LED center, forward extension envelope, and full mechanical envelope,
    - guide geometry constants.
 6. Implement render dispatch for:
@@ -73,7 +73,7 @@ The test-first phase is replaced by deterministic pre-implementation checklist c
    - `pcb`,
    - `clearance`,
    - `printable_layout`.
-7. Implement named modules for:
+7. Preserve named modules for:
    - `grove_infrared_emitter_reference_model(...)`,
    - PCB board and mounting holes,
    - Grove connector preview,
@@ -95,6 +95,9 @@ The test-first phase is replaced by deterministic pre-implementation checklist c
 10. Implement Grove connector and cable clearance as simplified adjustable clearance volumes:
     - connector body near one PCB edge,
     - independent cable/plug clearance guide,
+    - default cable/plug clearance centered in X/Y over the Grove connector,
+    - default cable/plug clearance extending upward along positive Z from above the connector body,
+    - no horizontal off-board side-exit clearance in the default model,
     - controlled by `show_grove_connector` and `show_clearance_guides`.
 11. Implement IR LED geometry:
     - adjustable cylindrical LED body,
@@ -124,7 +127,7 @@ The test-first phase is replaced by deterministic pre-implementation checklist c
     - document the selected detailed mechanical default,
     - document the conflicting Seeed wiki size,
     - document mounting-hole assumptions,
-    - document Grove connector, cable clearance, IR LED extension, and optional sightline guide behavior,
+    - document Grove connector, perpendicular cable clearance, IR LED extension, and optional sightline guide behavior,
     - document render modes and visibility toggles,
     - document adjustable parameters and physical-measurement caveats,
     - document optional OpenSCAD commands for users with OpenSCAD installed,
@@ -153,7 +156,8 @@ Review `designs/grove_infrared_emitter.scad` and confirm:
 - render modes dispatch deterministically,
 - PCB dimensions and IR LED extension match the approved spec,
 - mounting holes are adjustable and documented as assumptions,
-- Grove connector and cable clearance are independently adjustable,
+- Grove connector and perpendicular cable clearance are independently adjustable,
+- Grove cable/plug clearance is centered over the connector and extends upward from the connector instead of horizontally off the board,
 - IR LED body and extension are independently adjustable,
 - optional sightline/beam guide uses an adjustable 17 degree half-intensity default,
 - visibility toggles control the intended groups,
@@ -184,7 +188,7 @@ Main-agent QA is manual review only:
 Required:
 
 - `README.md` design list update.
-- `README.md` Grove Infrared Emitter component assumptions, source dimensions, source conflict note, adjustable parameters, render modes, optional commands, fit notes, and manual inspection checklist.
+- `README.md` Grove Infrared Emitter component assumptions, source dimensions, source conflict note, perpendicular cable clearance behavior, adjustable parameters, render modes, optional commands, fit notes, and manual inspection checklist.
 
 No `AGENTS.md` update is required.
 
