@@ -32,7 +32,7 @@ board_clearance_x_mm = 5.0;
 board_clearance_y_mm = 5.0;
 pi_zero_standoff_height_mm = 4.0;
 pi_zero_to_waveshare_hat_z_offset_mm = 11.2;
-waveshare_to_grove_hat_z_offset_mm = 10.5;
+waveshare_to_grove_hat_z_offset_mm = 20.0;
 electronics_preview_lift_mm = 0.0;
 grove_hat_rotation_deg = 90.0;
 
@@ -65,41 +65,41 @@ cover_screw_head_recess_depth_mm = 1.2;
 pi_micro_sd_cutout_size_mm = [14.0, 8.0, 5.0];
 pi_micro_sd_cutout_center_x_mm = -32.5;
 pi_micro_sd_cutout_center_y_mm = 1.9;
-pi_micro_sd_cutout_center_z_mm = 7.8;
+pi_micro_sd_cutout_local_center_z_mm = 1.4;
 pi_mini_hdmi_cutout_size_mm = [13.5, 7.5, 7.0];
 pi_mini_hdmi_cutout_center_x_mm = -20.1;
 pi_mini_hdmi_cutout_center_y_mm = -22.4;
-pi_mini_hdmi_cutout_center_z_mm = 8.2;
+pi_mini_hdmi_cutout_local_center_z_mm = 1.8;
 pi_micro_usb_data_cutout_size_mm = [9.5, 7.5, 6.0];
 pi_micro_usb_data_cutout_center_x_mm = 8.9;
 pi_micro_usb_data_cutout_center_y_mm = -22.4;
-pi_micro_usb_data_cutout_center_z_mm = 7.8;
+pi_micro_usb_data_cutout_local_center_z_mm = 1.4;
 pi_micro_usb_power_cutout_size_mm = [9.5, 7.5, 6.0];
 pi_micro_usb_power_cutout_center_x_mm = 21.5;
 pi_micro_usb_power_cutout_center_y_mm = -22.4;
-pi_micro_usb_power_cutout_center_z_mm = 7.8;
+pi_micro_usb_power_cutout_local_center_z_mm = 1.4;
 pi_camera_cutout_size_mm = [8.0, 20.0, 5.0];
 pi_camera_cutout_center_x_mm = 32.5;
 pi_camera_cutout_center_y_mm = 0.0;
-pi_camera_cutout_center_z_mm = 9.0;
+pi_camera_cutout_local_center_z_mm = 2.6;
 
 // Waveshare port cutout dimensions and offsets
 waveshare_rj45_cutout_size_mm = [19.0, 10.0, 16.0];
 waveshare_rj45_cutout_center_x_mm = -16.0;
 waveshare_rj45_cutout_center_y_mm = -22.4;
-waveshare_rj45_cutout_center_z_mm = 22.5;
+waveshare_rj45_cutout_local_center_z_mm = 8.1;
 waveshare_front_usb_a_cutout_size_mm = [16.0, 10.0, 10.0];
 waveshare_front_usb_a_cutout_center_x_mm = 11.0;
 waveshare_front_usb_a_cutout_center_y_mm = -22.4;
-waveshare_front_usb_a_cutout_center_z_mm = 20.5;
+waveshare_front_usb_a_cutout_local_center_z_mm = 5.1;
 waveshare_left_usb_a_cutout_size_mm = [10.0, 16.0, 11.0];
 waveshare_left_usb_a_cutout_center_x_mm = -39.9;
 waveshare_left_usb_a_cutout_center_y_mm = -4.5;
-waveshare_left_usb_a_cutout_center_z_mm = 20.5;
+waveshare_left_usb_a_cutout_local_center_z_mm = 5.1;
 waveshare_right_usb_a_cutout_size_mm = [13.0, 18.0, 12.0];
 waveshare_right_usb_a_cutout_center_x_mm = 40.8;
 waveshare_right_usb_a_cutout_center_y_mm = -4.5;
-waveshare_right_usb_a_cutout_center_z_mm = 20.5;
+waveshare_right_usb_a_cutout_local_center_z_mm = 5.1;
 wireless_dongle_extra_clearance_x_mm = 3.0;
 port_cutout_extra_clearance_mm = 0.6;
 
@@ -107,31 +107,49 @@ port_cutout_extra_clearance_mm = 0.6;
 ir_pcb_width_mm = 20.0;
 ir_pcb_length_mm = 24.0;
 ir_pcb_thickness_mm = 1.6;
-ir_mount_center_x_mm = 20.0;
-ir_mount_center_y_mm = 2.5;
+grove_selected_socket_coordinate_x_mm = 9.4;
+grove_selected_socket_coordinate_y_mm = 12.6;
+grove_selected_socket_offset_x_mm = 0.0;
+grove_selected_socket_offset_y_mm = -0.8;
+ir_mount_center_offset_x_mm = 0.0;
+ir_mount_center_offset_y_mm = 0.0;
+ir_mount_bottom_above_grove_hat_mm = 3.0;
 ir_mount_rotation_deg = 180.0;
-ir_mount_standoff_height_mm = 5.0;
 ir_mount_standoff_outer_diameter_mm = 4.8;
 ir_mount_screw_hole_diameter_mm = 2.1;
+ir_mount_plate_thickness_mm = 2.4;
+ir_mount_plate_clearance_x_mm = 3.0;
+ir_mount_plate_clearance_y_mm = 3.0;
+ir_mount_front_rib_width_mm = 3.0;
 ir_mounting_hole_edge_offset_x_mm = 2.5;
 ir_mounting_hole_edge_offset_y_mm = 2.5;
+ir_grove_connector_local_x_mm = 0.0;
+ir_grove_connector_local_y_mm = -8.1;
+ir_grove_connector_local_cable_z_mm = 11.2;
 
 // IR LED aperture
 ir_led_diameter_mm = 5.0;
 ir_led_aperture_diameter_mm = 6.2;
-ir_led_aperture_center_x_mm = 20.0;
-ir_led_aperture_center_z_mm = 13.0;
+ir_led_local_center_x_mm = 0.0;
+ir_led_local_center_y_mm = 16.0;
+ir_led_local_center_z_mm = 4.0;
+ir_led_aperture_center_offset_x_mm = 0.0;
+ir_led_aperture_center_offset_z_mm = 0.0;
 ir_led_aperture_wall_clearance_depth_mm = 6.0;
-ir_led_aperture_guide_length_mm = 20.0;
+ir_led_aperture_external_guide_length_mm = 20.0;
 
 // Internal Grove cable path
 grove_cable_path_width_mm = 10.0;
 grove_cable_path_height_mm = 6.0;
-grove_cable_path_start_x_mm = -5.0;
-grove_cable_path_start_y_mm = 10.0;
-grove_cable_path_end_x_mm = 20.0;
-grove_cable_path_end_y_mm = -9.5;
-grove_cable_path_center_z_mm = 42.0;
+grove_hat_coordinate_origin_x_mm = -15.0;
+grove_hat_coordinate_origin_y_mm = -32.5;
+grove_hat_connector_top_local_z_mm = 9.6;
+grove_cable_path_start_local_z_offset_mm = 4.2;
+grove_cable_path_start_offset_x_mm = 0.0;
+grove_cable_path_start_offset_y_mm = 0.0;
+grove_cable_path_end_offset_x_mm = 0.0;
+grove_cable_path_end_offset_y_mm = 0.0;
+grove_cable_path_end_z_offset_mm = 0.0;
 grove_cable_path_clearance_lift_mm = 0.4;
 
 // Anti-slide recesses/feet
@@ -167,14 +185,79 @@ internal_length_mm = board_length_mm + 2 * board_clearance_x_mm;
 internal_width_mm = board_width_mm + 2 * board_clearance_y_mm;
 outer_length_mm = internal_length_mm + 2 * wall_thickness_mm;
 outer_width_mm = internal_width_mm + 2 * wall_thickness_mm;
-stack_clearance_height_mm = measured_stack_height_mm + extra_upward_headroom_mm;
-case_total_height_mm =
-    floor_thickness_mm + pi_zero_standoff_height_mm + stack_clearance_height_mm
-    + top_roof_thickness_mm + top_cover_internal_clearance_mm;
-top_cover_height_mm = case_total_height_mm - tray_wall_height_mm;
 pi_zero_bottom_z_mm = floor_thickness_mm + pi_zero_standoff_height_mm + electronics_preview_lift_mm;
 waveshare_hat_bottom_z_mm = pi_zero_bottom_z_mm + pi_zero_to_waveshare_hat_z_offset_mm;
 grove_hat_bottom_z_mm = waveshare_hat_bottom_z_mm + waveshare_to_grove_hat_z_offset_mm;
+grove_selected_socket_local_x_mm =
+    grove_hat_coordinate_origin_x_mm
+    + grove_selected_socket_coordinate_x_mm
+    + grove_selected_socket_offset_x_mm;
+grove_selected_socket_local_y_mm =
+    grove_hat_coordinate_origin_y_mm
+    + grove_selected_socket_coordinate_y_mm
+    + grove_selected_socket_offset_y_mm;
+grove_selected_socket_center_x_mm =
+    rotate_x_mm(grove_selected_socket_local_x_mm, grove_selected_socket_local_y_mm, grove_hat_rotation_deg);
+grove_selected_socket_center_y_mm =
+    rotate_y_mm(grove_selected_socket_local_x_mm, grove_selected_socket_local_y_mm, grove_hat_rotation_deg);
+grove_cable_path_start_x_mm = grove_selected_socket_center_x_mm + grove_cable_path_start_offset_x_mm;
+grove_cable_path_start_y_mm = grove_selected_socket_center_y_mm + grove_cable_path_start_offset_y_mm;
+grove_cable_path_start_z_mm =
+    grove_hat_bottom_z_mm
+    + grove_hat_connector_top_local_z_mm
+    + grove_cable_path_start_local_z_offset_mm;
+ir_mount_center_x_mm = grove_selected_socket_center_x_mm + ir_mount_center_offset_x_mm;
+ir_mount_center_y_mm = grove_selected_socket_center_y_mm + ir_mount_center_offset_y_mm;
+ir_emitter_bottom_z_mm = grove_hat_bottom_z_mm + ir_mount_bottom_above_grove_hat_mm;
+ir_mount_standoff_height_mm = ir_emitter_bottom_z_mm - floor_thickness_mm;
+ir_led_center_x_mm =
+    ir_mount_center_x_mm
+    + rotate_x_mm(ir_led_local_center_x_mm, ir_led_local_center_y_mm, ir_mount_rotation_deg);
+ir_led_center_y_mm =
+    ir_mount_center_y_mm
+    + rotate_y_mm(ir_led_local_center_x_mm, ir_led_local_center_y_mm, ir_mount_rotation_deg);
+ir_led_center_z_mm = ir_emitter_bottom_z_mm + ir_led_local_center_z_mm;
+ir_led_aperture_center_x_mm = ir_led_center_x_mm + ir_led_aperture_center_offset_x_mm;
+ir_led_aperture_center_y_mm = -outer_width_mm / 2;
+ir_led_aperture_center_z_mm = ir_led_center_z_mm + ir_led_aperture_center_offset_z_mm;
+grove_cable_path_end_x_mm =
+    ir_mount_center_x_mm
+    + rotate_x_mm(ir_grove_connector_local_x_mm, ir_grove_connector_local_y_mm, ir_mount_rotation_deg)
+    + grove_cable_path_end_offset_x_mm;
+grove_cable_path_end_y_mm =
+    ir_mount_center_y_mm
+    + rotate_y_mm(ir_grove_connector_local_x_mm, ir_grove_connector_local_y_mm, ir_mount_rotation_deg)
+    + grove_cable_path_end_offset_y_mm;
+grove_cable_path_end_z_mm =
+    ir_emitter_bottom_z_mm
+    + ir_grove_connector_local_cable_z_mm
+    + grove_cable_path_end_z_offset_mm;
+stack_clearance_height_mm = measured_stack_height_mm + extra_upward_headroom_mm;
+stack_planned_top_z_mm = floor_thickness_mm + pi_zero_standoff_height_mm + stack_clearance_height_mm;
+grove_cable_path_top_z_mm =
+    max(grove_cable_path_start_z_mm, grove_cable_path_end_z_mm)
+    + grove_cable_path_clearance_lift_mm
+    + grove_cable_path_height_mm / 2;
+ir_emitter_clearance_top_z_mm =
+    ir_emitter_bottom_z_mm
+    + ir_grove_connector_local_cable_z_mm
+    + grove_cable_path_height_mm / 2;
+internal_clearance_top_z_mm =
+    max(stack_planned_top_z_mm, max(grove_cable_path_top_z_mm, ir_emitter_clearance_top_z_mm));
+case_total_height_mm =
+    internal_clearance_top_z_mm
+    + top_roof_thickness_mm
+    + top_cover_internal_clearance_mm;
+top_cover_height_mm = case_total_height_mm - tray_wall_height_mm;
+pi_micro_sd_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_micro_sd_cutout_local_center_z_mm;
+pi_mini_hdmi_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_mini_hdmi_cutout_local_center_z_mm;
+pi_micro_usb_data_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_micro_usb_data_cutout_local_center_z_mm;
+pi_micro_usb_power_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_micro_usb_power_cutout_local_center_z_mm;
+pi_camera_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_camera_cutout_local_center_z_mm;
+waveshare_rj45_cutout_center_z_mm = waveshare_hat_bottom_z_mm + waveshare_rj45_cutout_local_center_z_mm;
+waveshare_front_usb_a_cutout_center_z_mm = waveshare_hat_bottom_z_mm + waveshare_front_usb_a_cutout_local_center_z_mm;
+waveshare_left_usb_a_cutout_center_z_mm = waveshare_hat_bottom_z_mm + waveshare_left_usb_a_cutout_local_center_z_mm;
+waveshare_right_usb_a_cutout_center_z_mm = waveshare_hat_bottom_z_mm + waveshare_right_usb_a_cutout_local_center_z_mm;
 pi_mounting_hole_x_mm = board_length_mm / 2 - pi_mounting_hole_edge_offset_mm;
 pi_mounting_hole_y_mm = board_width_mm / 2 - pi_mounting_hole_edge_offset_mm;
 pi_mounting_hole_centers_mm = [
@@ -199,8 +282,26 @@ ir_mounting_hole_centers_mm = [
     [-ir_mounting_hole_x_mm, ir_mounting_hole_y_mm],
     [ir_mounting_hole_x_mm, ir_mounting_hole_y_mm]
 ];
-ir_emitter_bottom_z_mm = floor_thickness_mm + ir_mount_standoff_height_mm;
-ir_led_aperture_center_y_mm = -outer_width_mm / 2;
+ir_mount_plate_size_x_mm =
+    ir_pcb_width_mm
+    + 2 * max(ir_mount_plate_clearance_x_mm, ir_mount_standoff_outer_diameter_mm / 2);
+ir_mount_plate_size_y_mm =
+    ir_pcb_length_mm
+    + 2 * max(ir_mount_plate_clearance_y_mm, ir_mount_standoff_outer_diameter_mm / 2);
+ir_mount_plate_bottom_z_mm = ir_emitter_bottom_z_mm - ir_mount_plate_thickness_mm;
+ir_mount_front_rib_height_mm = ir_mount_plate_bottom_z_mm - floor_thickness_mm;
+ir_mount_front_rib_center_y_mm = -internal_width_mm / 2 - wall_thickness_mm / 2;
+ir_mount_front_rib_center_z_mm = floor_thickness_mm + ir_mount_front_rib_height_mm / 2;
+ir_led_aperture_wall_y_mm = -outer_width_mm / 2;
+ir_led_aperture_to_pose_depth_mm =
+    abs(ir_led_center_y_mm - ir_led_aperture_wall_y_mm)
+    + wall_thickness_mm
+    + preview_overlap_mm;
+ir_led_aperture_cutout_center_y_mm = (ir_led_aperture_wall_y_mm + ir_led_center_y_mm) / 2;
+ir_led_aperture_cutout_depth_mm =
+    max(ir_led_aperture_wall_clearance_depth_mm, ir_led_aperture_to_pose_depth_mm);
+ir_led_pose_guide_center_y_mm = (ir_led_aperture_wall_y_mm + ir_led_center_y_mm) / 2;
+ir_led_pose_guide_length_mm = max(abs(ir_led_center_y_mm - ir_led_aperture_wall_y_mm), preview_overlap_mm);
 rubber_foot_recess_x_mm = outer_length_mm / 2 - rubber_foot_recess_edge_inset_x_mm;
 rubber_foot_recess_y_mm = outer_width_mm / 2 - rubber_foot_recess_edge_inset_y_mm;
 anti_slide_centers_mm = [
@@ -492,11 +593,43 @@ module pi_zero_usb_grove_ir_cover_screw_clearance_holes() {
 
 module pi_zero_usb_grove_ir_emitter_mount() {
     color(standoff_colour)
+    union() {
+        pi_zero_usb_grove_ir_emitter_mount_front_ribs();
+        pi_zero_usb_grove_ir_emitter_mount_plate();
+    }
+}
+
+module pi_zero_usb_grove_ir_emitter_mount_plate() {
     translate([ir_mount_center_x_mm, ir_mount_center_y_mm, floor_thickness_mm])
         rotate([0, 0, ir_mount_rotation_deg])
+            translate([0, 0, ir_mount_standoff_height_mm - ir_mount_plate_thickness_mm / 2])
+                union() {
+                    cube([
+                        ir_mount_plate_size_x_mm,
+                        ir_mount_plate_size_y_mm,
+                        ir_mount_plate_thickness_mm
+                    ], center = true);
+
+                    for (hole_center_mm = ir_mounting_hole_centers_mm) {
+                        translate([hole_center_mm[0], hole_center_mm[1], ir_mount_plate_thickness_mm / 2])
+                            cylinder(
+                                h = preview_overlap_mm,
+                                d = ir_mount_standoff_outer_diameter_mm
+                            );
+                    }
+                }
+}
+
+module pi_zero_usb_grove_ir_emitter_mount_front_ribs() {
+    translate([ir_mount_center_x_mm, ir_mount_front_rib_center_y_mm, ir_mount_front_rib_center_z_mm])
+        rotate([0, 0, ir_mount_rotation_deg])
             for (hole_center_mm = ir_mounting_hole_centers_mm) {
-                translate([hole_center_mm[0], hole_center_mm[1], 0])
-                    cylinder(h = ir_mount_standoff_height_mm, d = ir_mount_standoff_outer_diameter_mm);
+                translate([hole_center_mm[0], 0, 0])
+                    cube([
+                        ir_mount_front_rib_width_mm,
+                        wall_thickness_mm,
+                        ir_mount_front_rib_height_mm
+                    ], center = true);
             }
 }
 
@@ -504,9 +637,13 @@ module pi_zero_usb_grove_ir_emitter_mount_holes() {
     translate([ir_mount_center_x_mm, ir_mount_center_y_mm, floor_thickness_mm])
         rotate([0, 0, ir_mount_rotation_deg])
             for (hole_center_mm = ir_mounting_hole_centers_mm) {
-                translate([hole_center_mm[0], hole_center_mm[1], 0])
+                translate([
+                    hole_center_mm[0],
+                    hole_center_mm[1],
+                    ir_mount_standoff_height_mm - ir_mount_plate_thickness_mm - preview_overlap_mm
+                ])
                     cylinder(
-                        h = ir_mount_standoff_height_mm + preview_overlap_mm,
+                        h = ir_mount_plate_thickness_mm + 2 * preview_overlap_mm,
                         d = ir_mount_screw_hole_diameter_mm
                     );
             }
@@ -551,12 +688,12 @@ module pi_zero_usb_grove_ir_port_cutout_volume(port_mm) {
 module pi_zero_usb_grove_ir_aperture_cutout_volume() {
     translate([
         ir_led_aperture_center_x_mm,
-        ir_led_aperture_center_y_mm,
+        ir_led_aperture_cutout_center_y_mm,
         ir_led_aperture_center_z_mm
     ])
         rotate([90, 0, 0])
             cylinder(
-                h = ir_led_aperture_wall_clearance_depth_mm + wall_thickness_mm + preview_overlap_mm,
+                h = ir_led_aperture_cutout_depth_mm,
                 d = ir_led_aperture_diameter_mm,
                 center = true
             );
@@ -568,10 +705,10 @@ module pi_zero_usb_grove_ir_ir_led_aperture() {
 
 module pi_zero_usb_grove_ir_internal_grove_cable_path_volume() {
     hull() {
-        translate([grove_cable_path_start_x_mm, grove_cable_path_start_y_mm, grove_cable_path_center_z_mm])
+        translate([grove_cable_path_start_x_mm, grove_cable_path_start_y_mm, grove_cable_path_start_z_mm])
             cube([grove_cable_path_width_mm, grove_cable_path_width_mm, grove_cable_path_height_mm], center = true);
 
-        translate([grove_cable_path_end_x_mm, grove_cable_path_end_y_mm, grove_cable_path_center_z_mm + grove_cable_path_clearance_lift_mm])
+        translate([grove_cable_path_end_x_mm, grove_cable_path_end_y_mm, grove_cable_path_end_z_mm + grove_cable_path_clearance_lift_mm])
             cube([grove_cable_path_width_mm, grove_cable_path_width_mm, grove_cable_path_height_mm], center = true);
     }
 }
@@ -591,12 +728,23 @@ module pi_zero_usb_grove_ir_cutout_guides() {
 
         translate([
             ir_led_aperture_center_x_mm,
-            ir_led_aperture_center_y_mm - ir_led_aperture_guide_length_mm / 2,
+            ir_led_pose_guide_center_y_mm,
             ir_led_aperture_center_z_mm
         ])
             cube([
                 ir_led_aperture_diameter_mm,
-                ir_led_aperture_guide_length_mm,
+                ir_led_pose_guide_length_mm,
+                ir_led_aperture_diameter_mm
+            ], center = true);
+
+        translate([
+            ir_led_aperture_center_x_mm,
+            ir_led_aperture_wall_y_mm - ir_led_aperture_external_guide_length_mm / 2,
+            ir_led_aperture_center_z_mm
+        ])
+            cube([
+                ir_led_aperture_diameter_mm,
+                ir_led_aperture_external_guide_length_mm,
                 ir_led_aperture_diameter_mm
             ], center = true);
     }
@@ -607,6 +755,12 @@ module pi_zero_usb_grove_ir_cutout_guides() {
 // ======================================================
 // Helper Geometry
 // ======================================================
+
+function rotate_x_mm(x_mm, y_mm, angle_deg) =
+    x_mm * cos(angle_deg) - y_mm * sin(angle_deg);
+
+function rotate_y_mm(x_mm, y_mm, angle_deg) =
+    x_mm * sin(angle_deg) + y_mm * cos(angle_deg);
 
 module pi_zero_usb_grove_ir_rounded_box(size_mm, radius_mm, center_mm) {
     translate(center_mm)
