@@ -375,7 +375,7 @@ openscad -o assembly.off -D 'render_mode="assembly"' -D 'show_electronics=false'
 
 ## Raspberry Pi Zero USB Ethernet Grove IR Enclosure
 
-`designs/pi_zero_usb_grove_ir_enclosure.scad` is a printable enclosure set for a Raspberry Pi Zero v1.3, a Waveshare ETH/USB HUB HAT, a Seeed Grove Base Hat for Raspberry Pi Zero, and a Grove Infrared Emitter mounted in a separate external pod. The design keeps the Pi Zero, Waveshare HAT, and Grove HAT in the main enclosure, routes the Grove cable out through a dedicated case exit, and mounts the IR emitter board inside a screw-fastened pod attached to the outside of the main case. The top cover is clip-on and detachable, and the bottom tray keeps the four Pi Zero stack fastener holes separate from both the cover clips and the pod attachment hardware.
+`designs/pi_zero_usb_grove_ir_enclosure.scad` is a printable enclosure set for a Raspberry Pi Zero v1.3, a Waveshare ETH/USB HUB HAT, a Seeed Grove Base Hat for Raspberry Pi Zero, and a Grove Infrared Emitter mounted in a separate external pod. The design keeps the Pi Zero, Waveshare HAT, and Grove HAT in the main enclosure, routes the Grove cable out through a dedicated top-cover case exit, and mounts the IR emitter board inside a removable slide-on pod attached directly to the top cover. The top cover is clip-on and detachable, and the bottom tray keeps the four Pi Zero stack fastener holes separate from both the cover clips and the pod slide interface.
 
 ### Component Assumptions
 
@@ -384,11 +384,11 @@ Default dimensions are configurable at the top of `designs/pi_zero_usb_grove_ir_
 - Raspberry Pi Zero v1.3 board footprint: 65.0 mm x 30.0 mm.
 - Stack order from bottom to top: Pi Zero, Waveshare ETH/USB HUB HAT, Seeed Grove Base Hat for Raspberry Pi Zero.
 - User-provided measured stack height: 35.0 mm, plus 8.0 mm default extra upward headroom.
-- Independent board spacing defaults: `pi_zero_to_waveshare_hat_z_offset_mm = 11.2` and `waveshare_to_grove_hat_z_offset_mm = 20.0`.
+- Independent board spacing defaults: `pi_zero_to_waveshare_hat_z_offset_mm = 11.2` and `waveshare_to_grove_hat_z_offset_mm = 24.0`.
 - Waveshare ETH/USB HUB HAT footprint: 65.0 mm x 30.0 mm, with RJ45 plus one USB-A port on the front edge and one USB-A port on each long side.
-- Seeed Grove Base Hat for Raspberry Pi Zero mounted above the USB HAT with enough default spacing to keep the Grove underside socket/header clearance above the Waveshare reference.
+- Seeed Grove Base Hat for Raspberry Pi Zero mounted above the USB HAT with enough default spacing to keep the Grove underside socket/header clearance above the Waveshare reference without visible collision in the default preview.
 - Seeed Grove Infrared Emitter board planning size: 20.0 mm x 24.0 mm with a 5.0 mm IR LED.
-- Common M2.5-class fasteners for board standoffs and the pod attachment.
+- Common M2.5-class fasteners for the board standoffs.
 - The Grove IR emitter PCB stays inside the external pod, not in the main tray.
 - The Grove cable path starts near the selected Grove Base Hat connector area, exits the main enclosure through a dedicated opening, enters the pod through its matching entry, and terminates at the emitter connector area.
 - One Waveshare side USB-A cutout includes extra clearance for an externally attached wireless dongle.
@@ -425,7 +425,7 @@ Common edits:
 - Tune `pi_zero_to_waveshare_hat_z_offset_mm` and `waveshare_to_grove_hat_z_offset_mm` for the real spacer stack; those values move the electronics previews and dependent port/cable guide Z positions together.
 - Increase `measured_stack_height_mm` or `extra_upward_headroom_mm` if the assembled stack, Grove connector, or cable needs more vertical clearance.
 - Tune `grove_selected_socket_*` and the cable exit/entry offsets to match the actual Grove connector you use on the Grove Base Hat.
-- Tune the pod placement, `emitter_board_center_local_*`, `emitter_board_rotation_deg`, `ir_led_*`, and `pod_cable_entry_*` values together. The emitter reference, pod board bosses, pod mount holes, LED aperture, pod cable entry, and cable endpoint are all derived from the same pod/emitter pose.
+- Tune the pod placement, `emitter_board_center_local_*`, `emitter_board_rotation_deg`, `ir_led_*`, `pod_cable_entry_*`, and `pod_slide_rail_*` values together. The emitter reference, pod board bosses, pod mount holes, LED aperture, pod cable entry, slide interface, and cable endpoint are all derived from the same pod/emitter pose.
 - The main enclosure cable exit and the pod cable entry are separate features. The cable guide starts at the Grove HAT connector area, passes through the main enclosure exit, enters the pod, and terminates at the emitter connector area.
 - Use `cover_vent_*` values to resize or shift the default symmetric circular top-hole grid.
 - Use rubber-foot recesses by default, or set `use_rubber_foot_recesses = false` to preview printed feet instead.
@@ -435,9 +435,9 @@ Common edits:
 Set `render_mode` to one of:
 
 - `assembly`: full enclosure preview with optional electronics.
-- `bottom_tray`: tray printable part with board standoffs, port cutouts, main cable exit, pod attachment bosses, clip receivers, and anti-slide features.
-- `top_cover`: clip-on removable cover with an alignment lip and top ventilation/access holes.
-- `ir_pod`: the external IR emitter pod with its attachment tabs, board bosses, cable entry, and LED aperture.
+- `bottom_tray`: tray printable part with board standoffs, port cutouts, clip receivers, and anti-slide features.
+- `top_cover`: clip-on removable cover with an alignment lip, the dedicated cable exit, pod slide rails, and top ventilation/access holes.
+- `ir_pod`: the external IR emitter pod with its slide slots, board bosses, cable entry, and LED aperture.
 - `printable_layout`: bottom tray, top cover, and IR pod arranged as separate printable parts.
 - `electronics`: imported electronics/reference stack and IR emitter placement without printable case geometry.
 
@@ -464,13 +464,13 @@ openscad -o /tmp/pi_zero_usb_grove_ir_assembly.off -D 'render_mode="assembly"' -
 - Print the bottom tray, top cover, and IR pod as separate parts.
 - Orient the tray on its base, the top cover flat with the exterior roof on the bed, and the pod so its open rear face points upward or sideways depending on your preferred support strategy.
 - Use PLA, PETG, or another material appropriate for the target thermal environment.
-- Prefer at least three perimeters for the Pi Zero standoffs, cover lip, clip receivers, pod attachment tabs, and pod board bosses.
+- Prefer at least three perimeters for the Pi Zero standoffs, cover lip, clip receivers, pod slide rails, and pod board bosses.
 - Install the Pi Zero stack on the Pi Zero-aligned standoffs before routing the Grove cable.
-- Confirm the 20.0 mm default Waveshare-to-Grove spacing against the actual spacers; reducing it may reintroduce reference or physical collision between the Waveshare top-side parts and the Grove underside socket/header area.
+- Confirm the 24.0 mm default Waveshare-to-Grove spacing against the actual spacers; reducing it may reintroduce reference or physical collision between the Waveshare top-side parts and the Grove underside socket/header area.
 - Route the Grove cable from the selected Grove socket area to the main cable exit before fitting the top cover, then continue through the pod entry to the IR emitter connector.
-- Install the IR emitter board on the pod bosses, align the LED to the pod aperture, and then fasten the pod to the main enclosure through the separate pod tabs/bosses.
+- Install the IR emitter board on the pod bosses, align the LED to the pod aperture, route the Grove cable through the pod entry, and slide the pod onto the top-cover rails until the retention detents seat.
 - The top cover uses clip tabs and tray catch receivers; it does not use cover screws and it does not depend on the Pi Zero stack mounting screws.
-- The four bottom-tray stack holes exist because the Pi Zero/HAT stack has four mounting points. Those holes are distinct from the top-cover clips and from the pod attachment fasteners.
+- The four bottom-tray stack holes exist because the Pi Zero/HAT stack has four mounting points. Those holes are distinct from the top-cover clips and from the pod slide interface.
 - Add rubber feet or pads to the default recesses after printing if anti-slide behavior is required.
 - The design guidance remains compatible with the Bambu Lab P2S and AMS 2 Pro; no multi-material behavior is required.
 - Physical measurement and test fitting are still required before final tolerances are trusted.
@@ -594,16 +594,16 @@ Manual inspection for the Pi Zero USB Grove IR enclosure:
 - Default internal height derives from the 35.0 mm measured stack height plus 8.0 mm extra upward headroom.
 - Pi Zero and Waveshare port cutout Z centers derive from their board-tier Z positions plus local offsets.
 - `pi_zero_to_waveshare_hat_z_offset_mm` moves the Waveshare preview and Waveshare port cutout Z centers.
-- `waveshare_to_grove_hat_z_offset_mm` defaults to 20.0 mm and moves the Grove HAT preview plus the main-to-pod cable guide start Z.
+- `waveshare_to_grove_hat_z_offset_mm` defaults to 24.0 mm and moves the Grove HAT preview plus the main-to-pod cable guide start Z.
 - Pi Zero microSD, mini-HDMI, both micro-USB ports, and camera connector access are not blocked by the enclosure.
 - USB HAT RJ45 plus one USB connector are exposed on the front edge.
 - One USB HAT USB connector is exposed on each long side, and at least one USB-A cutout includes extra clearance for an external wireless dongle.
-- Bottom tray includes floor, side walls, Pi Zero-aligned M2.5-class standoffs, separate pod attachment bosses, clip receivers, rubber-foot recesses by default, and the required cutout clearances.
-- The tray still has four board-stack mounting holes because the Pi Zero/HAT stack has four mounting points; those holes are distinct from the cover clips and pod attachment hardware.
-- Top cover is removable, clip-on, includes an alignment lip, has adjustable ventilation/access holes, and does not depend on the Pi Zero stack mounting screws.
+- Bottom tray includes floor, side walls, Pi Zero-aligned M2.5-class standoffs, clip receivers, rubber-foot recesses by default, and the required cutout clearances.
+- The tray still has four board-stack mounting holes because the Pi Zero/HAT stack has four mounting points; those holes are distinct from the cover clips and pod slide hardware.
+- Top cover is removable, clip-on, includes an alignment lip, the dedicated cable exit, pod slide rails, adjustable ventilation/access holes, and does not depend on the Pi Zero stack mounting screws.
 - The external pod contains the IR emitter PCB on adjustable bosses using Grove 20 mm-class mounting-hole planning assumptions.
-- The pod attaches outside the main enclosure through separate screw-fastened tabs and bosses.
-- The pod cable entry, IR LED aperture, pod board bosses, pod mount holes, and emitter reference preview all derive from the same adjustable pod/emitter pose.
+- The pod attaches directly to the top cover through a non-screw slide interface with a retained seated position.
+- The pod cable entry, IR LED aperture, pod board bosses, pod mount holes, slide slots, and emitter reference preview all derive from the same adjustable pod/emitter pose.
 - The main enclosure cable exit and pod cable entry align with the selected Grove HAT connector area and the emitter connector area.
 - Grove cable exits the main enclosure only through the dedicated cable exit and enters the pod only through the pod entry.
 - Only the IR LED path is exposed outside the pod by default.
