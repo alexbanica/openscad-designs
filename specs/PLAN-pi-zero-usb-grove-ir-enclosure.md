@@ -98,9 +98,10 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
     - IR LED aperture,
     - Grove IR emitter PCB mount position and rotation,
     - printed PCB locating/support geometry,
-    - printed PCB top-load retainer dimensions and tolerances.
+    - printed PCB slide-in retention geometry,
+    - optional separate printed retainer dimensions and tolerances only if a separate part is still needed for the tool-free retention path.
 12. Refactor the IR pod attachment so it is mounted to the removable `top_cover` rather than to `bottom_tray`.
-13. Implement the IR pod attachment as a top-cover-owned positive-retention interface by default. If a slide-and-lock approach is used, keep rails, slots, stops, and retention bumps fully merged into the top-cover printable body and fully supported in the printable orientation. If a latch-and-tab approach is used instead, keep it fully merged into `top_cover` and independent from the cover-to-tray clip/catch features.
+13. Implement the IR pod attachment as a top-cover-owned tool-free positive-retention interface by default. If a slide-and-lock approach is used, keep rails, slots, stops, and retention bumps fully merged into the top-cover printable body and fully supported in the printable orientation. If a latch-and-tab approach is used instead, keep it fully merged into `top_cover`, independent from the cover-to-tray clip/catch features, and suitable for repeated hand assembly without screws.
 14. Keep pod attachment features independent from Pi Zero stack mounting holes and from the top-cover clip/catch features that connect the cover to `bottom_tray`.
 15. Add or refactor IR emitter pod placement values so the emitter PCB reference model, pod board locating/support geometry, pod printed retainer geometry, pod cable entry, LED aperture, and related guide volumes derive from the same adjustable pod/emitter pose:
     - pod placement relative to the main enclosure,
@@ -117,11 +118,12 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
     - LED aperture,
     - IR guide/cutout geometry,
     - Grove cable path endpoint.
-17. Replace the current internal screw-driving pod mount with a printed serviceable top-load retention method:
+17. Replace the current internal screw-driving pod mount with a tool-free slide-in PCB retention method:
     - keep adjustable locating/support features under or around the PCB,
-    - add an adjustable snap bar, clip, or equivalent printed retainer that can be installed and removed without screwdriver access inside the pod,
-    - preserve Grove connector/cable usability and LED alignment to the aperture,
-    - remove or stop using internal pod screw-driving geometry as the default retention path.
+    - define a deterministic board insertion direction that allows the Grove IR emitter PCB to be installed with the Grove cable already connected,
+    - preserve enough cable-entry and internal bend clearance that normal installation does not pinch the cable or require an immediate sharp bend at the connector,
+    - use printed stops, rails, spring tabs, or a snap retainer as needed, but do not require screw fastening or screwdriver access inside the pod,
+    - if a separate printed retainer remains useful, keep it explicitly tied to the slide-in retention scheme and document it as an intentional secondary printable part.
 18. Ensure the IR LED aperture is subtracted as a true pass-through opening in the printable pod body itself, not only represented by guide geometry or electronics-preview overlap, so it remains open in `ir_pod`, `assembly`, and `printable_layout` even when `show_electronics = false`.
 19. Strengthen the clip-on detachable top-cover interface:
     - keep the no-cover-screws requirement,
@@ -130,27 +132,32 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
     - ensure tray receivers/latches are fully merged into tray walls or fixed tray structure,
     - add or refactor support geometry so the cover-to-tray interface provides positive retention on both long sides and does not read as detached floating geometry,
     - keep clip/catch dimensions, count, side placement, and tolerances adjustable.
-20. Increase the default top-cover ventilation/access hole density:
+20. Refactor the top-cover-owned pod attachment geometry so it is easy to mount and unmount by hand:
+    - make the pod insertion/removal direction obvious by code structure and geometry review,
+    - ensure the cover-owned pod rails, clips, or latches are visibly load-bearing and not attached only by a token overlap,
+    - keep enough surrounding material around the pod attachment to preserve top-cover printability and repeated-use confidence,
+    - keep the pod-to-cover interface tool-free and screw-free for normal assembly.
+21. Increase the default top-cover ventilation/access hole density:
     - keep a symmetric circular grid over the board-stack area,
     - expose adjustable hole count, diameter, spacing, and X/Y offset,
     - change the default pattern from the current sparse layout to a denser layout that still preserves roof strength and edge margin by code review,
     - avoid overlap with clip/catch features, tray support geometry, and pod attachment structure.
-21. Remove the external cutout for the Pi Zero Micro USB port that is internally occupied by the Pi Zero-to-Waveshare adapter connection.
-22. Preserve the remaining externally used Pi Zero Micro USB opening and keep its dimensions and local offsets adjustable.
-23. Recompute enclosure internal/case height so it remains at least high enough for:
+22. Remove the external cutout for the Pi Zero Micro USB port that is internally occupied by the Pi Zero-to-Waveshare adapter connection.
+23. Preserve the remaining externally used Pi Zero Micro USB opening and keep its dimensions and local offsets adjustable.
+24. Recompute enclosure internal/case height so it remains at least high enough for:
     - Pi Zero standoff height,
     - Grove HAT derived Z position,
     - Grove HAT top-side connector/cable clearance,
     - internal Grove connector/cable exit clearance,
     - extra upward headroom.
-24. Preserve render dispatch for:
+25. Preserve render dispatch for:
    - `assembly`,
    - `bottom_tray`,
    - `top_cover`,
    - `ir_pod`,
    - `printable_layout`,
    - `electronics`.
-25. Preserve or update named modules for:
+26. Preserve or update named modules for:
    - `pi_zero_usb_grove_ir_enclosure_assembly(...)`,
    - `pi_zero_usb_grove_ir_bottom_tray()`,
    - `pi_zero_usb_grove_ir_top_cover()`,
@@ -166,23 +173,23 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
    - top ventilation/access holes,
    - anti-slide features,
    - reusable helper geometry.
-26. Default stack placement must remain:
+27. Default stack placement must remain:
    - Pi Zero at the bottom,
    - Waveshare HAT above the Pi Zero,
    - Grove Base HAT above the Waveshare HAT,
    - Grove IR emitter mounted inside the external pod attached to the main enclosure, with its cable route starting near the selected Grove HAT connector area and its LED aligned to the pod aperture.
-27. Use default board footprint dimensions from the approved spec:
+28. Use default board footprint dimensions from the approved spec:
    - `65.0 mm x 30.0 mm` board footprint,
    - `35.0 mm` measured stack height,
    - `8.0 mm` default extra upward headroom.
-28. Preserve and update the bottom tray behavior:
+29. Preserve and update the bottom tray behavior:
    - printable floor,
    - side walls,
    - Pi Zero-aligned standoffs with M2.5-class screw clearance/pilot holes,
    - top-cover clip/catch receiver features,
    - anti-slide rubber-foot recesses by default,
    - subtract required port and fastener clearances.
-29. Preserve and update the top cover behavior:
+30. Preserve and update the top cover behavior:
    - removable upper shell or lid,
    - clip-on attachable/detachable interface with no cover screws,
    - internal lip or alignment feature for the tray,
@@ -190,7 +197,7 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
    - clearance over the 35 mm stack plus headroom,
    - no dependency on the Pi Zero stack mounting screws,
    - includes the IR pod attachment interface as part of the printable/removable upper assembly.
-30. Preserve port cutout volumes for:
+31. Preserve port cutout volumes for:
    - Pi Zero microSD,
    - Pi Zero mini-HDMI,
    - the externally used Pi Zero Micro USB port only,
@@ -199,19 +206,21 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
    - Waveshare front USB-A,
    - Waveshare left USB-A,
    - Waveshare right USB-A.
-31. Keep port cutout dimensions and local offsets adjustable. Use simplified rectangular cutouts with extra clearance; do not model a wireless dongle body.
-32. Preserve `show_electronics` and `show_cutout_guides` so they independently control reference previews and non-printing guide geometry.
-33. Keep OpenSCAD 2021.01 compatibility:
+32. Keep port cutout dimensions and local offsets adjustable. Use simplified rectangular cutouts with extra clearance; do not model a wireless dongle body.
+33. Preserve `show_electronics` and `show_cutout_guides` so they independently control reference previews and non-printing guide geometry.
+34. Keep OpenSCAD 2021.01 compatibility:
    - no external libraries,
    - no generated imports,
    - no unsupported syntax.
-34. Update `README.md`:
+35. Update `README.md`:
    - ensure the design file is listed,
    - align the Pi Zero USB Grove IR enclosure section with the approved spec,
    - document component assumptions, including 35.0 mm stack height plus 8.0 mm default headroom,
    - document the independent board spacing parameters users should adjust,
    - document that changing board spacing moves electronics previews and dependent case openings/guides together,
    - document the external IR emitter pod behavior and that its printed PCB retention geometry, LED aperture, pod cable entry, cable guide, and top-cover attachment follow the implemented pod/emitter pose and attachment method,
+   - document that the Grove IR emitter PCB loads tool-free into the pod with the Grove cable allowed to remain connected,
+   - document that the pod mounts tool-free to the top cover through the implemented slide or clip interface,
    - document that the top cover is clip-on attachable/detachable and does not use cover screws,
    - document top ventilation/access hole parameters and the implemented denser default pattern,
    - document that the four bottom-tray board-stack holes exist because the Pi Zero/HAT stack has four mounting points, and that top-cover clips/catches and pod attachment features are separate,
@@ -254,12 +263,15 @@ Review `designs/pi_zero_usb_grove_ir_enclosure.scad` and confirm:
 - bottom tray's four Pi Zero stack mounting holes are distinct from top-cover clip/catch features and pod attachment holes,
 - top cover uses clip/catch attachment, has no cover screw holes, is independent from board stack fasteners, and carries the IR pod attachment interface as a separate merged feature,
 - top cover clip tabs and tray receivers are visibly continuous with and supported by their parent solids,
+- the IR emitter PCB retention path is tool-free, does not depend on internal screws, and allows board insertion with the Grove cable already connected by code review of the modeled path,
+- the IR pod attaches to the top cover through a tool-free slide or clip interface with visibly supported roots and a plausible repeated-use mounting path,
 - top cover has adjustable ventilation/access holes with a denser default pattern that avoids clip/catch features and preserves roof margins by code review,
 - all required Pi Zero and Waveshare port cutouts exist,
 - the internally used Pi Zero Micro USB opening is removed while the externally used Pi Zero Micro USB opening remains accessible,
 - Pi Zero and Waveshare port cutout Z centers derive from board-tier Z positions plus adjustable local offsets,
 - at least one Waveshare USB-A cutout allows an external wireless dongle,
 - IR emitter PCB is retained inside the external IR pod with a serviceable printed retention feature rather than inaccessible internal screw-driving geometry,
+- any separate IR pod retainer part is clearly intentional and consistent with the tool-free slide-in board retention concept,
 - IR emitter pod is attachable to `top_cover` through a distinct pod attachment interface that is separate from the cover-to-tray clips,
 - pod attachment features are visibly continuous with and supported by the `top_cover` body,
 - IR emitter reference preview, pod board retention geometry, pod cable entry, LED aperture, and IR/cable guides derive from one pod/emitter pose,
@@ -279,6 +291,8 @@ Review `README.md` and confirm:
 - README states that board spacing changes move dependent electronics previews and case openings/guides,
 - README states that the IR emitter pod/emitter pose drives its mounting holes, aperture, pod cable entry, and cable guide positions,
 - README states that the IR pod attachment is mounted to `top_cover` as part of the removable upper assembly,
+- README states that the Grove IR emitter PCB installs tool-free with the cable allowed to remain connected,
+- README states that the pod mounts tool-free to the top cover through the implemented clip or slide interface,
 - README states that the top cover is clip-on attachable/detachable and does not use cover screws,
 - README documents the top ventilation/access holes and the denser default pattern,
 - README explains why the bottom tray has four Pi Zero stack mounting holes and how those differ from clip/catch and pod attachment features,
@@ -321,6 +335,7 @@ Implementation review must check for:
 - missing required port, IR pod, cable exit/entry, clip/catch, top-hole, pod-fastener, or anti-slide behavior,
 - README/source mismatch,
 - stale screw-hole retention geometry left as the default IR pod board mount path,
+- a pod or PCB retention path that still implies screwdriver-based normal assembly,
 - unrelated file churn.
 
 Final main-agent acceptance must be completed after validation and QA.

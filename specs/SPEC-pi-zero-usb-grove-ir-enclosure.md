@@ -299,6 +299,40 @@ Impact and regression considerations for this iteration:
 - Printable layout orientation must remain plausible for Bambu Lab P2S printing without support-heavy assumptions for the default parts.
 - Removing the unused external Pi Zero USB opening must not block the still-required external Pi Zero power/data access that remains in use outside the enclosure.
 
+## Iteration: Functional Printable Layout And IR Aperture Correction
+
+Requested changes:
+
+- Fix the removable top-cover connection geometry so the cover-to-tray attachment reads as and behaves like a functional printable interface rather than small features hanging in the air.
+- Fix the IR pod attachment geometry so the top-cover-owned pod interface is visibly rooted into the top cover with enough printable support to look and behave like one object.
+- Clarify the extra loose IR pod printable part that currently appears in the printable layout.
+- Make the IR LED hole in the pod a clear pass-through opening in the final printable pod wall.
+- Make the IR pod easy to mount onto the top cover without screws.
+- Remove the need to screw the Grove IR emitter PCB into the pod; the PCB should load by sliding in with its Grove cable attached.
+
+Updated deterministic behavior:
+
+- `render_mode = "top_cover"` and `render_mode = "printable_layout"` must show cover attachment features that are visibly continuous with the top-cover shell by code review and supported by more than a token overlap into the shell.
+- The top-cover clip tabs, hooks, rails, latches, or equivalent interface features must have an explicit structural root into the cover body using merged length, sidewall extension, gusseting, or another visibly load-bearing transition rather than appearing as isolated appendages.
+- The tray-side mating geometry for the removable top cover must likewise be visibly continuous with tray walls or tray structure and must present a plausible engagement path for repeated assembly and removal.
+- The approved cover-to-tray connection must remain screwless, removable, and independent from the four Pi Zero stack mounting holes.
+- The top-cover-owned IR pod attachment must remain distinct from the cover-to-tray clip features, but its rails, tabs, hooks, or other retention geometry must be visibly rooted into the top cover with enough merged support to avoid reading as floating geometry in printable views.
+- The top-cover-owned IR pod attachment must be tool-free by default. The pod must mount to the top cover using a slide-in or clip-in interface with positive retention and a clear insertion/removal direction suitable for repeated use.
+- The pod-to-cover interface must not require screws, captive nuts, or screwdriver access for normal assembly.
+- The IR pod printable geometry must remain a functional enclosure body even when the detachable PCB retainer is rendered separately.
+- The Grove IR emitter PCB must not require screw fastening inside the pod. The default board retention method must be a tool-free slide-in loading path that allows the PCB to be inserted with the Grove cable already connected.
+- The pod interior, cable entry, and PCB retention geometry must preserve enough clearance for the connected Grove cable and a plausible insertion path without forcing a sharp bend immediately at the connector.
+- The approved board-retention pattern may use printed rails, slots, stops, spring tabs, or a snap retainer, but it must not depend on internal screw access.
+- Any additional IR pod printable element must serve that tool-free retention approach explicitly. If a separate retainer part remains, `render_mode = "printable_layout"` must place it intentionally relative to the pod and the documentation must describe its purpose and installation.
+- The IR LED aperture must be a definite through-hole in the pod's external face, not a blind cavity or guide-only subtraction, and it must remain visibly open in `ir_pod`, `assembly`, and `printable_layout` render modes regardless of whether electronics previews are shown.
+- The IR LED aperture subtraction must extend fully through the pod wall thickness with enough overlap margin that minor parameter tuning does not accidentally leave a skin on the outer face.
+
+Impact and regression considerations for this iteration:
+
+- Strengthening the removable top-cover and pod-attachment geometry must not block the existing port cutouts, cable exit path, vent-hole pattern, or top-cover removability.
+- The tool-free PCB insertion path must not create a cable pinch point at the pod entry or require disconnecting the Grove cable for normal installation.
+- Making the IR LED hole a guaranteed pass-through must not expose the Grove connector or other pod internals beyond the approved LED path.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -316,6 +350,7 @@ Impact and regression considerations for this iteration:
 - The board stack renders in the correct vertical order when `show_electronics = true`.
 - The bottom tray includes Pi Zero-aligned mounting standoffs and adjustable M2.5-class screw clearance.
 - The Grove IR emitter PCB has a mounting location inside the external IR emitter pod with a printed serviceable top-load retention feature and adjustable locating/support geometry.
+- The Grove IR emitter PCB can be installed into the pod without screws and without requiring the Grove cable to be disconnected first.
 - The IR LED is aligned with an adjustable exterior pod aperture, and only the LED path is exposed outside the pod by default.
 - The Grove cable path exits the main enclosure only through the dedicated cable exit and enters the pod only through the dedicated cable entry.
 - The top cover is removable, clip-on attachable/detachable, and independently attached from the board stack mounting screws without cover screws.
@@ -330,6 +365,10 @@ Impact and regression considerations for this iteration:
 - The cover-to-tray interface provides positive retention on both long sides without using cover screws.
 - The IR pod attachment is mounted to the removable top cover rather than to fixed tray/main-body geometry.
 - The IR pod attachment geometry is visibly continuous with its parent printed part by code review and does not read as detached floating geometry.
+- The IR pod mounts to the top cover through a tool-free clip or slide interface with positive retention and a plausible repeated-use insertion/removal path.
+- `render_mode = "top_cover"` and `render_mode = "printable_layout"` do not show cover attachment features that look suspended in space or attached only by an implausibly small overlap.
+- Any separate IR pod retainer part, if kept, is clearly intentional in both geometry and documentation rather than appearing as an unexplained extra object.
+- The IR LED aperture is visibly and mechanically a pass-through opening in the pod wall by code review of the subtraction geometry.
 - Top-cover removal may carry the IR pod with it, but must not require Pi Zero stack fastener removal or board-stack disassembly.
 - README documents the new design behavior, assumptions, parameters, render modes, print notes, and manual inspection checklist.
 - `git diff --check` passes.
@@ -353,12 +392,17 @@ Impact and regression considerations for this iteration:
   - the wireless dongle remains outside the case through an accessible USB-A cutout,
   - the external IR emitter pod, printed PCB retention geometry, LED aperture, and main-to-pod cable path are present,
   - only the IR LED path is exposed outside the pod by default,
+  - the IR emitter PCB loading path is tool-free and compatible with the Grove cable remaining connected,
   - the removable top cover uses clip/catch attachment, has no cover screws, and does not depend on board mounting screws,
   - the top cover ventilation/access hole pattern is present, denser than the current sparse layout, and does not overlap clip/catch features or weaken required roof margins by code review,
   - the top-cover clip roots and tray receivers are visibly attached to and supported by their parent solids,
   - anti-slide features are present,
   - the IR pod retention is mounted to the removable top cover rather than to fixed tray/main-body geometry,
   - the IR pod attachment features are visibly attached to and supported by their parent solids,
+  - the pod-to-cover interface is tool-free and does not require screws for normal installation,
+  - the cover-to-tray and cover-to-pod attachment geometry no longer reads as floating or air-gapped in printable views,
+  - the extra IR pod printable part is clearly identifiable as the PCB retainer and intentionally placed when shown separately,
+  - the IR LED aperture subtraction fully pierces the pod wall rather than stopping short of the external face,
   - top-cover removal can occur without requiring Pi Zero stack fastener removal or board-stack disassembly,
   - printable parts have plausible flat orientations and Bambu P2S-friendly dimensions,
   - README entries match the implemented behavior,
@@ -376,5 +420,9 @@ Impact and regression considerations for this iteration:
 - Document that the top cover is clip-on attachable/detachable and does not use cover screws.
 - Document that the four bottom-tray board-stack holes exist because the Pi Zero/HAT stack has four mounting points, and that top-cover clip/catch features and pod attachment features are separate.
 - Document the revised `top_cover`-mounted IR pod attachment method and note that pod retention is part of the removable upper assembly.
+- Document that the IR emitter PCB installs tool-free, with the Grove cable allowed to remain connected during insertion.
+- Document that the pod itself mounts tool-free to the top cover through the implemented clip or slide interface.
+- Document that the additional loose IR pod printable part is the removable PCB retainer when that design is retained.
+- Document that the IR LED aperture is intended to be a full pass-through opening in the pod wall.
 - Document the implemented default top-hole density for this iteration and any recommended tuning if the user wants more or fewer holes after physical test fitting.
 - Document which Pi Zero Micro USB port remains externally accessible and which one is intentionally closed because it is used internally by the adapter connection to the ETH/USB HAT.
