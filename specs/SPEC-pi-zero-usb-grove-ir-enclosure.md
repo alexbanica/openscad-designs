@@ -34,7 +34,7 @@ The requested assembly needs a deterministic printable main enclosure that provi
 - Provide access openings for:
   - Raspberry Pi Zero microSD,
   - Raspberry Pi Zero mini-HDMI,
-  - Raspberry Pi Zero Micro USB power and data ports,
+  - the externally used Raspberry Pi Zero Micro USB port,
   - Raspberry Pi Zero camera connector access,
   - Waveshare HAT RJ45,
   - Waveshare HAT front USB-A,
@@ -42,7 +42,7 @@ The requested assembly needs a deterministic printable main enclosure that provi
 - Keep the wireless USB dongle outside the case by allowing it to remain connected through a Waveshare HAT USB-A opening.
 - Provide an attachable external IR emitter enclosure with:
   - a Grove IR emitter PCB mounting location,
-  - screw holes or bosses for the Grove IR emitter PCB,
+  - a serviceable printed retention method for the Grove IR emitter PCB,
   - an IR LED aperture that exposes the LED path outward while keeping the PCB protected,
   - a cable entry opening aligned with the main enclosure cable exit,
   - a mechanical attachment interface to the main enclosure.
@@ -108,7 +108,7 @@ The requested assembly needs a deterministic printable main enclosure that provi
 - The wireless USB dongle must be treated as external; the case must not try to enclose it.
 - The IR emitter PCB must be outside the main enclosure and inside a separate attachable IR emitter pod.
 - Only the IR LED path and required Grove cable passage should be exposed outside the printed enclosures by default.
-- The IR emitter pod mount must include adjustable screw hole/boss geometry based on the existing Grove IR emitter mounting-hole reference.
+- The IR emitter pod mount must include an adjustable printed PCB retention method based on the existing Grove IR emitter mounting-hole reference and board outline assumptions.
 - The IR LED aperture must be adjustable for LED diameter, wall clearance, and LED protrusion or flush alignment.
 - The Grove cable must exit the main enclosure only through the dedicated cable exit and enter the IR emitter pod through the dedicated cable entry.
 - The default cable route must not require a loose external loop beyond the direct bridge between main enclosure and IR emitter pod.
@@ -138,7 +138,7 @@ The requested assembly needs a deterministic printable main enclosure that provi
 - The top cover must attach to the tray with a clip-on detachable interface by default, without cover screws.
 - The top cover must include an adjustable ventilation/access hole pattern. The default pattern must be a simple symmetric grid of circular holes over the board-stack area, with adjustable count, diameter, spacing, and position, and must avoid clip/catch features and high-risk edge weakening.
 - The upper cover removal path must not require disconnecting the wireless USB dongle, IR emitter LED, or Grove cable, aside from normal clearance around the removable part.
-- The case must include port cutouts for the Pi Zero microSD, mini-HDMI, both Micro USB ports, camera connector access, Waveshare RJ45, Waveshare front USB-A, and both Waveshare side USB-A connectors.
+- The case must include port cutouts for the Pi Zero microSD, mini-HDMI, the externally used Pi Zero Micro USB port, camera connector access, Waveshare RJ45, Waveshare front USB-A, and both Waveshare side USB-A connectors.
 - Port cutout dimensions and positions must be adjustable independently where connector placement may need physical calibration.
 - Board-tier port cutout Z positions must be derived from board-tier Z positions plus adjustable per-port local offsets. In particular:
   - Pi Zero port cutout centers must derive from the Pi Zero PCB bottom Z position,
@@ -146,11 +146,12 @@ The requested assembly needs a deterministic printable main enclosure that provi
   - any future Grove Hat connector access or cable guides must derive from the Grove HAT PCB bottom Z position.
 - Waveshare USB-A cutouts must allow an external wireless USB dongle to remain plugged into at least one accessible USB-A port.
 - The IR emitter PCB must mount on bosses or posts at a fixed adjustable location inside the external IR emitter pod, with its LED aligned to the pod IR aperture.
-- The IR emitter PCB screw hole spacing must default to the imported Grove IR emitter reference mounting-hole assumptions and remain adjustable.
-- The IR emitter mount holes, IR emitter reference model, IR LED aperture, pod cable entry, and any IR-specific pod cutouts must all derive from the same adjustable IR emitter placement values.
+- The IR emitter PCB retention geometry must default to the imported Grove IR emitter reference mounting-hole and board-outline assumptions and remain adjustable.
+- The IR emitter retention features, IR emitter reference model, IR LED aperture, pod cable entry, and any IR-specific pod cutouts must all derive from the same adjustable IR emitter placement values.
 - The IR aperture must expose the LED path while keeping the PCB body and Grove connector inside the IR emitter pod.
+- The IR aperture must remain a true pass-through cut in the printable pod geometry even when electronics/reference previews are hidden or removed from the scene.
 - The main-to-pod Grove cable path must provide adjustable clearance from the selected Grove Base Hat connector area to the main enclosure exit and from the pod entry to the IR emitter board, including Grove connector/plug clearance at both ends.
-- The IR emitter pod must attach to the outside of the main enclosure by default using a screw-fastened tab-and-boss interface with adjustable screw diameter, boss/tab dimensions, spacing, and side placement.
+- The IR emitter pod must attach to the outside of the main enclosure by default using a top-cover-mounted positive-retention interface with adjustable tab, rail, or latch dimensions and side placement.
 - The default pod attachment side must be the same front side used for the IR LED direction unless overridden by adjustable placement parameters.
 - The default enclosure internal height must be derived from the 35.0 mm measured stack height plus the extra upward headroom parameter.
 - The derived enclosure height must remain at least high enough for:
@@ -172,7 +173,7 @@ The requested assembly needs a deterministic printable main enclosure that provi
 - The default Grove IR emitter pod placement will use the existing Grove connector coordinate assumptions as a planning reference and remain adjustable after physical measurement.
 - Rubber-foot recesses are the default anti-slide method; actual rubber feet or pads are external purchased parts and are not modeled as required printed artifacts.
 - A clip-on detachable removable top cover is required as the default removable upper section; cover screws are out of scope for the main top cover.
-- A screw-fastened pod attachment is acceptable as the default external IR emitter pod attachment because it is deterministic and printable with the existing fastener-based enclosure approach.
+- A top-cover-mounted positive-retention pod attachment is acceptable as the default external IR emitter pod attachment because it keeps the pod associated with the removable upper section as requested by the user.
 - The first implementation may use simplified rectangular connector and cable cutout volumes while preserving adjustable positions and clearances.
 
 ## Impact And Regression Considerations
@@ -239,6 +240,65 @@ Updated deterministic behavior:
 - The existing four Pi Zero stack mounting holes in the bottom tray are intentional and must be documented as the four board-stack fastener holes matching the Pi Zero/HAT mounting pattern.
 - Top-cover clip/catch features and IR pod attachment holes must be named, positioned, and documented so they are distinguishable from the four Pi Zero stack mounting holes.
 
+## Iteration: Printability And Attachment Hardening
+
+Requested changes:
+
+- Increase the amount of top ventilation/access holes on the removable upper section.
+- Fix the removable upper section attachment so the upper tray and bottom tray connect more securely.
+- Eliminate any upper-tray connector features that appear visually or mechanically detached from the upper tray body.
+- Revise the IR pod attachment method because the current upper-tray-mounted attachment approach is not trusted for functional printing or repeated use.
+- Prioritize printability and functional assembly confidence before the user prints on a Bambu printer.
+- Remove the external case opening for the Pi Zero USB port that is internally occupied by the adapter connection to the ETH/USB HAT.
+
+Updated deterministic behavior:
+
+- The top cover ventilation/access pattern must remain a symmetric circular grid, but the default density must increase from the current sparse pattern to a denser default layout sized to preserve printable roof strength and edge margins.
+- The recommended default top-hole pattern for this iteration is `5 x 4` circular holes unless implementation review finds that edge clearance requires `4 x 4` to preserve wall strength. The implemented default must be documented in `README.md`.
+- The top cover must use a mechanically positive tray attachment that combines:
+  - a continuous alignment lip around the tray opening,
+  - clip features that are fully merged into the cover shell rather than appearing as detached or floating geometry,
+  - tray-side receiver or latch geometry that is fully merged into tray walls or tray structure rather than appearing as isolated features.
+
+## Iteration: Pod Serviceability And Top-Cover Ownership
+
+Requested changes:
+
+- The Grove IR emitter PCB mounting holes inside the pod should not require tool access that is impractical in the available pod space.
+- The IR pod attachment mechanism should belong to `top_cover`, not `bottom_tray`.
+
+Updated deterministic behavior:
+
+- The Grove IR emitter PCB must no longer require internal screw-driving access inside the pod as the default mounting method.
+- The pod must retain the Grove IR emitter PCB using a printed top-load retention method by default.
+- The default printed PCB retention method must use adjustable locating/support features plus an adjustable snap bar, clip, or equivalent printed retainer that can be installed and removed without needing a screwdriver inside the pod.
+- The PCB retention geometry must keep the board protected, keep the Grove connector and cable area usable, and keep the LED aligned with the IR aperture.
+- The IR emitter PCB reference model, printed PCB retention geometry, pod cable entry, IR LED aperture, and related pod cutouts must continue to derive from the same adjustable emitter pose so they stay aligned when the emitter position changes.
+- The IR pod must attach to geometry owned by `top_cover` by default.
+- The `top_cover` must remain removable without cover screws, while still carrying the pod attachment interface as part of the upper removable assembly.
+- The pod attachment interface on `top_cover` must remain visually and functionally distinct from the top-cover clip/catch features that connect the cover to `bottom_tray`.
+- The pod attachment interface must remain visually and functionally distinct from the four Pi Zero stack mounting holes in `bottom_tray`.
+- The main enclosure cable exit and pod cable entry must remain aligned with the selected Grove Base Hat connector area and the pod-mounted emitter board after the pod attachment ownership moves back to `top_cover`.
+- The IR LED aperture in the printable pod must remain visibly open through the pod wall in `ir_pod`, `assembly`, and `printable_layout` render modes, regardless of `show_electronics`.
+- `render_mode = "top_cover"` and `render_mode = "printable_layout"` must continue to show the top cover as a printable part that includes the pod attachment interface.
+- README documentation must state that the pod attaches to `top_cover` and that the IR emitter PCB is retained by a printed serviceable retention feature rather than internal mounting screws.
+- Cover retention must not rely on only a small local contact patch between the cover and tray. The cover-to-tray interface must provide support on both long sides and must remain removable without using screws.
+- The removable top cover must remain independently removable from the Pi Zero stack fasteners. Pod removal may occur with the top-cover assembly because the approved pod attachment is cover-owned.
+- The default IR pod attachment for this iteration must use a mechanically supported printed interface with positive retention suitable for repeated assembly and removal, with the supporting geometry visibly continuous with the `top_cover` body rather than reading as a floating appendage.
+- If a slide-and-lock pod attachment is retained, the locking rails, stops, and retention features must be cover-mounted, not tray-mounted, and must remain printable without unsupported floating geometry in the printable orientation.
+- The main enclosure cable exit and pod cable entry must remain aligned after the pod attachment method is revised, and top-cover removal must preserve normal pod/cable clearance without requiring board-stack disassembly.
+- The implementation must remove or refactor any geometry that visually suggests the pod connectors or top-cover connectors are not actually attached to their parent printable part.
+- The Pi Zero external port opening set must exclude the Micro USB port that is consumed internally by the Pi Zero-to-Waveshare adapter connection. Only externally usable Pi Zero ports should remain open by default.
+- The remaining Pi Zero Micro USB opening must stay externally accessible for the port that is still intended for external use.
+
+Impact and regression considerations for this iteration:
+
+- The revised attachment geometry must preserve existing required port cutouts, stack standoffs, and render modes.
+- Keeping pod retention on the cover must not introduce a requirement to remove the Pi Zero stack in order to mount or unmount the pod.
+- Increasing top-hole density must not cut into clip roots, tray receivers, pod attachment structure, or edge wall thickness needed for printability.
+- Printable layout orientation must remain plausible for Bambu Lab P2S printing without support-heavy assumptions for the default parts.
+- Removing the unused external Pi Zero USB opening must not block the still-required external Pi Zero power/data access that remains in use outside the enclosure.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -255,16 +315,22 @@ Updated deterministic behavior:
 - Changing the IR emitter pod or emitter position changes the IR emitter reference, pod mount bosses, mount holes, LED aperture, cable entry, and related pod/main cable cutouts together.
 - The board stack renders in the correct vertical order when `show_electronics = true`.
 - The bottom tray includes Pi Zero-aligned mounting standoffs and adjustable M2.5-class screw clearance.
-- The Grove IR emitter PCB has a mounting location inside the external IR emitter pod with screw holes/bosses.
+- The Grove IR emitter PCB has a mounting location inside the external IR emitter pod with a printed serviceable top-load retention feature and adjustable locating/support geometry.
 - The IR LED is aligned with an adjustable exterior pod aperture, and only the LED path is exposed outside the pod by default.
 - The Grove cable path exits the main enclosure only through the dedicated cable exit and enters the pod only through the dedicated cable entry.
 - The top cover is removable, clip-on attachable/detachable, and independently attached from the board stack mounting screws without cover screws.
-- The top cover includes adjustable ventilation/access holes.
+- The top cover includes adjustable ventilation/access holes with a denser default pattern than the current sparse layout, while preserving printable roof strength and clearance from attachment features.
 - The bottom tray's four Pi Zero stack mounting holes are documented and remain distinct from cover and pod attachment holes.
 - The case includes access openings for all Pi Zero and Waveshare HAT ports listed in Scope.
+- The case does not include an external opening for the Pi Zero Micro USB port that is occupied internally by the adapter connection to the ETH/USB HAT.
 - At least one Waveshare USB-A opening supports an externally attached wireless USB dongle.
 - Anti-slide recesses or feet are present on the bottom exterior.
 - Render modes include `assembly`, `bottom_tray`, `top_cover`, `ir_pod`, `printable_layout`, and `electronics`.
+- The top-cover clip features and tray receivers are visibly continuous with their parent solids by code review and do not read as detached floating geometry.
+- The cover-to-tray interface provides positive retention on both long sides without using cover screws.
+- The IR pod attachment is mounted to the removable top cover rather than to fixed tray/main-body geometry.
+- The IR pod attachment geometry is visibly continuous with its parent printed part by code review and does not read as detached floating geometry.
+- Top-cover removal may carry the IR pod with it, but must not require Pi Zero stack fastener removal or board-stack disassembly.
 - README documents the new design behavior, assumptions, parameters, render modes, print notes, and manual inspection checklist.
 - `git diff --check` passes.
 - No generated mesh/export artifacts are added.
@@ -283,12 +349,17 @@ Updated deterministic behavior:
   - Waveshare and Grove HAT previews do not collide at default spacing,
   - dependent Waveshare port holes and Grove cable/case guide positions derive from board spacing,
   - all required Pi Zero and Waveshare port cutouts exist and are independently adjustable where needed,
+  - the Pi Zero port cutout set excludes the internally consumed Pi Zero USB port and preserves the remaining externally used Pi Zero port access,
   - the wireless dongle remains outside the case through an accessible USB-A cutout,
-  - the external IR emitter pod, PCB mount, screw holes, LED aperture, and main-to-pod cable path are present,
+  - the external IR emitter pod, printed PCB retention geometry, LED aperture, and main-to-pod cable path are present,
   - only the IR LED path is exposed outside the pod by default,
   - the removable top cover uses clip/catch attachment, has no cover screws, and does not depend on board mounting screws,
-  - the top cover ventilation/access hole pattern is present and does not overlap clip/catch features,
+  - the top cover ventilation/access hole pattern is present, denser than the current sparse layout, and does not overlap clip/catch features or weaken required roof margins by code review,
+  - the top-cover clip roots and tray receivers are visibly attached to and supported by their parent solids,
   - anti-slide features are present,
+  - the IR pod retention is mounted to the removable top cover rather than to fixed tray/main-body geometry,
+  - the IR pod attachment features are visibly attached to and supported by their parent solids,
+  - top-cover removal can occur without requiring Pi Zero stack fastener removal or board-stack disassembly,
   - printable parts have plausible flat orientations and Bambu P2S-friendly dimensions,
   - README entries match the implemented behavior,
   - no generated mesh/export artifacts are present.
@@ -303,4 +374,7 @@ Updated deterministic behavior:
 - Document that physical measurement and test fitting are still required before relying on final tolerances.
 - Document the external IR emitter pod render mode, attachment interface, cable exit/entry path, and top cover ventilation/access hole pattern.
 - Document that the top cover is clip-on attachable/detachable and does not use cover screws.
-- Document that the four bottom-tray board-stack holes exist because the Pi Zero/HAT stack has four mounting points, and that top-cover clip/catch features and pod attachment fasteners are separate.
+- Document that the four bottom-tray board-stack holes exist because the Pi Zero/HAT stack has four mounting points, and that top-cover clip/catch features and pod attachment features are separate.
+- Document the revised `top_cover`-mounted IR pod attachment method and note that pod retention is part of the removable upper assembly.
+- Document the implemented default top-hole density for this iteration and any recommended tuning if the user wants more or fewer holes after physical test fitting.
+- Document which Pi Zero Micro USB port remains externally accessible and which one is intentionally closed because it is used internally by the adapter connection to the ETH/USB HAT.
