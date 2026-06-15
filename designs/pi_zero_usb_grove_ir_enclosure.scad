@@ -54,20 +54,20 @@ pi_standoff_screw_hole_diameter_mm = 2.7;
 pi_standoff_pilot_depth_mm = 5.5;
 
 // Clip-on top cover latch/catch features
-cover_clip_y_offset_mm = 16.5;
-cover_clip_tab_width_mm = 9.0;
+cover_clip_y_offset_mm = 14.5;
+cover_clip_tab_width_mm = 7.5;
 cover_clip_tab_thickness_mm = 1.2;
 cover_clip_tab_drop_mm = 4.0;
 cover_clip_hook_depth_mm = 1.0;
 cover_clip_hook_height_mm = 1.6;
-cover_clip_root_length_mm = 11.5;
+cover_clip_root_length_mm = 7.5;
 cover_clip_root_depth_mm = 1.6;
 cover_clip_root_height_mm = 4.2;
-tray_clip_receiver_width_mm = 10.5;
+tray_clip_receiver_width_mm = 7.5;
 tray_clip_receiver_depth_mm = 0.9;
 tray_clip_receiver_height_mm = 2.0;
 tray_clip_receiver_top_inset_mm = 1.8;
-tray_clip_receiver_root_length_mm = 11.5;
+tray_clip_receiver_root_length_mm = 7.5;
 tray_clip_receiver_root_depth_mm = 1.4;
 tray_clip_receiver_root_height_mm = 4.4;
 
