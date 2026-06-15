@@ -56,19 +56,19 @@ pi_standoff_pilot_depth_mm = 5.5;
 // Clip-on top cover latch/catch features
 cover_clip_y_offset_mm = 16.5;
 cover_clip_tab_width_mm = 9.0;
-cover_clip_tab_thickness_mm = 1.8;
+cover_clip_tab_thickness_mm = 1.2;
 cover_clip_tab_drop_mm = 4.0;
-cover_clip_hook_depth_mm = 1.8;
+cover_clip_hook_depth_mm = 1.0;
 cover_clip_hook_height_mm = 1.6;
 cover_clip_root_length_mm = 11.5;
-cover_clip_root_depth_mm = 3.2;
+cover_clip_root_depth_mm = 1.6;
 cover_clip_root_height_mm = 4.2;
 tray_clip_receiver_width_mm = 10.5;
-tray_clip_receiver_depth_mm = 1.8;
+tray_clip_receiver_depth_mm = 0.9;
 tray_clip_receiver_height_mm = 2.0;
 tray_clip_receiver_top_inset_mm = 1.8;
 tray_clip_receiver_root_length_mm = 11.5;
-tray_clip_receiver_root_depth_mm = 3.0;
+tray_clip_receiver_root_depth_mm = 1.4;
 tray_clip_receiver_root_height_mm = 4.4;
 
 // Port cutout dimensions and offsets
@@ -224,6 +224,7 @@ guide_alpha = 0.28;
 
 // Printable layout
 printable_layout_spacing_mm = 28.0;
+ir_pcb_retainer_print_gap_mm = 10.0;
 
 // Visual settings
 tray_colour = "Gainsboro";
@@ -429,7 +430,10 @@ pod_service_window_center_local_z_mm =
     + ir_pcb_retainer_overlap_mm / 2;
 ir_pcb_retainer_body_width_mm = pod_service_window_width_mm - 2 * ir_pcb_retainer_fit_clearance_mm;
 ir_pcb_retainer_body_height_mm = pod_service_window_height_mm - 2 * ir_pcb_retainer_fit_clearance_mm;
-ir_pcb_retainer_print_offset_x_mm = pod_outer_width_mm / 2 + 8.0;
+ir_pcb_retainer_print_offset_x_mm =
+    pod_outer_width_mm / 2
+    + ir_pcb_retainer_body_width_mm / 2
+    + ir_pcb_retainer_print_gap_mm;
 
 ir_led_aperture_to_pose_depth_mm =
     distance_2d_mm(ir_led_center_x_mm, ir_led_center_y_mm, ir_led_aperture_center_x_mm, ir_led_aperture_center_y_mm)
