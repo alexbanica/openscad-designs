@@ -72,7 +72,7 @@ The requested assembly needs a deterministic printable main enclosure that provi
 - A wireless USB dongle model, beyond clearance and port access for the dongle to plug in externally.
 - A precise enclosure fit before the user physically measures and test-fits the hardware stack.
 - External OpenSCAD libraries.
-- Local OpenSCAD command validation, because repository instructions state OpenSCAD is not installed locally and must not be run.
+- Required generated mesh/export deliverables; optional OpenSCAD inspection artifacts may be generated under `/tmp` and must not be committed.
 
 ## Definitions
 
@@ -100,7 +100,7 @@ The requested assembly needs a deterministic printable main enclosure that provi
 - The default board footprint planning size must use the existing 65.0 mm x 30.0 mm Pi Zero/HAT reference dimensions.
 - The user-provided total height from the Pi Zero to the upper part of the Grove HAT plus Grove male connector is approximately 35.0 mm, including existing spacers between HATs.
 - The enclosure must add adjustable upward headroom above the 35.0 mm stack for the Grove cable, Grove connector handling clearance, and IR emitter placement. The default extra upward headroom must be a conservative adjustable value, initially 8.0 mm.
-- The existing enclosure source already exposes board spacing parameters named `pi_zero_to_waveshare_hat_z_offset_mm` and `waveshare_to_grove_hat_z_offset_mm`, currently defaulting to 11.2 mm and 10.5 mm respectively. The implementation must preserve independent adjustment of these distances or replace them with equivalently clear parameters.
+- The existing enclosure source already exposes board spacing parameters named `pi_zero_to_waveshare_hat_z_offset_mm` and `waveshare_to_grove_hat_z_offset_mm`, currently defaulting to 11.2 mm and 10.8 mm respectively. The implementation must preserve independent adjustment of these distances or replace them with equivalently clear parameters.
 - Changing either board spacing parameter must move the corresponding board reference model and all dependent case openings or cable guides for that board tier.
 - Waveshare ETH/USB HUB HAT port cutouts must be positioned relative to the Waveshare HAT Z position, not as unrelated fixed absolute Z coordinates.
 - Grove Base Hat connector/cable clearance guides must be positioned relative to the Grove Base Hat Z position, not as unrelated fixed absolute Z coordinates.
@@ -202,8 +202,8 @@ Updated deterministic behavior:
 - The design must expose independent, user-adjustable board spacing values for Pi Zero-to-Waveshare and Waveshare-to-Grove distances.
 - Current implementation defaults, if retained, are:
   - `pi_zero_to_waveshare_hat_z_offset_mm = 11.2`,
-  - `waveshare_to_grove_hat_z_offset_mm = 10.5`.
-- The implementation must review and, if needed, increase the default Waveshare-to-Grove spacing so the Waveshare ETH/USB HUB HAT and Seeed Grove Base Hat reference models do not visibly collide in `assembly` or `electronics` render modes.
+  - `waveshare_to_grove_hat_z_offset_mm = 10.8`.
+- The implementation must use the 10.8 mm default Waveshare-to-Grove spacing requested during implementation, keep it adjustable, and document that users should increase it if physical measurement or preview inspection shows collision in `assembly` or `electronics` render modes.
 - The implementation must derive board-tier Z positions from those spacing values and then derive related case openings from the board-tier Z positions. Fixed absolute Z values for Waveshare port openings or Grove cable guides are not acceptable when they should follow board spacing.
 - The Grove IR emitter pod placement must be adjustable by X/Y/Z and rotation relative to the main enclosure, with a default attachment on the same front side as the IR LED direction.
 - The Grove IR emitter board placement inside the pod must be adjustable by X/Y/Z and rotation, but its default must fit the PCB, Grove connector, cable bend, and IR LED aperture within the pod.
@@ -398,6 +398,57 @@ Impact and regression considerations for this iteration:
 - The RJ45 opening, side USB-A openings, stack Z derivation, Pi Zero openings, Grove cable path, top cover, IR pod, and anti-slide behavior should remain unchanged unless directly required to keep Waveshare cutout documentation consistent.
 - Because the side USB-A cutouts are printed side-wall openings, matching the Waveshare reference does not require moving their X centers onto the component body centers.
 
+## Iteration: Bambu-Friendly Printable Layout
+
+Requested changes:
+
+- Make the enclosure printable-friendly according to the current repository `AGENTS.md` printable guidance.
+- Ensure printable render modes do not contain floating objects.
+- Ensure every printable object is separable and printable independently.
+- Ensure every printable object is oriented with its broadest, most material-heavy, or most stable face downward on the printer plate unless this spec explicitly documents a different orientation.
+
+Updated deterministic behavior:
+
+- The printable layout must be Bambu Lab-friendly for the Bambu Lab P2S and AMS 2 Pro compatibility target documented by repository instructions.
+- `render_mode = "bottom_tray"` must show the bottom tray as a single printable object with its exterior bottom face on the build plate at `Z=0` by default.
+- `render_mode = "top_cover"` must show the top cover as a single printable object with a broad, stable printable face on the build plate at `Z=0` by default. If the implementation keeps the cover in its assembled orientation for `assembly`, the printable-only top-cover render path must reorient or reposition the part so the standalone printable mode is plate-friendly.
+- `render_mode = "ir_pod"` must show the IR emitter pod body as a printable object with a broad, stable printable face on the build plate at `Z=0` by default. If a separate pod PCB retainer is shown in this mode, it must be a distinct printable object with its own build-plate contact.
+- `render_mode = "printable_layout"` must arrange the bottom tray, top cover, IR emitter pod, and any separate IR pod PCB retainer as distinct non-intersecting objects, each independently resting on the build plate with no floating geometry.
+- Printable-layout separation must be large enough that the separate parts do not intersect, visually fuse, or depend on each other for support or plate contact.
+- Assembly and electronics render modes may keep assembled-world positions and reference previews; the Bambu-friendly no-floating and build-plate-orientation requirements apply to printable part render modes and printable layout outputs.
+- Printable part orientation must not rely on electronics/reference preview geometry, cutout guide geometry, or other non-printing guides for build-plate contact.
+- Any adjustable printable-layout spacing or orientation parameters must keep `_mm` or `_deg` suffixes as appropriate and remain in the grouped `Adjustable Parameters` section.
+- README documentation must describe the printable render orientation and state that the printable layout places separable parts on the build plate without generated mesh exports.
+
+Impact and regression considerations for this iteration:
+
+- Reorienting standalone printable render modes must not change the assembled coordinate relationships used by `assembly` and `electronics`.
+- Refactoring printable render paths must preserve all approved case features, port cutouts, cover clips, pod attachment, IR aperture, cable path, anti-slide features, and retainer behavior.
+- The top cover may need a printable wrapper module or transform so the assembled cover geometry is preserved while the standalone printable output is build-plate-friendly.
+- The IR pod may need a printable wrapper module or transform so its installed assembly pose remains unchanged while standalone printable output rests on the build plate.
+- The separate IR pod PCB retainer must remain distinguishable from the pod-to-top-cover attachment mechanism.
+- OpenSCAD-assisted inspection may be used under current repository instructions, but generated mesh exports must remain temporary and must not be added to source control.
+
+## Iteration: IR Pod Ethernet-Cutout Clearance
+
+Requested changes:
+
+- The external IR pod should not sit over the Waveshare RJ45/Ethernet opening.
+- Make the IR pod a little smaller while preserving the 20.0 mm Grove IR emitter PCB fit.
+
+Updated deterministic behavior:
+
+- The default external IR pod width must be reduced from the prior 32.0 mm default to a narrower default that still fits the 20.0 mm IR emitter PCB, side locator geometry, printed retainer/service opening, and printable walls.
+- The default pod placement must shift toward the front USB-A side of the main enclosure so the pod body and top-cover attachment avoid covering the RJ45/Ethernet cutout.
+- The default pod slide rail spacing must remain compatible with the narrower pod body and leave printable material around the rail slots.
+- The default top-cover-owned pod slide backing plate must remain inside the top-cover X footprint.
+- The pod width, pod X offset, and rail spacing must remain adjustable for physical calibration.
+
+Impact and regression considerations for this iteration:
+
+- Shrinking the pod alone cannot fully clear the RJ45 opening while preserving a serviceable 20.0 mm IR PCB enclosure, so the default must combine a smaller pod with an X offset away from Ethernet.
+- The pod cable entry, LED aperture, board retention geometry, printable wrappers, and assembly/electronics positions must continue to derive from the same pod/emitter pose.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -437,6 +488,10 @@ Impact and regression considerations for this iteration:
 - Any separate IR pod retainer part, if kept, is clearly intentional in both geometry and documentation rather than appearing as an unexplained extra object.
 - Any separate IR pod retainer part is clearly separated from the pod body in `printable_layout` and its installation interface is visually understandable.
 - The IR LED aperture is visibly and mechanically a pass-through opening in the pod wall by code review of the subtraction geometry.
+- `bottom_tray`, `top_cover`, `ir_pod`, and `printable_layout` printable outputs contain no floating printable objects in their intended printable orientation.
+- `printable_layout` places each printable object as a separate, non-intersecting, independently printable object.
+- Every printable object in printable render modes rests on the build plate at `Z=0` with its broadest, most material-heavy, or most stable face downward unless this spec explicitly documents a different orientation.
+- Printable render-mode transforms do not alter the assembled-world positions used by `assembly` or `electronics`.
 - Top-cover removal may carry the IR pod with it, but must not require Pi Zero stack fastener removal or board-stack disassembly.
 - README documents the new design behavior, assumptions, parameters, render modes, print notes, and manual inspection checklist.
 - `git diff --check` passes.
@@ -444,8 +499,8 @@ Impact and regression considerations for this iteration:
 
 ## Validation Plan
 
-- Do not run OpenSCAD commands locally.
 - Run `git diff --check`.
+- Optionally run local OpenSCAD inspection commands when useful for printability confidence; any generated inspection artifacts must be written under `/tmp` and must not be committed.
 - Perform code review/manual inspection to confirm:
   - the source follows repository OpenSCAD naming and section rules,
   - adjustable dimensions are grouped and not redefined inside modules,
@@ -475,6 +530,9 @@ Impact and regression considerations for this iteration:
   - the IR LED aperture subtraction fully pierces the pod wall rather than stopping short of the external face,
   - top-cover removal can occur without requiring Pi Zero stack fastener removal or board-stack disassembly,
   - printable parts have plausible flat orientations and Bambu P2S-friendly dimensions,
+  - printable render modes and `printable_layout` contain no floating printable objects,
+  - each printable object in `printable_layout` is separated from the others and has independent build-plate contact at `Z=0`,
+  - printable-only orientation transforms do not affect assembled-world geometry,
   - README entries match the implemented behavior,
   - no generated mesh/export artifacts are present.
 
@@ -497,3 +555,4 @@ Impact and regression considerations for this iteration:
 - Document the implemented default top-hole density for this iteration and any recommended tuning if the user wants more or fewer holes after physical test fitting.
 - Document which Pi Zero Micro USB port remains externally accessible and which one is intentionally closed because it is used internally by the adapter connection to the ETH/USB HAT.
 - Document that Waveshare enclosure port cutout defaults are refreshed from `designs/waveshare_eth_usb_hub_hat.scad`, including the `1.7 mm` default front USB-A X center.
+- Document that printable render modes and `printable_layout` are Bambu Lab-friendly, with separate parts placed on the build plate and no generated mesh exports committed.

@@ -32,7 +32,7 @@ board_clearance_x_mm = 5.0;
 board_clearance_y_mm = 5.0;
 pi_zero_standoff_height_mm = 4.0;
 pi_zero_to_waveshare_hat_z_offset_mm = 11.2;
-waveshare_to_grove_hat_z_offset_mm = 24.0;
+waveshare_to_grove_hat_z_offset_mm = 10.8;
 electronics_preview_lift_mm = 0.0;
 grove_hat_rotation_deg = 90.0;
 
@@ -109,7 +109,7 @@ port_cutout_extra_clearance_mm = 0.6;
 
 // External IR emitter pod dimensions and attachment interface
 pod_attachment_side = "front"; // [front/rear]
-pod_outer_width_mm = 32.0;
+pod_outer_width_mm = 29.0;
 pod_outer_depth_mm = 32.0;
 pod_outer_height_mm = 24.0;
 pod_wall_thickness_mm = 2.4;
@@ -117,17 +117,17 @@ pod_roof_thickness_mm = 2.0;
 pod_floor_thickness_mm = 2.4;
 pod_corner_radius_mm = 2.0;
 pod_attachment_gap_mm = 0.4;
-pod_center_offset_x_mm = 0.0;
+pod_center_offset_x_mm = 24.5;
 pod_center_offset_z_mm = 0.0;
 pod_slide_rail_width_mm = 8.0;
 pod_slide_rail_height_mm = 12.0;
 pod_slide_rail_length_mm = 2.8;
-pod_slide_rail_spacing_x_mm = 20.0;
+pod_slide_rail_spacing_x_mm = 18.0;
 pod_slide_rail_center_z_mm = 15.0;
 pod_slide_rail_slot_clearance_mm = 0.35;
 pod_slide_retention_bump_length_mm = 1.4;
 pod_slide_retention_bump_height_mm = 1.8;
-pod_slide_root_plate_extra_width_mm = 7.0;
+pod_slide_root_plate_extra_width_mm = 1.5;
 pod_slide_root_plate_depth_mm = 4.4;
 pod_slide_root_plate_height_mm = 15.0;
 pod_slide_root_gusset_width_mm = 4.0;
@@ -434,6 +434,12 @@ ir_pcb_retainer_print_offset_x_mm =
     pod_outer_width_mm / 2
     + ir_pcb_retainer_body_width_mm / 2
     + ir_pcb_retainer_print_gap_mm;
+ir_pcb_retainer_print_width_mm =
+    max(ir_pcb_retainer_body_width_mm, ir_pcb_width_mm + 2 * ir_pcb_side_locator_width_mm);
+ir_pcb_retainer_print_depth_mm =
+    ir_pcb_retainer_body_height_mm
+    + ir_pcb_retainer_bar_height_mm
+    - min(ir_pcb_retainer_bar_height_mm, pod_service_window_height_mm) / 2;
 
 ir_led_aperture_to_pose_depth_mm =
     distance_2d_mm(ir_led_center_x_mm, ir_led_center_y_mm, ir_led_aperture_center_x_mm, ir_led_aperture_center_y_mm)
@@ -467,11 +473,11 @@ port_cutouts_mm = [
 if (render_mode == "assembly") {
     pi_zero_usb_grove_ir_enclosure_assembly();
 } else if (render_mode == "bottom_tray") {
-    pi_zero_usb_grove_ir_bottom_tray();
+    pi_zero_usb_grove_ir_printable_bottom_tray();
 } else if (render_mode == "top_cover") {
-    pi_zero_usb_grove_ir_top_cover();
+    pi_zero_usb_grove_ir_printable_top_cover();
 } else if (render_mode == "ir_pod") {
-    pi_zero_usb_grove_ir_ir_pod();
+    pi_zero_usb_grove_ir_printable_ir_pod();
 } else if (render_mode == "printable_layout") {
     pi_zero_usb_grove_ir_printable_layout();
 } else if (render_mode == "electronics") {
@@ -503,13 +509,21 @@ module pi_zero_usb_grove_ir_enclosure_assembly(
 
 module pi_zero_usb_grove_ir_printable_layout() {
     translate([-(outer_length_mm + printable_layout_spacing_mm), 0, 0])
-        pi_zero_usb_grove_ir_bottom_tray();
+        pi_zero_usb_grove_ir_printable_bottom_tray();
 
-    pi_zero_usb_grove_ir_top_cover();
+    pi_zero_usb_grove_ir_printable_top_cover();
 
     translate([outer_length_mm + printable_layout_spacing_mm, 0, 0])
-        rotate([0, 0, -90])
-            pi_zero_usb_grove_ir_ir_pod(show_retainer_installed = false, printable_layout_mode = true);
+        pi_zero_usb_grove_ir_printable_ir_pod();
+
+    translate([
+        outer_length_mm + printable_layout_spacing_mm,
+        pod_outer_depth_mm / 2
+            + ir_pcb_retainer_print_depth_mm / 2
+            + ir_pcb_retainer_print_gap_mm,
+        0
+    ])
+        pi_zero_usb_grove_ir_printable_pod_board_retainer();
 }
 
 module pi_zero_usb_grove_ir_electronics_reference(
@@ -566,6 +580,54 @@ module pi_zero_usb_grove_ir_electronics_reference(
 // ======================================================
 // Printable Parts
 // ======================================================
+
+module pi_zero_usb_grove_ir_printable_bottom_tray() {
+    pi_zero_usb_grove_ir_bottom_tray();
+}
+
+module pi_zero_usb_grove_ir_printable_top_cover() {
+    translate([0, 0, case_total_height_mm])
+        rotate([180, 0, 0])
+            pi_zero_usb_grove_ir_top_cover();
+}
+
+module pi_zero_usb_grove_ir_printable_ir_pod() {
+    translate([
+        -pod_center_x_mm,
+        -pod_center_y_mm,
+        -(pod_center_z_mm - pod_outer_height_mm / 2)
+    ])
+        pi_zero_usb_grove_ir_ir_pod(show_retainer_installed = false, printable_layout_mode = false);
+}
+
+module pi_zero_usb_grove_ir_printable_pod_board_retainer() {
+    color(standoff_colour)
+        union() {
+            translate([0, 0, ir_pcb_retainer_face_thickness_mm / 2])
+                cube(
+                    [
+                        ir_pcb_retainer_body_width_mm,
+                        ir_pcb_retainer_body_height_mm,
+                        ir_pcb_retainer_face_thickness_mm
+                    ],
+                    center = true
+                );
+
+            translate([
+                0,
+                -(pod_service_window_height_mm - ir_pcb_retainer_bar_height_mm) / 2,
+                ir_pcb_retainer_face_thickness_mm + ir_pcb_retainer_bar_depth_mm / 2
+            ])
+                cube(
+                    [
+                        ir_pcb_width_mm + 2 * ir_pcb_side_locator_width_mm,
+                        ir_pcb_retainer_bar_height_mm,
+                        ir_pcb_retainer_bar_depth_mm
+                    ],
+                    center = true
+                );
+        }
+}
 
 module pi_zero_usb_grove_ir_bottom_tray() {
     color(tray_colour)
@@ -632,9 +694,6 @@ module pi_zero_usb_grove_ir_ir_pod(
         pi_zero_usb_grove_ir_pod_board_retainer();
     } else if (printable_layout_mode) {
         translate([ir_pcb_retainer_print_offset_x_mm, 0, 0])
-            pi_zero_usb_grove_ir_pod_board_retainer();
-    } else {
-        translate([0, 0, pod_outer_height_mm / 2 + ir_pcb_retainer_face_thickness_mm])
             pi_zero_usb_grove_ir_pod_board_retainer();
     }
 }
