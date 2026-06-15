@@ -144,8 +144,8 @@ hat_side_usb_a_size_mm = [
     hat_side_usb_a_width_y_mm,
     hat_side_usb_a_height_mm
 ];
-hat_left_usb_a_center_x_mm = -hat_board_half_length_mm;
-hat_right_usb_a_center_x_mm = hat_board_half_length_mm;
+hat_left_usb_a_center_x_mm = -hat_board_half_length_mm + hat_side_usb_a_depth_x_mm / 2;
+hat_right_usb_a_center_x_mm = hat_board_half_length_mm - hat_side_usb_a_depth_x_mm / 2;
 hat_bottom_micro_usb_center_z_mm = -hat_bottom_micro_usb_size_mm[2] / 2;
 micro_usb_adapter_center_x_mm = hat_bottom_micro_usb_center_x_mm;
 micro_usb_adapter_center_y_mm =
