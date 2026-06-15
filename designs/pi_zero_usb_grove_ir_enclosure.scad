@@ -18,7 +18,7 @@ use <grove_infrared_emitter.scad>
 
 // Render controls
 $fn = 48;
-render_mode = "electronics"; // [assembly/bottom_tray/top_cover/ir_pod/printable_layout/electronics]
+render_mode = "assembly"; // [assembly/bottom_tray/top_cover/ir_pod/printable_layout/electronics]
 show_electronics = true;
 show_cutout_guides = true;
 
