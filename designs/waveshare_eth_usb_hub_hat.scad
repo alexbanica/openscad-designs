@@ -50,8 +50,8 @@ hat_front_usb_a_depth_y_mm = 5.7;
 hat_front_usb_a_height_mm = 7.0;
 
 hat_side_usb_a_center_y_mm = -4.5;
-hat_side_usb_a_depth_x_mm = 13.2;
-hat_side_usb_a_width_y_mm = 5.7;
+hat_side_usb_a_depth_x_mm = 5.7;
+hat_side_usb_a_width_y_mm = 13.2;
 hat_side_usb_a_height_mm = 7.0;
 
 hat_bottom_micro_usb_center_x_mm = 8.9;

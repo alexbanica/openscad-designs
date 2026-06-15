@@ -248,9 +248,9 @@ Default dimensions are configurable at the top of the `.scad` file. The initial 
 - Pi Zero-compatible GPIO reference using the same 20 x 2, 2.54 mm pitch coordinate pattern as `designs/pi_zero.scad`.
 - Connector preview set: RJ45 and one USB-A on the front edge opposite the GPIO header, one USB-A on each long side, and a bottom Micro USB HAT interface.
 - RJ45 footprint: 14.7 mm x 11.7 mm, passing through the PCB from 1.3 mm below the bottom face to the configured 13.0 mm top-side height envelope.
-- USB-A footprint: 13.2 mm x 5.7 mm for the front and side connector previews; side USB-A uses X as the board-length direction and Y as the board-width direction.
+- USB-A footprint: 13.2 mm x 5.7 mm for the front connector preview; side USB-A uses 5.7 mm X inward depth and 13.2 mm Y board-side-margin length.
 - Front RJ45-to-USB-A margin spacing: 3.75 mm between the RJ45 right margin and front USB-A left margin.
-- Side USB-A port mouth outer faces align to the left and right board faces by default, with connector bodies extending inward over the PCB.
+- Side USB-A port mouth outer faces align to the left and right board faces by default, and only the short 5.7 mm side USB-A depth extends inward over the PCB.
 - LED preview set: PWR, ACT, and D1-D3 visual reference blocks.
 - Micro USB bridge adapter solid envelope: 8.6 mm x 9.0 mm x 12.2 mm, measured from official Waveshare `0304-06.stp` solid vertices and left adjustable for physical measurement.
 - Micro USB bridge adapter detail: 8.6 mm x 1.0 mm x 12.2 mm bridge body with two about 6.5 mm x 8.0 mm x 1.46 mm plug shells on 8.70 mm centers. The bridge body sits outside the board edge by default, while the plug shells extend inward into the board-side Micro USB socket positions.
@@ -583,7 +583,7 @@ Manual inspection for the Waveshare ETH/USB HUB HAT reference:
 - GPIO header pin centers follow the Pi Zero 20 x 2 coordinate pattern, and the simplified header block is derived from the corrected pin grid.
 - RJ45 defaults to a 14.7 mm x 11.7 mm footprint, passes through the PCB, and extends 1.3 mm below the PCB bottom face.
 - Front USB-A defaults to a 13.2 mm x 5.7 mm footprint, with its X center derived from the RJ45 center, connector X sizes, and 3.75 mm margin-to-margin spacing.
-- Side USB-A previews default to 13.2 mm x 5.7 mm footprints, use X as board length and Y as board width, and align port mouth outer faces to the left and right board faces with connector bodies extending inward over the PCB.
+- Side USB-A previews default to 5.7 mm X inward depth and 13.2 mm Y board-side-margin length, with port mouth outer faces aligned to the left and right board faces and only the short depth extending inward over the PCB.
 - RJ45, front USB-A, one USB-A on each long side, bottom Micro USB interface, LEDs, and major clearance blocks are visible when enabled.
 - Major component preview blocks stay outside the default connector and GPIO header footprints.
 - `show_electronics`, `show_micro_usb_adapter`, and `show_gpio_header` independently control their intended visual groups.

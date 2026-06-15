@@ -15,11 +15,13 @@ The repository currently has Raspberry Pi reference models but no standalone Wav
 The current Waveshare reference now exists, but several measured-fit bugs need correction before dependent enclosure work can rely on it:
 
 - the HAT GPIO header reference is not aligned to the Pi Zero GPIO header coordinate pattern,
-- the side USB-A connector center positions are not centered on the left and right board-edge margins,
+- the side USB-A connector previews do not keep the long USB-A component dimension aligned along the left and right board-side margins,
 - RJ45 and USB-A connector sizes do not match the measured component dimensions supplied by the user,
 - the RJ45 preview sits only above the board instead of passing through the board,
 - the RJ45 lower-side clearance relative to the board is not represented,
 - the front-edge spacing between the RJ45 component margin and USB component margin is not represented.
+
+Iteration 2026-06-15 side USB orientation correction: the side USB-A connector previews must place each port mouth on the corresponding board side face while keeping the long USB-A component dimension along the PCB side margin. The inward-over-PCB depth for side USB-A connectors is the short `5.7 mm` dimension along X, and the long `13.2 mm` dimension runs along Y on the board side margin.
 
 ## Scope
 
@@ -34,7 +36,7 @@ The current Waveshare reference now exists, but several measured-fit bugs need c
 - Keep all user-adjustable dimensions near the top of the file in grouped `Adjustable Parameters`.
 - Keep derived values in a separate `Derived Values` section.
 - Update `README.md` with the new design, parameters, render modes, assumptions, and validation checklist entries.
-- Correct the existing Waveshare reference model defaults so the GPIO header follows the Pi Zero header coordinate pattern, the measured RJ45 and USB-A connector dimensions are represented, the side USB-A ports are centered on the board-edge margins, and front RJ45/USB placement follows the measured inter-component margin constraint.
+- Correct the existing Waveshare reference model defaults so the GPIO header follows the Pi Zero header coordinate pattern, the measured RJ45 and USB-A connector dimensions are represented, the side USB-A ports face outward from the left and right board faces with the short connector depth extending inward over the PCB and the long connector dimension along the side margin, and front RJ45/USB placement follows the measured inter-component margin constraint.
 
 ## Out Of Scope
 
@@ -82,7 +84,8 @@ The current Waveshare reference now exists, but several measured-fit bugs need c
 - Connector and component models may be simplified rectangular or rounded clearance volumes when exact cosmetic shape is unnecessary for fit-checking.
 - User-supplied measured connector dimensions must be used for the default corrected Waveshare reference:
   - RJ45 component footprint size: 14.7 mm along X and 11.7 mm along Y,
-  - USB-A component footprint size: 13.2 mm along X and 5.7 mm along Y.
+  - front USB-A component footprint size: 13.2 mm along X and 5.7 mm along Y,
+  - side USB-A component footprint size: 5.7 mm along X inward depth and 13.2 mm along Y side-margin length.
 - The default front-edge spacing between the RJ45 component margin and the USB-A component margin must be 3.75 mm.
 - The default RJ45 component must pass through the HAT PCB.
 - The default distance between the lower side of the HAT PCB and the RJ45 component lower extent must be 1.3 mm.
@@ -113,10 +116,15 @@ The current Waveshare reference now exists, but several measured-fit bugs need c
 - The Waveshare GPIO header block must be centered on the resulting 20 x 2 pin grid, not independently positioned through unrelated hard-coded center values.
 - The corrected RJ45 footprint must default to 14.7 mm x 11.7 mm in X/Y.
 - The corrected front USB-A footprint must default to 13.2 mm x 5.7 mm in X/Y.
-- The corrected side USB-A footprints must default to 13.2 mm x 5.7 mm in X/Y, with the 13.2 mm dimension running across X and the 5.7 mm dimension running across Y.
-- The side USB-A center X positions must sit on the left and right board-edge margin lines:
-  - left USB-A center X = `-hat_board_half_length_mm`,
-  - right USB-A center X = `hat_board_half_length_mm`.
+- The corrected side USB-A footprints must default to 5.7 mm x 13.2 mm in X/Y, with the 5.7 mm dimension running inward across X and the 13.2 mm dimension running along the side board margin across Y.
+- The side USB-A connector previews must be oriented as side-entry ports:
+  - the left USB-A port mouth outer face is aligned to the left board face at X = `-hat_board_half_length_mm`,
+  - the right USB-A port mouth outer face is aligned to the right board face at X = `hat_board_half_length_mm`,
+  - the left connector body short depth extends inward toward +X over the PCB,
+  - the right connector body short depth extends inward toward -X over the PCB,
+  - the long 13.2 mm side USB-A dimension lies along the corresponding board side margin in Y,
+  - left USB-A center X = `-hat_board_half_length_mm + hat_side_usb_a_depth_x_mm / 2`,
+  - right USB-A center X = `hat_board_half_length_mm - hat_side_usb_a_depth_x_mm / 2`.
 - The RJ45 and front USB-A centers must be derived from their X sizes and the 3.75 mm margin-to-margin spacing so the default distance between the RJ45 right margin and USB-A left margin is 3.75 mm.
 - The RJ45 component must be represented by geometry that passes through the board: its lower extent must be 1.3 mm below the PCB bottom face, and its upper extent must preserve the configured RJ45 component height envelope.
 - The adapter reference must align to the HAT bottom Micro USB interface in assembly mode and must be visually distinct from the HAT connectors.
@@ -130,14 +138,14 @@ The current Waveshare reference now exists, but several measured-fit bugs need c
 - The official STEP-derived Micro USB adapter solid-vertex dimensions are sufficient as the default adapter reference until the user's physical adapter is measured.
 - Connector bodies can be simplified as clearance volumes while preserving board-side position, size, height, and port access intent.
 - The model should be a standalone HAT reference file rather than modifying `designs/pi_zero.scad`, because repository instructions say future dependent designs should use `designs/pi_zero.scad` as the Pi fit reference instead of duplicating Pi geometry.
-- The user-supplied connector dimensions are physical component footprint dimensions in the Waveshare model coordinate system, where X follows board length and Y follows board width.
-- "Left and right USB centers do not start from the left and right center margins" means each side USB-A connector center should sit on the corresponding board-edge margin line, not be offset inward or outward by a board-overlap heuristic.
+- The user-supplied front connector dimensions are physical component footprint dimensions in the Waveshare model coordinate system, where X follows board length and Y follows board width.
+- "Left and right USB entries are oriented wrong" means the side USB-A reference must represent outward-facing side ports: the side port mouth is on the corresponding board side face, the short connector depth extends inward over the PCB, and the long connector dimension sits along the PCB side margin rather than pointing inward.
 - The supplied 1.3 mm RJ45 lower-side distance means the RJ45 component extends 1.3 mm below the PCB bottom face.
 
 ## Impact And Regression Considerations
 
 - The Waveshare `.scad` file changes must not change existing Pi Zero or Raspberry Pi 5 reference behavior.
-- Dependent enclosures that import `waveshare_eth_usb_hub_hat.scad` may render the corrected connector locations and dimensions differently; this is intended because the current defaults are measured-fit bugs.
+- Dependent enclosures that import `waveshare_eth_usb_hub_hat.scad` may render the corrected connector locations, side USB-A X/Y dimensions, and side-port approach direction differently; this is intended because the current defaults are measured-fit bugs.
 - README documentation must be updated to avoid documenting obsolete connector sizes, side-USB placement, or RJ45 placement behavior.
 - README validation examples must not instruct agents to run OpenSCAD locally as required validation; they may list optional commands for users with OpenSCAD installed, consistent with the current README style.
 - The design must preserve repository compatibility with Bambu Lab P2S and AMS 2 Pro print guidance by using printable-friendly clearances and avoiding generated mesh files.
@@ -154,8 +162,9 @@ The current Waveshare reference now exists, but several measured-fit bugs need c
 - Default GPIO header pin centers match the Pi Zero reference model's 20 x 2 header coordinate pattern.
 - Default Waveshare GPIO header block position is derived from the corrected pin grid.
 - Default RJ45 X/Y footprint is 14.7 mm x 11.7 mm.
-- Default USB-A X/Y footprint is 13.2 mm x 5.7 mm for the front and side USB-A connector previews.
-- Default side USB-A center X positions sit on the board left and right X margin lines.
+- Default front USB-A X/Y footprint is 13.2 mm x 5.7 mm.
+- Default side USB-A X/Y footprint is 5.7 mm x 13.2 mm.
+- Default side USB-A port mouth outer faces align to the board left and right X side faces, with each connector short depth extending inward over the PCB and each long dimension lying along the side board margin.
 - Default front RJ45-to-USB-A margin spacing is 3.75 mm.
 - Default RJ45 geometry passes through the PCB and extends 1.3 mm below the PCB bottom face.
 - The Micro USB bridge adapter body is outside the board outline by default, and the plug-shell blocks extend from the board edge toward the board interior so they behave like plugs inserted into the board-side Micro USB sockets.
@@ -174,8 +183,10 @@ The current Waveshare reference now exists, but several measured-fit bugs need c
   - render modes select the intended assemblies,
   - the board outline and holes match researched dimensions,
   - the GPIO header pin centers match the Pi Zero coordinate pattern,
-  - RJ45 and USB-A defaults match the corrected measured dimensions,
-  - side USB-A centers sit on the board-edge margin lines,
+  - RJ45 and front USB-A defaults match the corrected measured dimensions,
+  - side USB-A defaults use 5.7 mm X depth and 13.2 mm Y length,
+  - side USB-A port mouths align to the left/right board side faces,
+  - side USB-A connector short depths extend inward over the PCB from those faces,
   - front RJ45-to-USB-A margin spacing is 3.75 mm,
   - RJ45 geometry passes through the PCB and extends 1.3 mm below the PCB bottom face,
   - the Micro USB adapter can be toggled and has adjustable fit-clearance dimensions,
