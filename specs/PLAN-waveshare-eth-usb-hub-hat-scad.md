@@ -1,4 +1,4 @@
-# PLAN: Waveshare ETH/USB HUB HAT OpenSCAD Reference Design
+# PLAN: Waveshare ETH/USB HUB HAT Geometry Corrections
 
 Status: Approved
 
@@ -8,18 +8,14 @@ Approved Spec: `specs/SPEC-waveshare-eth-usb-hub-hat-scad.md`
 
 No dedicated branch is required. Repository instructions allow committing directly to `main` when otherwise unspecified.
 
-Implementation must not revert unrelated dirty worktree changes:
-
-- modified `AGENTS.md`,
-- deleted existing spec/plan files shown by current git status,
-- any other unrelated user changes present at implementation time.
+Implementation must not revert unrelated dirty worktree changes, including `.codex/`, `out/`, or any other unrelated user/generated files present at implementation time.
 
 ## Affected Files
 
-- Add `designs/waveshare_eth_usb_hub_hat.scad`.
-- Update `README.md`.
-- Do not edit existing Raspberry Pi reference source files unless implementation discovers a syntax-level import issue that directly blocks the approved design; if that happens, stop and request plan amendment before changing them.
-- Do not add generated mesh/export files.
+- Update `designs/waveshare_eth_usb_hub_hat.scad`.
+- Update `README.md` Waveshare reference documentation and validation checklist entries as needed.
+- Do not edit `designs/pi_zero.scad`; use it only as the coordinate reference for the Waveshare GPIO header correction.
+- Do not add generated mesh/export files to source control.
 
 ## No-Research Constraint
 
@@ -28,8 +24,8 @@ Implementation must use only:
 - the approved spec,
 - this approved plan,
 - current repository instructions,
-- existing local code needed to match style,
-- the researched source facts already captured in the approved spec.
+- `designs/pi_zero.scad` for the existing GPIO coordinate pattern,
+- the current Waveshare source and README sections needed to apply the approved corrections.
 
 Implementation must not perform additional product, architecture, or scope research.
 
@@ -37,69 +33,41 @@ Implementation must not perform additional product, architecture, or scope resea
 
 Automated unit tests are not applicable. This is an OpenSCAD reference design repository with no test framework, and repository instructions state QA/unit tests are not required unless explicitly requested.
 
-The test-first phase is replaced by deterministic pre-implementation checklist creation during implementation:
-
-- identify the final manual review checklist from the approved spec,
-- map each checklist item to either `designs/waveshare_eth_usb_hub_hat.scad` or `README.md`,
-- implement against that checklist.
+Before production edits, implementation must create a short manual checklist from the approved acceptance criteria and use it during review.
 
 ## Implementation Steps
 
-1. Inspect existing OpenSCAD style in `designs/pi_zero.scad` and `designs/rpi5.scad` only as needed for local conventions.
-2. Add `designs/waveshare_eth_usb_hub_hat.scad`.
-3. At the top of the new file, document:
-   - units are millimeters,
-   - origin and orientation,
-   - that the model is a fit/clearance reference, not a vendor-certified model.
-4. Add grouped `Adjustable Parameters`:
-   - render controls,
-   - board dimensions,
-   - mounting holes,
-   - GPIO header/reference dimensions,
-   - connector dimensions and positions,
-   - LED and component preview dimensions,
-   - Micro USB bridge adapter dimensions,
-   - visual settings.
-5. Add `Derived Values` for board half sizes, hole positions, connector centers, adapter alignment offsets, and repeated geometry constants.
-6. Implement render dispatch for:
-   - `assembly`,
-   - `hat`,
-   - `micro_usb_adapter`,
-   - `printable_layout`.
-7. Implement named modules for:
-   - `waveshare_eth_usb_hub_hat_reference_model(...)`,
-   - board outline and mounting holes,
-   - GPIO header/reference pins,
-   - connector/component previews,
-   - bottom Micro USB HAT interface,
-   - Micro USB bridge adapter,
-   - printable/fit-check layout,
-   - reusable helper geometry such as rounded boxes and hole loops.
-8. Use default dimensions required by the approved spec:
-   - board: `65.0 mm x 30.0 mm`,
-   - board thickness: adjustable default compatible with common PCB thickness, `1.6 mm`,
-   - mounting holes: `3.0 mm`,
-   - hole edge offsets: `3.5 mm`,
-   - hole center span: `58.0 mm x 23.0 mm`,
-   - corner radius: `1.5 mm`,
-   - Micro USB bridge adapter solid envelope: `8.6 mm x 9.0 mm x 12.2 mm`,
-   - Micro USB bridge adapter body: `8.6 mm x 1.0 mm x 12.2 mm`,
-   - two Micro USB bridge adapter plug shells: about `6.5 mm x 8.0 mm x 1.46 mm`,
-   - plug center spacing: about `8.70 mm`.
-9. Place the Micro USB bridge adapter body just outside the board edge and offset the plug shells toward the board interior so they align with the board-side Micro USB socket references.
-10. Use simplified but adjustable clearance volumes for RJ45, USB-A, bottom Micro USB, LEDs, and major ICs.
-11. Ensure `show_electronics`, `show_micro_usb_adapter`, and `show_gpio_header` independently control their intended visual groups.
-12. Keep the file OpenSCAD 2021.01-compatible:
-    - no external libraries,
-    - no generated imports,
-    - no unsupported syntax.
-13. Update `README.md`:
-    - add the new file under Design Files,
-    - add a Waveshare ETH/USB HUB HAT section,
-    - document assumptions and source dimensions,
-    - document adjustable parameter groups,
-    - document render modes and optional export commands,
-    - add manual inspection checklist items.
+1. Inspect the existing Waveshare and Pi Zero source only enough to confirm:
+   - Pi Zero GPIO pin functions and constants,
+   - current Waveshare connector variables and derived center calculations,
+   - current README Waveshare documentation.
+2. Update the Waveshare GPIO header defaults and derived values:
+   - remove independently hard-coded GPIO header center defaults where they conflict with Pi Zero alignment,
+   - derive the first GPIO pin X as `-(19 * hat_gpio_pin_pitch_mm / 2)`,
+   - derive the first GPIO pin Y from `hat_mounting_hole_y_mm - hat_gpio_pin_pitch_mm / 2`,
+   - derive the GPIO header block center from the corrected 20 x 2 pin grid.
+3. Update measured connector defaults:
+   - RJ45 X/Y footprint defaults to `14.7 mm x 11.7 mm`,
+   - front USB-A X/Y footprint defaults to `13.2 mm x 5.7 mm`,
+   - side USB-A X/Y footprint defaults to `13.2 mm x 5.7 mm`, with X across board length and Y across board width.
+4. Replace the side USB-A center X derivation:
+   - left USB-A center X = `-hat_board_half_length_mm`,
+   - right USB-A center X = `hat_board_half_length_mm`,
+   - remove or stop using the old board-overlap heuristic for side USB center placement.
+5. Add or update the front RJ45-to-USB-A spacing model:
+   - expose an adjustable `3.75 mm` default margin-to-margin spacing,
+   - derive the front USB-A X center from the RJ45 center, RJ45 X size, USB-A X size, and the spacing value.
+6. Update RJ45 through-board placement:
+   - expose an adjustable `1.3 mm` default below-board lower extent,
+   - compute RJ45 center Z and total Z size so the component extends from `-1.3 mm` below the PCB bottom face to the configured top height envelope above the PCB,
+   - render RJ45 through the board while keeping other top components on top of the PCB.
+7. Keep existing render modes, public module names, Micro USB adapter behavior, board dimensions, mounting holes, LED blocks, and component blocks unchanged unless directly required by the approved corrections.
+8. Update README Waveshare documentation:
+   - document corrected RJ45 and USB-A footprint defaults,
+   - document that side USB-A centers sit on the left/right board-edge margin lines,
+   - document the `3.75 mm` RJ45-to-front-USB margin spacing,
+   - document that RJ45 passes through the PCB and extends `1.3 mm` below the PCB bottom face,
+   - keep optional OpenSCAD commands and generated-artifact guidance consistent with repository instructions.
 
 ## Validation Commands
 
@@ -111,51 +79,55 @@ git diff --check
 
 Expected result: command exits successfully with no output.
 
-Do not run OpenSCAD validation commands locally.
+Run an OpenSCAD render/export to `/tmp` if available and useful for visual inspection, for example:
+
+```sh
+openscad -o /tmp/waveshare_eth_usb_hub_hat_assembly.off -D 'render_mode="assembly"' designs/waveshare_eth_usb_hub_hat.scad
+```
+
+Expected result: command exits successfully and produces only a temporary artifact outside the repository.
 
 ## Manual Review Requirements
 
 Review `designs/waveshare_eth_usb_hub_hat.scad` and confirm:
 
-- it has `Adjustable Parameters` and `Derived Values` sections near the top,
-- all user-adjustable linear variables use `_mm`,
-- any angle variables use `_deg`,
+- all adjusted user-facing linear dimensions use `_mm`,
 - user-adjustable values are not redefined inside modules,
-- render modes dispatch deterministically,
-- board dimensions and mounting holes match the approved spec,
-- Micro USB adapter default solid envelope is adjustable and defaults to `8.6 x 9.0 x 12.2 mm`,
-- Micro USB adapter is modeled as a bridge body plus two plug shells rather than a single envelope box,
-- Micro USB adapter body sits outside the board edge, while its plug shells extend inward from the edge and do not straddle both sides of the bridge body,
-- connector and component previews are independently hideable through `show_electronics`,
-- Micro USB adapter visibility is independently controlled by `show_micro_usb_adapter`,
-- GPIO header visibility is independently controlled by `show_gpio_header`,
-- major geometry is organized through named modules,
-- no generated mesh/export artifacts are present.
+- GPIO header pin centers follow the Pi Zero 20 x 2 coordinate pattern,
+- GPIO header block position is derived from the corrected pin grid,
+- RJ45 footprint defaults to `14.7 x 11.7 mm`,
+- USB-A footprint defaults to `13.2 x 5.7 mm`,
+- left and right USB-A centers sit on `-hat_board_half_length_mm` and `hat_board_half_length_mm`,
+- front RJ45-to-USB-A margin spacing defaults to `3.75 mm`,
+- RJ45 geometry extends `1.3 mm` below the PCB bottom face and still preserves the configured top height envelope,
+- render modes and public module names remain compatible,
+- no generated mesh/export artifacts are present in the repository.
 
 Review `README.md` and confirm:
 
-- the new design is listed,
-- assumptions and source dimensions match the approved spec,
-- render modes match the OpenSCAD source,
-- optional commands are clearly optional for users with OpenSCAD installed,
+- documented connector dimensions match the corrected source defaults,
+- side USB placement documentation says the centers sit on the board-edge margin lines,
+- RJ45 through-board and `1.3 mm` below-board behavior are documented,
 - validation guidance remains consistent with repository instructions.
 
 ## QA Requirements
 
-Main-agent QA is manual review only:
+Main-agent QA:
 
-- inspect the final diff against the approved spec,
+- inspect the final diff against the approved spec and this plan,
 - run `git diff --check`,
-- confirm no OpenSCAD command was run,
-- confirm no generated mesh/export files were added,
+- run OpenSCAD temporary render/export if available,
+- confirm no generated mesh/export files were added to source control,
 - confirm unrelated dirty worktree changes were not reverted.
+
+If OpenSCAD validation cannot run, report why and mark that visual render QA was not performed.
 
 ## Documentation Updates
 
 Required:
 
-- `README.md` design list update.
-- `README.md` Waveshare ETH/USB HUB HAT component assumptions, parameters, render modes, optional commands, and manual inspection checklist.
+- `README.md` Waveshare ETH/USB HUB HAT component assumptions and fit notes.
+- README validation/manual inspection checklist entries if currently obsolete.
 
 No `AGENTS.md` update is required.
 
@@ -163,11 +135,10 @@ No `AGENTS.md` update is required.
 
 Implementation review must check for:
 
-- spec mismatch,
-- accidental behavior outside approved scope,
+- mismatch with the approved geometry corrections,
+- accidental changes outside Waveshare source and README,
 - OpenSCAD syntax risks visible by inspection,
-- missing adjustable parameters,
-- README/source mismatch,
+- stale README/source mismatch,
 - unrelated file churn.
 
 Final main-agent acceptance must be completed after validation and QA.
