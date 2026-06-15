@@ -1,4 +1,4 @@
-# PLAN: Waveshare ETH/USB HUB HAT Side USB Edge-Center Alignment Fix
+# PLAN: Waveshare ETH/USB HUB HAT Side USB Side-Margin Center Alignment Fix
 
 Status: Approved
 
@@ -24,7 +24,7 @@ Implementation must use only:
 - the approved spec,
 - this approved plan,
 - current repository instructions,
-- the current Waveshare source and README sections needed to apply the approved side USB-A edge-center alignment correction.
+- the current Waveshare source and README sections needed to apply the approved side USB-A side-margin center alignment correction.
 
 Implementation must not perform additional product, architecture, or scope research.
 
@@ -32,7 +32,7 @@ Implementation must not perform additional product, architecture, or scope resea
 
 Automated unit tests are not applicable. This is an OpenSCAD reference design repository with no test framework, and repository instructions state QA/unit tests are not required unless explicitly requested.
 
-Before production edits, implementation must create a short manual checklist from the approved side USB-A edge-center alignment acceptance criteria and use it during review.
+Before production edits, implementation must create a short manual checklist from the approved side USB-A side-margin center alignment acceptance criteria and use it during review.
 
 ## Implementation Steps
 
@@ -45,15 +45,16 @@ Before production edits, implementation must create a short manual checklist fro
    - `hat_side_usb_a_width_y_mm = 13.2`,
    - X is the short inward-over-PCB depth,
    - Y is the long board-side-margin direction.
-3. Update the side USB-A center X derivation so each USB-A component center aligns to the corresponding PCB side edge line:
-   - left USB-A center X = `-hat_board_half_length_mm`,
-   - right USB-A center X = `hat_board_half_length_mm`.
-4. Keep existing GPIO, RJ45, front USB-A, Micro USB adapter, board dimensions, mounting holes, LEDs, component blocks, render modes, and public module names unchanged unless directly required by the side USB-A edge-center alignment fix.
+3. Update side USB-A placement so the component blocks stay fully inside the PCB in X and align to the middle of the side margin along Y:
+   - `hat_side_usb_a_center_y_mm = 0`,
+   - left USB-A center X = `-hat_board_half_length_mm + hat_side_usb_a_depth_x_mm / 2`,
+   - right USB-A center X = `hat_board_half_length_mm - hat_side_usb_a_depth_x_mm / 2`.
+4. Keep existing GPIO, RJ45, front USB-A, Micro USB adapter, board dimensions, mounting holes, LEDs, component blocks, render modes, and public module names unchanged unless directly required by the side USB-A side-margin center alignment fix.
 5. Update README Waveshare documentation:
-   - document that the side USB-A component centers align to the left/right board side edge lines,
+   - document that the side USB-A blocks stay fully inside the PCB in X,
+   - document that the side USB-A center Y aligns to the middle of the left/right side margins,
    - document that side USB-A uses `5.7 mm` X inward depth and `13.2 mm` Y margin length,
-   - document that the short side USB-A depth straddles the PCB side edge line,
-   - remove stale wording that says side USB-A port mouth outer faces align to the board side faces or that only the inward short depth extends over the PCB,
+   - remove stale wording that says side USB-A component centers align to board side edge lines or that the short side USB-A depth straddles the PCB side edge line,
    - keep optional OpenSCAD commands and generated-artifact guidance consistent with repository instructions.
 
 ## Validation Commands
@@ -83,19 +84,21 @@ Review `designs/waveshare_eth_usb_hub_hat.scad` and confirm:
 - side USB-A footprint defaults are `5.7 x 13.2 mm` in X/Y,
 - side USB-A X is the short inward-over-PCB depth,
 - side USB-A Y is the long board-side-margin direction,
-- left USB-A center X is `-hat_board_half_length_mm`,
-- right USB-A center X is `hat_board_half_length_mm`,
-- side USB-A component centers align to the left/right board side edge lines,
-- side USB-A connector short depths straddle those PCB side edge lines,
+- `hat_side_usb_a_center_y_mm` defaults to `0`,
+- left USB-A center X is `-hat_board_half_length_mm + hat_side_usb_a_depth_x_mm / 2`,
+- right USB-A center X is `hat_board_half_length_mm - hat_side_usb_a_depth_x_mm / 2`,
+- side USB-A blocks stay fully inside the left/right PCB side faces in X,
+- side USB-A center Y aligns to the middle of the side margins,
 - unrelated GPIO, RJ45, front USB-A, Micro USB adapter, board, LED, and component behavior is unchanged,
 - render modes and public module names remain compatible,
 - no generated mesh/export artifacts are present in the repository.
 
 Review `README.md` and confirm:
 
-- side USB-A placement documentation says the component centers align to the board side edge lines,
+- side USB-A placement documentation says the blocks stay fully inside the PCB in X,
+- side USB-A placement documentation says the center Y aligns to the middle of the side margins,
 - side USB-A placement documentation says X is the 5.7 mm inward depth and Y is the 13.2 mm margin length,
-- stale documentation saying side USB-A port mouth outer faces align to board side faces or that only the short side USB-A depth extends inward over the PCB is removed,
+- stale documentation saying side USB-A component centers align to board side edge lines or that the short depth straddles the PCB side edge line is removed,
 - validation guidance remains consistent with repository instructions.
 
 ## QA Requirements

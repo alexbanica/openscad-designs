@@ -248,9 +248,9 @@ Default dimensions are configurable at the top of the `.scad` file. The initial 
 - Pi Zero-compatible GPIO reference using the same 20 x 2, 2.54 mm pitch coordinate pattern as `designs/pi_zero.scad`.
 - Connector preview set: RJ45 and one USB-A on the front edge opposite the GPIO header, one USB-A on each long side, and a bottom Micro USB HAT interface.
 - RJ45 footprint: 14.7 mm x 11.7 mm, passing through the PCB from 1.3 mm below the bottom face to the configured 13.0 mm top-side height envelope.
-- USB-A footprint: 13.2 mm x 5.7 mm for the front connector preview; side USB-A uses 5.7 mm X inward/cross-edge depth and 13.2 mm Y board-side-margin length.
+- USB-A footprint: 13.2 mm x 5.7 mm for the front connector preview; side USB-A uses 5.7 mm X inward depth and 13.2 mm Y board-side-margin length.
 - Front RJ45-to-USB-A margin spacing: 3.75 mm between the RJ45 right margin and front USB-A left margin.
-- Side USB-A component centers align to the left and right board side edge lines by default, so the short 5.7 mm side USB-A depth straddles the PCB side edge line.
+- Side USB-A blocks stay fully inside the PCB in X, with center Y aligned to the middle of the left and right side margins.
 - LED preview set: PWR, ACT, and D1-D3 visual reference blocks.
 - Micro USB bridge adapter solid envelope: 8.6 mm x 9.0 mm x 12.2 mm, measured from official Waveshare `0304-06.stp` solid vertices and left adjustable for physical measurement.
 - Micro USB bridge adapter detail: 8.6 mm x 1.0 mm x 12.2 mm bridge body with two about 6.5 mm x 8.0 mm x 1.46 mm plug shells on 8.70 mm centers. The bridge body sits outside the board edge by default, while the plug shells extend inward into the board-side Micro USB socket positions.
@@ -309,7 +309,7 @@ openscad -o /tmp/waveshare_eth_usb_hub_hat_printable_layout.off -D 'render_mode=
 - The GPIO header pin centers follow the Pi Zero 20 x 2 coordinate pattern, and the simplified GPIO header block is centered on that pin grid.
 - The RJ45 clearance passes through the PCB and extends 1.3 mm below the bottom face by default while preserving the configured top-side height envelope.
 - The front USB-A X position derives from the RJ45 center, measured connector widths, and the 3.75 mm margin-to-margin spacing.
-- Side USB-A connector depth runs along X and width runs along Y; each component center aligns to the corresponding +/-X board side edge line, so the short side USB-A depth straddles the PCB side edge line.
+- Side USB-A connector depth runs along X and width runs along Y; the blocks stay fully inside the PCB in X, and center Y aligns to the middle of the left and right side margins.
 - Leave additional printed-case clearance around RJ45, USB-A, and Micro USB features until measured against the actual board and adapter.
 - The design guidance remains compatible with Bambu Lab P2S and AMS 2 Pro fit-check workflows; no generated mesh exports are committed.
 
@@ -583,7 +583,7 @@ Manual inspection for the Waveshare ETH/USB HUB HAT reference:
 - GPIO header pin centers follow the Pi Zero 20 x 2 coordinate pattern, and the simplified header block is derived from the corrected pin grid.
 - RJ45 defaults to a 14.7 mm x 11.7 mm footprint, passes through the PCB, and extends 1.3 mm below the PCB bottom face.
 - Front USB-A defaults to a 13.2 mm x 5.7 mm footprint, with its X center derived from the RJ45 center, connector X sizes, and 3.75 mm margin-to-margin spacing.
-- Side USB-A previews default to 5.7 mm X inward/cross-edge depth and 13.2 mm Y board-side-margin length, with component centers aligned to the left and right board side edge lines so the short depth straddles the PCB side edge line.
+- Side USB-A previews default to 5.7 mm X inward depth and 13.2 mm Y board-side-margin length, stay fully inside the PCB in X, and align center Y to the middle of the left and right side margins.
 - RJ45, front USB-A, one USB-A on each long side, bottom Micro USB interface, LEDs, and major clearance blocks are visible when enabled.
 - Major component preview blocks stay outside the default connector and GPIO header footprints.
 - `show_electronics`, `show_micro_usb_adapter`, and `show_gpio_header` independently control their intended visual groups.

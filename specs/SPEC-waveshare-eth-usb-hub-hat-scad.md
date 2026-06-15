@@ -23,7 +23,7 @@ The current Waveshare reference now exists, but several measured-fit bugs need c
 
 Iteration 2026-06-15 side USB orientation correction: the side USB-A connector previews must place each port mouth on the corresponding board side face while keeping the long USB-A component dimension along the PCB side margin. The inward-over-PCB depth for side USB-A connectors is the short `5.7 mm` dimension along X, and the long `13.2 mm` dimension runs along Y on the board side margin.
 
-Iteration 2026-06-15 side USB edge-center correction: the side USB-A connector previews must keep each USB-A component center aligned to the corresponding left or right PCB side edge line. The `5.7 mm` X dimension remains the short cross-edge depth and the `13.2 mm` Y dimension remains the long side-margin length, but the component center X must sit on the board side edge instead of being offset inward by half the connector depth.
+Iteration 2026-06-15 side USB side-margin center correction: the side USB-A connector previews must keep each USB-A component fully within the PCB outline in X while aligning the component center to the middle of the left/right PCB side margin along Y. The `5.7 mm` X dimension remains the short inward-over-PCB depth and the `13.2 mm` Y dimension remains the long side-margin length. The side USB-A center Y defaults to the board centerline at `0`, and the side USB-A center X positions are offset inward by half the connector depth so the blocks do not extend outside the PCB in X.
 
 ## Scope
 
@@ -38,7 +38,7 @@ Iteration 2026-06-15 side USB edge-center correction: the side USB-A connector p
 - Keep all user-adjustable dimensions near the top of the file in grouped `Adjustable Parameters`.
 - Keep derived values in a separate `Derived Values` section.
 - Update `README.md` with the new design, parameters, render modes, assumptions, and validation checklist entries.
-- Correct the existing Waveshare reference model defaults so the GPIO header follows the Pi Zero header coordinate pattern, the measured RJ45 and USB-A connector dimensions are represented, the side USB-A ports face outward from the left and right board faces with the side USB-A component centers aligned to those side edge lines and the long connector dimension along the side margin, and front RJ45/USB placement follows the measured inter-component margin constraint.
+- Correct the existing Waveshare reference model defaults so the GPIO header follows the Pi Zero header coordinate pattern, the measured RJ45 and USB-A connector dimensions are represented, the side USB-A ports stay inside the left and right PCB side faces in X with the side USB-A component centers aligned to the middle of those side margins along Y, and front RJ45/USB placement follows the measured inter-component margin constraint.
 
 ## Out Of Scope
 
@@ -119,13 +119,14 @@ Iteration 2026-06-15 side USB edge-center correction: the side USB-A connector p
 - The corrected RJ45 footprint must default to 14.7 mm x 11.7 mm in X/Y.
 - The corrected front USB-A footprint must default to 13.2 mm x 5.7 mm in X/Y.
 - The corrected side USB-A footprints must default to 5.7 mm x 13.2 mm in X/Y, with the 5.7 mm dimension running inward across X and the 13.2 mm dimension running along the side board margin across Y.
-- The side USB-A connector previews must be oriented as side-entry ports with their component center X positions aligned to the corresponding PCB side edge lines:
-  - left USB-A center X = `-hat_board_half_length_mm`,
-  - right USB-A center X = `hat_board_half_length_mm`,
-  - the left connector body short depth straddles the left board side edge line, with half the `5.7 mm` depth inward toward +X over the PCB,
-  - the right connector body short depth straddles the right board side edge line, with half the `5.7 mm` depth inward toward -X over the PCB,
+- The side USB-A connector previews must be oriented as side-entry ports whose component blocks stay fully inside the PCB outline in X:
+  - left USB-A center X = `-hat_board_half_length_mm + hat_side_usb_a_depth_x_mm / 2`,
+  - right USB-A center X = `hat_board_half_length_mm - hat_side_usb_a_depth_x_mm / 2`,
+  - side USB-A center Y = `0`,
+  - the left connector body short depth extends inward toward +X over the PCB from the left side edge,
+  - the right connector body short depth extends inward toward -X over the PCB from the right side edge,
   - the long 13.2 mm side USB-A dimension lies along the corresponding board side margin in Y,
-  - the component center is not offset inward by half the connector depth.
+  - the component center is aligned to the middle of the left/right side margin along Y.
 - The RJ45 and front USB-A centers must be derived from their X sizes and the 3.75 mm margin-to-margin spacing so the default distance between the RJ45 right margin and USB-A left margin is 3.75 mm.
 - The RJ45 component must be represented by geometry that passes through the board: its lower extent must be 1.3 mm below the PCB bottom face, and its upper extent must preserve the configured RJ45 component height envelope.
 - The adapter reference must align to the HAT bottom Micro USB interface in assembly mode and must be visually distinct from the HAT connectors.
@@ -140,7 +141,7 @@ Iteration 2026-06-15 side USB edge-center correction: the side USB-A connector p
 - Connector bodies can be simplified as clearance volumes while preserving board-side position, size, height, and port access intent.
 - The model should be a standalone HAT reference file rather than modifying `designs/pi_zero.scad`, because repository instructions say future dependent designs should use `designs/pi_zero.scad` as the Pi fit reference instead of duplicating Pi geometry.
 - The user-supplied front connector dimensions are physical component footprint dimensions in the Waveshare model coordinate system, where X follows board length and Y follows board width.
-- "Left and right USB entries are oriented wrong" means the side USB-A reference must represent outward-facing side ports whose component center line is aligned to the corresponding board side edge, with the short connector depth crossing the PCB edge and the long connector dimension sitting along the PCB side margin rather than pointing inward.
+- "Left and right USB entries are oriented wrong" means the side USB-A reference must represent outward-facing side ports whose bodies remain inside the PCB outline in X, with the short connector depth extending inward from the board side edge and the long connector dimension centered on the middle of the PCB side margin along Y rather than pointing inward.
 - The supplied 1.3 mm RJ45 lower-side distance means the RJ45 component extends 1.3 mm below the PCB bottom face.
 
 ## Impact And Regression Considerations
@@ -165,7 +166,7 @@ Iteration 2026-06-15 side USB edge-center correction: the side USB-A connector p
 - Default RJ45 X/Y footprint is 14.7 mm x 11.7 mm.
 - Default front USB-A X/Y footprint is 13.2 mm x 5.7 mm.
 - Default side USB-A X/Y footprint is 5.7 mm x 13.2 mm.
-- Default side USB-A component center X positions align to the board left and right X side edge lines, with each connector short depth straddling that edge line and each long dimension lying along the side board margin.
+- Default side USB-A component blocks stay within the board left and right X side faces, with each connector short depth extending inward over the PCB and each long dimension centered on the middle of the side board margin along Y.
 - Default front RJ45-to-USB-A margin spacing is 3.75 mm.
 - Default RJ45 geometry passes through the PCB and extends 1.3 mm below the PCB bottom face.
 - The Micro USB bridge adapter body is outside the board outline by default, and the plug-shell blocks extend from the board edge toward the board interior so they behave like plugs inserted into the board-side Micro USB sockets.
@@ -186,8 +187,8 @@ Iteration 2026-06-15 side USB edge-center correction: the side USB-A connector p
   - the GPIO header pin centers match the Pi Zero coordinate pattern,
   - RJ45 and front USB-A defaults match the corrected measured dimensions,
   - side USB-A defaults use 5.7 mm X depth and 13.2 mm Y length,
-  - side USB-A component centers align to the left/right board side edge lines,
-  - side USB-A connector short depths straddle those edge lines,
+  - side USB-A blocks stay fully inside the left/right board side faces in X,
+  - side USB-A center Y aligns to the middle of the side margins at `0`,
   - front RJ45-to-USB-A margin spacing is 3.75 mm,
   - RJ45 geometry passes through the PCB and extends 1.3 mm below the PCB bottom face,
   - the Micro USB adapter can be toggled and has adjustable fit-clearance dimensions,
