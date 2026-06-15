@@ -54,21 +54,20 @@ pi_standoff_screw_hole_diameter_mm = 2.7;
 pi_standoff_pilot_depth_mm = 5.5;
 
 // Clip-on top cover latch/catch features
-cover_clip_x_offset_mm = 22.0;
-cover_clip_tab_width_mm = 12.0;
+cover_clip_y_offset_mm = 16.5;
+cover_clip_tab_width_mm = 9.0;
 cover_clip_tab_thickness_mm = 1.8;
 cover_clip_tab_drop_mm = 4.0;
 cover_clip_hook_depth_mm = 1.8;
 cover_clip_hook_height_mm = 1.6;
-cover_clip_y_offset_mm = 10.0; // Retained for compatibility; long-side clips use cover_clip_x_offset_mm.
-cover_clip_root_length_mm = 17.0;
+cover_clip_root_length_mm = 11.5;
 cover_clip_root_depth_mm = 3.2;
 cover_clip_root_height_mm = 4.2;
-tray_clip_receiver_width_mm = 12.5;
+tray_clip_receiver_width_mm = 10.5;
 tray_clip_receiver_depth_mm = 1.8;
 tray_clip_receiver_height_mm = 2.0;
 tray_clip_receiver_top_inset_mm = 1.8;
-tray_clip_receiver_root_length_mm = 18.0;
+tray_clip_receiver_root_length_mm = 11.5;
 tray_clip_receiver_root_depth_mm = 3.0;
 tray_clip_receiver_root_height_mm = 4.4;
 
@@ -81,10 +80,6 @@ pi_mini_hdmi_cutout_size_mm = [13.5, 7.5, 7.0];
 pi_mini_hdmi_cutout_center_x_mm = -20.1;
 pi_mini_hdmi_cutout_center_y_mm = -22.4;
 pi_mini_hdmi_cutout_local_center_z_mm = 1.8;
-pi_micro_usb_data_cutout_size_mm = [9.5, 7.5, 6.0];
-pi_micro_usb_data_cutout_center_x_mm = 8.9;
-pi_micro_usb_data_cutout_center_y_mm = -22.4;
-pi_micro_usb_data_cutout_local_center_z_mm = 1.4;
 pi_micro_usb_power_cutout_size_mm = [9.5, 7.5, 6.0];
 pi_micro_usb_power_cutout_center_x_mm = 21.5;
 pi_micro_usb_power_cutout_center_y_mm = -22.4;
@@ -355,7 +350,6 @@ top_cover_height_mm = case_total_height_mm - tray_wall_height_mm;
 
 pi_micro_sd_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_micro_sd_cutout_local_center_z_mm;
 pi_mini_hdmi_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_mini_hdmi_cutout_local_center_z_mm;
-pi_micro_usb_data_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_micro_usb_data_cutout_local_center_z_mm;
 pi_micro_usb_power_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_micro_usb_power_cutout_local_center_z_mm;
 pi_camera_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_camera_cutout_local_center_z_mm;
 waveshare_rj45_cutout_center_z_mm = waveshare_hat_bottom_z_mm + waveshare_rj45_cutout_local_center_z_mm;
@@ -372,14 +366,14 @@ pi_mounting_hole_centers_mm = [
     [pi_mounting_hole_x_mm, pi_mounting_hole_y_mm]
 ];
 
-cover_clip_y_mm =
-    (internal_width_mm + 2 * cover_fit_clearance_mm) / 2
+cover_clip_x_mm =
+    (internal_length_mm + 2 * cover_fit_clearance_mm) / 2
     + cover_clip_tab_thickness_mm / 2
     - solid_merge_overlap_mm / 2;
-cover_clip_x_positions_mm = [-cover_clip_x_offset_mm, cover_clip_x_offset_mm];
+cover_clip_y_positions_mm = [-cover_clip_y_offset_mm, cover_clip_y_offset_mm];
 tray_clip_receiver_z_mm = tray_wall_height_mm - tray_clip_receiver_top_inset_mm - tray_clip_receiver_height_mm / 2;
-tray_clip_receiver_y_mm =
-    internal_width_mm / 2
+tray_clip_receiver_x_mm =
+    internal_length_mm / 2
     - tray_clip_receiver_depth_mm / 2
     + solid_merge_overlap_mm / 2;
 
@@ -715,50 +709,50 @@ module pi_zero_usb_grove_ir_cover_alignment_lip() {
 }
 
 module pi_zero_usb_grove_ir_cover_clip_tabs() {
-    for (clip_x_mm = cover_clip_x_positions_mm) {
-        for (side_sign = [-1, 1]) {
+    for (clip_y_mm = cover_clip_y_positions_mm) {
+        for (end_sign = [-1, 1]) {
             translate([
-                clip_x_mm,
-                side_sign * cover_clip_y_mm,
+                end_sign * cover_clip_x_mm,
+                clip_y_mm,
                 tray_wall_height_mm - cover_lip_height_mm + cover_clip_root_height_mm / 2 - solid_merge_overlap_mm
             ])
                 cube(
                     [
-                        cover_clip_root_length_mm,
                         cover_clip_root_depth_mm,
+                        cover_clip_root_length_mm,
                         cover_clip_root_height_mm
                     ],
                     center = true
                 );
 
             translate([
-                clip_x_mm,
-                side_sign * cover_clip_y_mm,
+                end_sign * cover_clip_x_mm,
+                clip_y_mm,
                 tray_wall_height_mm - cover_lip_height_mm - cover_clip_tab_drop_mm / 2 + solid_merge_overlap_mm / 2
             ])
                 cube(
                     [
-                        cover_clip_tab_width_mm,
                         cover_clip_tab_thickness_mm,
+                        cover_clip_tab_width_mm,
                         cover_clip_tab_drop_mm + solid_merge_overlap_mm
                     ],
                     center = true
                 );
 
             translate([
-                clip_x_mm,
-                side_sign * (
-                    cover_clip_y_mm
+                end_sign * (
+                    cover_clip_x_mm
                     - cover_clip_tab_thickness_mm / 2
                     - cover_clip_hook_depth_mm / 2
                     + solid_merge_overlap_mm / 2
                 ),
+                clip_y_mm,
                 tray_wall_height_mm - cover_lip_height_mm - cover_clip_hook_height_mm / 2
             ])
                 cube(
                     [
-                        tray_clip_receiver_width_mm,
                         cover_clip_hook_depth_mm + solid_merge_overlap_mm,
+                        tray_clip_receiver_width_mm,
                         cover_clip_hook_height_mm
                     ],
                     center = true
@@ -769,36 +763,36 @@ module pi_zero_usb_grove_ir_cover_clip_tabs() {
 
 module pi_zero_usb_grove_ir_tray_clip_receivers() {
     color(standoff_colour)
-    for (clip_x_mm = cover_clip_x_positions_mm) {
-        for (side_sign = [-1, 1]) {
+    for (clip_y_mm = cover_clip_y_positions_mm) {
+        for (end_sign = [-1, 1]) {
             translate([
-                clip_x_mm,
-                side_sign * (
-                    internal_width_mm / 2
+                end_sign * (
+                    internal_length_mm / 2
                     + wall_thickness_mm / 2
                     - tray_clip_receiver_root_depth_mm / 2
                     + solid_merge_overlap_mm / 2
                 ),
+                clip_y_mm,
                 tray_clip_receiver_z_mm
             ])
                 cube(
                     [
-                        tray_clip_receiver_root_length_mm,
                         tray_clip_receiver_root_depth_mm + solid_merge_overlap_mm,
+                        tray_clip_receiver_root_length_mm,
                         tray_clip_receiver_root_height_mm
                     ],
                     center = true
                 );
 
             translate([
-                clip_x_mm,
-                side_sign * tray_clip_receiver_y_mm,
+                end_sign * tray_clip_receiver_x_mm,
+                clip_y_mm,
                 tray_clip_receiver_z_mm
             ])
                 cube(
                     [
-                        tray_clip_receiver_width_mm,
                         tray_clip_receiver_depth_mm + solid_merge_overlap_mm,
+                        tray_clip_receiver_width_mm,
                         tray_clip_receiver_height_mm
                     ],
                     center = true

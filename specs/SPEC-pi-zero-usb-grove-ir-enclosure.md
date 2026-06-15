@@ -333,6 +333,43 @@ Impact and regression considerations for this iteration:
 - The tool-free PCB insertion path must not create a cable pinch point at the pod entry or require disconnecting the Grove cable for normal installation.
 - Making the IR LED hole a guaranteed pass-through must not expose the Grove connector or other pod internals beyond the approved LED path.
 
+## Iteration: Short-End Cover Retention
+
+Requested changes:
+
+- Move the bottom-tray to top-cover connector/clip interface from the two long sides of the main enclosure to the two short ends.
+- Properly adjust the top cover so the short-end retention is integrated into the removable cover geometry rather than appearing as relocated loose tabs.
+- Make the separate IR pod PCB retainer read as a clearly separate printable part in `printable_layout`, not as a piece protruding from or fused to the IR pod.
+- Make the IR pod PCB retainer installation path visually understandable from the modeled geometry and README documentation.
+
+Updated deterministic behavior:
+
+- The cover-to-tray attachment interface must use the two short ends of the enclosure by default, not the two long sides.
+- The top cover must include short-end clip tabs, hooks, latch rails, or equivalent screwless positive-retention features rooted into the top-cover shell.
+- The bottom tray must include matching short-end receiver or catch geometry rooted into the tray end walls or tray structure.
+- The short-end cover retention features must remain visibly continuous with their parent solids by code review and must not appear suspended, air-gapped, or attached only by a token overlap in `top_cover`, `bottom_tray`, `assembly`, or `printable_layout` modes.
+- The short-end cover retention interface must remain independently removable without cover screws and must remain independent from the Pi Zero stack mounting fasteners.
+- The short-end cover retention interface must remain visually and functionally distinct from the top-cover-owned IR pod attachment interface.
+- Moving the cover retention to the short ends must preserve the existing port cutouts, Grove cable exit, IR pod attachment, top ventilation/access holes, cover alignment lip, and case removability.
+- The top ventilation/access hole pattern must keep adequate clearance from the short-end clip roots and tray receivers.
+- The IR pod PCB retainer must be rendered in `printable_layout` with enough explicit separation from the IR pod body that it reads as a distinct printable part.
+- The IR pod PCB retainer must not appear to protrude from, intersect with, or be fused into the IR pod body in `printable_layout`.
+- The IR pod PCB retainer geometry must include or align with a visible service opening, slot, ledge, snap feature, or equivalent retention interface on the IR pod so its installation path is understandable by code review and visual inspection.
+- The modeled retention interface must make clear that the retainer belongs to the IR pod PCB retention path, not the top-cover attachment path.
+- The top-cover attachment path and the IR pod PCB retainer path must remain separate mechanisms:
+  - the IR pod mounts to the top cover through the pod attachment interface,
+  - the IR emitter PCB is retained inside the IR pod by the removable retainer.
+- README documentation and manual inspection guidance must describe the short-end cover retention placement.
+- README documentation and manual inspection guidance must describe how the IR pod PCB retainer installs and how it differs from the pod-to-top-cover attachment.
+
+Impact and regression considerations for this iteration:
+
+- Short-end retention must not block the Pi Zero microSD/camera end cutouts or weaken the tray end walls around those openings.
+- Short-end clip placement must preserve enough wall material near corners and port cutouts for Bambu P2S-friendly printability.
+- Because the IR pod attachment remains top-cover-owned and front-side by default, short-end cover retention must stay separate from the pod slide/clip interface and must not interfere with pod insertion/removal.
+- Retainer placement changes in `printable_layout` must not alter the installed retainer pose used in `assembly`.
+- Retainer interface changes must not require screwdriver access inside the pod or require disconnecting the Grove cable for normal PCB installation.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -362,12 +399,13 @@ Impact and regression considerations for this iteration:
 - Anti-slide recesses or feet are present on the bottom exterior.
 - Render modes include `assembly`, `bottom_tray`, `top_cover`, `ir_pod`, `printable_layout`, and `electronics`.
 - The top-cover clip features and tray receivers are visibly continuous with their parent solids by code review and do not read as detached floating geometry.
-- The cover-to-tray interface provides positive retention on both long sides without using cover screws.
+- The cover-to-tray interface provides positive retention on both short ends without using cover screws.
 - The IR pod attachment is mounted to the removable top cover rather than to fixed tray/main-body geometry.
 - The IR pod attachment geometry is visibly continuous with its parent printed part by code review and does not read as detached floating geometry.
 - The IR pod mounts to the top cover through a tool-free clip or slide interface with positive retention and a plausible repeated-use insertion/removal path.
 - `render_mode = "top_cover"` and `render_mode = "printable_layout"` do not show cover attachment features that look suspended in space or attached only by an implausibly small overlap.
 - Any separate IR pod retainer part, if kept, is clearly intentional in both geometry and documentation rather than appearing as an unexplained extra object.
+- Any separate IR pod retainer part is clearly separated from the pod body in `printable_layout` and its installation interface is visually understandable.
 - The IR LED aperture is visibly and mechanically a pass-through opening in the pod wall by code review of the subtraction geometry.
 - Top-cover removal may carry the IR pod with it, but must not require Pi Zero stack fastener removal or board-stack disassembly.
 - README documents the new design behavior, assumptions, parameters, render modes, print notes, and manual inspection checklist.
