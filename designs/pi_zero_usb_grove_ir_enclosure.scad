@@ -32,7 +32,7 @@ board_clearance_x_mm = 5.0;
 board_clearance_y_mm = 5.0;
 pi_zero_standoff_height_mm = 4.0;
 pi_zero_to_waveshare_hat_z_offset_mm = 11.2;
-waveshare_to_grove_hat_z_offset_mm = 10.8;
+waveshare_to_grove_hat_z_offset_mm = 24.0;
 electronics_preview_lift_mm = 0.0;
 grove_hat_rotation_deg = 90.0;
 
@@ -93,7 +93,7 @@ waveshare_rj45_cutout_center_x_mm = -16.0;
 waveshare_rj45_cutout_center_y_mm = -22.4;
 waveshare_rj45_cutout_local_center_z_mm = 8.1;
 waveshare_front_usb_a_cutout_size_mm = [13.3, 5.7, 10.0];
-waveshare_front_usb_a_cutout_center_x_mm = 11.0;
+waveshare_front_usb_a_cutout_center_x_mm = 1.7;
 waveshare_front_usb_a_cutout_center_y_mm = -22.4;
 waveshare_front_usb_a_cutout_local_center_z_mm = 5.1;
 waveshare_left_usb_a_cutout_size_mm = [5.7, 13.3, 11.0];

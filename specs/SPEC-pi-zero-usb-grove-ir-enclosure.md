@@ -370,6 +370,34 @@ Impact and regression considerations for this iteration:
 - Retainer placement changes in `printable_layout` must not alter the installed retainer pose used in `assembly`.
 - Retainer interface changes must not require screwdriver access inside the pod or require disconnecting the Grove cable for normal PCB installation.
 
+## Iteration: Waveshare Connector Spacing Refresh
+
+Requested changes:
+
+- Update the enclosure for the revised Waveshare ETH/USB HUB HAT component placement.
+- Use `designs/waveshare_eth_usb_hub_hat.scad` in this repository as the source of truth for the correct dimensions and spacing between Waveshare components.
+
+Updated deterministic behavior:
+
+- The enclosure's Waveshare port cutout defaults must be refreshed from the current local Waveshare reference model defaults, not from stale enclosure-only measurements.
+- The Waveshare RJ45 cutout center X must continue to align with `hat_rj45_center_x_mm = -16.0` from `designs/waveshare_eth_usb_hub_hat.scad`.
+- The Waveshare front USB-A cutout center X must align with the Waveshare reference's derived front USB-A component center:
+  - `hat_rj45_center_x_mm + hat_rj45_width_x_mm / 2 + hat_front_rj45_to_usb_a_margin_mm + hat_front_usb_a_width_x_mm / 2`,
+  - using current defaults: `-16.0 + 14.7 / 2 + 3.75 + 13.2 / 2 = 1.7 mm`.
+- The enclosure must not keep the stale `waveshare_front_usb_a_cutout_center_x_mm = 11.0` default.
+- The Waveshare front USB-A cutout size must continue to cover the current Waveshare reference front USB-A component footprint of `13.2 mm x 5.7 mm`, plus the enclosure's existing cutout clearance behavior.
+- The Waveshare side USB-A cutout defaults must continue to match the current Waveshare reference side USB-A orientation:
+  - component footprint `5.7 mm` along X and `13.2 mm` along Y,
+  - center Y aligned to `0.0`.
+- Side USB-A cutout X centers may remain enclosure-wall cutout centers rather than component-body centers, because they are openings through the printed side walls; however, their default sizes and Y placement must continue to match the current Waveshare reference component spacing.
+- README documentation must state that the enclosure Waveshare cutout defaults are based on the local Waveshare reference file and that the front USB-A default X center is `1.7 mm`.
+
+Impact and regression considerations for this iteration:
+
+- The change intentionally moves the front USB-A enclosure cutout leftward to match the current Waveshare reference model.
+- The RJ45 opening, side USB-A openings, stack Z derivation, Pi Zero openings, Grove cable path, top cover, IR pod, and anti-slide behavior should remain unchanged unless directly required to keep Waveshare cutout documentation consistent.
+- Because the side USB-A cutouts are printed side-wall openings, matching the Waveshare reference does not require moving their X centers onto the component body centers.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -394,6 +422,8 @@ Impact and regression considerations for this iteration:
 - The top cover includes adjustable ventilation/access holes with a denser default pattern than the current sparse layout, while preserving printable roof strength and clearance from attachment features.
 - The bottom tray's four Pi Zero stack mounting holes are documented and remain distinct from cover and pod attachment holes.
 - The case includes access openings for all Pi Zero and Waveshare HAT ports listed in Scope.
+- The Waveshare front USB-A cutout default X center matches the current local Waveshare reference derived center of `1.7 mm`, based on RJ45 center X, RJ45 width, the `3.75 mm` RJ45-to-USB-A component margin, and front USB-A width.
+- The Waveshare enclosure cutout defaults do not retain stale front USB-A spacing that conflicts with `designs/waveshare_eth_usb_hub_hat.scad`.
 - The case does not include an external opening for the Pi Zero Micro USB port that is occupied internally by the adapter connection to the ETH/USB HAT.
 - At least one Waveshare USB-A opening supports an externally attached wireless USB dongle.
 - Anti-slide recesses or feet are present on the bottom exterior.
@@ -426,6 +456,8 @@ Impact and regression considerations for this iteration:
   - Waveshare and Grove HAT previews do not collide at default spacing,
   - dependent Waveshare port holes and Grove cable/case guide positions derive from board spacing,
   - all required Pi Zero and Waveshare port cutouts exist and are independently adjustable where needed,
+  - the Waveshare front USB-A cutout default X center matches the current local Waveshare reference's derived `1.7 mm` center,
+  - the Waveshare side USB-A cutout defaults preserve the current local Waveshare reference side USB-A size and Y center while remaining side-wall openings,
   - the Pi Zero port cutout set excludes the internally consumed Pi Zero USB port and preserves the remaining externally used Pi Zero port access,
   - the wireless dongle remains outside the case through an accessible USB-A cutout,
   - the external IR emitter pod, printed PCB retention geometry, LED aperture, and main-to-pod cable path are present,
@@ -464,3 +496,4 @@ Impact and regression considerations for this iteration:
 - Document that the IR LED aperture is intended to be a full pass-through opening in the pod wall.
 - Document the implemented default top-hole density for this iteration and any recommended tuning if the user wants more or fewer holes after physical test fitting.
 - Document which Pi Zero Micro USB port remains externally accessible and which one is intentionally closed because it is used internally by the adapter connection to the ETH/USB HAT.
+- Document that Waveshare enclosure port cutout defaults are refreshed from `designs/waveshare_eth_usb_hub_hat.scad`, including the `1.7 mm` default front USB-A X center.

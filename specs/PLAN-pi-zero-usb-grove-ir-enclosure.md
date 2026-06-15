@@ -30,6 +30,7 @@ Implementation must use only:
 - this approved plan,
 - current repository instructions,
 - existing local reference models and README sections needed to match style and derive local coordinate assumptions,
+- `designs/waveshare_eth_usb_hub_hat.scad` as the source of truth for Waveshare connector spacing and default component dimensions,
 - the measured/default values already captured in the approved spec,
 - the current `designs/pi_zero_usb_grove_ir_enclosure.scad` implementation.
 
@@ -209,18 +210,25 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
    - Waveshare front USB-A,
    - Waveshare left USB-A,
    - Waveshare right USB-A.
-32. Keep port cutout dimensions and local offsets adjustable. Use simplified rectangular cutouts with extra clearance; do not model a wireless dongle body.
-33. Preserve `show_electronics` and `show_cutout_guides` so they independently control reference previews and non-printing guide geometry.
-34. Keep OpenSCAD 2021.01 compatibility:
+32. Refresh the Waveshare enclosure cutout defaults from `designs/waveshare_eth_usb_hub_hat.scad`:
+   - keep `waveshare_rj45_cutout_center_x_mm = -16.0`,
+   - change `waveshare_front_usb_a_cutout_center_x_mm` from the stale `11.0` default to `1.7`,
+   - preserve front USB-A cutout dimensions sized around the Waveshare reference `13.2 mm x 5.7 mm` footprint,
+   - preserve side USB-A cutout dimensions sized around the Waveshare reference `5.7 mm x 13.2 mm` footprint,
+   - preserve side USB-A cutout center Y as `0.0`,
+   - keep side USB-A cutout X centers as side-wall opening centers unless a code-level dependency directly requires otherwise.
+33. Keep port cutout dimensions and local offsets adjustable. Use simplified rectangular cutouts with extra clearance; do not model a wireless dongle body.
+34. Preserve `show_electronics` and `show_cutout_guides` so they independently control reference previews and non-printing guide geometry.
+35. Keep OpenSCAD 2021.01 compatibility:
    - no external libraries,
    - no generated imports,
    - no unsupported syntax.
-35. Refactor `printable_layout` for the IR pod retainer:
+36. Refactor `printable_layout` for the IR pod retainer:
    - keep the retainer installed in `assembly` only when that render intentionally shows it installed,
    - place the retainer as a clearly separated secondary printable part in `printable_layout`,
    - increase or reorient the retainer offset as needed so it does not appear to protrude from, intersect, or fuse with the IR pod body after pod rotation,
    - preserve the retainer's installed pose and pod interface behavior outside printable layout.
-36. Update `README.md`:
+37. Update `README.md`:
    - ensure the design file is listed,
    - align the Pi Zero USB Grove IR enclosure section with the approved spec,
    - document component assumptions, including 35.0 mm stack height plus 8.0 mm default headroom,
@@ -236,6 +244,8 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
    - document top ventilation/access hole parameters and the implemented denser default pattern,
    - document that the four bottom-tray board-stack holes exist because the Pi Zero/HAT stack has four mounting points, and that top-cover clips/catches and pod attachment features are separate,
    - document which Pi Zero Micro USB opening remains available externally and which internally used opening is intentionally closed,
+   - document that Waveshare enclosure cutout defaults are refreshed from `designs/waveshare_eth_usb_hub_hat.scad`,
+   - document that the default Waveshare front USB-A cutout X center is `1.7 mm`,
    - document adjustable parameter groups,
    - document render modes,
    - document optional OpenSCAD commands for users with OpenSCAD installed,
@@ -279,6 +289,9 @@ Review `designs/pi_zero_usb_grove_ir_enclosure.scad` and confirm:
 - the IR pod attaches to the top cover through a tool-free slide or clip interface with visibly supported roots and a plausible repeated-use mounting path,
 - top cover has adjustable ventilation/access holes with a denser default pattern that avoids clip/catch features and preserves roof margins by code review,
 - all required Pi Zero and Waveshare port cutouts exist,
+- the Waveshare front USB-A cutout X center defaults to `1.7 mm`, matching the current local Waveshare reference formula,
+- the Waveshare front USB-A cutout no longer uses the stale `11.0 mm` X center,
+- Waveshare side USB-A cutout size and center Y still match the current local Waveshare reference orientation while remaining side-wall openings,
 - the internally used Pi Zero Micro USB opening is removed while the externally used Pi Zero Micro USB opening remains accessible,
 - Pi Zero and Waveshare port cutout Z centers derive from board-tier Z positions plus adjustable local offsets,
 - at least one Waveshare USB-A cutout allows an external wireless dongle,
@@ -315,6 +328,7 @@ Review `README.md` and confirm:
 - README documents the top ventilation/access holes and the denser default pattern,
 - README explains why the bottom tray has four Pi Zero stack mounting holes and how those differ from clip/catch and pod attachment features,
 - README identifies the intentionally closed internally used Pi Zero USB opening,
+- README documents the refreshed Waveshare enclosure cutout defaults and the `1.7 mm` front USB-A center,
 - render modes match the OpenSCAD source,
 - optional commands are clearly optional for users with OpenSCAD installed,
 - validation guidance remains consistent with repository instructions,
@@ -345,6 +359,7 @@ Implementation review must check for:
 
 - spec mismatch,
 - accidental behavior outside approved scope,
+- stale Waveshare front USB-A X spacing left in the enclosure defaults,
 - OpenSCAD syntax risks visible by inspection,
 - default board-stack collision risk from derived Z positions,
 - fixed absolute Z values where board-tier-relative Z values are required,

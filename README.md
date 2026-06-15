@@ -394,6 +394,7 @@ Default dimensions are configurable at the top of `designs/pi_zero_usb_grove_ir_
 - User-provided measured stack height: 35.0 mm, plus 8.0 mm default extra upward headroom.
 - Independent board spacing defaults: `pi_zero_to_waveshare_hat_z_offset_mm = 11.2` and `waveshare_to_grove_hat_z_offset_mm = 24.0`.
 - Waveshare ETH/USB HUB HAT footprint: 65.0 mm x 30.0 mm, with RJ45 plus one USB-A port on the front edge and one USB-A port on each long side.
+- Waveshare front USB-A cutout X default: `waveshare_front_usb_a_cutout_center_x_mm = 1.7`.
 - Seeed Grove Base Hat for Raspberry Pi Zero mounted above the USB HAT with enough default spacing to keep the Grove underside socket/header clearance above the Waveshare reference without visible collision in the default preview.
 - Seeed Grove Infrared Emitter board planning size: 20.0 mm x 24.0 mm with a 5.0 mm IR LED.
 - Common M2.5-class fasteners for the board standoffs.
