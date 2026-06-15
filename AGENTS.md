@@ -10,6 +10,8 @@ These instructions apply to this OpenSCAD design repository.
 - Keep generated mesh exports such as STL, STEP, and 3MF files out of source control unless an approved plan explicitly adds them.
 - Prefer one editable `.scad` source file per coherent design unless a spec approves a multi-file split.
 - Design and printing guidance should maintain compatibility with the Bambu Lab P2S printer and AMS 2 Pro unless an approved spec explicitly narrows or changes printer support.
+- Printable versions must be Bambu Lab-friendly. Unless an approved spec explicitly allows a different layout, printable versions must not contain floating objects, every printable object should be separable and printable independently, and every printable object should be oriented with its broadest, most material-heavy, or most stable face downward on the printer plate.
+- Every new spec file must document manually entered dimensions when they are used, including PCB dimensions, dimensions between components, and component sizes.
 - If otherwise unspecified, committing and pushing directly to the `main` branch is acceptable for this repository.
 
 ## OpenSCAD Rules
