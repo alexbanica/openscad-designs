@@ -30,14 +30,29 @@ These instructions apply to this OpenSCAD design repository.
 
 This project does not require QA or unit tests unless a spec or user request explicitly asks for them.
 
-Do not run OpenSCAD validation commands for this repository. OpenSCAD is not installed in the local environment.
+OpenSCAD is installed in the local environment and may be used for implementation support, fit inspection, and QA.
 
-A code review is sufficient validation for repository changes. When working in git, run:
+Allowed OpenSCAD usage:
+
+- Render `.scad` files locally to inspect whether geometry is connected, aligned, and plausibly printable.
+- Export temporary preview artifacts to `/tmp` for review when helpful.
+- Use OpenSCAD-generated previews to evaluate clip engagement, pod attachment, hole placement, cutout alignment, wall continuity, and other visible printability risks.
+- Use OpenSCAD as a supplement to code review when a user asks for stronger confidence in fit or printability.
+
+Constraints:
+
+- Do not add generated mesh exports such as STL, STEP, 3MF, OFF, or similar artifacts to source control unless an approved spec explicitly requires them.
+- Prefer temporary outputs under `/tmp` when generating local inspection artifacts.
+- Treat OpenSCAD render review as visual validation, not as a substitute for physical measurement, slicer inspection, or test prints.
+
+Minimum validation for repository changes remains `git diff --check`. When working in git, run:
 
 ```sh
 git diff --check
 ```
 
+When a change affects printable geometry and OpenSCAD-based inspection is useful, additionally run local OpenSCAD renders or exports as needed and report what was visually validated.
+
 ## Documentation
 
-Update `README.md` when design behavior, render modes, parameters, printing guidance, or validation workflow changes.
+Update `README.md` when design behavior, render modes, parameters, printing guidance, or validation workflow changes, including when OpenSCAD-assisted validation guidance changes.
