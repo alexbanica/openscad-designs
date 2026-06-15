@@ -18,7 +18,7 @@ use <grove_infrared_emitter.scad>
 
 // Render controls
 $fn = 48;
-render_mode = "assembly"; // [assembly/bottom_tray/top_cover/ir_pod/printable_layout/electronics]
+render_mode = "electronics"; // [assembly/bottom_tray/top_cover/ir_pod/printable_layout/electronics]
 show_electronics = true;
 show_cutout_guides = true;
 
@@ -32,7 +32,7 @@ board_clearance_x_mm = 5.0;
 board_clearance_y_mm = 5.0;
 pi_zero_standoff_height_mm = 4.0;
 pi_zero_to_waveshare_hat_z_offset_mm = 11.2;
-waveshare_to_grove_hat_z_offset_mm = 24.0;
+waveshare_to_grove_hat_z_offset_mm = 10.8;
 electronics_preview_lift_mm = 0.0;
 grove_hat_rotation_deg = 90.0;
 
