@@ -37,13 +37,12 @@ electronics_preview_lift_mm = 0.0;
 grove_hat_rotation_deg = 90.0;
 
 // Enclosure wall/floor/cover dimensions
-wall_thickness_mm = 2.4;
+wall_thickness_mm = 6.0;
 floor_thickness_mm = 2.4;
 top_roof_thickness_mm = 2.4;
 tray_wall_height_mm = 16.0;
 corner_radius_mm = 3.0;
-cover_lip_height_mm = 4.0;
-cover_lip_thickness_mm = 1.2;
+cover_skirt_drop_depth_mm = 4.0;
 cover_fit_clearance_mm = 0.35;
 top_cover_internal_clearance_mm = 0.8;
 
@@ -53,23 +52,16 @@ pi_standoff_outer_diameter_mm = 6.5;
 pi_standoff_screw_hole_diameter_mm = 2.7;
 pi_standoff_pilot_depth_mm = 5.5;
 
-// Clip-on top cover latch/catch features
-cover_clip_y_offset_mm = 14.5;
-cover_clip_tab_width_mm = 7.5;
-cover_clip_tab_thickness_mm = 1.2;
-cover_clip_tab_drop_mm = 4.0;
-cover_clip_hook_depth_mm = 1.0;
-cover_clip_hook_height_mm = 1.6;
-cover_clip_root_length_mm = 7.5;
-cover_clip_root_depth_mm = 1.6;
-cover_clip_root_height_mm = 4.2;
-tray_clip_receiver_width_mm = 7.5;
-tray_clip_receiver_depth_mm = 0.9;
-tray_clip_receiver_height_mm = 2.0;
-tray_clip_receiver_top_inset_mm = 1.8;
-tray_clip_receiver_root_length_mm = 7.5;
-tray_clip_receiver_root_depth_mm = 1.4;
-tray_clip_receiver_root_height_mm = 4.4;
+// Plug-in top cover pin/socket features
+cover_pin_diameter_mm = 3.0;
+cover_pin_insertion_length_mm = 5.2;
+cover_pin_root_wall_pad_length_mm = 10.0;
+cover_pin_root_wall_pad_height_mm = 5.0;
+cover_pin_offset_x_mm = 40.5;
+cover_pin_offset_y_mm = 29.9;
+cover_pin_count = 4;
+tray_socket_clearance_mm = 0.35;
+tray_socket_depth_mm = 5.8;
 
 // Port cutout dimensions and offsets
 micro_sd_card_width_mm = 11.0;
@@ -92,12 +84,12 @@ pi_camera_cutout_size_mm = [8.0, 20.0, 5.0];
 pi_camera_cutout_center_x_mm = 32.5;
 pi_camera_cutout_center_y_mm = 0.0;
 pi_camera_cutout_local_center_z_mm = 2.6;
-waveshare_rj45_cutout_size_mm = [16.4, 12.3, 16.0];
-waveshare_rj45_cutout_center_x_mm = -16.0;
+waveshare_rj45_cutout_size_mm = [16.68, 12.3, 16.0];
+waveshare_rj45_cutout_center_x_mm = -7.76;
 waveshare_rj45_cutout_center_y_offset_mm = 0.0;
 waveshare_rj45_cutout_local_center_z_mm = 8.1;
 waveshare_front_usb_a_cutout_size_mm = [13.3, 5.7, 10.0];
-waveshare_front_usb_a_cutout_center_x_mm = 1.7;
+waveshare_front_usb_a_cutout_center_x_mm = 10.83;
 waveshare_front_usb_a_cutout_center_y_offset_mm = 0.0;
 waveshare_front_usb_a_cutout_local_center_z_mm = 5.1;
 waveshare_left_usb_a_cutout_size_mm = [5.7, 13.3, 11.0];
@@ -403,20 +395,24 @@ pi_mounting_hole_centers_mm = [
     [pi_mounting_hole_x_mm, pi_mounting_hole_y_mm]
 ];
 
-cover_clip_x_mm =
-    (internal_length_mm + 2 * cover_fit_clearance_mm) / 2
-    + cover_clip_tab_thickness_mm / 2
+cover_pin_centers_mm = [
+    [-cover_pin_offset_x_mm, -cover_pin_offset_y_mm],
+    [cover_pin_offset_x_mm, -cover_pin_offset_y_mm],
+    [-cover_pin_offset_x_mm, cover_pin_offset_y_mm],
+    [cover_pin_offset_x_mm, cover_pin_offset_y_mm]
+];
+active_cover_pin_count = min(cover_pin_count, len(cover_pin_centers_mm));
+cover_pin_start_z_mm = tray_wall_height_mm - cover_pin_insertion_length_mm;
+cover_pin_root_wall_pad_center_z_mm =
+    tray_wall_height_mm
+    - cover_skirt_drop_depth_mm
+    + cover_pin_root_wall_pad_height_mm / 2
     - solid_merge_overlap_mm / 2;
-cover_clip_root_x_mm =
-    (internal_length_mm - 2 * cover_fit_clearance_mm) / 2
-    + cover_clip_root_depth_mm / 2
-    - solid_merge_overlap_mm / 2;
-cover_clip_y_positions_mm = [-cover_clip_y_offset_mm, cover_clip_y_offset_mm];
-tray_clip_receiver_z_mm = tray_wall_height_mm - tray_clip_receiver_top_inset_mm - tray_clip_receiver_height_mm / 2;
-tray_clip_receiver_x_mm =
-    internal_length_mm / 2
-    - tray_clip_receiver_depth_mm / 2
-    + solid_merge_overlap_mm / 2;
+tray_socket_hole_center_z_mm =
+    tray_wall_height_mm
+    - tray_socket_depth_mm / 2
+    + preview_overlap_mm / 2;
+tray_socket_hole_diameter_mm = cover_pin_diameter_mm + tray_socket_clearance_mm;
 
 pod_slide_rail_centers_mm = [
     [-pod_slide_rail_spacing_x_mm / 2, pod_slide_rail_center_z_mm],
@@ -710,7 +706,6 @@ module pi_zero_usb_grove_ir_bottom_tray() {
         union() {
             pi_zero_usb_grove_ir_tray_shell();
             pi_zero_usb_grove_ir_stack_standoffs();
-            pi_zero_usb_grove_ir_tray_clip_receivers();
 
             if (!use_rubber_foot_recesses) {
                 pi_zero_usb_grove_ir_printed_feet();
@@ -719,6 +714,7 @@ module pi_zero_usb_grove_ir_bottom_tray() {
 
         pi_zero_usb_grove_ir_port_cutout_volumes();
         pi_zero_usb_grove_ir_stack_standoff_holes();
+        pi_zero_usb_grove_ir_tray_socket_holes();
 
         if (use_rubber_foot_recesses) {
             pi_zero_usb_grove_ir_anti_slide_features();
@@ -731,8 +727,7 @@ module pi_zero_usb_grove_ir_top_cover() {
     difference() {
         union() {
             pi_zero_usb_grove_ir_cover_shell();
-            pi_zero_usb_grove_ir_cover_alignment_lip();
-            pi_zero_usb_grove_ir_cover_clip_tabs();
+            pi_zero_usb_grove_ir_cover_plug_pins();
             pi_zero_usb_grove_ir_cover_pod_slide_rails();
         }
 
@@ -808,155 +803,81 @@ module pi_zero_usb_grove_ir_cover_shell() {
 }
 
 module pi_zero_usb_grove_ir_cover_hollow_volume() {
-    translate([0, 0, tray_wall_height_mm - cover_lip_height_mm])
+    translate([0, 0, tray_wall_height_mm - cover_skirt_drop_depth_mm])
         pi_zero_usb_grove_ir_rounded_box(
             [
                 internal_length_mm + 2 * cover_fit_clearance_mm,
                 internal_width_mm + 2 * cover_fit_clearance_mm,
-                top_cover_height_mm + cover_lip_height_mm - top_roof_thickness_mm + preview_overlap_mm
+                top_cover_height_mm + cover_skirt_drop_depth_mm - top_roof_thickness_mm + preview_overlap_mm
             ],
             max(corner_radius_mm - wall_thickness_mm, 0.8),
             [
                 0,
                 0,
-                (top_cover_height_mm + cover_lip_height_mm - top_roof_thickness_mm + preview_overlap_mm) / 2
+                (top_cover_height_mm + cover_skirt_drop_depth_mm - top_roof_thickness_mm + preview_overlap_mm) / 2
             ]
         );
 }
 
-module pi_zero_usb_grove_ir_cover_alignment_lip() {
-    difference() {
-        translate([0, 0, tray_wall_height_mm - cover_lip_height_mm])
-            pi_zero_usb_grove_ir_rounded_box(
-                [internal_length_mm - 2 * cover_fit_clearance_mm, internal_width_mm - 2 * cover_fit_clearance_mm, cover_lip_height_mm],
-                max(corner_radius_mm - wall_thickness_mm - cover_fit_clearance_mm, 0.8),
-                [0, 0, cover_lip_height_mm / 2]
-            );
-
-        translate([0, 0, tray_wall_height_mm - cover_lip_height_mm - preview_overlap_mm])
-            pi_zero_usb_grove_ir_rounded_box(
-                [
-                    internal_length_mm - 2 * cover_lip_thickness_mm - 2 * cover_fit_clearance_mm,
-                    internal_width_mm - 2 * cover_lip_thickness_mm - 2 * cover_fit_clearance_mm,
-                    cover_lip_height_mm + 2 * preview_overlap_mm
-                ],
-                max(corner_radius_mm - wall_thickness_mm - cover_lip_thickness_mm, 0.6),
-                [0, 0, (cover_lip_height_mm + 2 * preview_overlap_mm) / 2]
-            );
-    }
-}
-
-module pi_zero_usb_grove_ir_cover_clip_tabs() {
-    for (clip_y_mm = cover_clip_y_positions_mm) {
-        for (end_sign = [-1, 1]) {
-            pi_zero_usb_grove_ir_cover_clip_tab(end_sign, clip_y_mm);
-        }
-    }
-}
-
-module pi_zero_usb_grove_ir_cover_clip_tab(end_sign, clip_y_mm) {
-    union() {
-        hull() {
-            translate([
-                end_sign * cover_clip_root_x_mm,
-                clip_y_mm,
-                tray_wall_height_mm - cover_lip_height_mm + cover_clip_root_height_mm / 2 + solid_merge_overlap_mm / 2
-            ])
-                cube(
-                    [
-                        cover_clip_root_depth_mm,
-                        cover_clip_root_length_mm,
-                        cover_clip_root_height_mm
-                    ],
-                    center = true
-                );
-
-            translate([
-                end_sign * cover_clip_x_mm,
-                clip_y_mm,
-                tray_wall_height_mm - cover_lip_height_mm - cover_clip_tab_drop_mm / 2 + solid_merge_overlap_mm / 2
-            ])
-                cube(
-                    [
-                        cover_clip_tab_thickness_mm,
-                        cover_clip_tab_width_mm,
-                        cover_clip_tab_drop_mm + solid_merge_overlap_mm
-                    ],
-                    center = true
-                );
-        }
-
-        hull() {
-            translate([
-                end_sign * cover_clip_x_mm,
-                clip_y_mm,
-                tray_wall_height_mm - cover_lip_height_mm - cover_clip_hook_height_mm / 2
-            ])
-                cube(
-                    [
-                        cover_clip_tab_thickness_mm,
-                        cover_clip_tab_width_mm,
-                        cover_clip_hook_height_mm + solid_merge_overlap_mm
-                    ],
-                    center = true
-                );
-
-            translate([
-                end_sign * (
-                    cover_clip_x_mm
-                    - cover_clip_tab_thickness_mm / 2
-                    - cover_clip_hook_depth_mm / 2
-                    + solid_merge_overlap_mm / 2
-                ),
-                clip_y_mm,
-                tray_wall_height_mm - cover_lip_height_mm - cover_clip_hook_height_mm / 2
-            ])
-                cube(
-                    [
-                        cover_clip_hook_depth_mm + solid_merge_overlap_mm,
-                        tray_clip_receiver_width_mm,
-                        cover_clip_hook_height_mm
-                    ],
-                    center = true
-                );
-        }
-    }
-}
-
-module pi_zero_usb_grove_ir_tray_clip_receivers() {
+module pi_zero_usb_grove_ir_cover_plug_pins() {
     color(standoff_colour)
-    for (clip_y_mm = cover_clip_y_positions_mm) {
-        for (end_sign = [-1, 1]) {
-            translate([
-                end_sign * (
-                    internal_length_mm / 2
-                    + wall_thickness_mm / 2
-                    - tray_clip_receiver_root_depth_mm / 2
-                    + solid_merge_overlap_mm / 2
-                ),
-                clip_y_mm,
-                tray_clip_receiver_z_mm
-            ])
-                cube(
-                    [
-                        tray_clip_receiver_root_depth_mm + solid_merge_overlap_mm,
-                        tray_clip_receiver_root_length_mm,
-                        tray_clip_receiver_root_height_mm
-                    ],
-                    center = true
-                );
+    if (active_cover_pin_count > 0) {
+        for (pin_index = [0:active_cover_pin_count - 1]) {
+            pi_zero_usb_grove_ir_cover_plug_pin(cover_pin_centers_mm[pin_index]);
+        }
+    }
+}
 
+module pi_zero_usb_grove_ir_cover_plug_pin(pin_center_mm) {
+    pin_side_x = pin_center_mm[0] < 0 ? -1 : 1;
+    pin_side_y = pin_center_mm[1] < 0 ? -1 : 1;
+
+    translate([
+        pin_side_x * (internal_length_mm / 2 + wall_thickness_mm / 2),
+        pin_center_mm[1],
+        cover_pin_root_wall_pad_center_z_mm
+    ])
+        cube(
+            [
+                wall_thickness_mm + solid_merge_overlap_mm,
+                cover_pin_root_wall_pad_length_mm,
+                cover_pin_root_wall_pad_height_mm
+            ],
+            center = true
+        );
+
+    translate([
+        pin_center_mm[0],
+        pin_side_y * (internal_width_mm / 2 + wall_thickness_mm / 2),
+        cover_pin_root_wall_pad_center_z_mm
+    ])
+        cube(
+            [
+                cover_pin_root_wall_pad_length_mm,
+                wall_thickness_mm + solid_merge_overlap_mm,
+                cover_pin_root_wall_pad_height_mm
+            ],
+            center = true
+        );
+
+    translate([pin_center_mm[0], pin_center_mm[1], cover_pin_start_z_mm])
+        cylinder(
+            h = cover_pin_insertion_length_mm + solid_merge_overlap_mm,
+            d = cover_pin_diameter_mm
+        );
+}
+
+module pi_zero_usb_grove_ir_tray_socket_holes() {
+    if (active_cover_pin_count > 0) {
+        for (pin_index = [0:active_cover_pin_count - 1]) {
             translate([
-                end_sign * tray_clip_receiver_x_mm,
-                clip_y_mm,
-                tray_clip_receiver_z_mm
+                cover_pin_centers_mm[pin_index][0],
+                cover_pin_centers_mm[pin_index][1],
+                tray_socket_hole_center_z_mm
             ])
-                cube(
-                    [
-                        tray_clip_receiver_depth_mm + solid_merge_overlap_mm,
-                        tray_clip_receiver_width_mm,
-                        tray_clip_receiver_height_mm
-                    ],
+                cylinder(
+                    h = tray_socket_depth_mm + preview_overlap_mm,
+                    d = tray_socket_hole_diameter_mm,
                     center = true
                 );
         }
