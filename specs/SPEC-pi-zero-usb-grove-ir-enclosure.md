@@ -269,10 +269,9 @@ Requested changes:
 
 Updated deterministic behavior:
 
-- The Grove IR emitter PCB must no longer require internal screw-driving access inside the pod as the default mounting method.
-- The pod must retain the Grove IR emitter PCB using a printed top-load retention method by default.
-- The default printed PCB retention method must use adjustable locating/support features plus an adjustable snap bar, clip, or equivalent printed retainer that can be installed and removed without needing a screwdriver inside the pod.
-- The PCB retention geometry must keep the board protected, keep the Grove connector and cable area usable, and keep the LED aligned with the IR aperture.
+- The Grove IR emitter PCB must no longer require internal screw-driving through a closed pod or inaccessible side opening as the default mounting method.
+- The pod must retain the Grove IR emitter PCB using serviceable geometry that remains accessible after the detachable pod top service panel is removed.
+- The default PCB mounting and retention method must keep the board protected, keep the Grove connector and cable area usable, and keep the LED aligned with the IR aperture.
 - The IR emitter PCB reference model, printed PCB retention geometry, pod cable entry, IR LED aperture, and related pod cutouts must continue to derive from the same adjustable emitter pose so they stay aligned when the emitter position changes.
 - The IR pod must attach to geometry owned by `top_cover` by default.
 - The `top_cover` must remain removable without cover screws, while still carrying the pod attachment interface as part of the upper removable assembly.
@@ -320,17 +319,17 @@ Updated deterministic behavior:
 - The top-cover-owned IR pod attachment must be tool-free by default. The pod must mount to the top cover using a slide-in or clip-in interface with positive retention and a clear insertion/removal direction suitable for repeated use.
 - The pod-to-cover interface must not require screws, captive nuts, or screwdriver access for normal assembly.
 - The IR pod printable geometry must remain a functional enclosure body even when the detachable PCB retainer is rendered separately.
-- The Grove IR emitter PCB must not require screw fastening inside the pod. The default board retention method must be a tool-free slide-in loading path that allows the PCB to be inserted with the Grove cable already connected.
-- The pod interior, cable entry, and PCB retention geometry must preserve enough clearance for the connected Grove cable and a plausible insertion path without forcing a sharp bend immediately at the connector.
-- The approved board-retention pattern may use printed rails, slots, stops, spring tabs, or a snap retainer, but it must not depend on internal screw access.
-- Any additional IR pod printable element must serve that tool-free retention approach explicitly. If a separate retainer part remains, `render_mode = "printable_layout"` must place it intentionally relative to the pod and the documentation must describe its purpose and installation.
+- The Grove IR emitter PCB mounting path must remain serviceable with the Grove cable connected after the detachable pod top service panel is removed.
+- The pod interior, cable entry, and PCB retention geometry must preserve enough clearance for the connected Grove cable without forcing a sharp bend immediately at the connector.
+- The approved board-retention pattern may use support bosses, pilot holes, printed rails, stops, spring tabs, a snap retainer, or an equivalent serviceable combination.
+- Any additional IR pod printable element must serve the PCB retention approach explicitly. If a separate retainer part remains, `render_mode = "printable_layout"` must place it intentionally relative to the pod and the documentation must describe its purpose and installation.
 - The IR LED aperture must be a definite through-hole in the pod's external face, not a blind cavity or guide-only subtraction, and it must remain visibly open in `ir_pod`, `assembly`, and `printable_layout` render modes regardless of whether electronics previews are shown.
 - The IR LED aperture subtraction must extend fully through the pod wall thickness with enough overlap margin that minor parameter tuning does not accidentally leave a skin on the outer face.
 
 Impact and regression considerations for this iteration:
 
 - Strengthening the removable top-cover and pod-attachment geometry must not block the existing port cutouts, cable exit path, vent-hole pattern, or top-cover removability.
-- The tool-free PCB insertion path must not create a cable pinch point at the pod entry or require disconnecting the Grove cable for normal installation.
+- The PCB installation path must not create a cable pinch point at the pod entry or require disconnecting the Grove cable for normal installation.
 - Making the IR LED hole a guaranteed pass-through must not expose the Grove connector or other pod internals beyond the approved LED path.
 
 ## Iteration: Short-End Cover Retention
@@ -368,7 +367,7 @@ Impact and regression considerations for this iteration:
 - Short-end clip placement must preserve enough wall material near corners and port cutouts for Bambu P2S-friendly printability.
 - Because the IR pod attachment remains top-cover-owned and front-side by default, short-end cover retention must stay separate from the pod slide/clip interface and must not interfere with pod insertion/removal.
 - Retainer placement changes in `printable_layout` must not alter the installed retainer pose used in `assembly`.
-- Retainer interface changes must not require screwdriver access inside the pod or require disconnecting the Grove cable for normal PCB installation.
+- Retainer interface changes must not require disconnecting the Grove cable for normal PCB installation.
 
 ## Iteration: Waveshare Connector Spacing Refresh
 
@@ -470,7 +469,7 @@ Requested changes:
 
 Updated deterministic behavior:
 
-- The default external IR pod width must be reduced from the prior 32.0 mm default to a narrower default that still fits the 20.0 mm IR emitter PCB, side locator geometry, printed retainer/service opening, and printable walls.
+- The default external IR pod width must be reduced from the prior 32.0 mm default to a narrower default that still fits the 20.0 mm IR emitter PCB, serviceable mounting/retention geometry, printed retainer/service opening if retained, and printable walls.
 - The default pod placement must shift toward the front USB-A side of the main enclosure so the pod body and top-cover attachment avoid covering the RJ45/Ethernet cutout.
 - The default pod slide rail spacing must remain compatible with the narrower pod body and leave printable material around the rail slots.
 - The default top-cover-owned pod slide backing plate must remain inside the top-cover X footprint.
@@ -678,7 +677,7 @@ Updated deterministic behavior:
 - The detachable panel must not require screwdriver access inside the pod for normal assembly.
 - The detachable panel must not require disconnecting the Grove cable after the IR emitter PCB is installed.
 - Panel fit parameters must be user-adjustable near the existing IR pod parameters, including panel thickness, fit clearance, retention feature size, and retention feature placement. Linear values must use `_mm`.
-- The panel interface must leave enough material around the pod walls, LED aperture, cable entry, service window, slide slots, and PCB locators for plausible Bambu Lab P2S FDM printing.
+- The panel interface must leave enough material around the pod walls, LED aperture, cable entry, service window, slide slots, and PCB mounting/retention features for plausible Bambu Lab P2S FDM printing.
 - `render_mode = "ir_pod"` must show only the printable pod body by default unless the implementation explicitly adds an adjustable option to include the detachable panel in that standalone view.
 - `render_mode = "printable_layout"` must place the pod body, detachable top service panel, and existing separate IR PCB retainer as distinct non-intersecting printable objects with independent build-plate contact.
 - `render_mode = "assembly"` must show the IR pod with the detachable top service panel installed.
@@ -689,9 +688,33 @@ Impact and regression considerations for this iteration:
 
 - Removing the fused pod roof should reduce or eliminate the need for trapped internal tree supports in the pod body, but final slicer behavior still depends on user slicer settings and material.
 - The panel split must not expose more than the existing approved LED path, cable entry, and service openings after assembly.
-- The panel split must not break the existing slide-on pod attachment to the top cover or the existing tool-free IR emitter PCB retention workflow.
+- The panel split must not break the existing slide-on pod attachment to the top cover or the current serviceable IR emitter PCB retention workflow.
 - The additional printable panel part increases printable-layout object count and must not be confused with the IR PCB retainer.
 - Physical fit still requires slicer inspection and test fitting before relying on final tolerances.
+
+## Iteration: IR Pod Screw Access And Locator Cleanup
+
+Requested changes:
+
+- Preserve the current detachable IR pod top service panel behavior because it now gives access to screw the Grove IR emitter PCB into place.
+- Enable the optional IR emitter PCB pilot holes by default.
+- Remove unused IR pod PCB locator modules, parameters, README references, and related stale spec/plan language when locator geometry is no longer used by the intended design.
+
+Updated deterministic behavior:
+
+- The default IR emitter PCB mounting path may use the existing pod support bosses plus enabled pilot holes because the detachable pod top service panel provides practical access for fastening the PCB.
+- `enable_ir_mount_optional_pilot_holes` must default to `true` or be replaced by an equivalently clear default that enables IR PCB pilot holes in the pod support bosses.
+- The default IR pod must not include the previously unused printed PCB side/front locator geometry when the PCB is instead positioned by the support bosses, pilot holes, retainer path, panel access, and existing emitter pose values.
+- Unused locator-specific adjustable parameters, derived values, modules, README text, validation checks, and plan instructions must be removed or rewritten when they no longer drive any remaining printable geometry or documentation behavior.
+- The IR PCB retainer may remain only if it still serves an explicit retention or assembly role after pilot holes are enabled by default; if it remains, it must still be clearly separate from the pod body and from the detachable pod top service panel in `printable_layout`.
+- The detachable pod top service panel remains a separate printable part and must continue to be removable without disconnecting the Grove cable during normal service.
+- IR pod cable entry, IR LED aperture, pod-to-top-cover attachment, printable layout separation, and assembled emitter pose behavior must remain preserved unless directly required to remove stale locator behavior.
+
+Impact and regression considerations for this iteration:
+
+- Enabling screw pilot holes by default intentionally changes the IR PCB retention assumption from tool-free-only retention toward serviceable screw fastening through the detachable pod cover.
+- Removing unused locator code must not remove the Grove IR emitter reference pose, pod support bosses, optional/now-default pilot holes, LED aperture alignment, cable entry, board retainer behavior if retained, or detachable top service panel behavior.
+- README and validation language must not continue to tell users that pilot holes are disabled by default or that side/front board locators are part of the default pod body after this iteration.
 
 ## Acceptance Criteria
 
@@ -709,8 +732,9 @@ Impact and regression considerations for this iteration:
 - Changing the IR emitter pod or emitter position changes the IR emitter reference, pod mount bosses, mount holes, LED aperture, cable entry, and related pod/main cable cutouts together.
 - The board stack renders in the correct vertical order when `show_electronics = true`.
 - The bottom tray includes Pi Zero-aligned mounting standoffs and adjustable M2.5-class screw clearance.
-- The Grove IR emitter PCB has a mounting location inside the external IR emitter pod with a printed serviceable top-load retention feature and adjustable locating/support geometry.
-- The Grove IR emitter PCB can be installed into the pod without screws and without requiring the Grove cable to be disconnected first.
+- The Grove IR emitter PCB has a mounting location inside the external IR emitter pod with support bosses and default enabled pilot holes accessible through the detachable pod top service panel.
+- Unused IR pod PCB side/front locator geometry, parameters, modules, documentation, and validation language are removed when they no longer serve the intended design.
+- The Grove IR emitter PCB can be screwed into the pod through the detachable pod top service opening without requiring the Grove cable to be disconnected first.
 - The IR LED is aligned with an adjustable exterior pod aperture, and only the LED path is exposed outside the pod by default.
 - The Grove cable path exits the main enclosure only through the dedicated cable exit and enters the pod only through the dedicated cable entry.
 - The top cover is removable, plug-in attachable/detachable, and independently attached from the board stack mounting screws without cover screws.
@@ -751,7 +775,7 @@ Impact and regression considerations for this iteration:
 - The IR pod body is printable open-top on its broad floor at `Z=0` by default, so internal roof supports are not trapped inside the pod body.
 - The detachable IR pod top service panel is a separate printable object in `printable_layout`, distinct from the pod body and from the IR PCB retainer.
 - The detachable IR pod top service panel installs in `assembly` and closes the pod without blocking the LED aperture, cable entry, PCB loading path, PCB retainer, or pod-to-top-cover attachment.
-- The detachable IR pod panel uses an adjustable screwless printed retention method by default and does not require internal screwdriver access.
+- The detachable IR pod panel uses an adjustable screwless printed retention method by default and provides service access for IR PCB fastening.
 - The detachable IR pod panel can be installed and removed without disconnecting the Grove cable after normal PCB installation.
 - The IR LED aperture is visibly and mechanically a pass-through opening in the pod wall by code review of the subtraction geometry.
 - `bottom_tray`, `top_cover`, `ir_pod`, and `printable_layout` printable outputs contain no floating printable objects in their intended printable orientation.
@@ -793,7 +817,7 @@ Impact and regression considerations for this iteration:
   - the wireless dongle remains outside the case through an accessible USB-A cutout,
   - the external IR emitter pod, printed PCB retention geometry, LED aperture, and main-to-pod cable path are present,
   - only the IR LED path is exposed outside the pod by default,
-  - the IR emitter PCB loading path is tool-free and compatible with the Grove cable remaining connected,
+  - the IR emitter PCB can be fastened through the detachable pod top service opening with the Grove cable remaining connected,
   - the removable top cover uses plug-in pin/socket attachment, has no cover screws, and does not depend on board mounting screws,
   - the top cover ventilation/access hole pattern is present, denser than the current sparse layout, and does not overlap cover attachment features or weaken required roof margins by code review,
   - the top-cover pins are visibly attached to the top-cover skirt or shell without added male-side reinforcement, and tray sockets are supported by thickened wall/corner material,
@@ -804,11 +828,13 @@ Impact and regression considerations for this iteration:
   - the cover-to-tray and cover-to-pod attachment geometry no longer reads as floating or air-gapped in printable views,
   - the cover-to-tray pins default to simple round `3.0 mm` insertion pins and the sockets provide adjustable FDM clearance,
   - the top cover sits flush on the bottom tray and pin geometry does not create a tray-to-cover gap,
-  - the extra IR pod printable part is clearly identifiable as the PCB retainer and intentionally placed when shown separately,
+  - any extra IR pod printable retainer part is clearly identifiable as intentional and placed separately when shown,
   - the detachable IR pod top service panel is clearly identifiable as a separate printable pod closure part and is not confused with the PCB retainer,
   - the pod body no longer has a fused roof/top face that would trap slicer-generated internal supports by default,
   - the detachable pod panel retention is screwless, adjustable, and distinct from the cover-to-tray, pod-to-cover, and PCB-retainer mechanisms,
   - the assembled pod panel closes the pod without blocking the LED aperture, cable entry, PCB loading path, PCB retainer, or slide attachment,
+  - IR PCB pilot holes are enabled by default or replaced by equivalent default screw-access behavior,
+  - unused IR pod PCB locator modules, parameters, README references, and validation checks are removed or rewritten,
   - the IR LED aperture subtraction fully pierces the pod wall rather than stopping short of the external face,
   - top-cover removal can occur without requiring Pi Zero stack fastener removal or board-stack disassembly,
   - printable parts have plausible flat orientations and Bambu P2S-friendly dimensions,
@@ -830,12 +856,13 @@ Impact and regression considerations for this iteration:
 - Document that the top cover is plug-in attachable/detachable with simple round male pins and wall-integrated female sockets and does not use cover screws.
 - Document that the four bottom-tray board-stack holes exist because the Pi Zero/HAT stack has four mounting points, and that top-cover pin/socket features and pod attachment features are separate.
 - Document the revised `top_cover`-mounted IR pod attachment method and note that pod retention is part of the removable upper assembly.
-- Document that the IR emitter PCB installs tool-free, with the Grove cable allowed to remain connected during insertion.
+- Document that the IR emitter PCB can be screwed into the pod through the detachable pod top service opening, with the Grove cable allowed to remain connected during service.
 - Document that the pod itself mounts tool-free to the top cover through the implemented clip or slide interface.
 - Document that the additional loose IR pod printable part is the removable PCB retainer when that design is retained.
 - Document the detachable IR pod top service panel as a separate printable closure part, including that it exists to avoid inaccessible Bambu Studio tree supports inside the pod.
 - Document the detachable pod panel assembly order and distinguish it from the IR PCB retainer and the pod-to-top-cover attachment.
 - Document the adjustable detachable panel fit and retention parameters.
+- Remove or update stale README language that says IR PCB pilot holes are disabled by default or that unused side/front board locators remain part of the default pod body.
 - Document that the IR LED aperture is intended to be a full pass-through opening in the pod wall.
 - Document the implemented default top-hole density for this iteration and any recommended tuning if the user wants more or fewer holes after physical test fitting.
 - Document which Pi Zero Micro USB port remains externally accessible and which one is intentionally closed because it is used internally by the adapter connection to the ETH/USB HAT.

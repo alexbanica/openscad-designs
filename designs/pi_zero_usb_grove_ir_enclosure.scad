@@ -156,13 +156,9 @@ emitter_board_rotation_deg = 0.0;
 ir_mount_standoff_outer_diameter_mm = 4.8;
 ir_mount_screw_hole_diameter_mm = 2.1;
 ir_mount_pilot_hole_depth_mm = 7.5;
-enable_ir_mount_optional_pilot_holes = false;
+enable_ir_mount_optional_pilot_holes = true;
 ir_mounting_hole_edge_offset_x_mm = 2.5;
 ir_mounting_hole_edge_offset_y_mm = 2.5;
-ir_pcb_side_locator_width_mm = 1.4;
-ir_pcb_side_locator_height_mm = 1.4;
-ir_pcb_front_locator_depth_mm = 1.6;
-ir_pcb_front_locator_height_mm = 3.2;
 ir_pcb_retainer_face_thickness_mm = 2.0;
 ir_pcb_retainer_bar_depth_mm = 3.0;
 ir_pcb_retainer_bar_height_mm = 3.2;
@@ -511,8 +507,7 @@ ir_mounting_hole_centers_mm = [
 
 pod_service_window_width_mm =
     ir_pcb_width_mm
-    + 2 * ir_pcb_side_locator_width_mm
-    + 2 * ir_pcb_retainer_fit_clearance_mm;
+    + 2 * (ir_pcb_retainer_fit_clearance_mm + ir_pcb_retainer_overlap_mm);
 pod_service_window_height_mm =
     ir_pcb_thickness_mm
     + ir_pcb_retainer_overlap_mm
@@ -528,7 +523,10 @@ ir_pcb_retainer_print_offset_x_mm =
     + ir_pcb_retainer_body_width_mm / 2
     + ir_pcb_retainer_print_gap_mm;
 ir_pcb_retainer_print_width_mm =
-    max(ir_pcb_retainer_body_width_mm, ir_pcb_width_mm + 2 * ir_pcb_side_locator_width_mm);
+    max(
+        ir_pcb_retainer_body_width_mm,
+        ir_pcb_width_mm + 2 * ir_pcb_retainer_overlap_mm
+    );
 ir_pcb_retainer_print_depth_mm =
     ir_pcb_retainer_body_height_mm
     + ir_pcb_retainer_bar_height_mm
@@ -758,7 +756,7 @@ module pi_zero_usb_grove_ir_printable_pod_board_retainer() {
             ])
                 cube(
                     [
-                        ir_pcb_width_mm + 2 * ir_pcb_side_locator_width_mm,
+                        ir_pcb_retainer_body_width_mm,
                         ir_pcb_retainer_bar_height_mm,
                         ir_pcb_retainer_bar_depth_mm
                     ],
@@ -819,7 +817,6 @@ module pi_zero_usb_grove_ir_ir_pod(
             union() {
                 pi_zero_usb_grove_ir_pod_shell();
                 pi_zero_usb_grove_ir_pod_board_mount();
-                pi_zero_usb_grove_ir_pod_board_locators();
             }
 
             pi_zero_usb_grove_ir_pod_service_window_volume();
@@ -1298,43 +1295,6 @@ module pi_zero_usb_grove_ir_pod_mount_holes() {
     }
 }
 
-module pi_zero_usb_grove_ir_pod_board_locators() {
-    color(standoff_colour)
-    translate([emitter_board_center_x_mm, emitter_board_center_y_mm, emitter_board_bottom_z_mm])
-        rotate([0, 0, emitter_board_rotation_global_deg])
-            union() {
-                for (x_sign = [-1, 1]) {
-                    translate([
-                        x_sign * (ir_pcb_width_mm / 2 + ir_pcb_side_locator_width_mm / 2),
-                        0,
-                        ir_pcb_side_locator_height_mm / 2
-                    ])
-                        cube(
-                            [
-                                ir_pcb_side_locator_width_mm,
-                                ir_pcb_length_mm - 2 * ir_pcb_front_locator_depth_mm,
-                                ir_pcb_side_locator_height_mm
-                            ],
-                            center = true
-                        );
-                }
-
-                translate([
-                    0,
-                    ir_pcb_length_mm / 2 + ir_pcb_front_locator_depth_mm / 2,
-                    ir_pcb_front_locator_height_mm / 2
-                ])
-                    cube(
-                        [
-                            ir_pcb_width_mm - 2 * ir_mounting_hole_edge_offset_x_mm,
-                            ir_pcb_front_locator_depth_mm,
-                            ir_pcb_front_locator_height_mm
-                        ],
-                        center = true
-                    );
-            }
-}
-
 module pi_zero_usb_grove_ir_pod_board_retainer() {
     color(standoff_colour)
     translate([pod_center_x_mm, pod_center_y_mm, pod_center_z_mm])
@@ -1362,7 +1322,7 @@ module pi_zero_usb_grove_ir_pod_board_retainer() {
                     ])
                         cube(
                             [
-                                ir_pcb_width_mm + 2 * ir_pcb_side_locator_width_mm,
+                                ir_pcb_retainer_body_width_mm,
                                 ir_pcb_retainer_bar_depth_mm,
                                 ir_pcb_retainer_bar_height_mm
                             ],

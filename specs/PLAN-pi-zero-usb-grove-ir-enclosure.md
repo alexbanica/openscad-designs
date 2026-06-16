@@ -16,7 +16,7 @@ Implementation must not revert unrelated dirty worktree changes.
 - Update `README.md`.
 - Keep generated mesh/export files out of source control.
 - Do not edit electronics reference files unless a direct syntax or import issue blocks validation.
-- Preserve existing board stack geometry, port cutouts, main top-cover pin/socket connection, pod-to-top-cover attachment, IR LED aperture, Grove cable path, IR PCB loading path, IR PCB retainer, anti-slide features, and render modes except where directly required to split the IR pod roof into a detachable service panel.
+- Preserve existing board stack geometry, port cutouts, top-cover pin/socket connection, pod-to-top-cover attachment, detachable IR pod top service panel, IR LED aperture, Grove cable path, anti-slide features, render modes, and printable orientations except where directly required to enable IR PCB pilot holes by default and remove unused locator behavior.
 
 ## No-Research Constraint
 
@@ -28,7 +28,7 @@ Implementation must use only:
 - the current `designs/pi_zero_usb_grove_ir_enclosure.scad`,
 - the current `README.md` enclosure section.
 
-Implementation must not perform additional product, architecture, or scope research. It may inspect only the affected files and local syntax/render output needed to execute and validate this plan.
+Implementation must not perform additional product, architecture, scope, or planning research. It may inspect only the affected files and local syntax/render output needed to execute and validate this plan.
 
 ## Test-First Applicability
 
@@ -36,56 +36,28 @@ Automated unit tests are not applicable. This is an OpenSCAD design repository w
 
 The test-first phase is replaced by a deterministic pre-implementation checklist:
 
-- identify current IR pod shell parameters, derived values, and modules,
-- identify how the pod roof is currently formed and how the interior is subtracted,
-- identify current printable wrappers for `ir_pod` and `printable_layout`,
-- identify current IR PCB retainer placement and ensure the new detachable panel remains distinct from it,
-- identify current README text for IR pod printing, assembly, render modes, and manual inspection,
-- map each approved detachable-panel behavior to source, README, validation, or manual review.
+- identify current IR pod board-mount parameters and derived values,
+- identify all uses of IR PCB side/front locator parameters and `pi_zero_usb_grove_ir_pod_board_locators()`,
+- identify current `enable_ir_mount_optional_pilot_holes` behavior,
+- identify README text that describes IR PCB pilot holes, locators, retainer, and detachable top service panel,
+- map each approved cleanup behavior to source, README, validation, or manual review.
 
 ## Implementation Steps
 
-1. Add adjustable IR pod panel parameters near the existing IR pod parameters:
-   - panel thickness,
-   - panel fit clearance,
-   - panel overlap/lip or equivalent seating dimension,
-   - screwless retention feature dimensions and placement,
-   - printable-layout spacing for the panel if needed.
-2. Add derived values for the detachable panel:
-   - panel outer size based on pod body dimensions and fit clearance,
-   - panel installed Z position in the assembled pod,
-   - any retention/tab/pin/socket positions,
-   - printable placement values that keep the panel separate from the pod body and the existing IR PCB retainer.
-3. Refactor the IR pod shell so the default pod body is open at the top:
-   - remove the fused roof/top face from the printable pod body,
-   - preserve pod floor, walls, slide slots, cable entry, service window, PCB locators, board supports, IR LED aperture, and internal cable clearance,
-   - keep the pod body printable on its broad floor at `Z=0` in standalone printable output.
-4. Add a named module for the detachable IR pod top service panel:
-   - make it a separate printable closure part,
-   - include screwless retention geometry by default,
-   - keep retention geometry distinct from the pod-to-top-cover slide interface and the IR PCB retainer,
-   - avoid requiring internal screwdriver access,
-   - preserve enough material for plausible Bambu Lab P2S printing.
-5. Add matching pod-body interface geometry if needed:
-   - panel seating lips, shallow sockets, slots, snap receivers, or equivalent features,
-   - ensure these features do not block the LED aperture, cable entry, service window, slide slots, PCB loading path, PCB retainer, or board locators.
-6. Update render behavior:
-   - `assembly` shows the IR pod with the detachable panel installed,
-   - `ir_pod` shows only the printable open-top pod body by default unless an explicitly adjustable option is added,
-   - `printable_layout` shows bottom tray, top cover, open-top IR pod body, detachable panel, and existing IR PCB retainer as separate non-intersecting build-plate objects,
-   - `electronics` remains a reference/fit view and does not depend on printable panel placement.
-7. Review printable orientation transforms:
-   - pod body rests on its floor at `Z=0`,
-   - detachable panel rests on a broad stable face at `Z=0`,
-   - existing printable objects remain separated and independently printable,
-   - no generated mesh/export artifacts are added.
-8. Update `README.md`:
-   - document the detachable IR pod top service panel and why it exists,
-   - document that the pod body prints open-top to avoid trapped internal Bambu Studio tree supports,
-   - distinguish the detachable panel from the IR PCB retainer and pod-to-top-cover slide attachment,
-   - document assembly order for installing the IR PCB, Grove cable, PCB retainer, detachable pod panel, and pod-to-top-cover attachment,
-   - document the new adjustable panel fit/retention parameters,
-   - update render mode, printable-layout, print notes, and manual inspection guidance as needed.
+1. Preserve the existing default `enable_ir_mount_optional_pilot_holes = true` behavior, or replace it only with an equivalently clear default that enables IR PCB pilot holes in the pod support bosses.
+2. Remove unused locator-specific adjustable parameters from the IR emitter pod board-mount parameter group when they no longer drive printable geometry:
+   - `ir_pcb_side_locator_width_mm`,
+   - `ir_pcb_side_locator_height_mm`,
+   - `ir_pcb_front_locator_depth_mm`,
+   - `ir_pcb_front_locator_height_mm`.
+3. Remove `pi_zero_usb_grove_ir_pod_board_locators()` if it is no longer called by any intended render path.
+4. Remove any derived values, helper modules, comments, or references that exist only to support the removed locator geometry.
+5. Preserve IR pod support bosses, default pilot-hole subtraction, emitter reference pose, IR LED aperture, pod cable entry, pod-to-top-cover slide attachment, detachable top service panel, printable layout separation, and render-mode behavior.
+6. Decide whether the existing separate IR PCB retainer remains useful after pilot holes are enabled by default:
+   - if retained, keep it as an intentional separate printable/installed part with clear README wording;
+   - if no longer useful, remove its source parameters/modules/rendering and README references as part of the same stale-retention cleanup.
+7. Update `README.md` so it no longer says pilot holes are disabled by default and no longer documents removed side/front locator behavior.
+8. Update `README.md` to state that the detachable pod top service panel provides access to screw the IR PCB into the pod support bosses with the Grove cable connected.
 9. Keep OpenSCAD 2021.01-compatible syntax and existing named-module style.
 10. Do not add generated STL, STEP, 3MF, OFF, or similar files to source control.
 
@@ -115,29 +87,21 @@ If OpenSCAD is unavailable or a render fails, report the failure and mark delive
 
 Review `designs/pi_zero_usb_grove_ir_enclosure.scad` and confirm:
 
-- IR pod body no longer has a fused roof/top face by default,
-- IR pod body remains a printable open-top object resting on its broad floor at `Z=0`,
-- detachable IR pod top service panel is a separate named printable part,
-- `assembly` installs the detachable panel and closes the pod,
-- `printable_layout` places the pod body, detachable panel, and IR PCB retainer as distinct non-intersecting objects with independent build-plate contact,
-- `ir_pod` standalone output shows the printable pod body only by default unless an explicit adjustable option includes the panel,
-- panel retention is screwless and adjustable,
-- panel retention is distinct from the cover-to-tray pin/socket interface, pod-to-cover slide attachment, and IR PCB retainer,
-- panel installation does not require internal screwdriver access,
-- panel installation does not require disconnecting the Grove cable after normal PCB installation,
-- panel and pod-body interface geometry do not block the LED aperture, cable entry, service window, slide slots, PCB loading path, PCB retainer, board locators, or pod-to-top-cover attachment,
-- IR LED aperture remains a true pass-through opening,
-- main enclosure, top cover, bottom tray, existing pod attachment, PCB retainer, cable path, port cutouts, and anti-slide behavior remain preserved except for direct pod-panel changes,
-- all new or changed adjustable linear values use `_mm`,
+- IR PCB pilot holes are enabled by default,
+- removed locator parameters and modules are no longer referenced,
+- no unused locator-only geometry remains in any render mode,
+- IR pod support bosses, pilot holes, emitter reference pose, IR LED aperture, cable entry, pod-to-cover attachment, detachable top service panel, and printable layout separation still exist,
+- any retained IR PCB retainer is intentionally rendered and documented as distinct from the pod body and detachable top service panel,
+- `assembly`, `ir_pod`, and `printable_layout` retain their approved behavior,
+- all remaining adjustable linear values use `_mm`,
 - no generated mesh/export artifacts are tracked.
 
 Review `README.md` and confirm:
 
-- it documents the detachable IR pod top service panel,
-- it states the panel exists to avoid inaccessible Bambu Studio tree supports inside the pod,
-- it distinguishes the detachable panel from the IR PCB retainer and pod-to-top-cover attachment,
-- it documents the assembly order and new tuning parameters,
-- render mode, printable-layout, print notes, and manual inspection guidance match the source.
+- it documents that IR PCB pilot holes are enabled by default,
+- it documents that the detachable pod top service panel provides screw access,
+- it does not document removed side/front locator behavior,
+- any retained IR PCB retainer is described accurately and is not confused with the detachable top service panel or pod-to-cover attachment.
 
 ## QA Requirements
 
@@ -154,10 +118,9 @@ Main-agent QA is manual review plus the validation commands above:
 
 Required:
 
-- `README.md` Pi Zero USB Grove IR enclosure section updates for the detachable IR pod top service panel.
-- `README.md` render mode and printable layout updates for the added panel object.
-- `README.md` print notes explaining that the pod body prints open-top to avoid trapped internal supports.
-- `README.md` assembly and manual inspection guidance updates distinguishing the detachable panel from the IR PCB retainer.
+- `README.md` Pi Zero USB Grove IR enclosure updates for default enabled IR PCB pilot holes.
+- `README.md` assembly and tuning guidance updates for detachable-panel screw access.
+- Removal or rewrite of README text that describes disabled pilot holes or removed locator geometry.
 
 No `AGENTS.md` update is required.
 
@@ -167,15 +130,11 @@ Implementation review must check for:
 
 - spec mismatch,
 - accidental behavior outside approved scope,
-- stale fused pod roof still present in default pod body,
-- detachable panel missing from `assembly`,
-- detachable panel missing from `printable_layout`,
-- panel confused or intersecting with the IR PCB retainer,
-- unsupported/floating printable objects,
-- panel retention that requires internal screw access,
-- panel or interface geometry blocking the LED aperture, cable path, PCB loading path, slide slots, or pod-to-cover attachment,
+- stale locator parameters or modules left behind,
+- stale README/source mismatch,
+- pilot holes not enabled by default,
+- IR pod support bosses, panel, aperture, cable entry, or pod attachment accidentally removed,
 - OpenSCAD syntax/render failures,
-- README/source mismatch,
 - unrelated file churn.
 
 Final main-agent acceptance must be completed after validation and QA.
