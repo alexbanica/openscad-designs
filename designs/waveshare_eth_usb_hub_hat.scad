@@ -38,13 +38,13 @@ hat_gpio_header_block_width_mm = 5.1;
 hat_gpio_header_block_height_mm = 2.5;
 
 // Connector dimensions and positions
-hat_rj45_center_x_mm = -16.0;
-hat_rj45_width_x_mm = 14.7;
+hat_rj45_left_margin_x_mm = 16.4;
+hat_rj45_width_x_mm = 16.68;
 hat_rj45_depth_y_mm = 11.7;
 hat_rj45_height_mm = 13.0;
 hat_rj45_below_board_extent_mm = 1.3;
 
-hat_front_rj45_to_usb_a_margin_mm = 3.75;
+hat_front_rj45_to_usb_a_margin_mm = 3.65;
 hat_front_usb_a_width_x_mm = 13.2;
 hat_front_usb_a_depth_y_mm = 5.7;
 hat_front_usb_a_height_mm = 7.0;
@@ -120,6 +120,10 @@ hat_gpio_grid_center_y_mm =
     hat_gpio_pin_first_y_mm + (hat_gpio_pin_rows - 1) * hat_gpio_pin_pitch_mm / 2;
 hat_gpio_header_origin_x_mm = hat_gpio_grid_center_x_mm - hat_gpio_header_block_length_mm / 2;
 hat_gpio_header_origin_y_mm = hat_gpio_grid_center_y_mm - hat_gpio_header_block_width_mm / 2;
+hat_rj45_center_x_mm =
+    -hat_board_half_length_mm
+    + hat_rj45_left_margin_x_mm
+    + hat_rj45_width_x_mm / 2;
 hat_rj45_center_y_mm = -hat_board_half_width_mm + hat_rj45_depth_y_mm / 2;
 hat_rj45_total_height_mm = hat_board_thickness_mm + hat_rj45_height_mm + hat_rj45_below_board_extent_mm;
 hat_rj45_center_z_mm = (hat_board_thickness_mm + hat_rj45_height_mm - hat_rj45_below_board_extent_mm) / 2;

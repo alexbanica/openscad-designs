@@ -25,6 +25,8 @@ Iteration 2026-06-15 side USB orientation correction: the side USB-A connector p
 
 Iteration 2026-06-15 side USB side-margin center correction: the side USB-A connector previews must keep each USB-A component fully within the PCB outline in X while aligning the component center to the middle of the left/right PCB side margin along Y. The `5.7 mm` X dimension remains the short inward-over-PCB depth and the `13.2 mm` Y dimension remains the long side-margin length. The side USB-A center Y defaults to the board centerline at `0`, and the side USB-A center X positions are offset inward by half the connector depth so the blocks do not extend outside the PCB in X.
 
+Iteration 2026-06-16 corrected front connector measurements: the user-corrected front connector defaults are RJ45 left margin `16.4 mm`, RJ45 X width `16.68 mm`, and RJ45-to-front-USB-A margin spacing `3.65 mm`. The RJ45 center X must derive from the board half length, the left-margin distance, and the RJ45 X width.
+
 ## Scope
 
 - Add one editable OpenSCAD source file for the Waveshare ETH/USB HUB HAT reference design.
@@ -85,10 +87,11 @@ Iteration 2026-06-15 side USB side-margin center correction: the side USB-A conn
 - USB Micro-B plug shell geometry should remain adjustable and should include enough extra clearance for printed enclosure fit checks.
 - Connector and component models may be simplified rectangular or rounded clearance volumes when exact cosmetic shape is unnecessary for fit-checking.
 - User-supplied measured connector dimensions must be used for the default corrected Waveshare reference:
-  - RJ45 component footprint size: 14.7 mm along X and 11.7 mm along Y,
+  - RJ45 component footprint size: 16.68 mm along X and 11.7 mm along Y,
   - front USB-A component footprint size: 13.2 mm along X and 5.7 mm along Y,
   - side USB-A component footprint size: 5.7 mm along X inward depth and 13.2 mm along Y side-margin length.
-- The default front-edge spacing between the RJ45 component margin and the USB-A component margin must be 3.75 mm.
+- The default front-edge spacing between the RJ45 component margin and the USB-A component margin must be 3.65 mm.
+- The default distance between the left PCB margin and RJ45 left edge must be 16.4 mm.
 - The default RJ45 component must pass through the HAT PCB.
 - The default distance between the lower side of the HAT PCB and the RJ45 component lower extent must be 1.3 mm.
 - All linear dimension variables must use `_mm`; all angle variables must use `_deg`.
@@ -116,7 +119,7 @@ Iteration 2026-06-15 side USB side-margin center correction: the side USB-A conn
   - X centers start at `-(19 * 1.27 mm)` and advance by `2.54 mm` for 20 columns,
   - Y centers use the board mounting-hole Y coordinate minus `1.27 mm`, plus `2.54 mm` for the second row.
 - The Waveshare GPIO header block must be centered on the resulting 20 x 2 pin grid, not independently positioned through unrelated hard-coded center values.
-- The corrected RJ45 footprint must default to 14.7 mm x 11.7 mm in X/Y.
+- The corrected RJ45 footprint must default to 16.68 mm x 11.7 mm in X/Y.
 - The corrected front USB-A footprint must default to 13.2 mm x 5.7 mm in X/Y.
 - The corrected side USB-A footprints must default to 5.7 mm x 13.2 mm in X/Y, with the 5.7 mm dimension running inward across X and the 13.2 mm dimension running along the side board margin across Y.
 - The side USB-A connector previews must be oriented as side-entry ports whose component blocks stay fully inside the PCB outline in X:
@@ -127,7 +130,8 @@ Iteration 2026-06-15 side USB side-margin center correction: the side USB-A conn
   - the right connector body short depth extends inward toward -X over the PCB from the right side edge,
   - the long 13.2 mm side USB-A dimension lies along the corresponding board side margin in Y,
   - the component center is aligned to the middle of the left/right side margin along Y.
-- The RJ45 and front USB-A centers must be derived from their X sizes and the 3.75 mm margin-to-margin spacing so the default distance between the RJ45 right margin and USB-A left margin is 3.75 mm.
+- The RJ45 and front USB-A centers must be derived from their X sizes and the 3.65 mm margin-to-margin spacing so the default distance between the RJ45 right margin and USB-A left margin is 3.65 mm.
+- The RJ45 center X must be derived as `-hat_board_half_length_mm + hat_rj45_left_margin_x_mm + hat_rj45_width_x_mm / 2`, so the default distance between the left PCB margin and the RJ45 left edge is 16.4 mm.
 - The RJ45 component must be represented by geometry that passes through the board: its lower extent must be 1.3 mm below the PCB bottom face, and its upper extent must preserve the configured RJ45 component height envelope.
 - The adapter reference must align to the HAT bottom Micro USB interface in assembly mode and must be visually distinct from the HAT connectors.
 - The adapter bridge body must sit outside the board edge like an external plug body, while both adapter plug shells extend inward from the board edge into the HAT/Pi Zero Micro USB socket positions.
@@ -163,11 +167,12 @@ Iteration 2026-06-15 side USB side-margin center correction: the side USB-A conn
 - Default adapter dimensions include an adjustable 8.6 mm x 9.0 mm x 12.2 mm solid envelope derived from the official 3D drawing vertices, with separate body and two plug-shell blocks.
 - Default GPIO header pin centers match the Pi Zero reference model's 20 x 2 header coordinate pattern.
 - Default Waveshare GPIO header block position is derived from the corrected pin grid.
-- Default RJ45 X/Y footprint is 14.7 mm x 11.7 mm.
+- Default RJ45 X/Y footprint is 16.68 mm x 11.7 mm.
+- Default RJ45 left-margin distance is 16.4 mm from the left PCB edge to the RJ45 left edge.
 - Default front USB-A X/Y footprint is 13.2 mm x 5.7 mm.
 - Default side USB-A X/Y footprint is 5.7 mm x 13.2 mm.
 - Default side USB-A component blocks stay within the board left and right X side faces, with each connector short depth extending inward over the PCB and each long dimension centered on the middle of the side board margin along Y.
-- Default front RJ45-to-USB-A margin spacing is 3.75 mm.
+- Default front RJ45-to-USB-A margin spacing is 3.65 mm.
 - Default RJ45 geometry passes through the PCB and extends 1.3 mm below the PCB bottom face.
 - The Micro USB bridge adapter body is outside the board outline by default, and the plug-shell blocks extend from the board edge toward the board interior so they behave like plugs inserted into the board-side Micro USB sockets.
 - Render modes include `assembly`, `hat`, `micro_usb_adapter`, and `printable_layout`.
@@ -186,10 +191,11 @@ Iteration 2026-06-15 side USB side-margin center correction: the side USB-A conn
   - the board outline and holes match researched dimensions,
   - the GPIO header pin centers match the Pi Zero coordinate pattern,
   - RJ45 and front USB-A defaults match the corrected measured dimensions,
+  - RJ45 center X derives from the 16.4 mm left PCB margin to RJ45 left edge measurement,
   - side USB-A defaults use 5.7 mm X depth and 13.2 mm Y length,
   - side USB-A blocks stay fully inside the left/right board side faces in X,
   - side USB-A center Y aligns to the middle of the side margins at `0`,
-  - front RJ45-to-USB-A margin spacing is 3.75 mm,
+  - front RJ45-to-USB-A margin spacing is 3.65 mm,
   - RJ45 geometry passes through the PCB and extends 1.3 mm below the PCB bottom face,
   - the Micro USB adapter can be toggled and has adjustable fit-clearance dimensions,
   - README entries match the implemented behavior.
