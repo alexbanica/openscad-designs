@@ -18,7 +18,7 @@ use <grove_infrared_emitter.scad>
 
 // Render controls
 $fn = 48;
-render_mode = "assembly"; // [assembly/bottom_tray/top_cover/ir_pod/printable_layout/electronics]
+render_mode = "printable_layout"; // [assembly/bottom_tray/top_cover/ir_pod/printable_layout/electronics]
 show_electronics = true;
 show_cutout_guides = true;
 
@@ -72,9 +72,13 @@ tray_clip_receiver_root_depth_mm = 1.4;
 tray_clip_receiver_root_height_mm = 4.4;
 
 // Port cutout dimensions and offsets
-pi_micro_sd_cutout_size_mm = [14.0, 8.0, 5.0];
+micro_sd_card_width_mm = 11.0;
+micro_sd_card_total_clearance_mm = 2.0;
+micro_sd_wall_through_overlap_mm = 2.0;
+pi_micro_sd_cutout_depth_mm = 14.0;
+pi_micro_sd_cutout_height_mm = 5.0;
 pi_micro_sd_cutout_center_x_mm = -32.5;
-pi_micro_sd_cutout_center_y_mm = 1.9;
+pi_micro_sd_cutout_center_y_mm = 1.1;
 pi_micro_sd_cutout_local_center_z_mm = 1.4;
 pi_mini_hdmi_cutout_size_mm = [13.5, 7.5, 7.0];
 pi_mini_hdmi_cutout_center_x_mm = -20.1;
@@ -106,6 +110,10 @@ waveshare_right_usb_a_cutout_center_y_mm = 0.0;
 waveshare_right_usb_a_cutout_local_center_z_mm = 5.1;
 wireless_dongle_extra_clearance_x_mm = 3.0;
 port_cutout_extra_clearance_mm = 0.6;
+
+// Micro USB bridge/addon outside-PCB clearance
+micro_usb_bridge_outside_pcb_y_mm = 10.9;
+micro_usb_bridge_fit_clearance_mm = 1.0;
 
 // External IR emitter pod dimensions and attachment interface
 pod_attachment_side = "front"; // [front/rear]
@@ -240,7 +248,14 @@ ir_guide_colour = "Red";
 // ======================================================
 
 internal_length_mm = board_length_mm + 2 * board_clearance_x_mm;
-internal_width_mm = board_width_mm + 2 * board_clearance_y_mm;
+micro_usb_bridge_required_internal_width_mm =
+    board_width_mm
+    + 2 * (micro_usb_bridge_outside_pcb_y_mm + micro_usb_bridge_fit_clearance_mm);
+internal_width_mm =
+    max(
+        board_width_mm + 2 * board_clearance_y_mm,
+        micro_usb_bridge_required_internal_width_mm
+    );
 outer_length_mm = internal_length_mm + 2 * wall_thickness_mm;
 outer_width_mm = internal_width_mm + 2 * wall_thickness_mm;
 
@@ -349,6 +364,13 @@ case_total_height_mm =
     + top_cover_internal_clearance_mm;
 top_cover_height_mm = case_total_height_mm - tray_wall_height_mm;
 
+pi_micro_sd_cutout_width_mm =
+    micro_sd_card_width_mm + micro_sd_card_total_clearance_mm;
+pi_micro_sd_wall_pierce_depth_mm =
+    2 * (outer_length_mm / 2 - abs(pi_micro_sd_cutout_center_x_mm))
+    + 2 * micro_sd_wall_through_overlap_mm;
+pi_micro_sd_cutout_through_depth_mm =
+    max(pi_micro_sd_cutout_depth_mm, pi_micro_sd_wall_pierce_depth_mm);
 pi_micro_sd_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_micro_sd_cutout_local_center_z_mm;
 pi_mini_hdmi_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_mini_hdmi_cutout_local_center_z_mm;
 pi_micro_usb_power_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_micro_usb_power_cutout_local_center_z_mm;
@@ -456,7 +478,7 @@ anti_slide_centers_mm = [
 ];
 
 port_cutouts_mm = [
-    ["pi_micro_sd", pi_micro_sd_cutout_center_x_mm, pi_micro_sd_cutout_center_y_mm, pi_micro_sd_cutout_center_z_mm, pi_micro_sd_cutout_size_mm[0], pi_micro_sd_cutout_size_mm[1], pi_micro_sd_cutout_size_mm[2]],
+    ["pi_micro_sd", pi_micro_sd_cutout_center_x_mm, pi_micro_sd_cutout_center_y_mm, pi_micro_sd_cutout_center_z_mm, pi_micro_sd_cutout_through_depth_mm, pi_micro_sd_cutout_width_mm, pi_micro_sd_cutout_height_mm],
     ["pi_mini_hdmi", pi_mini_hdmi_cutout_center_x_mm, pi_mini_hdmi_cutout_center_y_mm, pi_mini_hdmi_cutout_center_z_mm, pi_mini_hdmi_cutout_size_mm[0], pi_mini_hdmi_cutout_size_mm[1], pi_mini_hdmi_cutout_size_mm[2]],
     ["pi_micro_usb_power", pi_micro_usb_power_cutout_center_x_mm, pi_micro_usb_power_cutout_center_y_mm, pi_micro_usb_power_cutout_center_z_mm, pi_micro_usb_power_cutout_size_mm[0], pi_micro_usb_power_cutout_size_mm[1], pi_micro_usb_power_cutout_size_mm[2]],
     ["pi_camera", pi_camera_cutout_center_x_mm, pi_camera_cutout_center_y_mm, pi_camera_cutout_center_z_mm, pi_camera_cutout_size_mm[0], pi_camera_cutout_size_mm[1], pi_camera_cutout_size_mm[2]],

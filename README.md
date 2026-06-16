@@ -398,6 +398,8 @@ Default dimensions are configurable at the top of `designs/pi_zero_usb_grove_ir_
 - Seeed Grove Base Hat for Raspberry Pi Zero mounted above the USB HAT with the adjustable measured spacer default; tune the spacing after physical measurement if the preview or hardware stack needs more clearance.
 - Seeed Grove Infrared Emitter board planning size: 20.0 mm x 24.0 mm with a 5.0 mm IR LED.
 - Common M2.5-class fasteners for the board standoffs.
+- microSD card width: 11.0 mm, with a default 2.0 mm total clearance for the tray pass-through opening.
+- Micro USB bridge/addon protrusion outside the Pi Zero PCB: 10.9 mm, plus 1.0 mm default printable fit clearance used to size the tray and top-cover Y envelope.
 - The Grove IR emitter PCB stays inside the external pod, not in the main tray.
 - IR emitter PCB support bosses are solid locating/support features by default; optional pilot holes are disabled unless `enable_ir_mount_optional_pilot_holes` is explicitly set.
 - The external pod keeps its rear wall closed in normal assembly; only the LED aperture and cable passage remain open after the printed retainer is installed.
@@ -418,6 +420,8 @@ The OpenSCAD source starts with an `Adjustable Parameters` section grouped by:
 - Pi Zero stack mounting standoffs,
 - short-end clip-on top cover latch/catch features, clip roots, and tray receiver backing pads,
 - Pi Zero and Waveshare port cutout dimensions and offsets,
+- microSD card access dimensions,
+- Micro USB bridge/addon outside-PCB clearance dimensions,
 - external IR emitter pod dimensions, slide rails, root plate, gussets, and attachment interface,
 - IR emitter pod board support, slide-in locator, optional pilot-hole, and retainer parameters,
 - IR LED aperture, including pass-through overlap margin,
@@ -434,6 +438,8 @@ Common edits:
 - Set `show_electronics = false` to hide the Pi Zero, HAT, and IR emitter references without changing printable solids.
 - Set `show_cutout_guides = false` to hide port, IR aperture, and cable path guide previews without changing printable solids.
 - Adjust Pi Zero microSD, mini-HDMI, Micro USB, and camera cutout positions after a test fit.
+- Tune `micro_sd_card_width_mm`, `micro_sd_card_total_clearance_mm`, `pi_micro_sd_cutout_*`, and `micro_sd_wall_through_overlap_mm` if the card slot needs more access clearance or a deeper wall-piercing subtraction after print inspection.
+- Tune `micro_usb_bridge_outside_pcb_y_mm` and `micro_usb_bridge_fit_clearance_mm` if the measured bridge/addon protrusion differs; the derived internal Y envelope expands the bottom tray and top cover consistently while keeping the board stack centered.
 - Tune the Waveshare RJ45, front USB-A, left USB-A, and right USB-A cutout positions independently after measuring the USB HAT.
 - Tune `pi_zero_to_waveshare_hat_z_offset_mm` and `waveshare_to_grove_hat_z_offset_mm` for the real spacer stack; those values move the electronics previews, board-relative port cutout Z positions, and dependent Grove cable guide Z positions together.
 - Increase `measured_stack_height_mm` or `extra_upward_headroom_mm` if the assembled stack, Grove connector, or cable needs more vertical clearance.
@@ -490,6 +496,8 @@ openscad -o /tmp/pi_zero_usb_grove_ir_assembly.off -D 'render_mode="assembly"' -
 - The pod slide rails are rooted into the top cover with a backing plate and gussets, and they are separate from the cover-to-tray clips.
 - The four bottom-tray stack holes exist because the Pi Zero/HAT stack has four mounting points. Those holes are distinct from the top-cover clips and from the pod slide-and-retain attachment interface.
 - The Pi Zero opening for the internally occupied Micro USB adapter side is intentionally closed. The remaining external Pi Zero Micro USB opening is the power-side opening.
+- The microSD opening is sized from the 11.0 mm card-width assumption plus default clearance, and its subtraction over-travels the tray wall so the access slot remains a true pass-through.
+- The main enclosure Y envelope is sized from the 10.9 mm Micro USB bridge/addon outside-PCB protrusion plus fit clearance; this is internal footprint clearance and does not reopen the internally occupied adapter-side Micro USB port.
 - Add rubber feet or pads to the default recesses after printing if anti-slide behavior is required.
 - The design guidance remains compatible with the Bambu Lab P2S and AMS 2 Pro; no multi-material behavior is required.
 - Physical measurement and test fitting are still required before final tolerances are trusted.
@@ -618,6 +626,9 @@ Manual inspection for the Pi Zero USB Grove IR enclosure:
 - `pi_zero_to_waveshare_hat_z_offset_mm` moves the Waveshare preview and Waveshare port cutout Z centers.
 - `waveshare_to_grove_hat_z_offset_mm` defaults to 10.8 mm and moves the Grove HAT preview plus the main-to-pod cable guide start Z.
 - Pi Zero microSD, mini-HDMI, the externally used power-side Micro USB port, and camera connector access are not blocked by the enclosure.
+- The microSD access opening uses `micro_sd_card_width_mm = 11.0`, includes default total clearance, sits at the Pi Zero microSD edge, and fully pierces the tray wall.
+- The derived tray/top-cover Y envelope accounts for `micro_usb_bridge_outside_pcb_y_mm = 10.9` plus `micro_usb_bridge_fit_clearance_mm = 1.0` without moving the board stack.
+- The Micro USB bridge/addon clearance remains internal footprint clearance and does not reopen the internally consumed adapter-side Pi Zero Micro USB port.
 - USB HAT RJ45 plus one USB connector are exposed on the front edge.
 - One USB HAT USB connector is exposed on each long side, and at least one USB-A cutout includes extra clearance for an external wireless dongle.
 - Bottom tray includes floor, side walls, Pi Zero-aligned M2.5-class standoffs, clip receivers, rubber-foot recesses by default, and the required cutout clearances.

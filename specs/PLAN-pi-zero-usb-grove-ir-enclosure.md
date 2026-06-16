@@ -61,6 +61,8 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
    - Pi Zero stack mounting standoffs,
    - clip-on top cover latch/catch features,
    - port cutout dimensions and offsets,
+   - microSD card access dimensions,
+   - Micro USB bridge/addon outside-PCB clearance dimensions,
    - external IR emitter pod dimensions and attachment interface,
    - IR emitter pod board mount,
    - IR LED aperture,
@@ -186,22 +188,48 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
    - `65.0 mm x 30.0 mm` board footprint,
    - `35.0 mm` measured stack height,
    - `8.0 mm` default extra upward headroom.
-29. Preserve and update the bottom tray behavior:
+29. Add or preserve adjustable microSD and Micro USB bridge/addon fit parameters:
+   - add `micro_sd_card_width_mm = 11.0` or an equivalently clear adjustable value,
+   - keep microSD cutout size, local placement, and Z placement independently adjustable,
+   - add `micro_usb_bridge_outside_pcb_y_mm = 10.9` or an equivalently clear adjustable value,
+   - add a separate printable fit clearance value for the Micro USB bridge/addon outside-PCB protrusion, defaulting to at least `1.0 mm`,
+   - use `_mm` suffixes for all new linear values and keep them in the grouped `Adjustable Parameters` section.
+30. Refactor derived enclosure Y sizing so the main enclosure internal Y envelope accounts for:
+   - the 30.0 mm Pi Zero board width,
+   - existing board-to-wall clearance,
+   - the Micro USB bridge/addon protruding 10.9 mm outside the Pi Zero PCB on the adapter side,
+   - the additional Micro USB bridge/addon printable fit clearance.
+31. Ensure the derived Y envelope expands the bottom tray and top cover consistently:
+   - preserve the board stack center and existing assembled coordinate relationships unless a direct offset is required by the approved spec,
+   - keep Pi Zero, Waveshare, and Grove preview placement stable,
+   - update front/rear walls, cover shell, cover lip, short-end clip receivers, top ventilation extents, main cable exit, pod placement, and printable-layout spacing only as needed to preserve the existing relationships after the Y expansion.
+32. Correct the Pi Zero microSD access cutout:
+   - ensure the cutout is at the Pi Zero microSD edge and is visible in `bottom_tray`, `assembly`, and `printable_layout`,
+   - size the clear pass-through around the 11.0 mm microSD card width with at least 2.0 mm total width clearance unless implementation review proves the existing width is already on the correct axis,
+   - extend the subtraction fully through the tray wall with wall-through overlap so OpenSCAD preview cannot leave an accidental exterior skin,
+   - keep the cutout separate from Pi Zero stack standoffs, camera access, short-end cover retention receivers, and anti-slide features,
+   - keep the microSD access dimensions and local offsets adjustable for physical calibration.
+33. Preserve the internally consumed Pi Zero Micro USB behavior:
+   - do not re-add an external opening for the adapter-side Pi Zero Micro USB port,
+   - preserve the remaining externally usable Pi Zero Micro USB opening and its adjustable dimensions and local offsets,
+   - ensure the Micro USB bridge/addon clearance is internal footprint clearance, not an external port opening.
+34. Preserve and update the bottom tray behavior:
    - printable floor,
    - side walls,
    - Pi Zero-aligned standoffs with M2.5-class screw clearance/pilot holes,
    - top-cover clip/catch receiver features,
    - anti-slide rubber-foot recesses by default,
-   - subtract required port and fastener clearances.
-30. Preserve and update the top cover behavior:
+   - subtract required port, microSD access, and fastener clearances.
+35. Preserve and update the top cover behavior:
    - removable upper shell or lid,
    - clip-on attachable/detachable interface with no cover screws,
    - internal lip or alignment feature for the tray,
    - adjustable ventilation/access holes with a denser default pattern,
    - clearance over the 35 mm stack plus headroom,
    - no dependency on the Pi Zero stack mounting screws,
-   - includes the IR pod attachment interface as part of the printable/removable upper assembly.
-31. Preserve port cutout volumes for:
+   - includes the IR pod attachment interface as part of the printable/removable upper assembly,
+   - uses the same expanded Y envelope as the bottom tray for Micro USB bridge/addon clearance.
+36. Preserve port cutout volumes for:
    - Pi Zero microSD,
    - Pi Zero mini-HDMI,
    - the externally used Pi Zero Micro USB port only,
@@ -210,25 +238,25 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
    - Waveshare front USB-A,
    - Waveshare left USB-A,
    - Waveshare right USB-A.
-32. Refresh the Waveshare enclosure cutout defaults from `designs/waveshare_eth_usb_hub_hat.scad`:
+37. Refresh the Waveshare enclosure cutout defaults from `designs/waveshare_eth_usb_hub_hat.scad`:
    - keep `waveshare_rj45_cutout_center_x_mm = -16.0`,
    - change `waveshare_front_usb_a_cutout_center_x_mm` from the stale `11.0` default to `1.7`,
    - preserve front USB-A cutout dimensions sized around the Waveshare reference `13.2 mm x 5.7 mm` footprint,
    - preserve side USB-A cutout dimensions sized around the Waveshare reference `5.7 mm x 13.2 mm` footprint,
    - preserve side USB-A cutout center Y as `0.0`,
    - keep side USB-A cutout X centers as side-wall opening centers unless a code-level dependency directly requires otherwise.
-33. Keep port cutout dimensions and local offsets adjustable. Use simplified rectangular cutouts with extra clearance; do not model a wireless dongle body.
-34. Preserve `show_electronics` and `show_cutout_guides` so they independently control reference previews and non-printing guide geometry.
-35. Keep OpenSCAD 2021.01 compatibility:
+38. Keep port cutout dimensions and local offsets adjustable. Use simplified rectangular cutouts with extra clearance; do not model a wireless dongle body.
+39. Preserve `show_electronics` and `show_cutout_guides` so they independently control reference previews and non-printing guide geometry.
+40. Keep OpenSCAD 2021.01 compatibility:
    - no external libraries,
    - no generated imports,
    - no unsupported syntax.
-36. Refactor `printable_layout` for the IR pod retainer:
+41. Refactor `printable_layout` for the IR pod retainer:
    - keep the retainer installed in `assembly` only when that render intentionally shows it installed,
    - place the retainer as a clearly separated secondary printable part in `printable_layout`,
    - increase or reorient the retainer offset as needed so it does not appear to protrude from, intersect, or fuse with the IR pod body after pod rotation,
    - preserve the retainer's installed pose and pod interface behavior outside printable layout.
-37. Update `README.md`:
+42. Update `README.md`:
    - ensure the design file is listed,
    - align the Pi Zero USB Grove IR enclosure section with the approved spec,
    - document component assumptions, including 35.0 mm stack height plus 8.0 mm default headroom,
@@ -244,6 +272,8 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
    - document top ventilation/access hole parameters and the implemented denser default pattern,
    - document that the four bottom-tray board-stack holes exist because the Pi Zero/HAT stack has four mounting points, and that top-cover clips/catches and pod attachment features are separate,
    - document which Pi Zero Micro USB opening remains available externally and which internally used opening is intentionally closed,
+   - document the 11.0 mm microSD card width assumption and default microSD access opening clearance behavior,
+   - document the 10.9 mm Micro USB bridge/addon outside-PCB protrusion and the added fit clearance used to derive the tray/top-cover Y envelope,
    - document that Waveshare enclosure cutout defaults are refreshed from `designs/waveshare_eth_usb_hub_hat.scad`,
    - document that the default Waveshare front USB-A cutout X center is `1.7 mm`,
    - document adjustable parameter groups,
@@ -251,32 +281,32 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
    - document optional OpenSCAD commands for users with OpenSCAD installed,
    - document Bambu Lab print and assembly notes,
    - update the manual inspection checklist to match actual implemented behavior.
-38. Add printable-only wrapper modules or equivalent transforms for printable render modes so assembled geometry can keep its existing world pose while printable outputs are plate-friendly:
+43. Add printable-only wrapper modules or equivalent transforms for printable render modes so assembled geometry can keep its existing world pose while printable outputs are plate-friendly:
    - `bottom_tray` must rest on the build plate at `Z=0`,
    - `top_cover` must rest on the build plate at `Z=0` with its broad, stable printable face downward,
    - `ir_pod` must rest on the build plate at `Z=0` with its broad, stable printable face downward,
    - any separate IR pod PCB retainer must rest on the build plate at `Z=0` as its own printable object.
-39. Preserve assembled-world modules and transforms used by `assembly` and `electronics`; printable wrapper transforms must not alter board-stack positions, pod attachment positions, cable guide positions, or electronics preview positions in assembled modes.
-40. Refactor render dispatch if needed so:
+44. Preserve assembled-world modules and transforms used by `assembly` and `electronics`; printable wrapper transforms must not alter board-stack positions, pod attachment positions, cable guide positions, or electronics preview positions in assembled modes.
+45. Refactor render dispatch if needed so:
    - `render_mode = "assembly"` continues to call assembled-position case, pod, electronics, and guide modules,
    - `render_mode = "bottom_tray"` calls the bottom tray printable wrapper,
    - `render_mode = "top_cover"` calls the top cover printable wrapper,
    - `render_mode = "ir_pod"` calls the IR pod printable wrapper,
    - `render_mode = "printable_layout"` calls printable wrappers for all parts.
-41. Refactor `pi_zero_usb_grove_ir_printable_layout()` so it arranges all printable objects side-by-side with sufficient X/Y spacing:
+46. Refactor `pi_zero_usb_grove_ir_printable_layout()` so it arranges all printable objects side-by-side with sufficient X/Y spacing:
    - bottom tray,
    - top cover,
    - IR pod body,
    - any separate IR pod PCB retainer.
-42. Ensure `printable_layout` contains no object that is suspended above the build plate, hidden inside another printable part, intersecting another printable part, visually fused to another printable part, or dependent on another part for build-plate contact.
-43. If the current IR pod printable wrapper keeps the retainer as a child of the pod module, split printable retainer rendering into a separate printable module or parameter path so the retainer is placed as an independent object with its own build-plate contact.
-44. Keep source OpenSCAD 2021.01-compatible and preserve adjustable parameter grouping. Add only narrowly scoped `_mm`/`_deg` printable-layout orientation or spacing parameters if the existing `printable_layout_spacing_mm` and `ir_pcb_retainer_print_gap_mm` are insufficient.
-45. Update `README.md` to document:
+47. Ensure `printable_layout` contains no object that is suspended above the build plate, hidden inside another printable part, intersecting another printable part, visually fused to another printable part, or dependent on another part for build-plate contact.
+48. If the current IR pod printable wrapper keeps the retainer as a child of the pod module, split printable retainer rendering into a separate printable module or parameter path so the retainer is placed as an independent object with its own build-plate contact.
+49. Keep source OpenSCAD 2021.01-compatible and preserve adjustable parameter grouping. Add only narrowly scoped `_mm`/`_deg` printable-layout orientation or spacing parameters if the existing `printable_layout_spacing_mm` and `ir_pcb_retainer_print_gap_mm` are insufficient.
+50. Update `README.md` to document:
    - printable render modes place objects on the build plate,
    - `printable_layout` separates independently printable parts,
    - no generated STL/STEP/3MF/OFF exports are committed,
    - assembled preview positions remain separate from printable-only orientation transforms.
-46. Adjust the IR pod default clearance from the Waveshare RJ45/Ethernet opening:
+51. Adjust the IR pod default clearance from the Waveshare RJ45/Ethernet opening:
    - reduce `pod_outer_width_mm` from 32.0 mm to a smaller default that still fits the 20.0 mm IR emitter PCB, locator geometry, retainer/service opening, and printable walls,
    - shift `pod_center_offset_x_mm` toward the front USB-A side so the pod does not sit over the RJ45 cutout,
    - reduce `pod_slide_rail_spacing_x_mm` and trim unnecessary slide root plate width as needed so rail slots remain compatible with the narrower pod, stay inside the top-cover X margin, and do not crowd the front USB-A cutout,
@@ -324,6 +354,11 @@ Review `designs/pi_zero_usb_grove_ir_enclosure.scad` and confirm:
 - the Waveshare front USB-A cutout no longer uses the stale `11.0 mm` X center,
 - Waveshare side USB-A cutout size and center Y still match the current local Waveshare reference orientation while remaining side-wall openings,
 - the internally used Pi Zero Micro USB opening is removed while the externally used Pi Zero Micro USB opening remains accessible,
+- the microSD access opening uses an adjustable 11.0 mm card-width assumption, includes clearance, and is visibly open at the Pi Zero microSD edge,
+- the microSD access cutout subtraction fully pierces the tray wall in bottom tray, assembly, and printable layout render paths,
+- the expanded enclosure Y envelope derives from the 10.9 mm Micro USB bridge/addon outside-PCB protrusion plus fit clearance,
+- bottom tray and top cover Y dimensions expand consistently and preserve existing assembled-world board placement,
+- the Micro USB bridge/addon clearance remains internal clearance and does not re-open the internally consumed adapter-side Pi Zero Micro USB port,
 - Pi Zero and Waveshare port cutout Z centers derive from board-tier Z positions plus adjustable local offsets,
 - at least one Waveshare USB-A cutout allows an external wireless dongle,
 - IR emitter PCB is retained inside the external IR pod with a serviceable printed retention feature rather than inaccessible internal screw-driving geometry,
@@ -365,6 +400,8 @@ Review `README.md` and confirm:
 - README documents the top ventilation/access holes and the denser default pattern,
 - README explains why the bottom tray has four Pi Zero stack mounting holes and how those differ from clip/catch and pod attachment features,
 - README identifies the intentionally closed internally used Pi Zero USB opening,
+- README documents the 11.0 mm microSD card width assumption and the default microSD access opening clearance behavior,
+- README documents the 10.9 mm Micro USB bridge/addon outside-PCB protrusion and how it drives tray/top-cover Y envelope clearance,
 - README documents the refreshed Waveshare enclosure cutout defaults and the `1.7 mm` front USB-A center,
 - render modes match the OpenSCAD source,
 - optional commands are clearly optional for users with OpenSCAD installed,
@@ -403,6 +440,10 @@ Implementation review must check for:
 - fixed absolute Z values where board-tier-relative Z values are required,
 - IR emitter pod/emitter placement values that do not drive all dependent pod mount/hole/aperture/cable features,
 - missing adjustable parameters,
+- missing 11.0 mm microSD card-width parameter or microSD access opening clearance,
+- missing 10.9 mm Micro USB bridge/addon outside-PCB protrusion parameter or derived Y-envelope clearance,
+- a microSD opening that is still too small, not visible in OpenSCAD preview, not fully through the tray wall, or collides with short-end retention/camera/standoff features,
+- a Y-envelope expansion that changes board placement, misaligns port cutouts, breaks cover fit, or re-opens the internally consumed Micro USB adapter-side port,
 - missing required port, IR pod, cable exit/entry, clip/catch, top-hole, pod-fastener, or anti-slide behavior,
 - README/source mismatch,
 - stale screw-hole retention geometry left as the default IR pod board mount path,

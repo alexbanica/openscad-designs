@@ -449,6 +449,40 @@ Impact and regression considerations for this iteration:
 - Shrinking the pod alone cannot fully clear the RJ45 opening while preserving a serviceable 20.0 mm IR PCB enclosure, so the default must combine a smaller pod with an X offset away from Ethernet.
 - The pod cable entry, LED aperture, board retention geometry, printable wrappers, and assembly/electronics positions must continue to derive from the same pod/emitter pose.
 
+## Iteration: MicroSD Opening And Micro USB Bridge Clearance
+
+Requested changes:
+
+- The bottom tray microSD card opening is too small after physical printing.
+- The microSD card width is 11.0 mm.
+- OpenSCAD preview does not clearly show the microSD pass-through opening in the expected tray location even though the printed tray contains an opening.
+- The main enclosure Y clearance is too small for the Micro USB bridge/addon between the Pi Zero and Waveshare HAT.
+- The Micro USB bridge/addon protrudes 10.9 mm outside the Pi Zero PCB.
+- Increase the bottom tray and matching top cover Y envelope so the Micro USB bridge/addon fits.
+
+Updated deterministic behavior:
+
+- The bottom tray must include a true, visible, pass-through microSD access opening at the Pi Zero microSD edge in `bottom_tray`, `assembly`, and `printable_layout` render modes.
+- The microSD access opening must be sized from an adjustable `micro_sd_card_width_mm` or equivalently clear parameter, defaulting to `11.0 mm`.
+- The default microSD opening must provide clearance around the 11.0 mm card width. The default clear pass-through width must be at least `micro_sd_card_width_mm + 2.0 mm`, unless implementation review shows that a larger current default is already used on the correct axis and only the opposing axis or placement is wrong.
+- The microSD opening dimensions, local position, and Z placement must remain independently adjustable for physical calibration.
+- The microSD cutout subtraction must extend fully through the relevant tray wall with enough overlap margin that OpenSCAD preview cannot leave an accidental skin or hidden non-opening at the exterior face.
+- The microSD access opening must not weaken or collide with the short-end cover retention receiver geometry, Pi Zero stack mounting standoffs, or camera access opening.
+- The enclosure must account for the Micro USB bridge/addon protruding `10.9 mm` outside the Pi Zero PCB along the adapter side of the board.
+- The Micro USB bridge/addon protrusion must be represented by an adjustable parameter such as `micro_usb_bridge_outside_pcb_y_mm`, defaulting to `10.9 mm`.
+- The main enclosure internal Y clearance must be derived so the adapter side has at least `10.9 mm` outside-PCB clearance plus printable fit clearance. The default additional fit clearance must be at least `1.0 mm`.
+- The bottom tray and top cover must expand consistently in Y so the Micro USB bridge/addon clearance exists through the tray, cover, and assembled enclosure rather than only one printable part.
+- Expanding the enclosure Y envelope must preserve existing board-stack placement, Waveshare and Pi Zero port cutout alignment, Grove cable exit alignment, top-cover removability, short-end cover retention, pod attachment, printable-layout separation, and build-plate-friendly printable orientations.
+- The Micro USB bridge/addon clearance must not reintroduce an external Pi Zero Micro USB opening for the internally consumed adapter-side port. The adapter-side port remains internally occupied and externally closed by default.
+- README documentation must state the 11.0 mm microSD card width assumption, the default microSD opening clearance behavior, and the 10.9 mm Micro USB bridge/addon outside-PCB protrusion used to size the enclosure Y clearance.
+
+Impact and regression considerations for this iteration:
+
+- The current microSD opening may be dimensioned on the wrong axis, placed too shallow, or subtracted without enough wall-through overlap; implementation must correct the pass-through behavior rather than only increasing a number.
+- Increasing Y clearance changes the main enclosure footprint and can move front/rear wall features. The implementation must preserve port access and avoid causing cover clips, pod slide rails, cable exits, or vent holes to intersect new or existing cutouts.
+- The Micro USB bridge/addon clearance is based on the user's measured physical protrusion, not vendor-certified mechanical data. The clearance must remain adjustable for later test-fit tuning.
+- Physical fit still requires slicer inspection and a test print before relying on final tolerances.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -475,7 +509,13 @@ Impact and regression considerations for this iteration:
 - The case includes access openings for all Pi Zero and Waveshare HAT ports listed in Scope.
 - The Waveshare front USB-A cutout default X center matches the current local Waveshare reference derived center of `1.7 mm`, based on RJ45 center X, RJ45 width, the `3.75 mm` RJ45-to-USB-A component margin, and front USB-A width.
 - The Waveshare enclosure cutout defaults do not retain stale front USB-A spacing that conflicts with `designs/waveshare_eth_usb_hub_hat.scad`.
+- The bottom tray includes a true visible pass-through microSD access opening in the expected Pi Zero microSD location.
+- The microSD opening default accounts for an 11.0 mm microSD card width with clearance and remains adjustable.
+- The microSD opening subtraction fully pierces the tray wall in `bottom_tray`, `assembly`, and `printable_layout` modes.
+- The main enclosure Y envelope accounts for the Micro USB bridge/addon protruding 10.9 mm outside the Pi Zero PCB plus printable fit clearance.
+- The bottom tray and top cover are expanded consistently for the Micro USB bridge/addon clearance.
 - The case does not include an external opening for the Pi Zero Micro USB port that is occupied internally by the adapter connection to the ETH/USB HAT.
+- The internally consumed Pi Zero Micro USB adapter-side port remains externally closed by default after the Y clearance expansion.
 - At least one Waveshare USB-A opening supports an externally attached wireless USB dongle.
 - Anti-slide recesses or feet are present on the bottom exterior.
 - Render modes include `assembly`, `bottom_tray`, `top_cover`, `ir_pod`, `printable_layout`, and `electronics`.
@@ -514,6 +554,9 @@ Impact and regression considerations for this iteration:
   - the Waveshare front USB-A cutout default X center matches the current local Waveshare reference's derived `1.7 mm` center,
   - the Waveshare side USB-A cutout defaults preserve the current local Waveshare reference side USB-A size and Y center while remaining side-wall openings,
   - the Pi Zero port cutout set excludes the internally consumed Pi Zero USB port and preserves the remaining externally used Pi Zero port access,
+  - the microSD access opening is visible, correctly placed at the Pi Zero microSD edge, sized for an 11.0 mm card width plus clearance, and subtracted fully through the tray wall,
+  - the bottom tray and top cover Y envelope account for the 10.9 mm Micro USB bridge/addon outside-PCB protrusion plus fit clearance,
+  - the Micro USB bridge/addon clearance does not re-open the internally consumed Pi Zero Micro USB port to the exterior,
   - the wireless dongle remains outside the case through an accessible USB-A cutout,
   - the external IR emitter pod, printed PCB retention geometry, LED aperture, and main-to-pod cable path are present,
   - only the IR LED path is exposed outside the pod by default,
@@ -554,5 +597,7 @@ Impact and regression considerations for this iteration:
 - Document that the IR LED aperture is intended to be a full pass-through opening in the pod wall.
 - Document the implemented default top-hole density for this iteration and any recommended tuning if the user wants more or fewer holes after physical test fitting.
 - Document which Pi Zero Micro USB port remains externally accessible and which one is intentionally closed because it is used internally by the adapter connection to the ETH/USB HAT.
+- Document the 11.0 mm microSD card width assumption and the default clearance used for the microSD pass-through opening.
+- Document the 10.9 mm Micro USB bridge/addon outside-PCB protrusion and that the tray and cover Y envelope are sized from that value plus fit clearance.
 - Document that Waveshare enclosure port cutout defaults are refreshed from `designs/waveshare_eth_usb_hub_hat.scad`, including the `1.7 mm` default front USB-A X center.
 - Document that printable render modes and `printable_layout` are Bambu Lab-friendly, with separate parts placed on the build plate and no generated mesh exports committed.
