@@ -63,6 +63,7 @@ cover_clip_hook_height_mm = 1.6;
 cover_clip_root_length_mm = 7.5;
 cover_clip_root_depth_mm = 1.6;
 cover_clip_root_height_mm = 4.2;
+cover_clip_end_latch_length_mm = 36.5;
 tray_clip_receiver_width_mm = 7.5;
 tray_clip_receiver_depth_mm = 0.9;
 tray_clip_receiver_height_mm = 2.0;
@@ -407,10 +408,9 @@ cover_clip_x_mm =
     (internal_length_mm + 2 * cover_fit_clearance_mm) / 2
     + cover_clip_tab_thickness_mm / 2
     - solid_merge_overlap_mm / 2;
-cover_clip_root_x_mm =
-    (internal_length_mm - 2 * cover_fit_clearance_mm) / 2
-    + cover_clip_root_depth_mm / 2
-    - solid_merge_overlap_mm / 2;
+cover_clip_root_effective_depth_mm =
+    cover_clip_root_depth_mm + 2 * solid_merge_overlap_mm;
+cover_clip_root_x_mm = cover_clip_x_mm;
 cover_clip_y_positions_mm = [-cover_clip_y_offset_mm, cover_clip_y_offset_mm];
 tray_clip_receiver_z_mm = tray_wall_height_mm - tray_clip_receiver_top_inset_mm - tray_clip_receiver_height_mm / 2;
 tray_clip_receiver_x_mm =
@@ -847,25 +847,23 @@ module pi_zero_usb_grove_ir_cover_alignment_lip() {
 }
 
 module pi_zero_usb_grove_ir_cover_clip_tabs() {
-    for (clip_y_mm = cover_clip_y_positions_mm) {
-        for (end_sign = [-1, 1]) {
-            pi_zero_usb_grove_ir_cover_clip_tab(end_sign, clip_y_mm);
-        }
+    for (end_sign = [-1, 1]) {
+        pi_zero_usb_grove_ir_cover_end_latch_rail(end_sign);
     }
 }
 
-module pi_zero_usb_grove_ir_cover_clip_tab(end_sign, clip_y_mm) {
+module pi_zero_usb_grove_ir_cover_end_latch_rail(end_sign) {
     union() {
         hull() {
             translate([
                 end_sign * cover_clip_root_x_mm,
-                clip_y_mm,
+                0,
                 tray_wall_height_mm - cover_lip_height_mm + cover_clip_root_height_mm / 2 + solid_merge_overlap_mm / 2
             ])
                 cube(
                     [
-                        cover_clip_root_depth_mm,
-                        cover_clip_root_length_mm,
+                        cover_clip_root_effective_depth_mm,
+                        cover_clip_end_latch_length_mm,
                         cover_clip_root_height_mm
                     ],
                     center = true
@@ -873,13 +871,13 @@ module pi_zero_usb_grove_ir_cover_clip_tab(end_sign, clip_y_mm) {
 
             translate([
                 end_sign * cover_clip_x_mm,
-                clip_y_mm,
+                0,
                 tray_wall_height_mm - cover_lip_height_mm - cover_clip_tab_drop_mm / 2 + solid_merge_overlap_mm / 2
             ])
                 cube(
                     [
                         cover_clip_tab_thickness_mm,
-                        cover_clip_tab_width_mm,
+                        cover_clip_end_latch_length_mm,
                         cover_clip_tab_drop_mm + solid_merge_overlap_mm
                     ],
                     center = true
@@ -889,13 +887,13 @@ module pi_zero_usb_grove_ir_cover_clip_tab(end_sign, clip_y_mm) {
         hull() {
             translate([
                 end_sign * cover_clip_x_mm,
-                clip_y_mm,
+                0,
                 tray_wall_height_mm - cover_lip_height_mm - cover_clip_hook_height_mm / 2
             ])
                 cube(
                     [
                         cover_clip_tab_thickness_mm,
-                        cover_clip_tab_width_mm,
+                        cover_clip_end_latch_length_mm,
                         cover_clip_hook_height_mm + solid_merge_overlap_mm
                     ],
                     center = true
@@ -908,13 +906,13 @@ module pi_zero_usb_grove_ir_cover_clip_tab(end_sign, clip_y_mm) {
                     - cover_clip_hook_depth_mm / 2
                     + solid_merge_overlap_mm / 2
                 ),
-                clip_y_mm,
+                0,
                 tray_wall_height_mm - cover_lip_height_mm - cover_clip_hook_height_mm / 2
             ])
                 cube(
                     [
                         cover_clip_hook_depth_mm + solid_merge_overlap_mm,
-                        tray_clip_receiver_width_mm,
+                        cover_clip_end_latch_length_mm,
                         cover_clip_hook_height_mm
                     ],
                     center = true
