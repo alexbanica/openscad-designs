@@ -8,32 +8,27 @@ Approved Spec: `specs/SPEC-pi-zero-usb-grove-ir-enclosure.md`
 
 No dedicated branch is required. Repository instructions allow committing directly to `main` when otherwise unspecified.
 
-Implementation must not revert unrelated dirty worktree changes. At planning time:
-
-- `README.md`, `designs/pi_zero_usb_grove_ir_enclosure.scad`, `designs/waveshare_eth_usb_hub_hat.scad`, `specs/SPEC-pi-zero-usb-grove-ir-enclosure.md`, and unrelated Waveshare spec files already have uncommitted changes.
-- Treat the current enclosure source and README as the implementation baseline.
-- Treat `designs/waveshare_eth_usb_hub_hat.scad` as the source of truth for the enclosure's front RJ45/Ethernet and front USB-A connector hole placement.
+Implementation must not revert unrelated dirty worktree changes.
 
 ## Affected Files
 
 - Update `designs/pi_zero_usb_grove_ir_enclosure.scad`.
 - Update `README.md`.
-- Do not edit electronics reference files unless a direct syntax or import issue blocks validation.
 - Keep generated mesh/export files out of source control.
-- Preserve existing IR pod attachment, electronics placement, Waveshare front connector alignment, USB sizing, microSD access, enclosure Y-envelope behavior, anti-slide behavior, render modes, and printable layout except where a direct local change is required for the plug-in cover connection.
+- Do not edit electronics reference files unless a direct syntax or import issue blocks validation.
+- Preserve existing board stack geometry, port cutouts, main top-cover pin/socket connection, pod-to-top-cover attachment, IR LED aperture, Grove cable path, IR PCB loading path, IR PCB retainer, anti-slide features, and render modes except where directly required to split the IR pod roof into a detachable service panel.
 
 ## No-Research Constraint
 
 Implementation must use only:
 
 - the approved spec,
-- this approved plan,
+- this approved implementation plan,
 - repository instructions,
 - the current `designs/pi_zero_usb_grove_ir_enclosure.scad`,
-- the current `README.md` enclosure section,
-- the current `designs/waveshare_eth_usb_hub_hat.scad` front RJ45/Ethernet and front USB-A connector values.
+- the current `README.md` enclosure section.
 
-Implementation must not perform additional product, architecture, or scope research.
+Implementation must not perform additional product, architecture, or scope research. It may inspect only the affected files and local syntax/render output needed to execute and validate this plan.
 
 ## Test-First Applicability
 
@@ -41,73 +36,58 @@ Automated unit tests are not applicable. This is an OpenSCAD design repository w
 
 The test-first phase is replaced by a deterministic pre-implementation checklist:
 
-- identify current top-cover pin parameters, derived values, module calls, README text, and validation text,
-- identify the current male-side cross/rib/root-pad geometry that must be removed,
-- identify the top-cover skirt or shell surface where simple round pins attach directly,
-- identify tray wall socket geometry that must remain wall-integrated without added internal bosses,
-- identify nearby port cutouts, camera access, microSD access, vent holes, cable exit, pod rails, and Pi Zero stack standoffs that must remain clear,
-- map each approved minimal flush round-pin acceptance criterion to source, README, validation, or manual review.
+- identify current IR pod shell parameters, derived values, and modules,
+- identify how the pod roof is currently formed and how the interior is subtracted,
+- identify current printable wrappers for `ir_pod` and `printable_layout`,
+- identify current IR PCB retainer placement and ensure the new detachable panel remains distinct from it,
+- identify current README text for IR pod printing, assembly, render modes, and manual inspection,
+- map each approved detachable-panel behavior to source, README, validation, or manual review.
 
 ## Implementation Steps
 
-1. Inspect only the current enclosure source and README design section needed for this iteration.
-2. Replace the current male-side cross/rib/root-pad pin support with simple round male pins:
-   - remove default cross ribs, wall-rib pads, broad bosses, root pads, fillets, or equivalent male-side reinforcement from the top-cover pin geometry,
-   - keep simple vertical round pins as the only default male insertion features,
-   - ensure the removed male-side support geometry cannot create a tray-to-cover gap in assembled orientation.
-3. Preserve or adjust adjustable cover pin/socket parameters near the existing enclosure connection parameters:
-   - male pin diameter or equivalent cross-section,
-   - pin insertion length/depth,
-   - pin placement offsets/count,
-   - socket clearance,
-   - socket depth,
-   - wall thickness or socket wall material dimensions.
-4. Make the male pins part of `top_cover`:
-   - default to at least four pins,
-   - place pins near supported side-wall/corner regions without intersecting vents, port cutouts, cable exit, pod rails, or required access openings,
-   - attach each pin directly to the top-cover skirt or shell by normal solid overlap only,
-   - do not add default male-side cross ribs, root pads, broad bosses, fillets, or other protruding reinforcement,
-   - use at least `3.0 mm` default pin diameter or equivalent narrowest cross-section,
-   - keep pin geometry from standing the cover off from the tray.
-5. Make the female sockets part of `bottom_tray`:
-   - default to matching socket count and placement,
-   - integrate sockets into thickened tray walls or corner regions,
-   - subtract true socket holes sized from pin diameter plus adjustable clearance,
-   - default socket clearance must be in the approved `0.25 mm` to `0.45 mm` per-diameter range,
-   - keep enough surrounding wall material for plausible FDM printing without adding internal socket bosses,
-   - keep socket geometry distinct from the four Pi Zero stack mounting holes and IR pod attachment features.
-6. Thicken the connection support:
-   - keep or adjust `wall_thickness_mm` so the wall-integrated sockets have plausible surrounding material,
-   - increased wall thickness must grow the enclosure outward rather than reducing the internal electronics clearance envelope,
-   - do not use male-side reinforcement to satisfy socket strength.
-7. Preserve screwless vertical assembly:
-   - the cover must lower onto the tray with primarily vertical pin insertion,
-   - the cover must not need clip hooks to flex over tray catches,
-   - the cover must sit flush on the tray without a raised tray-to-cover gap caused by pin/root geometry,
-   - the cover must remain removable by hand,
-   - the connection must not depend on Pi Zero stack fasteners.
-8. Preserve separation from other mechanisms:
-   - keep cover-to-tray pins/sockets distinct from the IR pod-to-cover slide/clip interface,
-   - keep pins/sockets distinct from the four Pi Zero stack mounting holes,
-   - keep pins/sockets distinct from anti-slide features.
-9. Review local geometry by source inspection so the simple pins and wall-integrated sockets do not block or weaken:
-   - Pi Zero microSD opening,
-   - camera access opening,
-   - Pi Zero and Waveshare USB/opening set,
-   - Waveshare RJ45/front USB-A openings,
-   - top ventilation/access holes,
-   - main cable exit,
-   - IR pod attachment,
-   - stack standoffs and stack screw holes.
-10. Update `README.md`:
-    - describe the simple round male-pin and wall-integrated female-socket cover connection,
-    - remove stale claims that the top cover uses clip hooks, latch catches, or strengthened short-end clips as the default connection,
-    - remove any claim that default male pins use cross ribs, root pads, broad bosses, fillets, or other protruding reinforcement,
-    - document the new pin/socket adjustable parameters and default fit guidance,
-    - document thicker walls for socket material,
-    - keep existing render mode, printable-layout, Waveshare connector, microSD, USB, IR pod, and electronics documentation unchanged unless wording must be corrected around the cover connection.
-11. Keep OpenSCAD 2021.01-compatible syntax and existing named-module style.
-12. Do not add generated STL, STEP, 3MF, OFF, or similar files to source control.
+1. Add adjustable IR pod panel parameters near the existing IR pod parameters:
+   - panel thickness,
+   - panel fit clearance,
+   - panel overlap/lip or equivalent seating dimension,
+   - screwless retention feature dimensions and placement,
+   - printable-layout spacing for the panel if needed.
+2. Add derived values for the detachable panel:
+   - panel outer size based on pod body dimensions and fit clearance,
+   - panel installed Z position in the assembled pod,
+   - any retention/tab/pin/socket positions,
+   - printable placement values that keep the panel separate from the pod body and the existing IR PCB retainer.
+3. Refactor the IR pod shell so the default pod body is open at the top:
+   - remove the fused roof/top face from the printable pod body,
+   - preserve pod floor, walls, slide slots, cable entry, service window, PCB locators, board supports, IR LED aperture, and internal cable clearance,
+   - keep the pod body printable on its broad floor at `Z=0` in standalone printable output.
+4. Add a named module for the detachable IR pod top service panel:
+   - make it a separate printable closure part,
+   - include screwless retention geometry by default,
+   - keep retention geometry distinct from the pod-to-top-cover slide interface and the IR PCB retainer,
+   - avoid requiring internal screwdriver access,
+   - preserve enough material for plausible Bambu Lab P2S printing.
+5. Add matching pod-body interface geometry if needed:
+   - panel seating lips, shallow sockets, slots, snap receivers, or equivalent features,
+   - ensure these features do not block the LED aperture, cable entry, service window, slide slots, PCB loading path, PCB retainer, or board locators.
+6. Update render behavior:
+   - `assembly` shows the IR pod with the detachable panel installed,
+   - `ir_pod` shows only the printable open-top pod body by default unless an explicitly adjustable option is added,
+   - `printable_layout` shows bottom tray, top cover, open-top IR pod body, detachable panel, and existing IR PCB retainer as separate non-intersecting build-plate objects,
+   - `electronics` remains a reference/fit view and does not depend on printable panel placement.
+7. Review printable orientation transforms:
+   - pod body rests on its floor at `Z=0`,
+   - detachable panel rests on a broad stable face at `Z=0`,
+   - existing printable objects remain separated and independently printable,
+   - no generated mesh/export artifacts are added.
+8. Update `README.md`:
+   - document the detachable IR pod top service panel and why it exists,
+   - document that the pod body prints open-top to avoid trapped internal Bambu Studio tree supports,
+   - distinguish the detachable panel from the IR PCB retainer and pod-to-top-cover slide attachment,
+   - document assembly order for installing the IR PCB, Grove cable, PCB retainer, detachable pod panel, and pod-to-top-cover attachment,
+   - document the new adjustable panel fit/retention parameters,
+   - update render mode, printable-layout, print notes, and manual inspection guidance as needed.
+9. Keep OpenSCAD 2021.01-compatible syntax and existing named-module style.
+10. Do not add generated STL, STEP, 3MF, OFF, or similar files to source control.
 
 ## Validation Commands
 
@@ -122,8 +102,7 @@ Expected result: command exits successfully with no output.
 Run OpenSCAD inspection renders to temporary files:
 
 ```sh
-openscad -o /tmp/pi_zero_usb_grove_ir_top_cover.off -D 'render_mode="top_cover"' designs/pi_zero_usb_grove_ir_enclosure.scad
-openscad -o /tmp/pi_zero_usb_grove_ir_bottom_tray.off -D 'render_mode="bottom_tray"' designs/pi_zero_usb_grove_ir_enclosure.scad
+openscad -o /tmp/pi_zero_usb_grove_ir_pod.off -D 'render_mode="ir_pod"' designs/pi_zero_usb_grove_ir_enclosure.scad
 openscad -o /tmp/pi_zero_usb_grove_ir_assembly.off -D 'render_mode="assembly"' designs/pi_zero_usb_grove_ir_enclosure.scad
 openscad -o /tmp/pi_zero_usb_grove_ir_printable_layout.off -D 'render_mode="printable_layout"' designs/pi_zero_usb_grove_ir_enclosure.scad
 ```
@@ -136,31 +115,29 @@ If OpenSCAD is unavailable or a render fails, report the failure and mark delive
 
 Review `designs/pi_zero_usb_grove_ir_enclosure.scad` and confirm:
 
-- default cover-to-tray clip hooks and tray catch receivers are removed, disabled, or fully refactored into pin/socket behavior,
-- top-cover male pins are present, count at least four, and are simple round vertical pins attached directly to the top-cover skirt or shell,
-- male pins default to at least `3.0 mm` diameter or equivalent narrowest cross-section,
-- default top-cover male pins do not include cross ribs, root pads, broad bosses, fillets, or other protruding male-side reinforcement,
-- default top-cover male pin geometry does not create a raised tray-to-cover gap in assembled orientation,
-- bottom-tray female sockets are present, count matches the pins, and are integrated into thickened tray walls or corner regions,
-- socket holes are true receiving holes with adjustable clearance and depth,
-- default socket clearance is within `0.25 mm` to `0.45 mm` per diameter,
-- wall thickness provides plausible material around the sockets without added internal socket bosses,
-- cover insertion is primarily vertical and does not require flexing clip hooks over tray catches,
-- cover remains screwless, removable by hand, and independent from Pi Zero stack fasteners,
-- pins/sockets are distinct from Pi Zero stack mounting holes, IR pod attachment, and anti-slide features,
-- pins/sockets and wall thickness do not interfere with required ports, microSD, camera access, vents, cable path, stack standoffs, or IR pod attachment,
-- `bottom_tray`, `top_cover`, `assembly`, and `printable_layout` render paths include the expected pin/socket geometry,
+- IR pod body no longer has a fused roof/top face by default,
+- IR pod body remains a printable open-top object resting on its broad floor at `Z=0`,
+- detachable IR pod top service panel is a separate named printable part,
+- `assembly` installs the detachable panel and closes the pod,
+- `printable_layout` places the pod body, detachable panel, and IR PCB retainer as distinct non-intersecting objects with independent build-plate contact,
+- `ir_pod` standalone output shows the printable pod body only by default unless an explicit adjustable option includes the panel,
+- panel retention is screwless and adjustable,
+- panel retention is distinct from the cover-to-tray pin/socket interface, pod-to-cover slide attachment, and IR PCB retainer,
+- panel installation does not require internal screwdriver access,
+- panel installation does not require disconnecting the Grove cable after normal PCB installation,
+- panel and pod-body interface geometry do not block the LED aperture, cable entry, service window, slide slots, PCB loading path, PCB retainer, board locators, or pod-to-top-cover attachment,
+- IR LED aperture remains a true pass-through opening,
+- main enclosure, top cover, bottom tray, existing pod attachment, PCB retainer, cable path, port cutouts, and anti-slide behavior remain preserved except for direct pod-panel changes,
 - all new or changed adjustable linear values use `_mm`,
 - no generated mesh/export artifacts are tracked.
 
 Review `README.md` and confirm:
 
-- it documents the plug-in simple round male-pin and wall-integrated female-socket cover connection,
-- it no longer describes cover hooks, tray catches, or strengthened short-end clips as the default cover connection,
-- it does not describe cross ribs, root pads, broad bosses, fillets, or other protruding male-side reinforcement as default behavior,
-- it documents pin/socket tuning parameters and physical test-fit expectations,
-- it documents wall thickening for socket material,
-- existing documentation for unrelated behavior remains consistent with the source.
+- it documents the detachable IR pod top service panel,
+- it states the panel exists to avoid inaccessible Bambu Studio tree supports inside the pod,
+- it distinguishes the detachable panel from the IR PCB retainer and pod-to-top-cover attachment,
+- it documents the assembly order and new tuning parameters,
+- render mode, printable-layout, print notes, and manual inspection guidance match the source.
 
 ## QA Requirements
 
@@ -177,9 +154,10 @@ Main-agent QA is manual review plus the validation commands above:
 
 Required:
 
-- `README.md` Pi Zero USB Grove IR enclosure section updates for simple round plug-in cover pins and wall-integrated bottom-tray sockets.
-- `README.md` adjustable parameter and print notes updates for pin/socket fit, socket clearance, thicker walls, and flush cover fit.
-- README manual inspection guidance updates if existing guidance still mentions clip hooks, tray catches, or strengthened short-end clips as the default cover connection.
+- `README.md` Pi Zero USB Grove IR enclosure section updates for the detachable IR pod top service panel.
+- `README.md` render mode and printable layout updates for the added panel object.
+- `README.md` print notes explaining that the pod body prints open-top to avoid trapped internal supports.
+- `README.md` assembly and manual inspection guidance updates distinguishing the detachable panel from the IR PCB retainer.
 
 No `AGENTS.md` update is required.
 
@@ -189,16 +167,13 @@ Implementation review must check for:
 
 - spec mismatch,
 - accidental behavior outside approved scope,
-- stale clip/hook/catch geometry still active as the default cover connection,
-- stale README text describing clips as the default cover connection,
-- weak or thin pins below approved defaults,
-- any default male-side cross ribs, root pads, broad bosses, fillets, or other protruding reinforcement,
-- any pin/root geometry that creates a tray-to-cover gap,
-- socket walls too thin for plausible FDM print strength,
-- added internal socket bosses,
-- socket clearances outside approved defaults without documented rationale,
-- cover-to-tray connection that cannot plausibly assemble vertically by code review,
-- interference with required ports, cable paths, vents, stack standoffs, or IR pod attachment,
+- stale fused pod roof still present in default pod body,
+- detachable panel missing from `assembly`,
+- detachable panel missing from `printable_layout`,
+- panel confused or intersecting with the IR PCB retainer,
+- unsupported/floating printable objects,
+- panel retention that requires internal screw access,
+- panel or interface geometry blocking the LED aperture, cable path, PCB loading path, slide slots, or pod-to-cover attachment,
 - OpenSCAD syntax/render failures,
 - README/source mismatch,
 - unrelated file churn.

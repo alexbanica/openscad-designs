@@ -655,6 +655,44 @@ Impact and regression considerations for this iteration:
 - Socket wall material must still remain plausible for printing; this should be handled through wall thickness and socket placement, not by adding internal bosses or male-side ribs.
 - The IR pod attachment, port cutouts, cable paths, stack standoffs, anti-slide features, render modes, and printable layout should remain unchanged except where direct local changes are required to remove male-side reinforcement and preserve flush cover fit.
 
+## Iteration: Detachable IR Pod Surface For Support-Free Printing
+
+Requested changes:
+
+- Bambu Studio generates tree supports for one face of the IR pod.
+- Those supports are trapped inside the pod and cannot be removed after printing.
+- Make one IR pod surface detachable so the pod can print and assemble without inaccessible internal tree supports.
+
+Updated deterministic behavior:
+
+- The IR pod must no longer be a fully closed single-piece shell by default when that shape creates an inaccessible supported internal face.
+- The default IR pod must use a separate detachable top service panel, meaning the pod roof/top face is a distinct printable part rather than a permanently fused roof over the pod cavity.
+- The pod body must remain printable as an open-top body with its broad floor on the build plate at `Z=0` in `render_mode = "ir_pod"` and `render_mode = "printable_layout"`.
+- The detachable top service panel must be printable as a separate object with its broad outside face or other stable face on the build plate at `Z=0` in `render_mode = "printable_layout"`.
+- The detachable panel must close the pod after the Grove IR emitter PCB and Grove cable are installed, while preserving the existing LED aperture, cable entry, PCB retention path, and pod-to-top-cover attachment behavior.
+- The detachable panel must use an adjustable screwless printed retention method by default, such as small snap tabs, friction pins, sliding lips, or equivalent printable geometry.
+- The detachable panel retention must be distinct from:
+  - the main top-cover-to-bottom-tray pin/socket interface,
+  - the pod-to-top-cover slide/clip interface,
+  - the IR emitter PCB retainer.
+- The detachable panel must not require screwdriver access inside the pod for normal assembly.
+- The detachable panel must not require disconnecting the Grove cable after the IR emitter PCB is installed.
+- Panel fit parameters must be user-adjustable near the existing IR pod parameters, including panel thickness, fit clearance, retention feature size, and retention feature placement. Linear values must use `_mm`.
+- The panel interface must leave enough material around the pod walls, LED aperture, cable entry, service window, slide slots, and PCB locators for plausible Bambu Lab P2S FDM printing.
+- `render_mode = "ir_pod"` must show only the printable pod body by default unless the implementation explicitly adds an adjustable option to include the detachable panel in that standalone view.
+- `render_mode = "printable_layout"` must place the pod body, detachable top service panel, and existing separate IR PCB retainer as distinct non-intersecting printable objects with independent build-plate contact.
+- `render_mode = "assembly"` must show the IR pod with the detachable top service panel installed.
+- `render_mode = "electronics"` behavior must remain a fit/reference view and must not depend on printable panel placement.
+- README documentation must describe the detachable IR pod top service panel, its purpose of avoiding inaccessible slicer supports, the assembly order, and the relevant tuning parameters.
+
+Impact and regression considerations for this iteration:
+
+- Removing the fused pod roof should reduce or eliminate the need for trapped internal tree supports in the pod body, but final slicer behavior still depends on user slicer settings and material.
+- The panel split must not expose more than the existing approved LED path, cable entry, and service openings after assembly.
+- The panel split must not break the existing slide-on pod attachment to the top cover or the existing tool-free IR emitter PCB retention workflow.
+- The additional printable panel part increases printable-layout object count and must not be confused with the IR PCB retainer.
+- Physical fit still requires slicer inspection and test fitting before relying on final tolerances.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -709,6 +747,12 @@ Impact and regression considerations for this iteration:
 - `render_mode = "top_cover"` and `render_mode = "printable_layout"` show simple round male cover pins without cross ribs, root pads, broad bosses, fillets, or other default male-side reinforcement.
 - Any separate IR pod retainer part, if kept, is clearly intentional in both geometry and documentation rather than appearing as an unexplained extra object.
 - Any separate IR pod retainer part is clearly separated from the pod body in `printable_layout` and its installation interface is visually understandable.
+- The default IR pod uses a detachable top service panel instead of a fused closed roof over the pod cavity.
+- The IR pod body is printable open-top on its broad floor at `Z=0` by default, so internal roof supports are not trapped inside the pod body.
+- The detachable IR pod top service panel is a separate printable object in `printable_layout`, distinct from the pod body and from the IR PCB retainer.
+- The detachable IR pod top service panel installs in `assembly` and closes the pod without blocking the LED aperture, cable entry, PCB loading path, PCB retainer, or pod-to-top-cover attachment.
+- The detachable IR pod panel uses an adjustable screwless printed retention method by default and does not require internal screwdriver access.
+- The detachable IR pod panel can be installed and removed without disconnecting the Grove cable after normal PCB installation.
 - The IR LED aperture is visibly and mechanically a pass-through opening in the pod wall by code review of the subtraction geometry.
 - `bottom_tray`, `top_cover`, `ir_pod`, and `printable_layout` printable outputs contain no floating printable objects in their intended printable orientation.
 - `printable_layout` places each printable object as a separate, non-intersecting, independently printable object.
@@ -761,6 +805,10 @@ Impact and regression considerations for this iteration:
   - the cover-to-tray pins default to simple round `3.0 mm` insertion pins and the sockets provide adjustable FDM clearance,
   - the top cover sits flush on the bottom tray and pin geometry does not create a tray-to-cover gap,
   - the extra IR pod printable part is clearly identifiable as the PCB retainer and intentionally placed when shown separately,
+  - the detachable IR pod top service panel is clearly identifiable as a separate printable pod closure part and is not confused with the PCB retainer,
+  - the pod body no longer has a fused roof/top face that would trap slicer-generated internal supports by default,
+  - the detachable pod panel retention is screwless, adjustable, and distinct from the cover-to-tray, pod-to-cover, and PCB-retainer mechanisms,
+  - the assembled pod panel closes the pod without blocking the LED aperture, cable entry, PCB loading path, PCB retainer, or slide attachment,
   - the IR LED aperture subtraction fully pierces the pod wall rather than stopping short of the external face,
   - top-cover removal can occur without requiring Pi Zero stack fastener removal or board-stack disassembly,
   - printable parts have plausible flat orientations and Bambu P2S-friendly dimensions,
@@ -785,6 +833,9 @@ Impact and regression considerations for this iteration:
 - Document that the IR emitter PCB installs tool-free, with the Grove cable allowed to remain connected during insertion.
 - Document that the pod itself mounts tool-free to the top cover through the implemented clip or slide interface.
 - Document that the additional loose IR pod printable part is the removable PCB retainer when that design is retained.
+- Document the detachable IR pod top service panel as a separate printable closure part, including that it exists to avoid inaccessible Bambu Studio tree supports inside the pod.
+- Document the detachable pod panel assembly order and distinguish it from the IR PCB retainer and the pod-to-top-cover attachment.
+- Document the adjustable detachable panel fit and retention parameters.
 - Document that the IR LED aperture is intended to be a full pass-through opening in the pod wall.
 - Document the implemented default top-hole density for this iteration and any recommended tuning if the user wants more or fewer holes after physical test fitting.
 - Document which Pi Zero Micro USB port remains externally accessible and which one is intentionally closed because it is used internally by the adapter connection to the ETH/USB HAT.
