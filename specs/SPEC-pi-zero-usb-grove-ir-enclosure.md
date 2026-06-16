@@ -483,6 +483,39 @@ Impact and regression considerations for this iteration:
 - The Micro USB bridge/addon clearance is based on the user's measured physical protrusion, not vendor-certified mechanical data. The clearance must remain adjustable for later test-fit tuning.
 - Physical fit still requires slicer inspection and a test print before relying on final tolerances.
 
+## Iteration: Top-Cover Clip Floating Feature Removal And USB Clearance
+
+Requested changes:
+
+- Remove the floating or detached-looking top-cover element at the cover-to-bottom-tray clip area.
+- Leave the bottom tray unchanged.
+- Increase every USB opening on the top cover so each has at least 15.0 mm width plus a small clearance margin and 7.0 mm height plus a small clearance margin.
+
+Updated deterministic behavior:
+
+- The bottom tray geometry must remain unchanged by this iteration. In particular, tray shell geometry, Pi Zero stack standoffs, tray-side cover receiver/catch geometry, anti-slide features, and bottom-tray port cutout behavior must not be modified.
+- The top cover must remove or refactor only the cover-owned floating or detached-looking clip-area geometry that currently appears near the cover-to-bottom-tray attachment clips.
+- The top cover must preserve a screwless removable cover-to-tray interface where possible using remaining cover geometry that engages the existing bottom-tray receivers. If removing the floating cover-side element eliminates positive retention, the implementation must stop and request a spec or plan amendment instead of changing the bottom tray.
+- The top-cover clip-area geometry that remains must be visibly continuous with the top-cover shell or lip by code review and must not appear suspended, air-gapped, or attached only by token overlap in `top_cover`, `assembly`, or `printable_layout` render modes.
+- Every USB cutout that subtracts from the top cover must have an effective opening width of at least `15.4 mm` and an effective opening height of at least `7.4 mm` by default, representing the requested 15.0 mm x 7.0 mm minimum plus a 0.4 mm small clearance margin.
+- The affected USB cutouts include the top-cover portions of:
+  - the externally used Pi Zero Micro USB opening,
+  - the Waveshare front USB-A opening,
+  - the Waveshare left USB-A opening,
+  - the Waveshare right USB-A opening.
+- The internally consumed Pi Zero Micro USB adapter-side port must remain externally closed by default and must not be reintroduced as a USB opening.
+- USB cutout dimensions must remain adjustable after this iteration, and the implementation must not hard-code non-adjustable cutout sizes inside modules.
+- Enlarging top-cover USB openings must not intentionally change bottom-tray cutout dimensions in this iteration.
+- Enlarging top-cover USB openings must preserve surrounding printable material as much as possible and must not collide with top-cover clip/lip roots, pod attachment geometry, cable exit geometry, or top ventilation holes by code review.
+- README documentation and manual inspection guidance must state the default top-cover USB opening minimums and the fact that this iteration intentionally leaves the bottom tray unchanged.
+
+Impact and regression considerations for this iteration:
+
+- Removing the floating clip-area element may reduce cover retention if the current geometry depends on that element. The implementation must preserve reasonable screwless cover engagement with the existing bottom-tray receivers or stop for plan/spec amendment.
+- Top-cover-only USB cutout enlargement can create a mismatch between cover and tray cutout sizes. This is intentional only for the top cover in this iteration because the user explicitly requested the bottom tray remain untouched.
+- Larger USB openings may reduce local wall strength around the top cover. The implementation must keep the minimum requested clearance while preserving material near clip roots and pod rails where feasible.
+- Physical fit still requires slicer inspection and a test print before relying on final tolerances.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -516,6 +549,9 @@ Impact and regression considerations for this iteration:
 - The bottom tray and top cover are expanded consistently for the Micro USB bridge/addon clearance.
 - The case does not include an external opening for the Pi Zero Micro USB port that is occupied internally by the adapter connection to the ETH/USB HAT.
 - The internally consumed Pi Zero Micro USB adapter-side port remains externally closed by default after the Y clearance expansion.
+- The bottom tray is unchanged by the top-cover clip floating feature and USB clearance iteration.
+- The top cover no longer includes floating or detached-looking cover-owned clip-area geometry near the bottom-tray clip interface.
+- Every top-cover USB opening defaults to at least 15.4 mm effective width and 7.4 mm effective height while keeping those dimensions adjustable.
 - At least one Waveshare USB-A opening supports an externally attached wireless USB dongle.
 - Anti-slide recesses or feet are present on the bottom exterior.
 - Render modes include `assembly`, `bottom_tray`, `top_cover`, `ir_pod`, `printable_layout`, and `electronics`.
@@ -557,6 +593,9 @@ Impact and regression considerations for this iteration:
   - the microSD access opening is visible, correctly placed at the Pi Zero microSD edge, sized for an 11.0 mm card width plus clearance, and subtracted fully through the tray wall,
   - the bottom tray and top cover Y envelope account for the 10.9 mm Micro USB bridge/addon outside-PCB protrusion plus fit clearance,
   - the Micro USB bridge/addon clearance does not re-open the internally consumed Pi Zero Micro USB port to the exterior,
+  - the bottom tray source geometry is unchanged by the top-cover clip floating feature and USB clearance iteration,
+  - top-cover clip-area geometry no longer includes a floating or detached-looking cover-owned element,
+  - every top-cover USB opening defaults to at least 15.4 mm effective width and 7.4 mm effective height and remains adjustable,
   - the wireless dongle remains outside the case through an accessible USB-A cutout,
   - the external IR emitter pod, printed PCB retention geometry, LED aperture, and main-to-pod cable path are present,
   - only the IR LED path is exposed outside the pod by default,
@@ -601,3 +640,5 @@ Impact and regression considerations for this iteration:
 - Document the 10.9 mm Micro USB bridge/addon outside-PCB protrusion and that the tray and cover Y envelope are sized from that value plus fit clearance.
 - Document that Waveshare enclosure port cutout defaults are refreshed from `designs/waveshare_eth_usb_hub_hat.scad`, including the `1.7 mm` default front USB-A X center.
 - Document that printable render modes and `printable_layout` are Bambu Lab-friendly, with separate parts placed on the build plate and no generated mesh exports committed.
+- Document that the top-cover clip floating feature and USB clearance iteration intentionally leaves the bottom tray unchanged.
+- Document that every top-cover USB opening defaults to at least 15.4 mm effective width and 7.4 mm effective height, with adjustable dimensions for physical calibration.

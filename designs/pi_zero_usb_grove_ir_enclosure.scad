@@ -110,6 +110,8 @@ waveshare_right_usb_a_cutout_center_y_mm = 0.0;
 waveshare_right_usb_a_cutout_local_center_z_mm = 5.1;
 wireless_dongle_extra_clearance_x_mm = 3.0;
 port_cutout_extra_clearance_mm = 0.6;
+top_cover_usb_effective_width_mm = 15.4;
+top_cover_usb_effective_height_mm = 7.4;
 
 // Micro USB bridge/addon outside-PCB clearance
 micro_usb_bridge_outside_pcb_y_mm = 10.9;
@@ -405,6 +407,10 @@ cover_clip_x_mm =
     (internal_length_mm + 2 * cover_fit_clearance_mm) / 2
     + cover_clip_tab_thickness_mm / 2
     - solid_merge_overlap_mm / 2;
+cover_clip_root_x_mm =
+    (internal_length_mm - 2 * cover_fit_clearance_mm) / 2
+    + cover_clip_root_depth_mm / 2
+    - solid_merge_overlap_mm / 2;
 cover_clip_y_positions_mm = [-cover_clip_y_offset_mm, cover_clip_y_offset_mm];
 tray_clip_receiver_z_mm = tray_wall_height_mm - tray_clip_receiver_top_inset_mm - tray_clip_receiver_height_mm / 2;
 tray_clip_receiver_x_mm =
@@ -498,6 +504,41 @@ port_cutouts_mm = [
     ["waveshare_front_usb_a", waveshare_front_usb_a_cutout_center_x_mm, waveshare_front_usb_a_cutout_center_y_mm, waveshare_front_usb_a_cutout_center_z_mm, waveshare_front_usb_a_cutout_size_mm[0], waveshare_front_usb_a_cutout_size_mm[1], waveshare_front_usb_a_cutout_size_mm[2]],
     ["waveshare_left_usb_a", waveshare_left_usb_a_cutout_center_x_mm, waveshare_left_usb_a_cutout_center_y_mm, waveshare_left_usb_a_cutout_center_z_mm, waveshare_left_usb_a_cutout_size_mm[0], waveshare_left_usb_a_cutout_size_mm[1], waveshare_left_usb_a_cutout_size_mm[2]],
     ["waveshare_right_usb_a_dongle", waveshare_right_usb_a_cutout_center_x_mm, waveshare_right_usb_a_cutout_center_y_mm, waveshare_right_usb_a_cutout_center_z_mm, waveshare_right_usb_a_cutout_size_mm[0] + wireless_dongle_extra_clearance_x_mm, waveshare_right_usb_a_cutout_size_mm[1], waveshare_right_usb_a_cutout_size_mm[2]]
+];
+
+top_cover_usb_cutout_width_mm =
+    top_cover_usb_effective_width_mm - port_cutout_extra_clearance_mm;
+top_cover_usb_cutout_height_mm =
+    top_cover_usb_effective_height_mm - port_cutout_extra_clearance_mm;
+top_cover_pi_micro_usb_power_cutout_size_mm = [
+    max(pi_micro_usb_power_cutout_size_mm[0], top_cover_usb_cutout_width_mm),
+    pi_micro_usb_power_cutout_size_mm[1],
+    max(pi_micro_usb_power_cutout_size_mm[2], top_cover_usb_cutout_height_mm)
+];
+top_cover_waveshare_front_usb_a_cutout_size_mm = [
+    max(waveshare_front_usb_a_cutout_size_mm[0], top_cover_usb_cutout_width_mm),
+    waveshare_front_usb_a_cutout_size_mm[1],
+    max(waveshare_front_usb_a_cutout_size_mm[2], top_cover_usb_cutout_height_mm)
+];
+top_cover_waveshare_left_usb_a_cutout_size_mm = [
+    waveshare_left_usb_a_cutout_size_mm[0],
+    max(waveshare_left_usb_a_cutout_size_mm[1], top_cover_usb_cutout_width_mm),
+    max(waveshare_left_usb_a_cutout_size_mm[2], top_cover_usb_cutout_height_mm)
+];
+top_cover_waveshare_right_usb_a_cutout_size_mm = [
+    waveshare_right_usb_a_cutout_size_mm[0] + wireless_dongle_extra_clearance_x_mm,
+    max(waveshare_right_usb_a_cutout_size_mm[1], top_cover_usb_cutout_width_mm),
+    max(waveshare_right_usb_a_cutout_size_mm[2], top_cover_usb_cutout_height_mm)
+];
+top_cover_port_cutouts_mm = [
+    ["pi_micro_sd", pi_micro_sd_cutout_center_x_mm, pi_micro_sd_cutout_center_y_mm, pi_micro_sd_cutout_center_z_mm, pi_micro_sd_cutout_through_depth_mm, pi_micro_sd_cutout_width_mm, pi_micro_sd_cutout_height_mm],
+    ["pi_mini_hdmi", pi_mini_hdmi_cutout_center_x_mm, pi_mini_hdmi_cutout_center_y_mm, pi_mini_hdmi_cutout_center_z_mm, pi_mini_hdmi_cutout_size_mm[0], pi_mini_hdmi_cutout_size_mm[1], pi_mini_hdmi_cutout_size_mm[2]],
+    ["pi_micro_usb_power", pi_micro_usb_power_cutout_center_x_mm, pi_micro_usb_power_cutout_center_y_mm, pi_micro_usb_power_cutout_center_z_mm, top_cover_pi_micro_usb_power_cutout_size_mm[0], top_cover_pi_micro_usb_power_cutout_size_mm[1], top_cover_pi_micro_usb_power_cutout_size_mm[2]],
+    ["pi_camera", pi_camera_cutout_center_x_mm, pi_camera_cutout_center_y_mm, pi_camera_cutout_center_z_mm, pi_camera_cutout_size_mm[0], pi_camera_cutout_size_mm[1], pi_camera_cutout_size_mm[2]],
+    ["waveshare_rj45", waveshare_rj45_cutout_center_x_mm, waveshare_rj45_cutout_center_y_mm, waveshare_rj45_cutout_center_z_mm, waveshare_rj45_cutout_size_mm[0], waveshare_rj45_cutout_size_mm[1], waveshare_rj45_cutout_size_mm[2]],
+    ["waveshare_front_usb_a", waveshare_front_usb_a_cutout_center_x_mm, waveshare_front_usb_a_cutout_center_y_mm, waveshare_front_usb_a_cutout_center_z_mm, top_cover_waveshare_front_usb_a_cutout_size_mm[0], top_cover_waveshare_front_usb_a_cutout_size_mm[1], top_cover_waveshare_front_usb_a_cutout_size_mm[2]],
+    ["waveshare_left_usb_a", waveshare_left_usb_a_cutout_center_x_mm, waveshare_left_usb_a_cutout_center_y_mm, waveshare_left_usb_a_cutout_center_z_mm, top_cover_waveshare_left_usb_a_cutout_size_mm[0], top_cover_waveshare_left_usb_a_cutout_size_mm[1], top_cover_waveshare_left_usb_a_cutout_size_mm[2]],
+    ["waveshare_right_usb_a_dongle", waveshare_right_usb_a_cutout_center_x_mm, waveshare_right_usb_a_cutout_center_y_mm, waveshare_right_usb_a_cutout_center_z_mm, top_cover_waveshare_right_usb_a_cutout_size_mm[0], top_cover_waveshare_right_usb_a_cutout_size_mm[1], top_cover_waveshare_right_usb_a_cutout_size_mm[2]]
 ];
 
 // ======================================================
@@ -695,7 +736,7 @@ module pi_zero_usb_grove_ir_top_cover() {
             pi_zero_usb_grove_ir_cover_pod_slide_rails();
         }
 
-        pi_zero_usb_grove_ir_port_cutout_volumes();
+        pi_zero_usb_grove_ir_top_cover_port_cutout_volumes();
         pi_zero_usb_grove_ir_main_cable_exit_volume();
         pi_zero_usb_grove_ir_main_internal_cable_path_volume();
         pi_zero_usb_grove_ir_top_vent_holes();
@@ -808,10 +849,18 @@ module pi_zero_usb_grove_ir_cover_alignment_lip() {
 module pi_zero_usb_grove_ir_cover_clip_tabs() {
     for (clip_y_mm = cover_clip_y_positions_mm) {
         for (end_sign = [-1, 1]) {
+            pi_zero_usb_grove_ir_cover_clip_tab(end_sign, clip_y_mm);
+        }
+    }
+}
+
+module pi_zero_usb_grove_ir_cover_clip_tab(end_sign, clip_y_mm) {
+    union() {
+        hull() {
             translate([
-                end_sign * cover_clip_x_mm,
+                end_sign * cover_clip_root_x_mm,
                 clip_y_mm,
-                tray_wall_height_mm - cover_lip_height_mm + cover_clip_root_height_mm / 2 - solid_merge_overlap_mm
+                tray_wall_height_mm - cover_lip_height_mm + cover_clip_root_height_mm / 2 + solid_merge_overlap_mm / 2
             ])
                 cube(
                     [
@@ -832,6 +881,22 @@ module pi_zero_usb_grove_ir_cover_clip_tabs() {
                         cover_clip_tab_thickness_mm,
                         cover_clip_tab_width_mm,
                         cover_clip_tab_drop_mm + solid_merge_overlap_mm
+                    ],
+                    center = true
+                );
+        }
+
+        hull() {
+            translate([
+                end_sign * cover_clip_x_mm,
+                clip_y_mm,
+                tray_wall_height_mm - cover_lip_height_mm - cover_clip_hook_height_mm / 2
+            ])
+                cube(
+                    [
+                        cover_clip_tab_thickness_mm,
+                        cover_clip_tab_width_mm,
+                        cover_clip_hook_height_mm + solid_merge_overlap_mm
                     ],
                     center = true
                 );
@@ -1209,6 +1274,12 @@ module pi_zero_usb_grove_ir_pod_board_retainer() {
 
 module pi_zero_usb_grove_ir_port_cutout_volumes() {
     for (port_mm = port_cutouts_mm) {
+        pi_zero_usb_grove_ir_port_cutout_volume(port_mm);
+    }
+}
+
+module pi_zero_usb_grove_ir_top_cover_port_cutout_volumes() {
+    for (port_mm = top_cover_port_cutouts_mm) {
         pi_zero_usb_grove_ir_port_cutout_volume(port_mm);
     }
 }

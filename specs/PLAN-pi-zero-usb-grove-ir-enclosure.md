@@ -19,6 +19,7 @@ Implementation must not revert unrelated dirty worktree changes. At updated plan
 
 - Update `designs/pi_zero_usb_grove_ir_enclosure.scad`.
 - Update `README.md`.
+- Do not change bottom-tray source behavior for the top-cover clip floating feature and USB clearance iteration. In particular, do not change `pi_zero_usb_grove_ir_bottom_tray()`, `pi_zero_usb_grove_ir_tray_shell()`, `pi_zero_usb_grove_ir_tray_clip_receivers()`, stack standoff modules, anti-slide modules, or bottom-tray cutout behavior unless implementation discovers that the existing top-cover-only code path cannot satisfy the approved spec; if so, stop and request plan/spec amendment before changing bottom-tray geometry.
 - Do not edit existing reference source files unless implementation discovers a syntax-level import issue that directly blocks the approved enclosure; if that happens, stop and request plan amendment before changing them.
 - Do not add generated mesh/export files.
 
@@ -312,6 +313,37 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
    - reduce `pod_slide_rail_spacing_x_mm` and trim unnecessary slide root plate width as needed so rail slots remain compatible with the narrower pod, stay inside the top-cover X margin, and do not crowd the front USB-A cutout,
    - keep pod width, X offset, and rail spacing adjustable,
    - update README to document the default smaller/off-center pod placement and its Ethernet-clearance purpose.
+52. Remove or refactor the cover-owned floating or detached-looking clip-area element at the top-cover to bottom-tray clip interface:
+   - inspect `pi_zero_usb_grove_ir_cover_clip_tabs()` and related cover-side clip/lip modules,
+   - remove only cover-owned geometry that reads as floating, detached, air-gapped, or attached by token overlap,
+   - preserve the bottom-tray receivers and bottom-tray geometry unchanged,
+   - preserve screwless top-cover removability and reasonable engagement with the existing tray receivers where possible,
+   - if positive cover retention cannot be preserved without changing the bottom tray, stop and request plan/spec amendment.
+53. Split top-cover USB cutout sizing from bottom-tray USB cutout sizing if the current shared `port_cutouts_mm` array would otherwise enlarge both parts:
+   - keep bottom-tray USB cutout behavior unchanged for this iteration,
+   - add top-cover-only USB cutout derived values, array, helper module, or equivalent narrowly scoped mechanism,
+   - use the existing bottom-tray/shared port cutouts for bottom tray behavior unless a non-USB top-cover cutout still needs the shared path.
+54. Set default effective top-cover USB opening dimensions to at least:
+   - `15.4 mm` width,
+   - `7.4 mm` height,
+   - for the externally used Pi Zero Micro USB opening,
+   - the Waveshare front USB-A opening,
+   - the Waveshare left USB-A opening,
+   - the Waveshare right USB-A opening.
+55. Preserve adjustability for top-cover USB opening dimensions:
+   - prefer clearly named `_mm` adjustable parameters or derived values near the existing port cutout parameters,
+   - do not hard-code the new USB minimums inside geometry modules,
+   - keep the internally consumed Pi Zero Micro USB adapter-side port externally closed.
+56. Review enlarged top-cover USB openings for conflicts by code review:
+   - preserve material near cover clip/lip roots,
+   - avoid collisions with pod attachment geometry,
+   - avoid collisions with main cable exit geometry,
+   - avoid collisions with top ventilation holes.
+57. Update `README.md` to document:
+   - the top-cover clip floating feature removal,
+   - that this iteration intentionally leaves the bottom tray unchanged,
+   - that all top-cover USB openings default to at least `15.4 mm` effective width and `7.4 mm` effective height,
+   - that top-cover USB dimensions remain adjustable for physical calibration.
 
 ## Validation Commands
 
@@ -350,6 +382,10 @@ Review `designs/pi_zero_usb_grove_ir_enclosure.scad` and confirm:
 - the IR pod attaches to the top cover through a tool-free slide or clip interface with visibly supported roots and a plausible repeated-use mounting path,
 - top cover has adjustable ventilation/access holes with a denser default pattern that avoids clip/catch features and preserves roof margins by code review,
 - all required Pi Zero and Waveshare port cutouts exist,
+- bottom-tray source behavior remains unchanged by the top-cover clip floating feature and USB clearance iteration,
+- the top cover no longer includes floating or detached-looking cover-owned clip-area geometry near the bottom-tray clip interface,
+- top-cover USB cutout dimensions are handled separately from bottom-tray USB cutout behavior if needed to keep the tray unchanged,
+- every top-cover USB opening defaults to at least `15.4 mm` effective width and `7.4 mm` effective height while remaining adjustable,
 - the Waveshare front USB-A cutout X center defaults to `1.7 mm`, matching the current local Waveshare reference formula,
 - the Waveshare front USB-A cutout no longer uses the stale `11.0 mm` X center,
 - Waveshare side USB-A cutout size and center Y still match the current local Waveshare reference orientation while remaining side-wall openings,
@@ -396,6 +432,8 @@ Review `README.md` and confirm:
 - README states that printable layout separates independently printable parts and does not commit generated mesh exports,
 - README distinguishes printable-only orientation from assembled preview geometry,
 - README states that the top cover is clip-on attachable/detachable and does not use cover screws,
+- README states that the top-cover clip floating feature and USB clearance iteration intentionally leaves the bottom tray unchanged,
+- README states that every top-cover USB opening defaults to at least `15.4 mm` effective width and `7.4 mm` effective height and remains adjustable,
 - README states that the cover-to-tray retention is on the two short ends by default,
 - README documents the top ventilation/access holes and the denser default pattern,
 - README explains why the bottom tray has four Pi Zero stack mounting holes and how those differ from clip/catch and pod attachment features,
@@ -445,6 +483,10 @@ Implementation review must check for:
 - a microSD opening that is still too small, not visible in OpenSCAD preview, not fully through the tray wall, or collides with short-end retention/camera/standoff features,
 - a Y-envelope expansion that changes board placement, misaligns port cutouts, breaks cover fit, or re-opens the internally consumed Micro USB adapter-side port,
 - missing required port, IR pod, cable exit/entry, clip/catch, top-hole, pod-fastener, or anti-slide behavior,
+- accidental bottom-tray behavior changes while implementing the top-cover clip floating feature or top-cover USB clearances,
+- top-cover USB opening enlargement implemented through shared cutout values in a way that unintentionally changes bottom-tray USB cutout dimensions,
+- remaining floating, detached-looking, air-gapped, or token-overlap cover-owned clip-area geometry,
+- any top-cover USB opening with less than `15.4 mm` effective width or less than `7.4 mm` effective height,
 - README/source mismatch,
 - stale screw-hole retention geometry left as the default IR pod board mount path,
 - a pod or PCB retention path that still implies screwdriver-based normal assembly,

@@ -395,6 +395,7 @@ Default dimensions are configurable at the top of `designs/pi_zero_usb_grove_ir_
 - Independent board spacing defaults: `pi_zero_to_waveshare_hat_z_offset_mm = 11.2` and `waveshare_to_grove_hat_z_offset_mm = 10.8`.
 - Waveshare ETH/USB HUB HAT footprint: 65.0 mm x 30.0 mm, with RJ45 plus one USB-A port on the front edge and one USB-A port on each long side.
 - Waveshare front USB-A cutout X default: `waveshare_front_usb_a_cutout_center_x_mm = 1.7`.
+- Top-cover USB opening defaults: at least 15.4 mm effective width and 7.4 mm effective height for the external Pi Zero Micro USB power port, Waveshare front USB-A, Waveshare left USB-A, and Waveshare right USB-A openings.
 - Seeed Grove Base Hat for Raspberry Pi Zero mounted above the USB HAT with the adjustable measured spacer default; tune the spacing after physical measurement if the preview or hardware stack needs more clearance.
 - Seeed Grove Infrared Emitter board planning size: 20.0 mm x 24.0 mm with a 5.0 mm IR LED.
 - Common M2.5-class fasteners for the board standoffs.
@@ -441,6 +442,7 @@ Common edits:
 - Tune `micro_sd_card_width_mm`, `micro_sd_card_total_clearance_mm`, `pi_micro_sd_cutout_*`, and `micro_sd_wall_through_overlap_mm` if the card slot needs more access clearance or a deeper wall-piercing subtraction after print inspection.
 - Tune `micro_usb_bridge_outside_pcb_y_mm` and `micro_usb_bridge_fit_clearance_mm` if the measured bridge/addon protrusion differs; the derived internal Y envelope expands the bottom tray and top cover consistently while keeping the board stack centered.
 - Tune the Waveshare RJ45, front USB-A, left USB-A, and right USB-A cutout positions independently after measuring the USB HAT.
+- Tune `top_cover_usb_effective_width_mm` and `top_cover_usb_effective_height_mm` if the top-cover USB openings need more clearance after physical calibration. These top-cover USB dimensions are derived separately from the bottom-tray/shared cutouts so the tray port openings remain unchanged by this iteration.
 - Tune `pi_zero_to_waveshare_hat_z_offset_mm` and `waveshare_to_grove_hat_z_offset_mm` for the real spacer stack; those values move the electronics previews, board-relative port cutout Z positions, and dependent Grove cable guide Z positions together.
 - Increase `measured_stack_height_mm` or `extra_upward_headroom_mm` if the assembled stack, Grove connector, or cable needs more vertical clearance.
 - Tune `grove_selected_socket_*` and the cable exit/entry offsets to match the actual Grove connector you use on the Grove Base Hat.
@@ -492,10 +494,11 @@ openscad -o /tmp/pi_zero_usb_grove_ir_assembly.off -D 'render_mode="assembly"' -
 - Route the Grove cable from the selected Grove socket area to the top-cover cable exit before fitting the pod, then continue through the pod entry to the IR emitter connector.
 - With the Grove cable already connected, slide the IR emitter board through the cable-side pod service window, rest it on the pod bosses and locating features, align the LED to the pod aperture, route the cable through the pod entry without a sharp bend, then fit the printed retainer before sliding the pod onto the top-cover rails until the retention features engage.
 - The removable printed retainer is an intentional secondary printable part for the tool-free PCB retention path, not an unexplained loose pod part.
-- The top cover uses rooted short-end clip tabs and matching tray catch receivers; it does not use cover screws and it does not depend on the Pi Zero stack mounting screws.
+- The top cover uses rooted short-end clip tabs and matching tray catch receivers; it does not use cover screws and it does not depend on the Pi Zero stack mounting screws. The cover-owned clip tab and hook geometry is merged into continuous supported clip shapes so the top-cover clip area no longer includes the prior floating or detached-looking cover-side element.
 - The pod slide rails are rooted into the top cover with a backing plate and gussets, and they are separate from the cover-to-tray clips.
 - The four bottom-tray stack holes exist because the Pi Zero/HAT stack has four mounting points. Those holes are distinct from the top-cover clips and from the pod slide-and-retain attachment interface.
 - The Pi Zero opening for the internally occupied Micro USB adapter side is intentionally closed. The remaining external Pi Zero Micro USB opening is the power-side opening.
+- The bottom tray is intentionally unchanged by the top-cover clip floating-feature removal and top-cover USB clearance iteration. Bottom-tray USB cutout behavior still uses the shared tray cutout defaults.
 - The microSD opening is sized from the 11.0 mm card-width assumption plus default clearance, and its subtraction over-travels the tray wall so the access slot remains a true pass-through.
 - The main enclosure Y envelope is sized from the 10.9 mm Micro USB bridge/addon outside-PCB protrusion plus fit clearance; this is internal footprint clearance and does not reopen the internally occupied adapter-side Micro USB port.
 - Add rubber feet or pads to the default recesses after printing if anti-slide behavior is required.
@@ -629,6 +632,8 @@ Manual inspection for the Pi Zero USB Grove IR enclosure:
 - The microSD access opening uses `micro_sd_card_width_mm = 11.0`, includes default total clearance, sits at the Pi Zero microSD edge, and fully pierces the tray wall.
 - The derived tray/top-cover Y envelope accounts for `micro_usb_bridge_outside_pcb_y_mm = 10.9` plus `micro_usb_bridge_fit_clearance_mm = 1.0` without moving the board stack.
 - The Micro USB bridge/addon clearance remains internal footprint clearance and does not reopen the internally consumed adapter-side Pi Zero Micro USB port.
+- Bottom-tray USB cutout behavior remains on the shared tray cutout defaults; top-cover USB openings use separate derived dimensions.
+- Top-cover USB openings default to at least 15.4 mm effective width and 7.4 mm effective height for the external Pi Zero Micro USB power port and the three Waveshare USB-A openings, and remain adjustable through `top_cover_usb_effective_width_mm` and `top_cover_usb_effective_height_mm`.
 - USB HAT RJ45 plus one USB connector are exposed on the front edge.
 - One USB HAT USB connector is exposed on each long side, and at least one USB-A cutout includes extra clearance for an external wireless dongle.
 - Bottom tray includes floor, side walls, Pi Zero-aligned M2.5-class standoffs, clip receivers, rubber-foot recesses by default, and the required cutout clearances.
