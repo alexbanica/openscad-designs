@@ -626,6 +626,35 @@ Impact and regression considerations for this iteration:
 - Pin/socket geometry must avoid the Pi Zero mounting-hole pattern so users do not confuse cover retention sockets with board-stack fastener holes.
 - Physical fit still depends on printer/material calibration, so socket clearance and pin dimensions must remain easy to tune near the top of the OpenSCAD file.
 
+## Iteration: Minimal Flush Round Pin Connection
+
+Requested changes:
+
+- Remove the cross-shaped or ribbed male pin support geometry from the top cover.
+- Use simple round male pins for insertion.
+- Do not add fillets, ribs, bosses, pads, or other male-side reinforcement that creates a visible cross shape or holds the top cover away from the bottom tray.
+- Preserve a closed, flush top-cover-to-bottom-tray fit in assembled orientation.
+
+Updated deterministic behavior:
+
+- This iteration supersedes the plug-in iteration's requirement for broad male pin root/boss support.
+- The default male cover features must be simple vertical round pins only.
+- The male pins must not include cross ribs, wall-rib pads, fillets, broad bosses, root pads, or other protruding reinforcement features by default.
+- The male pins must be attached directly to the top-cover skirt or shell by normal solid overlap only.
+- The top cover must be able to sit flush on the bottom tray in assembled orientation. Pin geometry must not introduce a raised gap, standoff, spacer, or interference surface between the tray and cover.
+- Female sockets must remain true receiving holes cut into the bottom tray wall or corner material, not added internal bosses.
+- Wall thickness may remain increased enough to provide socket wall material, but increased wall thickness must grow the enclosure outward rather than reducing the internal electronics clearance envelope.
+- Pin/socket parameters must remain adjustable, including pin diameter, insertion length/depth, socket clearance, socket depth, and pin/socket placement.
+- The default pin diameter must remain at least `3.0 mm` unless a future approved spec narrows it.
+- The default socket clearance must remain in the `0.25 mm` to `0.45 mm` per-diameter range unless a future approved spec changes it.
+- README documentation must describe the simple round male pins and wall-integrated female sockets, and must not describe cross ribs, root pads, bosses, fillets, or male-side reinforcement as default behavior.
+
+Impact and regression considerations for this iteration:
+
+- Removing male-side reinforcement may reduce repeated-use strength compared with a ribbed design, but the user explicitly prioritizes simple pins and a flush tray/cover fit.
+- Socket wall material must still remain plausible for printing; this should be handled through wall thickness and socket placement, not by adding internal bosses or male-side ribs.
+- The IR pod attachment, port cutouts, cable paths, stack standoffs, anti-slide features, render modes, and printable layout should remain unchanged except where direct local changes are required to remove male-side reinforcement and preserve flush cover fit.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -650,8 +679,8 @@ Impact and regression considerations for this iteration:
 - The top cover does not use a continuous perimeter alignment lip by default.
 - Unused alignment-lip source code and documentation are removed when no longer referenced by the design.
 - The default cover-to-tray connection uses top-cover-owned male pins and bottom-tray-owned female sockets/holes rather than flexing clip hooks.
-- Male pins default to at least `3.0 mm` diameter or equivalent narrowest cross-section, with at least `4.5 mm` root/boss support or equivalent broad rooted geometry.
-- Female sockets are integrated into reinforced tray walls, corner regions, or local bosses and have adjustable clearance/depth for FDM test fitting.
+- Male pins default to simple round vertical pins at least `3.0 mm` in diameter and do not include default cross ribs, fillets, root pads, broad bosses, or other protruding reinforcement.
+- Female sockets are integrated into thickened tray walls or corner regions and have adjustable clearance/depth for FDM test fitting.
 - The main enclosure side walls are thickened from the current default or locally reinforced around sockets so the plug-in connection has plausible print strength.
 - The top cover includes adjustable ventilation/access holes with a denser default pattern than the current sparse layout, while preserving printable roof strength and clearance from attachment features.
 - The bottom tray's four Pi Zero stack mounting holes are documented and remain distinct from cover and pod attachment holes.
@@ -672,11 +701,12 @@ Impact and regression considerations for this iteration:
 - Anti-slide recesses or feet are present on the bottom exterior.
 - Render modes include `assembly`, `bottom_tray`, `top_cover`, `ir_pod`, `printable_layout`, and `electronics`.
 - The top-cover male pins and tray female sockets are visibly continuous with their parent solids by code review and do not read as detached floating geometry.
+- The top cover sits flush on the bottom tray in assembled orientation; cover pin geometry does not create a raised tray-to-cover gap.
 - The cover-to-tray interface provides plug-in alignment and practical retention without using cover screws.
 - The IR pod attachment is mounted to the removable top cover rather than to fixed tray/main-body geometry.
 - The IR pod attachment geometry is visibly continuous with its parent printed part by code review and does not read as detached floating geometry.
 - The IR pod mounts to the top cover through a tool-free clip or slide interface with positive retention and a plausible repeated-use insertion/removal path.
-- `render_mode = "top_cover"` and `render_mode = "printable_layout"` do not show cover attachment pins, sockets, or reinforcement features that look suspended in space or attached only by an implausibly small overlap.
+- `render_mode = "top_cover"` and `render_mode = "printable_layout"` show simple round male cover pins without cross ribs, root pads, broad bosses, fillets, or other default male-side reinforcement.
 - Any separate IR pod retainer part, if kept, is clearly intentional in both geometry and documentation rather than appearing as an unexplained extra object.
 - Any separate IR pod retainer part is clearly separated from the pod body in `printable_layout` and its installation interface is visually understandable.
 - The IR LED aperture is visibly and mechanically a pass-through opening in the pod wall by code review of the subtraction geometry.
@@ -713,7 +743,8 @@ Impact and regression considerations for this iteration:
   - top-cover connection geometry no longer includes a floating or detached-looking cover-owned element,
   - the continuous alignment lip is absent from the default top-cover geometry,
   - unused alignment-lip modules, values, and README text are removed or updated,
-  - male pins, pin roots, female sockets, and socket reinforcement remain visibly rooted into their parent printable solids,
+  - male pins are simple round vertical pins attached directly to the top-cover skirt or shell without cross ribs, root pads, broad bosses, fillets, or other default male-side reinforcement,
+  - female sockets remain wall-integrated true receiving holes and have plausible surrounding wall material,
   - every top-cover USB opening defaults to at least 15.4 mm effective width and 7.4 mm effective height and remains adjustable,
   - the wireless dongle remains outside the case through an accessible USB-A cutout,
   - the external IR emitter pod, printed PCB retention geometry, LED aperture, and main-to-pod cable path are present,
@@ -721,13 +752,14 @@ Impact and regression considerations for this iteration:
   - the IR emitter PCB loading path is tool-free and compatible with the Grove cable remaining connected,
   - the removable top cover uses plug-in pin/socket attachment, has no cover screws, and does not depend on board mounting screws,
   - the top cover ventilation/access hole pattern is present, denser than the current sparse layout, and does not overlap cover attachment features or weaken required roof margins by code review,
-  - the top-cover pin roots and tray sockets are visibly attached to and supported by their parent solids,
+  - the top-cover pins are visibly attached to the top-cover skirt or shell without added male-side reinforcement, and tray sockets are supported by thickened wall/corner material,
   - anti-slide features are present,
   - the IR pod retention is mounted to the removable top cover rather than to fixed tray/main-body geometry,
   - the IR pod attachment features are visibly attached to and supported by their parent solids,
   - the pod-to-cover interface is tool-free and does not require screws for normal installation,
   - the cover-to-tray and cover-to-pod attachment geometry no longer reads as floating or air-gapped in printable views,
-  - the cover-to-tray pins default to a robust non-fragile cross-section and the sockets provide adjustable FDM clearance,
+  - the cover-to-tray pins default to simple round `3.0 mm` insertion pins and the sockets provide adjustable FDM clearance,
+  - the top cover sits flush on the bottom tray and pin geometry does not create a tray-to-cover gap,
   - the extra IR pod printable part is clearly identifiable as the PCB retainer and intentionally placed when shown separately,
   - the IR LED aperture subtraction fully pierces the pod wall rather than stopping short of the external face,
   - top-cover removal can occur without requiring Pi Zero stack fastener removal or board-stack disassembly,
@@ -747,7 +779,7 @@ Impact and regression considerations for this iteration:
 - Document adjustable parameter groups, render modes, optional OpenSCAD commands for users with OpenSCAD installed, assembly notes, and Bambu Lab print notes.
 - Document that physical measurement and test fitting are still required before relying on final tolerances.
 - Document the external IR emitter pod render mode, attachment interface, cable exit/entry path, and top cover ventilation/access hole pattern.
-- Document that the top cover is plug-in attachable/detachable with male pins and female sockets and does not use cover screws.
+- Document that the top cover is plug-in attachable/detachable with simple round male pins and wall-integrated female sockets and does not use cover screws.
 - Document that the four bottom-tray board-stack holes exist because the Pi Zero/HAT stack has four mounting points, and that top-cover pin/socket features and pod attachment features are separate.
 - Document the revised `top_cover`-mounted IR pod attachment method and note that pod retention is part of the removable upper assembly.
 - Document that the IR emitter PCB installs tool-free, with the Grove cable allowed to remain connected during insertion.

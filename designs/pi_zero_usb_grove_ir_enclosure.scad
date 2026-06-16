@@ -55,8 +55,6 @@ pi_standoff_pilot_depth_mm = 5.5;
 // Plug-in top cover pin/socket features
 cover_pin_diameter_mm = 3.0;
 cover_pin_insertion_length_mm = 5.2;
-cover_pin_root_wall_pad_length_mm = 10.0;
-cover_pin_root_wall_pad_height_mm = 5.0;
 cover_pin_offset_x_mm = 40.5;
 cover_pin_offset_y_mm = 29.9;
 cover_pin_count = 4;
@@ -403,11 +401,6 @@ cover_pin_centers_mm = [
 ];
 active_cover_pin_count = min(cover_pin_count, len(cover_pin_centers_mm));
 cover_pin_start_z_mm = tray_wall_height_mm - cover_pin_insertion_length_mm;
-cover_pin_root_wall_pad_center_z_mm =
-    tray_wall_height_mm
-    - cover_skirt_drop_depth_mm
-    + cover_pin_root_wall_pad_height_mm / 2
-    - solid_merge_overlap_mm / 2;
 tray_socket_hole_center_z_mm =
     tray_wall_height_mm
     - tray_socket_depth_mm / 2
@@ -829,37 +822,6 @@ module pi_zero_usb_grove_ir_cover_plug_pins() {
 }
 
 module pi_zero_usb_grove_ir_cover_plug_pin(pin_center_mm) {
-    pin_side_x = pin_center_mm[0] < 0 ? -1 : 1;
-    pin_side_y = pin_center_mm[1] < 0 ? -1 : 1;
-
-    translate([
-        pin_side_x * (internal_length_mm / 2 + wall_thickness_mm / 2),
-        pin_center_mm[1],
-        cover_pin_root_wall_pad_center_z_mm
-    ])
-        cube(
-            [
-                wall_thickness_mm + solid_merge_overlap_mm,
-                cover_pin_root_wall_pad_length_mm,
-                cover_pin_root_wall_pad_height_mm
-            ],
-            center = true
-        );
-
-    translate([
-        pin_center_mm[0],
-        pin_side_y * (internal_width_mm / 2 + wall_thickness_mm / 2),
-        cover_pin_root_wall_pad_center_z_mm
-    ])
-        cube(
-            [
-                cover_pin_root_wall_pad_length_mm,
-                wall_thickness_mm + solid_merge_overlap_mm,
-                cover_pin_root_wall_pad_height_mm
-            ],
-            center = true
-        );
-
     translate([pin_center_mm[0], pin_center_mm[1], cover_pin_start_z_mm])
         cylinder(
             h = cover_pin_insertion_length_mm + solid_merge_overlap_mm,

@@ -41,51 +41,56 @@ Automated unit tests are not applicable. This is an OpenSCAD design repository w
 
 The test-first phase is replaced by a deterministic pre-implementation checklist:
 
-- identify all current cover-to-tray clip parameters, derived values, module calls, README text, and validation text,
-- identify tray wall and top-cover skirt geometry available for pin/socket placement,
+- identify current top-cover pin parameters, derived values, module calls, README text, and validation text,
+- identify the current male-side cross/rib/root-pad geometry that must be removed,
+- identify the top-cover skirt or shell surface where simple round pins attach directly,
+- identify tray wall socket geometry that must remain wall-integrated without added internal bosses,
 - identify nearby port cutouts, camera access, microSD access, vent holes, cable exit, pod rails, and Pi Zero stack standoffs that must remain clear,
-- map each approved pin/socket acceptance criterion to source, README, validation, or manual review.
+- map each approved minimal flush round-pin acceptance criterion to source, README, validation, or manual review.
 
 ## Implementation Steps
 
 1. Inspect only the current enclosure source and README design section needed for this iteration.
-2. Replace the default cover-to-tray clip/hook interface with a plug-in pin/socket interface:
-   - remove or disable obsolete cover clip hook/tab geometry from the default top-cover solid,
-   - remove or disable obsolete tray clip receiver/catch geometry from the default bottom-tray solid,
-   - retain no clip-specific code unless it has been renamed/refactored into pin/socket support.
-3. Add adjustable cover pin/socket parameters near the existing enclosure connection parameters:
+2. Replace the current male-side cross/rib/root-pad pin support with simple round male pins:
+   - remove default cross ribs, wall-rib pads, broad bosses, root pads, fillets, or equivalent male-side reinforcement from the top-cover pin geometry,
+   - keep simple vertical round pins as the only default male insertion features,
+   - ensure the removed male-side support geometry cannot create a tray-to-cover gap in assembled orientation.
+3. Preserve or adjust adjustable cover pin/socket parameters near the existing enclosure connection parameters:
    - male pin diameter or equivalent cross-section,
    - pin insertion length/depth,
-   - pin root/boss diameter or equivalent support dimensions,
    - pin placement offsets/count,
    - socket clearance,
    - socket depth,
-   - socket reinforcement or local wall-thickening dimensions.
+   - wall thickness or socket wall material dimensions.
 4. Make the male pins part of `top_cover`:
    - default to at least four pins,
    - place pins near supported side-wall/corner regions without intersecting vents, port cutouts, cable exit, pod rails, or required access openings,
-   - root each pin into the top-cover shell/skirt through broad bosses, pads, or thickened local geometry,
+   - attach each pin directly to the top-cover skirt or shell by normal solid overlap only,
+   - do not add default male-side cross ribs, root pads, broad bosses, fillets, or other protruding reinforcement,
    - use at least `3.0 mm` default pin diameter or equivalent narrowest cross-section,
-   - use at least `4.5 mm` default root/boss support or equivalent broad rooted geometry.
+   - keep pin geometry from standing the cover off from the tray.
 5. Make the female sockets part of `bottom_tray`:
    - default to matching socket count and placement,
-   - integrate sockets into tray walls, corners, or reinforced local bosses,
+   - integrate sockets into thickened tray walls or corner regions,
    - subtract true socket holes sized from pin diameter plus adjustable clearance,
    - default socket clearance must be in the approved `0.25 mm` to `0.45 mm` per-diameter range,
+   - keep enough surrounding wall material for plausible FDM printing without adding internal socket bosses,
    - keep socket geometry distinct from the four Pi Zero stack mounting holes and IR pod attachment features.
 6. Thicken the connection support:
-   - increase `wall_thickness_mm` default from `2.4` to at least `2.8`, or add equivalent named local tray/cover reinforcement around sockets and pin roots,
-   - if global wall thickness changes alter the footprint or cutout relationships, preserve required connector/cable clearances by adjusting only directly affected derived values or local offsets.
+   - keep or adjust `wall_thickness_mm` so the wall-integrated sockets have plausible surrounding material,
+   - increased wall thickness must grow the enclosure outward rather than reducing the internal electronics clearance envelope,
+   - do not use male-side reinforcement to satisfy socket strength.
 7. Preserve screwless vertical assembly:
    - the cover must lower onto the tray with primarily vertical pin insertion,
    - the cover must not need clip hooks to flex over tray catches,
+   - the cover must sit flush on the tray without a raised tray-to-cover gap caused by pin/root geometry,
    - the cover must remain removable by hand,
    - the connection must not depend on Pi Zero stack fasteners.
 8. Preserve separation from other mechanisms:
    - keep cover-to-tray pins/sockets distinct from the IR pod-to-cover slide/clip interface,
    - keep pins/sockets distinct from the four Pi Zero stack mounting holes,
    - keep pins/sockets distinct from anti-slide features.
-9. Review local geometry by source inspection so the new pins, sockets, and reinforcement do not block or weaken:
+9. Review local geometry by source inspection so the simple pins and wall-integrated sockets do not block or weaken:
    - Pi Zero microSD opening,
    - camera access opening,
    - Pi Zero and Waveshare USB/opening set,
@@ -95,10 +100,11 @@ The test-first phase is replaced by a deterministic pre-implementation checklist
    - IR pod attachment,
    - stack standoffs and stack screw holes.
 10. Update `README.md`:
-    - describe the plug-in male-pin/female-socket cover connection,
+    - describe the simple round male-pin and wall-integrated female-socket cover connection,
     - remove stale claims that the top cover uses clip hooks, latch catches, or strengthened short-end clips as the default connection,
+    - remove any claim that default male pins use cross ribs, root pads, broad bosses, fillets, or other protruding reinforcement,
     - document the new pin/socket adjustable parameters and default fit guidance,
-    - document thicker walls or local socket reinforcement,
+    - document thicker walls for socket material,
     - keep existing render mode, printable-layout, Waveshare connector, microSD, USB, IR pod, and electronics documentation unchanged unless wording must be corrected around the cover connection.
 11. Keep OpenSCAD 2021.01-compatible syntax and existing named-module style.
 12. Do not add generated STL, STEP, 3MF, OFF, or similar files to source control.
@@ -131,27 +137,29 @@ If OpenSCAD is unavailable or a render fails, report the failure and mark delive
 Review `designs/pi_zero_usb_grove_ir_enclosure.scad` and confirm:
 
 - default cover-to-tray clip hooks and tray catch receivers are removed, disabled, or fully refactored into pin/socket behavior,
-- top-cover male pins are present, count at least four, and are rooted into the top cover through broad supported geometry,
+- top-cover male pins are present, count at least four, and are simple round vertical pins attached directly to the top-cover skirt or shell,
 - male pins default to at least `3.0 mm` diameter or equivalent narrowest cross-section,
-- male pin root/boss support defaults to at least `4.5 mm` diameter or equivalent broad support,
-- bottom-tray female sockets are present, count matches the pins, and are integrated into reinforced tray walls, corner regions, or local bosses,
+- default top-cover male pins do not include cross ribs, root pads, broad bosses, fillets, or other protruding male-side reinforcement,
+- default top-cover male pin geometry does not create a raised tray-to-cover gap in assembled orientation,
+- bottom-tray female sockets are present, count matches the pins, and are integrated into thickened tray walls or corner regions,
 - socket holes are true receiving holes with adjustable clearance and depth,
 - default socket clearance is within `0.25 mm` to `0.45 mm` per diameter,
-- wall thickness is increased to at least `2.8 mm` or equivalent named local reinforcement is present around the sockets and pin roots,
+- wall thickness provides plausible material around the sockets without added internal socket bosses,
 - cover insertion is primarily vertical and does not require flexing clip hooks over tray catches,
 - cover remains screwless, removable by hand, and independent from Pi Zero stack fasteners,
 - pins/sockets are distinct from Pi Zero stack mounting holes, IR pod attachment, and anti-slide features,
-- pins/sockets and reinforcement do not interfere with required ports, microSD, camera access, vents, cable path, stack standoffs, or IR pod attachment,
+- pins/sockets and wall thickness do not interfere with required ports, microSD, camera access, vents, cable path, stack standoffs, or IR pod attachment,
 - `bottom_tray`, `top_cover`, `assembly`, and `printable_layout` render paths include the expected pin/socket geometry,
 - all new or changed adjustable linear values use `_mm`,
 - no generated mesh/export artifacts are tracked.
 
 Review `README.md` and confirm:
 
-- it documents the plug-in male-pin/female-socket cover connection,
+- it documents the plug-in simple round male-pin and wall-integrated female-socket cover connection,
 - it no longer describes cover hooks, tray catches, or strengthened short-end clips as the default cover connection,
+- it does not describe cross ribs, root pads, broad bosses, fillets, or other protruding male-side reinforcement as default behavior,
 - it documents pin/socket tuning parameters and physical test-fit expectations,
-- it documents wall thickening or local reinforcement for socket/pin strength,
+- it documents wall thickening for socket material,
 - existing documentation for unrelated behavior remains consistent with the source.
 
 ## QA Requirements
@@ -169,8 +177,8 @@ Main-agent QA is manual review plus the validation commands above:
 
 Required:
 
-- `README.md` Pi Zero USB Grove IR enclosure section updates for plug-in cover pins and bottom-tray sockets.
-- `README.md` adjustable parameter and print notes updates for pin/socket fit, socket clearance, and thicker walls or local reinforcement.
+- `README.md` Pi Zero USB Grove IR enclosure section updates for simple round plug-in cover pins and wall-integrated bottom-tray sockets.
+- `README.md` adjustable parameter and print notes updates for pin/socket fit, socket clearance, thicker walls, and flush cover fit.
 - README manual inspection guidance updates if existing guidance still mentions clip hooks, tray catches, or strengthened short-end clips as the default cover connection.
 
 No `AGENTS.md` update is required.
@@ -184,8 +192,10 @@ Implementation review must check for:
 - stale clip/hook/catch geometry still active as the default cover connection,
 - stale README text describing clips as the default cover connection,
 - weak or thin pins below approved defaults,
-- pin roots joined by only small contact patches,
-- socket walls or bosses too thin for plausible FDM print strength,
+- any default male-side cross ribs, root pads, broad bosses, fillets, or other protruding reinforcement,
+- any pin/root geometry that creates a tray-to-cover gap,
+- socket walls too thin for plausible FDM print strength,
+- added internal socket bosses,
 - socket clearances outside approved defaults without documented rationale,
 - cover-to-tray connection that cannot plausibly assemble vertically by code review,
 - interference with required ports, cable paths, vents, stack standoffs, or IR pod attachment,
