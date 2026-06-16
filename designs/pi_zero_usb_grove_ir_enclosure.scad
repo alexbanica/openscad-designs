@@ -82,11 +82,11 @@ pi_micro_sd_cutout_center_y_mm = 1.1;
 pi_micro_sd_cutout_local_center_z_mm = 1.4;
 pi_mini_hdmi_cutout_size_mm = [13.5, 7.5, 7.0];
 pi_mini_hdmi_cutout_center_x_mm = -20.1;
-pi_mini_hdmi_cutout_center_y_mm = -22.4;
+pi_mini_hdmi_cutout_center_y_offset_mm = 0.0;
 pi_mini_hdmi_cutout_local_center_z_mm = 1.8;
 pi_micro_usb_power_cutout_size_mm = [9.5, 7.5, 6.0];
 pi_micro_usb_power_cutout_center_x_mm = 21.5;
-pi_micro_usb_power_cutout_center_y_mm = -22.4;
+pi_micro_usb_power_cutout_center_y_offset_mm = 0.0;
 pi_micro_usb_power_cutout_local_center_z_mm = 1.4;
 pi_camera_cutout_size_mm = [8.0, 20.0, 5.0];
 pi_camera_cutout_center_x_mm = 32.5;
@@ -94,11 +94,11 @@ pi_camera_cutout_center_y_mm = 0.0;
 pi_camera_cutout_local_center_z_mm = 2.6;
 waveshare_rj45_cutout_size_mm = [16.4, 12.3, 16.0];
 waveshare_rj45_cutout_center_x_mm = -16.0;
-waveshare_rj45_cutout_center_y_mm = -22.4;
+waveshare_rj45_cutout_center_y_offset_mm = 0.0;
 waveshare_rj45_cutout_local_center_z_mm = 8.1;
 waveshare_front_usb_a_cutout_size_mm = [13.3, 5.7, 10.0];
 waveshare_front_usb_a_cutout_center_x_mm = 1.7;
-waveshare_front_usb_a_cutout_center_y_mm = -22.4;
+waveshare_front_usb_a_cutout_center_y_offset_mm = 0.0;
 waveshare_front_usb_a_cutout_local_center_z_mm = 5.1;
 waveshare_left_usb_a_cutout_size_mm = [5.7, 13.3, 11.0];
 waveshare_left_usb_a_cutout_center_x_mm = -39.9;
@@ -372,10 +372,22 @@ pi_micro_sd_wall_pierce_depth_mm =
 pi_micro_sd_cutout_through_depth_mm =
     max(pi_micro_sd_cutout_depth_mm, pi_micro_sd_wall_pierce_depth_mm);
 pi_micro_sd_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_micro_sd_cutout_local_center_z_mm;
+pi_mini_hdmi_cutout_center_y_mm =
+    front_wall_cutout_center_y_mm(pi_mini_hdmi_cutout_size_mm[1])
+    + pi_mini_hdmi_cutout_center_y_offset_mm;
 pi_mini_hdmi_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_mini_hdmi_cutout_local_center_z_mm;
+pi_micro_usb_power_cutout_center_y_mm =
+    front_wall_cutout_center_y_mm(pi_micro_usb_power_cutout_size_mm[1])
+    + pi_micro_usb_power_cutout_center_y_offset_mm;
 pi_micro_usb_power_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_micro_usb_power_cutout_local_center_z_mm;
 pi_camera_cutout_center_z_mm = pi_zero_bottom_z_mm + pi_camera_cutout_local_center_z_mm;
+waveshare_rj45_cutout_center_y_mm =
+    front_wall_cutout_center_y_mm(waveshare_rj45_cutout_size_mm[1])
+    + waveshare_rj45_cutout_center_y_offset_mm;
 waveshare_rj45_cutout_center_z_mm = waveshare_hat_bottom_z_mm + waveshare_rj45_cutout_local_center_z_mm;
+waveshare_front_usb_a_cutout_center_y_mm =
+    front_wall_cutout_center_y_mm(waveshare_front_usb_a_cutout_size_mm[1])
+    + waveshare_front_usb_a_cutout_center_y_offset_mm;
 waveshare_front_usb_a_cutout_center_z_mm = waveshare_hat_bottom_z_mm + waveshare_front_usb_a_cutout_local_center_z_mm;
 waveshare_left_usb_a_cutout_center_z_mm = waveshare_hat_bottom_z_mm + waveshare_left_usb_a_cutout_local_center_z_mm;
 waveshare_right_usb_a_cutout_center_z_mm = waveshare_hat_bottom_z_mm + waveshare_right_usb_a_cutout_local_center_z_mm;
@@ -1333,6 +1345,9 @@ function rotate_y_mm(x_mm, y_mm, angle_deg) =
 
 function distance_2d_mm(x1_mm, y1_mm, x2_mm, y2_mm) =
     sqrt((x2_mm - x1_mm) * (x2_mm - x1_mm) + (y2_mm - y1_mm) * (y2_mm - y1_mm));
+
+function front_wall_cutout_center_y_mm(cutout_depth_mm) =
+    -outer_width_mm / 2 + (cutout_depth_mm + port_cutout_extra_clearance_mm) / 2 - preview_overlap_mm;
 
 module pi_zero_usb_grove_ir_rounded_box(size_mm, radius_mm, center_mm) {
     translate(center_mm)
