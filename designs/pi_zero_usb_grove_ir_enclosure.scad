@@ -122,6 +122,7 @@ pod_cap_insert_diameter_mm = 3.2;
 pod_cap_insert_insertion_depth_mm = 3.0;
 pod_cap_insert_socket_clearance_mm = 0.35;
 pod_cap_insert_socket_depth_mm = 3.0;
+pod_cap_insert_receiver_wall_thickness_mm = 1.0;
 pod_cap_insert_count = 2;
 pod_cap_insert_spacing_mm = 18.0;
 pod_cap_insert_center_y_mm = 0.0;
@@ -316,6 +317,8 @@ pod_cap_insert_local_x_positions_mm = [
             ? 0
             : (insert_index - (pod_cap_insert_count - 1) / 2) * pod_cap_insert_spacing_mm
 ];
+pod_cap_insert_receiver_outer_diameter_mm =
+    pod_cap_insert_diameter_mm + 2 * pod_cap_insert_receiver_wall_thickness_mm;
 pod_cap_insert_socket_diameter_mm =
     pod_cap_insert_diameter_mm + 2 * pod_cap_insert_socket_clearance_mm;
 
@@ -700,6 +703,7 @@ module pi_zero_usb_grove_ir_ir_pod() {
                 pi_zero_usb_grove_ir_pod_shell();
                 pi_zero_usb_grove_ir_pod_board_mount();
                 pi_zero_usb_grove_ir_pod_attachment_posts();
+                pi_zero_usb_grove_ir_pod_top_cap_socket_volumes();
             }
 
             if (enable_ir_mount_optional_pilot_holes) {
@@ -708,7 +712,7 @@ module pi_zero_usb_grove_ir_ir_pod() {
             pi_zero_usb_grove_ir_pod_cable_entry_volume();
             pi_zero_usb_grove_ir_ir_led_aperture();
             pi_zero_usb_grove_ir_pod_internal_cable_path_volume();
-            pi_zero_usb_grove_ir_pod_top_cap_socket_volumes();
+            pi_zero_usb_grove_ir_pod_top_cap_socket_bores();
         }
 }
 
@@ -932,6 +936,19 @@ module pi_zero_usb_grove_ir_pod_top_cap_insert_pins() {
 }
 
 module pi_zero_usb_grove_ir_pod_top_cap_socket_volumes() {
+    for (insert_x_mm = pod_cap_insert_local_x_positions_mm) {
+        translate([pod_center_x_mm, pod_center_y_mm, pod_center_z_mm])
+            rotate([0, 0, pod_base_rotation_deg])
+                translate([insert_x_mm, pod_cap_insert_center_y_mm, pod_outer_height_mm / 2 - pod_cap_insert_socket_depth_mm / 2])
+                    cylinder(
+                        h = pod_cap_insert_socket_depth_mm,
+                        d = pod_cap_insert_receiver_outer_diameter_mm,
+                        center = true
+                    );
+    }
+}
+
+module pi_zero_usb_grove_ir_pod_top_cap_socket_bores() {
     translate([pod_center_x_mm, pod_center_y_mm, pod_center_z_mm])
         rotate([0, 0, pod_base_rotation_deg])
             for (insert_x_mm = pod_cap_insert_local_x_positions_mm) {
