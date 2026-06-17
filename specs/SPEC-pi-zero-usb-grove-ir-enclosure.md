@@ -793,6 +793,50 @@ Impact and regression considerations for this iteration:
 - The implementation must preserve existing board stack geometry, Pi Zero and Waveshare cutouts, top-cover-to-bottom-tray plug-in pins/sockets, IR PCB source-of-truth defaults, two-hole PCB support/pilot-hole behavior, detachable pod panel behavior, printable orientations, and generated-mesh exclusion.
 - The implementation must not reintroduce cover screws, pod attachment screws, long vertical screws, front-face hardware near the opening-dense face, fragile clip tabs, or a continuous top-cover alignment lip.
 
+## Iteration: IR Pod Full-Cover Cap And Insert Cleanup
+
+Requested changes:
+
+- Change the removable cap clip mechanism of the IR pod to use only male/female insert geometry.
+- Make the removable cap cover the whole top surface of the IR pod.
+- Remove the additional unused gray component and any holes or openings that exist only for that component.
+- Remove any other unused IR pod cap, retainer, locator, or component-specific geometry made obsolete by this iteration.
+
+Clarifying interpretation for this proposed spec:
+
+- The "gray component" is interpreted as the separate IR PCB retainer currently rendered as an additional standoff-colored printable part in `printable_layout`.
+- "Male and female only inserts" means the detachable IR pod top cap must use simple printed male insert pins/posts and matching female receiving sockets/holes for cap retention, not side detent tabs, snap hooks, latch tabs, sliding lips, clip cuts, or a separate retainer component.
+
+Updated deterministic behavior:
+
+- This iteration supersedes earlier detachable pod panel retention behavior that allowed shallow side detents, retention tabs, matching wall sockets, sliding lips, snap tabs, or equivalent clip-style cap retention.
+- The default detachable IR pod cap must be retained by a simple male/female insert interface only.
+- The default male/female cap interface must use adjustable printed inserts and matching receiving holes or sockets, with adjustable insert diameter or size, insertion depth, socket clearance, socket depth, count, spacing, and placement.
+- The cap insert retention must be distinct from:
+  - the main top-cover-to-bottom-tray pin/socket interface,
+  - the pod-to-top-cover plug-in post/socket interface,
+  - the IR emitter PCB support bosses and pilot holes.
+- The cap insert geometry must not use flexible clip tabs, side detents, hook features, rail/slot retention, or friction features that require local cap flexing as the default retention mechanism.
+- The cap must cover the complete top surface footprint of the IR pod by default, except for ordinary printable fit clearance around the cap perimeter. The default cap must not leave an attachment-side relief, service-window gap, retainer access gap, or other partial-top opening that exposes the pod cavity after the cap is installed.
+- The pod body must remain printable open-top on its floor at `Z=0`; the cap remains a separate printable object in `printable_layout` and installs over the full pod top after the IR PCB and Grove cable are installed.
+- The cap must remain removable without disconnecting the Grove cable after normal PCB installation.
+- The Grove cable must continue to enter through the dedicated pod side cable entry, not through a missing portion of the cap top surface.
+- The IR emitter PCB must be retained by the default support bosses plus enabled pilot-hole/screw path accessible after removing the full-cover cap. The separate IR PCB retainer component must be removed by default unless a later approved spec restores a distinct retention need.
+- The IR pod service window, retainer slot, retainer bar, retainer-specific opening, and retainer-specific README/spec/plan language must be removed or rewritten when they no longer serve the final design.
+- Removing the retainer and cap reliefs must not remove the Grove IR emitter reference pose, IR PCB support bosses, default enabled pilot holes, LED aperture alignment, pod cable entry, pod-to-top-cover attachment posts, or printable layout separation for the remaining parts.
+- `render_mode = "ir_pod"` must show only the open-top pod body with cap insert receiving geometry and no separate retainer or partial cap fused into it.
+- `render_mode = "assembly"` must show the full-cover cap installed, closing the full top surface without blocking the LED aperture, side cable entry, PCB screw access after cap removal, or pod-to-top-cover plug-in attachment.
+- `render_mode = "printable_layout"` must show the bottom tray, top cover, open-top IR pod body, and full-cover IR pod cap as distinct non-intersecting printable objects with independent build-plate contact. It must not show the removed gray IR PCB retainer component.
+- README documentation must describe the full-cover cap, cap insert tuning parameters, assembly order, and removal of the separate retainer component.
+
+Impact and regression considerations for this iteration:
+
+- Removing the separate IR PCB retainer intentionally narrows the default IR PCB retention path to support bosses plus enabled screw pilot holes accessed by removing the full-cover cap.
+- Full top coverage may reduce cap clearance around pod-to-cover attachment and cable-entry features; implementation must preserve the side cable entry, LED aperture, pod posts, cap insert sockets, and enough wall material for Bambu Lab P2S-friendly printing.
+- Removing retainer-specific service openings should reduce confusing extra holes and loose parts, but implementation must verify that the IR PCB can still be installed and fastened before the cap is inserted.
+- Cap insert sockets and PCB pilot holes must remain visually and functionally distinct so the cap retention holes are not confused with IR PCB mounting holes.
+- Physical insert fit still depends on printer/material calibration, so insert size, socket clearance, and socket depth must remain easy to tune near the other IR pod cap parameters.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -860,6 +904,12 @@ Impact and regression considerations for this iteration:
 - The detachable IR pod top service panel installs in `assembly` and closes the pod without blocking the LED aperture, cable entry, PCB loading path, PCB retainer, or pod-to-top-cover attachment.
 - The detachable IR pod panel uses an adjustable screwless printed retention method by default and provides service access for IR PCB fastening.
 - The detachable IR pod panel can be installed and removed without disconnecting the Grove cable after normal PCB installation.
+- The detachable IR pod top cap covers the complete top surface footprint by default and does not leave a cap relief, service-window gap, retainer access gap, or other partial-top opening after assembly.
+- The detachable IR pod top cap uses only simple male/female insert retention by default, with no clip tabs, side detents, hooks, latch tabs, rails, sliding lips, or flexing snap features.
+- The cap insert interface has adjustable insert size, insertion depth, socket clearance, socket depth, count, spacing, and placement.
+- The separate gray IR PCB retainer component is removed from the default printable design, and `printable_layout` no longer shows it as a loose printed object.
+- Retainer-specific openings, service windows, slots, holes, bars, parameters, modules, README language, validation checks, and plan instructions are removed or rewritten when they no longer serve the full-cover cap and screw-access PCB retention path.
+- The IR emitter PCB remains retained by support bosses plus enabled pilot holes that are accessible after removing the full-cover cap.
 - The IR LED aperture is visibly and mechanically a pass-through opening in the pod wall by code review of the subtraction geometry.
 - `bottom_tray`, `top_cover`, `ir_pod`, and `printable_layout` printable outputs contain no floating printable objects in their intended printable orientation.
 - `printable_layout` places each printable object as a separate, non-intersecting, independently printable object.
@@ -923,6 +973,10 @@ Impact and regression considerations for this iteration:
   - the pod body no longer has a fused roof/top face that would trap slicer-generated internal supports by default,
   - the detachable pod panel retention is screwless, adjustable, and distinct from the cover-to-tray, pod-to-cover, and PCB-retainer mechanisms,
   - the assembled pod panel closes the pod without blocking the LED aperture, cable entry, PCB loading path, PCB retainer, or slide attachment,
+  - the detachable IR pod cap covers the complete top surface footprint by default without attachment-side reliefs, service-window gaps, retainer access gaps, or other obsolete partial-top openings,
+  - the detachable IR pod cap retention uses only simple male/female inserts and receiving sockets/holes by default,
+  - obsolete cap clip tabs, side detents, latch tabs, hooks, sliding lips, retainer service windows, retainer slots, retainer bars, retainer-specific holes, and the separate gray IR PCB retainer component are removed from the default printable design,
+  - cap insert sockets remain visually distinct from IR PCB pilot holes and from the pod-to-top-cover plug-in sockets,
   - IR PCB pilot holes are enabled by default or replaced by equivalent default screw-access behavior,
   - unused IR pod PCB locator modules, parameters, README references, and validation checks are removed or rewritten,
   - the IR LED aperture subtraction fully pierces the pod wall rather than stopping short of the external face,
@@ -954,6 +1008,9 @@ Impact and regression considerations for this iteration:
 - Document the detachable IR pod top service panel as a separate printable closure part, including that it exists to avoid inaccessible Bambu Studio tree supports inside the pod.
 - Document the detachable pod panel assembly order and distinguish it from the IR PCB retainer and the pod-to-top-cover attachment.
 - Document the adjustable detachable panel fit and retention parameters.
+- Document that the detachable IR pod top cap covers the whole top surface by default and no longer includes attachment-side reliefs, service-window gaps, or retainer access gaps after assembly.
+- Document that the detachable IR pod top cap uses only male/female insert retention by default, with tunable insert size, insertion depth, socket clearance, socket depth, count, spacing, and placement.
+- Document that the separate gray IR PCB retainer component and its retainer-specific holes/openings are removed from the default design, and that IR PCB retention now relies on support bosses plus enabled screw pilot holes accessed by removing the full-cover cap.
 - Remove or update stale README language that says IR PCB pilot holes are disabled by default or that unused side/front board locators remain part of the default pod body.
 - Document that the IR LED aperture is intended to be a full pass-through opening in the pod wall.
 - Document the implemented default top-hole density for this iteration and any recommended tuning if the user wants more or fewer holes after physical test fitting.

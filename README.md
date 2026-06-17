@@ -389,7 +389,7 @@ openscad -o assembly.off -D 'render_mode="assembly"' -D 'show_electronics=false'
 
 ## Raspberry Pi Zero USB Ethernet Grove IR Enclosure
 
-`designs/pi_zero_usb_grove_ir_enclosure.scad` is a printable enclosure set for a Raspberry Pi Zero v1.3, a Waveshare ETH/USB HUB HAT, a Seeed Grove Base Hat for Raspberry Pi Zero, and a Grove Infrared Emitter mounted in a separate external pod. The design keeps the Pi Zero, Waveshare HAT, and Grove HAT in the main enclosure, routes the Grove cable out through a dedicated main-enclosure exit in the removable top-cover assembly, and mounts the IR emitter board inside a separate pod. Top-cover-to-bottom-tray attachment stays at the existing four-pin socket interface, while the pod uses a top-cover-owned plug-in socket interface on the cover wall and pod-mounted male posts as the attachment path. The pod prints as an open-top body with a separate screwless top service panel, uses a cable-side PCB loading path with printed support bosses plus a removable printed retainer, and keeps the bottom tray's four Pi Zero stack fastener holes separate from the cover pin/socket interface, pod attachment posts/sockets, pod panel retention, and IR PCB retainer.
+`designs/pi_zero_usb_grove_ir_enclosure.scad` is a printable enclosure set for a Raspberry Pi Zero v1.3, a Waveshare ETH/USB HUB HAT, a Seeed Grove Base Hat for Raspberry Pi Zero, and a Grove Infrared Emitter mounted in a separate external pod. The design keeps the Pi Zero, Waveshare HAT, and Grove HAT in the main enclosure, routes the Grove cable out through a dedicated main-enclosure exit in the removable top-cover assembly, and mounts the IR emitter board inside a separate pod. Top-cover-to-bottom-tray attachment stays at the existing four-pin socket interface, while the pod uses cover-side receiving sockets and pod-mounted male posts. The pod prints as an open-top body by default and is closed by a full-cover removable pod cap with insert posts.
 
 ### Component Assumptions
 
@@ -411,7 +411,7 @@ Default dimensions are configurable at the top of `designs/pi_zero_usb_grove_ir_
 - Micro USB bridge/addon protrusion outside the Pi Zero PCB: 10.9 mm, plus 1.0 mm default printable fit clearance used to size the tray and top-cover Y envelope.
 - The Grove IR emitter PCB stays inside the external pod, not in the main tray.
 - IR emitter PCB support bosses are solid locating/support features, and IR PCB pilot holes are enabled by default (`enable_ir_mount_optional_pilot_holes = true`).
-- The external pod has a detachable screwless top service panel with an attachment-side clearance relief for cable entry and pod-post socket clearance during dry fitting. In normal assembly, only the LED aperture and cable passage remain open after the printed retainer and top service panel are installed.
+- In normal assembly, only the LED aperture and cable passage remain open after the full-cover cap is installed.
 - The external pod defaults to a narrower 29.0 mm body, shifted 24.5 mm toward the front USB-A side so the pod attachment avoids the Waveshare RJ45/Ethernet cutout area while staying inside the top-cover X margin.
 - Printable render modes use print-only wrappers that place solids on the build plate at Z=0 without changing the assembled preview coordinate system.
 - The Grove cable path starts near the selected Grove Base Hat connector area, exits the main enclosure through a dedicated opening, enters the pod through its matching entry, and terminates at the emitter connector area.
@@ -431,8 +431,8 @@ The OpenSCAD source starts with an `Adjustable Parameters` section grouped by:
 - Pi Zero and Waveshare port cutout dimensions and offsets,
 - microSD card access dimensions,
 - Micro USB bridge/addon outside-PCB clearance dimensions,
-- external IR emitter pod dimensions, detachable top service panel, attachment posts/sockets, and attachment interface,
-- IR emitter pod board support, pilot-hole, and retainer parameters,
+- external IR emitter pod dimensions, full-cover cap inserts, attachment posts/sockets, and attachment interface,
+- IR emitter pod board support, pilot-hole, and cap fit parameters,
 - IR LED aperture, including pass-through overlap margin,
 - main-to-pod Grove cable path,
 - top ventilation/access hole pattern,
@@ -456,9 +456,9 @@ Common edits:
 - Tune `grove_selected_socket_*` and the cable exit/entry offsets to match the actual Grove connector you use on the Grove Base Hat.
 - Tune `cover_skirt_drop_depth_mm`, `cover_pin_diameter_mm`, `cover_pin_insertion_length_mm`, `cover_pin_offset_x_mm`, `cover_pin_offset_y_mm`, `cover_pin_count`, `tray_socket_clearance_mm`, and `tray_socket_depth_mm` after physical test fitting. The defaults use four simple round 3.0 mm male pins, 5.2 mm insertion length, 0.35 mm socket diameter clearance, and female socket holes placed directly in the thickened tray corner walls.
 - The default `wall_thickness_mm` is 6.0 mm so the cover pins and socket holes live near the center of the wall/corner volume instead of relying on added internal socket bosses. The default `cover_pin_offset_x_mm` and `cover_pin_offset_y_mm` center the 3.35 mm socket holes in the wall/corner volume, leaving about 1.3 mm of material on both the inner and outer sides of the thickened walls. If pin fit is too tight, increase `tray_socket_clearance_mm`; if it is loose, reduce clearance in small increments while keeping enough clearance for the printer/material combination.
-- Tune `pod_attachment_side`, `pod_center_offset_*`, `pod_outer_width_mm`, `pod_panel_*`, `pod_attachment_post_*`, `pod_attachment_socket_*`, `emitter_board_center_local_*`, `emitter_board_rotation_deg`, `ir_led_*`, `pod_cable_entry_*`, `ir_pcb_retainer_*`, `ir_pcb_retainer_print_gap_mm`, and `pod_panel_print_gap_mm` together. The emitter reference, pod board bosses, printed retainer, detachable top service panel, side seating pads, attachment-side panel reliefs, LED aperture, pod cable entry, top-cover pod attachment geometry, and cable endpoint are all derived from the same pod/emitter pose. The default pod X offset keeps the pod clear of the Ethernet opening while preserving room for the 20.25 mm x 23.75 mm IR PCB reference.
-- Tune `pod_panel_thickness_mm`, `pod_panel_fit_clearance_mm`, `pod_panel_seating_depth_mm`, `pod_panel_retention_tab_*`, and `pod_panel_retention_socket_clearance_mm` after printing a small fit sample or inspecting the first pod. The service panel uses shallow side detents, matching wall sockets, and attachment-side reliefs that preserve the cable entry; it is separate from the cover-to-tray pins, pod-to-top-cover post/socket interface, and IR PCB retainer.
-- Keep `enable_ir_mount_optional_pilot_holes = true` for the default removable retainer-and-screw retention path. Set it false only if you intentionally want a tool-free retained path and will validate that the path remains stable.
+- Tune `pod_attachment_side`, `pod_center_offset_*`, `pod_outer_width_mm`, `pod_cap_*`, `pod_attachment_post_*`, `pod_attachment_socket_*`, `emitter_board_center_local_*`, `emitter_board_rotation_deg`, `ir_led_*`, `pod_cable_entry_*`, and `pod_cap_insert_*` together. The emitter reference, pod board bosses, full-cover cap geometry, pod-to-cover post/socket interface, and cable endpoint are all derived from the same pod/emitter pose. The default pod X offset keeps the pod clear of the Ethernet opening while preserving room for the 20.25 mm x 23.75 mm IR PCB reference.
+- Tune `pod_cap_insert_diameter_mm`, `pod_cap_insert_insertion_depth_mm`, `pod_cap_insert_socket_clearance_mm`, `pod_cap_insert_socket_depth_mm`, `pod_cap_insert_count`, `pod_cap_insert_spacing_mm`, and `pod_cap_insert_center_y_mm` after printing a small fit sample or inspecting the first pod. These values control cap press-fit depth, post-to-socket engagement, and retention torque at the post bases.
+- Keep `enable_ir_mount_optional_pilot_holes = true` for the default removable pilot-hole and screw path. Set it false only if you intentionally want a tool-free retained path and will validate that the path remains stable.
 - The main enclosure cable exit and the pod cable entry are separate features. The cable guide starts at the Grove HAT connector area, passes through the top-cover-owned main enclosure exit, enters the pod, and terminates at the emitter connector area.
 - Use `cover_vent_*` values to resize or shift the default denser symmetric circular top-hole grid. The shipped defaults are `5 x 4` holes at `4.0 mm` diameter on `10.5 mm x 6.0 mm` spacing.
 - Use rubber-foot recesses by default, or set `use_rubber_foot_recesses = false` to preview printed feet instead.
@@ -467,11 +467,11 @@ Common edits:
 
 Set `render_mode` to one of:
 
-- `assembly`: full enclosure preview with optional electronics and the relieved detachable IR pod top service panel installed.
+- `assembly`: full enclosure preview with optional electronics and the full-cover IR pod cap installed.
 - `bottom_tray`: tray printable part with board standoffs, board-relative port cutouts, wall-integrated female sockets for the cover pins, and anti-slide features, placed on the build plate at Z=0.
 - `top_cover`: plug-in removable cover with simple round male pins, top-cover-owned pod post/socket reinforcement and recesses, the dedicated main enclosure cable exit, and top ventilation/access holes, inverted print-side down on the build plate at Z=0.
-- `ir_pod`: the open-top external IR emitter pod body with its molded pod posts, solid board support bosses, cable entry, panel receiver sockets, and pass-through LED aperture, placed on its pod floor at Z=0. Standalone `ir_pod` mode shows the pod body only; the detachable top service panel and removable retainer are exported from `printable_layout`.
-- `printable_layout`: bottom tray, top cover, open-top IR pod body, detachable IR pod top service panel, and the separate IR PCB retainer arranged side-by-side on the build plate for inspection and export. The panel and retainer are separated from the pod body and are not fused or intersecting in this layout.
+- `ir_pod`: the open-top external IR emitter pod body with its molded pod posts, solid board support bosses, cable entry, and pass-through LED aperture, placed on its pod floor at Z=0. Standalone `ir_pod` mode shows the pod body only.
+- `printable_layout`: bottom tray, top cover, open-top IR pod body, and full-cover IR pod cap arranged side-by-side on the build plate for inspection and export. The cap is separated from the pod body and is not fused or intersecting.
 - `electronics`: imported electronics/reference stack and IR emitter placement without printable case geometry.
 
 Optional inspection commands for users with OpenSCAD installed:
@@ -494,18 +494,18 @@ openscad -o /tmp/pi_zero_usb_grove_ir_assembly.off -D 'render_mode="assembly"' -
 
 ### Assembly And Print Notes
 
-- Print the bottom tray, top cover, open-top IR pod body, detachable IR pod top service panel, and IR PCB retainer as separate parts.
+- Print the bottom tray, top cover, open-top IR pod body, and full-cover IR pod cap as separate parts.
 - Printable part render modes already orient the tray on its base, the top cover flat with the exterior roof on the bed, and the pod on its floor at Z=0. The assembled-world modules remain separate so `assembly` and `electronics` preserve fit-reference positions.
-- Use `printable_layout` for all independent printed parts, including the separate IR PCB retainer. Generated STL, STEP, 3MF, OFF, or other mesh/export artifacts are not committed to this repository.
-- The pod body intentionally prints open-top so Bambu Studio tree supports are not trapped inside a closed pod roof. The separate relieved top service panel closes the pod after the board, cable, and retainer are installed while preserving the cable entry and post/socket clearance during fit testing.
+- Use `printable_layout` for all independent printed parts. Generated STL, STEP, 3MF, OFF, or other mesh/export artifacts are not committed to this repository.
+- The pod body intentionally prints open-top so Bambu Studio tree supports are not trapped inside a closed pod roof. The full-cover cap closes the pod after the board, cable, and screw-access workflow are complete.
 - Use PLA, PETG, or another material appropriate for the target thermal environment.
 - Prefer at least three perimeters for the Pi Zero standoffs, cover skirt, simple cover pins, tray socket wall regions, top-cover pod socket reinforcement, and pod posts/board bosses.
 - Install the Pi Zero stack on the Pi Zero-aligned standoffs before routing the Grove cable.
 - Confirm the 10.8 mm default Waveshare-to-Grove spacing against the actual spacers; increase it if physical measurement or preview inspection shows collision between the Waveshare top-side parts and the Grove underside socket/header area.
 - Route the Grove cable from the selected Grove socket area to the top-cover cable exit before fitting the pod, then continue through the pod entry to the IR emitter connector.
-- With the Grove cable already connected, insert the IR emitter board through the cable-side pod service window, rest it on the pod bosses, align the LED to the pod aperture, route the cable through the pod entry without a sharp bend, fit the printed retainer through the service panel opening, then close the detachable top service panel and insert the pod onto the top-cover socket posts until the mating interface seats with even clearance.
-- The removable printed retainer is an intentional secondary printable part for the enabled screw-retained PCB path, not an unexplained loose pod part. The detachable top service panel is a separate pod closure part, provides access to the pilot holes/screw locations, and does not retain the PCB by itself.
-- The continuous alignment lip was removed for printability because it caused failed stringing/spaghetti in printable cover previews. Cover alignment and retention now come from the four vertical male pins and matching wall-integrated tray sockets instead of a perimeter lip.
+- With the Grove cable already connected, insert the IR emitter board through the cable-side pod entry, rest it on the pod bosses, align the LED to the pod aperture, route the cable through the pod entry without a sharp bend, then install the full-cover cap.
+- After removing the full-cap, access the side of the board for optional M2.5 screws on enabled pilot-hole locations; the support geometry remains in the pod body and supports the removable-assembly screw workflow.
+- The alignment lip was removed for printability because it caused failed stringing/spaghetti in printable cover previews. Cover alignment and retention now come from the four vertical male pins and matching wall-integrated tray sockets instead of a perimeter lip.
 - The top cover uses simple round plug-in pins and matching tray sockets cut into the thickened tray walls; it does not use cover screws and it does not depend on the Pi Zero stack mounting screws. The cover lowers vertically onto the tray, and removal should be tuned by socket clearance and pin insertion depth rather than by flexing latch features.
 - The top-cover pod attachment includes local reinforcement around the socket regions so the interface is visibly rooted into the cover side wall while remaining separate from the cover-to-tray pin/socket interface.
 - The four bottom-tray stack holes exist because the Pi Zero/HAT stack has four mounting points. Those holes are distinct from the top-cover pin/socket interface and from the pod post/socket interface.
@@ -653,20 +653,20 @@ Manual inspection for the Pi Zero USB Grove IR enclosure:
 - The tray still has four board-stack mounting holes because the Pi Zero/HAT stack has four mounting points; those holes are distinct from the cover pin/socket interface and pod post/socket hardware.
 - Top cover is removable, plug-in, uses simple round male pins near supported corner regions, includes adjustable ventilation/access holes, and does not depend on the Pi Zero stack mounting screws.
 - Top-cover pins are simple round vertical pins, and tray-side sockets are true receiving holes in the thickened tray corner walls rather than added internal bosses.
-- The `ir_pod` render mode shows only the open-top IR pod body on its floor at Z=0, without the detachable top service panel or IR PCB retainer fused into it.
-- The `assembly` render mode shows the detachable IR pod top service panel installed so the pod is closed after PCB installation.
-- The `printable_layout` render mode shows the bottom tray, top cover, open-top IR pod body, detachable IR pod top service panel, and IR PCB retainer as distinct non-intersecting objects with build-plate contact.
-- The external pod contains the IR emitter PCB on adjustable support bosses using the measured 20.25 mm x 23.75 mm PCB reference with exactly two left/right margin mounting bosses, plus a removable printed retainer and a detachable screwless top service panel. IR PCB pilot holes are enabled by default (`enable_ir_mount_optional_pilot_holes = true`), so board screw retention can be completed by opening the service panel.
-- The IR emitter PCB loads through the cable-side pod service window with the Grove cable already connected, then is retained by the printed retainer and set with screws accessible from the service panel opening.
-- The top service panel uses adjustable screwless side-pad/tab retention and matching pod wall sockets that are distinct from the cover-to-tray pin/socket interface, pod-to-cover post/socket interface, and IR PCB retainer.
-- The top service panel can be installed after normal PCB and Grove cable installation, and allows IR PCB screws to be reached and tightened without disconnecting the Grove cable.
+- The `ir_pod` render mode shows only the open-top IR pod body on its floor at Z=0.
+- The `assembly` render mode shows the full-cover IR pod cap installed so the pod is closed after PCB installation.
+- The `printable_layout` render mode shows the bottom tray, top cover, open-top IR pod body, and full-cover IR pod cap as distinct non-intersecting objects with build-plate contact.
+- The external pod contains the IR emitter PCB on adjustable support bosses using the measured 20.25 mm x 23.75 mm PCB reference with exactly two left/right margin mounting bosses, plus optional pilot-hole retention. IR PCB pilot holes are enabled by default (`enable_ir_mount_optional_pilot_holes = true`), so board screws can be added after cap removal.
+- The IR emitter PCB loads through the cable-side pod entry with the Grove cable already connected; board retention is validated through pilot holes and optional post-fit screws on the exposed pod side.
+- The pod uses cap-owned male insert pins and pod-body socket holes for closure, which are distinct from the cover-to-tray pin/socket interface and pod-to-cover post/socket interface.
+- The full-cover cap can be installed after normal PCB and Grove cable installation, and pilot-hole/screw access is only available after removing the cap to complete optional screw retention.
 - The pod attaches to the removable top cover through a top-cover-owned female socket interface with pod-owned male posts/pins, independent from the cover-to-tray pin/socket interface and Pi Zero stack fasteners.
 - The pod post/socket interface includes local top-cover reinforcement around each socket to keep the joint visually rooted to thickened cover wall material.
-- The pod cable entry, IR LED aperture, pod board bosses, printed retainer, post/socket interface geometry, and emitter reference preview all derive from the same adjustable pod/emitter pose.
+- The pod cable entry, IR LED aperture, pod board bosses, cap inserts/sockets, and emitter reference preview all derive from the same adjustable pod/emitter pose.
 - The main enclosure cable exit and pod cable entry align with the selected Grove HAT connector area and the emitter connector area.
 - Grove cable exits the main enclosure only through the dedicated cable exit and enters the pod only through the pod entry.
 - The IR LED aperture subtraction over-travels the pod wall with `ir_led_aperture_pass_through_overlap_mm`, so it is a definite pass-through opening in printable pod views.
-- Only the IR LED path and required cable passage are exposed outside the pod by default after the printed retainer and top service panel are installed.
+- Only the IR LED path and required cable passage are exposed outside the pod by default after the full-cover cap is installed.
 - Each printable part has a plausible flat print orientation.
-- Wall thicknesses, clearances, bridges, and printed retainer features are plausible for Bambu P2S printing.
+- Wall thicknesses, clearances, bridges, and cap insert features are plausible for Bambu P2S printing.
 - No generated mesh or export artifacts are added. Repository validation remains manual review plus `git diff --check`; do not run OpenSCAD locally in this environment.
