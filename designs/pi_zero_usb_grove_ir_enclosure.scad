@@ -122,26 +122,29 @@ pod_cap_insert_diameter_mm = 3.2;
 pod_cap_insert_insertion_depth_mm = 3.0;
 pod_cap_insert_socket_clearance_mm = 0.35;
 pod_cap_insert_socket_depth_mm = 3.6;
-pod_cap_insert_retention_clearance_mm = 0.15;
-pod_cap_insert_retention_depth_mm = 1.0;
 pod_cap_insert_receiver_wall_thickness_mm = 1.0;
 // Cap-side root shoulder is a short, direct transition from the cap underside into the pin body.
 pod_cap_insert_pin_root_diameter_mm = 3.8;
 pod_cap_insert_pin_root_depth_mm = 0.4;
+pod_cap_insert_keeper_cap_diameter_mm = 3.55;
+pod_cap_insert_keeper_cap_thickness_mm = 1.0;
 pod_cap_insert_count = 2;
-pod_cap_insert_spacing_mm = 29.4;
-pod_cap_insert_center_y_mm = 0.0;
+pod_cap_insert_spacing_mm = 33.8;
+pod_cap_insert_external_wall_overlap_mm = 0.2;
+pod_cap_insert_tab_margin_mm = 0.8;
 pod_attachment_gap_mm = 0.4;
 pod_center_offset_x_mm = 24.5;
 pod_center_offset_z_mm = 0.0;
 pod_attachment_post_count = 2;
-pod_attachment_post_spacing_x_mm = 18.0;
+pod_attachment_post_spacing_x_mm = 20.0;
 pod_attachment_post_x_offset_mm = 0.0;
 pod_attachment_post_local_y_offset_mm = 2.0;
 pod_attachment_post_root_overlap_mm = 2.0; // Root overlap into pod wall for default male posts
 pod_attachment_post_center_z_from_bottom_mm = 8.0;
 pod_attachment_post_diameter_mm = 3.0;
 pod_attachment_post_insertion_length_mm = 6.0;
+pod_attachment_post_keeper_cap_diameter_mm = 5.0;
+pod_attachment_post_keeper_cap_thickness_mm = 1.0;
 pod_attachment_socket_clearance_mm = 0.35;
 pod_attachment_socket_depth_mm = 6.0;
 pod_attachment_socket_reinforcement_thickness_mm = 1.2;
@@ -315,6 +318,8 @@ pod_attachment_socket_reinforcement_diameter_mm =
     + 2 * pod_attachment_socket_reinforcement_thickness_mm;
 pod_attachment_post_socket_reinforcement_extent_mm =
     pod_attachment_socket_reinforcement_length_mm + pod_attachment_post_insertion_length_mm;
+pod_attachment_socket_through_depth_mm =
+    max(pod_attachment_socket_depth_mm, pod_attachment_post_socket_reinforcement_extent_mm);
 pod_attachment_cover_face_y_mm =
     rotate_y_mm(0, outer_width_mm / 2, pod_base_rotation_deg);
 pod_cap_corner_radius_mm = max(pod_corner_radius_mm - pod_cap_fit_clearance_mm, 0.8);
@@ -326,35 +331,24 @@ pod_cap_insert_local_x_positions_mm = [
 ];
 pod_cap_insert_receiver_outer_diameter_mm =
     pod_cap_insert_diameter_mm + 2 * pod_cap_insert_receiver_wall_thickness_mm;
+pod_cap_insert_center_y_mm = 0.0;
+pod_cap_insert_tab_width_mm =
+    pod_cap_insert_receiver_outer_diameter_mm + 2 * pod_cap_insert_tab_margin_mm;
+pod_cap_insert_tab_depth_mm =
+    pod_cap_insert_receiver_outer_diameter_mm + 2 * pod_cap_insert_tab_margin_mm;
 pod_cap_insert_socket_bore_diameter_mm =
     pod_cap_insert_diameter_mm + 2 * pod_cap_insert_socket_clearance_mm;
-pod_cap_insert_socket_retention_bore_diameter_mm =
-    pod_cap_insert_diameter_mm + 2 * pod_cap_insert_retention_clearance_mm;
-pod_cap_insert_pin_retention_diameter_mm =
-    pod_cap_insert_diameter_mm + 2 * pod_cap_insert_retention_clearance_mm;
-pod_cap_insert_retention_depth_clamped_mm =
-    min(pod_cap_insert_socket_depth_mm, pod_cap_insert_retention_depth_mm);
-pod_cap_insert_socket_main_depth_mm =
-    pod_cap_insert_socket_depth_mm - pod_cap_insert_retention_depth_clamped_mm;
 pod_cap_insert_pin_root_depth_clamped_mm =
     min(
         pod_cap_insert_pin_root_depth_mm,
         pod_cap_insert_insertion_depth_mm
     );
-pod_cap_insert_pin_retention_depth_clamped_mm =
-    min(
-        pod_cap_insert_retention_depth_mm,
-        max(pod_cap_insert_insertion_depth_mm - pod_cap_insert_pin_root_depth_clamped_mm, 0)
-    );
 pod_cap_insert_pin_shaft_depth_mm =
     max(
-        pod_cap_insert_insertion_depth_mm
-            - pod_cap_insert_pin_root_depth_clamped_mm
-            - pod_cap_insert_pin_retention_depth_clamped_mm,
+        pod_cap_insert_insertion_depth_mm - pod_cap_insert_pin_root_depth_clamped_mm,
         0
     );
-pod_cap_insert_pin_root_start_z_mm =
-    pod_cap_insert_pin_shaft_depth_mm + pod_cap_insert_pin_retention_depth_clamped_mm;
+pod_cap_insert_pin_root_start_z_mm = pod_cap_insert_pin_shaft_depth_mm;
 
 pod_cable_entry_center_x_mm =
     pod_center_x_mm
@@ -920,12 +914,12 @@ module pi_zero_usb_grove_ir_cover_pod_attachment_socket_holes() {
             post_world_z_mm = pod_center_z_mm - pod_outer_height_mm / 2 + pod_attachment_post_center_z_from_bottom_mm;
             post_socket_wall_y_mm =
                 pod_attachment_cover_face_y_mm
-                + pod_attachment_axis_sign_mm * pod_attachment_socket_depth_mm / 2;
+                + pod_attachment_axis_sign_mm * pod_attachment_socket_through_depth_mm / 2;
 
             translate([post_world_x_mm, post_socket_wall_y_mm, post_world_z_mm])
                 rotate([90, 0, 0])
                     cylinder(
-                        h = pod_attachment_socket_depth_mm + 2 * preview_overlap_mm,
+                        h = pod_attachment_socket_through_depth_mm + 2 * preview_overlap_mm,
                         d = pod_attachment_socket_diameter_mm,
                         center = true
                     );
@@ -970,6 +964,19 @@ module pi_zero_usb_grove_ir_pod_top_cap_geometry() {
         );
 
         pi_zero_usb_grove_ir_pod_top_cap_insert_pins();
+        pi_zero_usb_grove_ir_pod_top_cap_insert_tab();
+    }
+}
+
+module pi_zero_usb_grove_ir_pod_top_cap_insert_tab() {
+    if (pod_cap_insert_count > 0) {
+        for (insert_x_mm = pod_cap_insert_local_x_positions_mm) {
+            pi_zero_usb_grove_ir_rounded_box(
+                [pod_cap_insert_tab_width_mm, pod_cap_insert_tab_depth_mm, pod_cap_thickness_mm],
+                min(pod_cap_corner_radius_mm, pod_cap_insert_tab_depth_mm / 2, pod_cap_insert_tab_width_mm / 2),
+                [insert_x_mm, pod_cap_insert_center_y_mm, -pod_cap_thickness_mm / 2]
+            );
+        }
     }
 }
 
@@ -986,14 +993,6 @@ module pi_zero_usb_grove_ir_pod_top_cap_insert_pins() {
                         h = pod_cap_insert_pin_shaft_depth_mm,
                         d = pod_cap_insert_diameter_mm
                     );
-                }
-
-                if (pod_cap_insert_pin_retention_depth_clamped_mm > 0) {
-                    translate([0, 0, pod_cap_insert_pin_shaft_depth_mm])
-                        cylinder(
-                            h = pod_cap_insert_pin_retention_depth_clamped_mm,
-                            d = pod_cap_insert_pin_retention_diameter_mm
-                        );
                 }
 
                 if (pod_cap_insert_pin_root_depth_clamped_mm > 0) {
@@ -1015,29 +1014,16 @@ module pi_zero_usb_grove_ir_pod_top_cap_socket_volumes() {
     for (insert_x_mm = pod_cap_insert_local_x_positions_mm) {
         translate([pod_center_x_mm, pod_center_y_mm, pod_center_z_mm])
             rotate([0, 0, pod_base_rotation_deg])
-                for (socket_depth_index = [0:1]) {
-                    if (
-                        (socket_depth_index == 0 && pod_cap_insert_socket_main_depth_mm > 0)
-                        || (socket_depth_index == 1 && pod_cap_insert_retention_depth_clamped_mm > 0)
-                    ) {
-                        translate([
-                            insert_x_mm,
-                            pod_cap_insert_center_y_mm,
-                            (socket_depth_index == 0)
-                                ? (pod_outer_height_mm / 2 - pod_cap_insert_socket_main_depth_mm / 2)
-                                : (pod_outer_height_mm / 2 - pod_cap_thickness_mm - pod_cap_insert_retention_depth_clamped_mm / 2)
-                        ])
-                            cylinder(
-                                h = (socket_depth_index == 0)
-                                    ? pod_cap_insert_socket_main_depth_mm
-                                    : pod_cap_insert_retention_depth_clamped_mm,
-                                d = (socket_depth_index == 0)
-                                    ? pod_cap_insert_receiver_outer_diameter_mm
-                                    : pod_cap_insert_socket_retention_bore_diameter_mm,
-                                center = true
-                            );
-                    }
-                }
+                translate([
+                    insert_x_mm,
+                    pod_cap_insert_center_y_mm,
+                    pod_outer_height_mm / 2 - pod_cap_insert_socket_depth_mm / 2
+                ])
+                    cylinder(
+                        h = pod_cap_insert_socket_depth_mm,
+                        d = pod_cap_insert_receiver_outer_diameter_mm,
+                        center = true
+                    );
     }
 }
 
@@ -1045,28 +1031,15 @@ module pi_zero_usb_grove_ir_pod_top_cap_socket_bores() {
     translate([pod_center_x_mm, pod_center_y_mm, pod_center_z_mm])
         rotate([0, 0, pod_base_rotation_deg])
             for (insert_x_mm = pod_cap_insert_local_x_positions_mm) {
-                if (pod_cap_insert_socket_main_depth_mm > 0) {
+                if (pod_cap_insert_socket_depth_mm > 0) {
                     translate([
                         insert_x_mm,
                         pod_cap_insert_center_y_mm,
-                        pod_outer_height_mm / 2 - pod_cap_insert_socket_main_depth_mm / 2
+                        pod_outer_height_mm / 2 - pod_cap_insert_socket_depth_mm / 2
                     ])
                         cylinder(
-                            h = pod_cap_insert_socket_main_depth_mm + preview_overlap_mm,
+                            h = pod_cap_insert_socket_depth_mm + preview_overlap_mm,
                             d = pod_cap_insert_socket_bore_diameter_mm,
-                            center = true
-                        );
-                }
-
-                if (pod_cap_insert_retention_depth_clamped_mm > 0) {
-                    translate([
-                        insert_x_mm,
-                        pod_cap_insert_center_y_mm,
-                        pod_outer_height_mm / 2 - pod_cap_thickness_mm - pod_cap_insert_retention_depth_clamped_mm / 2
-                    ])
-                        cylinder(
-                            h = pod_cap_insert_retention_depth_clamped_mm + preview_overlap_mm,
-                            d = pod_cap_insert_socket_retention_bore_diameter_mm,
                             center = true
                         );
                 }
