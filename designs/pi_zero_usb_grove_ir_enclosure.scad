@@ -338,6 +338,8 @@ pod_attachment_socket_reinforcement_diameter_mm =
     + 2 * pod_attachment_socket_reinforcement_thickness_mm;
 pod_attachment_post_socket_reinforcement_extent_mm =
     pod_attachment_socket_reinforcement_length_mm + pod_attachment_post_insertion_length_mm;
+pod_attachment_cover_face_y_mm =
+    rotate_y_mm(0, outer_width_mm / 2, pod_base_rotation_deg);
 pod_panel_attachment_relief_height_mm =
     pod_panel_thickness_mm
         + pod_panel_seating_depth_mm
@@ -350,7 +352,7 @@ pod_panel_cable_relief_depth_mm =
         pod_panel_outer_depth_mm,
         pod_cable_entry_size_mm[1]
             + pod_wall_thickness_mm
-        + pod_panel_attachment_relief_height_mm
+            + pod_panel_attachment_relief_height_mm
             + 2 * preview_overlap_mm
     );
 
@@ -956,9 +958,10 @@ module pi_zero_usb_grove_ir_cover_pod_attachment_reinforcement() {
             for (post_index = [0:active_pod_attachment_post_count - 1]) {
                 post_local_center_mm = pod_attachment_post_local_centers_mm[post_index];
                 post_world_x_mm = pod_center_x_mm + rotate_x_mm(post_local_center_mm[0], post_local_center_mm[1], pod_base_rotation_deg);
-                post_world_y_mm = pod_center_y_mm + rotate_y_mm(post_local_center_mm[0], post_local_center_mm[1], pod_base_rotation_deg);
                 post_world_z_mm = pod_center_z_mm - pod_outer_height_mm / 2 + pod_attachment_post_center_z_from_bottom_mm;
-                post_socket_wall_y_mm = post_world_y_mm + pod_attachment_axis_sign_mm * pod_attachment_post_insertion_length_mm / 2;
+                post_socket_wall_y_mm =
+                    pod_attachment_cover_face_y_mm
+                    + pod_attachment_axis_sign_mm * pod_attachment_post_socket_reinforcement_extent_mm / 2;
 
                 translate([post_world_x_mm, post_socket_wall_y_mm, post_world_z_mm])
                     rotate([90, 0, 0])
@@ -976,14 +979,15 @@ module pi_zero_usb_grove_ir_cover_pod_attachment_socket_holes() {
         for (post_index = [0:active_pod_attachment_post_count - 1]) {
             post_local_center_mm = pod_attachment_post_local_centers_mm[post_index];
             post_world_x_mm = pod_center_x_mm + rotate_x_mm(post_local_center_mm[0], post_local_center_mm[1], pod_base_rotation_deg);
-            post_world_y_mm = pod_center_y_mm + rotate_y_mm(post_local_center_mm[0], post_local_center_mm[1], pod_base_rotation_deg);
             post_world_z_mm = pod_center_z_mm - pod_outer_height_mm / 2 + pod_attachment_post_center_z_from_bottom_mm;
-            post_socket_wall_y_mm = post_world_y_mm + pod_attachment_axis_sign_mm * pod_attachment_post_insertion_length_mm / 2;
+            post_socket_wall_y_mm =
+                pod_attachment_cover_face_y_mm
+                + pod_attachment_axis_sign_mm * pod_attachment_socket_depth_mm / 2;
 
             translate([post_world_x_mm, post_socket_wall_y_mm, post_world_z_mm])
                 rotate([90, 0, 0])
                     cylinder(
-                        h = pod_attachment_socket_depth_mm,
+                        h = pod_attachment_socket_depth_mm + 2 * preview_overlap_mm,
                         d = pod_attachment_socket_diameter_mm,
                         center = true
                     );
@@ -1184,13 +1188,16 @@ module pi_zero_usb_grove_ir_pod_attachment_posts() {
             post_world_x_mm = pod_center_x_mm + rotate_x_mm(post_local_center_mm[0], post_local_center_mm[1], pod_base_rotation_deg);
             post_world_y_mm = pod_center_y_mm + rotate_y_mm(post_local_center_mm[0], post_local_center_mm[1], pod_base_rotation_deg);
             post_world_z_mm = pod_center_z_mm - pod_outer_height_mm / 2 + pod_attachment_post_center_z_from_bottom_mm;
-            post_world_center_y_mm = post_world_y_mm + pod_attachment_axis_sign_mm * pod_attachment_post_insertion_length_mm / 2;
+            post_world_center_y_mm =
+                post_world_y_mm
+                + pod_attachment_axis_sign_mm
+                    * (pod_attachment_post_insertion_length_mm - pod_attachment_post_root_overlap_mm) / 2;
 
             color(standoff_colour)
                 translate([post_world_x_mm, post_world_center_y_mm, post_world_z_mm])
                     rotate([90, 0, 0])
                         cylinder(
-                            h = pod_attachment_post_insertion_length_mm,
+                            h = pod_attachment_post_insertion_length_mm + pod_attachment_post_root_overlap_mm,
                             d = pod_attachment_post_diameter_mm,
                             center = true
                         );
