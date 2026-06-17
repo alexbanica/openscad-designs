@@ -126,8 +126,11 @@ pod_cap_insert_receiver_wall_thickness_mm = 1.0;
 // Cap-side root shoulder is a short, direct transition from the cap underside into the pin body.
 pod_cap_insert_pin_root_diameter_mm = 3.8;
 pod_cap_insert_pin_root_depth_mm = 0.4;
-pod_cap_insert_keeper_cap_diameter_mm = 3.55;
-pod_cap_insert_keeper_cap_thickness_mm = 1.0;
+pod_cap_insert_keeper_pin_diameter_mm = 1.2;
+pod_cap_insert_keeper_pin_clearance_mm = 0.2;
+pod_cap_insert_lock_wrap_clearance_mm = 1.2;
+pod_cap_insert_lock_bridge_depth_mm = 1.2;
+pod_cap_insert_lock_bridge_height_mm = 1.2;
 pod_cap_insert_count = 2;
 pod_cap_insert_spacing_mm = 33.8;
 pod_cap_insert_external_wall_overlap_mm = 0.2;
@@ -143,8 +146,11 @@ pod_attachment_post_root_overlap_mm = 2.0; // Root overlap into pod wall for def
 pod_attachment_post_center_z_from_bottom_mm = 8.0;
 pod_attachment_post_diameter_mm = 3.0;
 pod_attachment_post_insertion_length_mm = 6.0;
-pod_attachment_post_keeper_cap_diameter_mm = 5.0;
-pod_attachment_post_keeper_cap_thickness_mm = 1.0;
+pod_attachment_post_lock_pin_diameter_mm = 1.2;
+pod_attachment_post_lock_pin_clearance_mm = 0.2;
+pod_attachment_post_lock_pin_engagement_depth_mm = 4.0;
+pod_attachment_post_lock_bridge_depth_mm = 1.2;
+pod_attachment_post_lock_bridge_height_mm = 1.2;
 pod_attachment_socket_clearance_mm = 0.35;
 pod_attachment_socket_depth_mm = 6.0;
 pod_attachment_socket_reinforcement_thickness_mm = 1.2;
@@ -322,6 +328,13 @@ pod_attachment_socket_through_depth_mm =
     max(pod_attachment_socket_depth_mm, pod_attachment_post_socket_reinforcement_extent_mm);
 pod_attachment_cover_face_y_mm =
     rotate_y_mm(0, outer_width_mm / 2, pod_base_rotation_deg);
+pod_attachment_post_lock_hole_diameter_mm =
+    pod_attachment_post_lock_pin_diameter_mm + 2 * pod_attachment_post_lock_pin_clearance_mm;
+pod_attachment_post_lock_center_y_mm =
+    pod_attachment_cover_face_y_mm
+    + pod_attachment_axis_sign_mm * pod_attachment_socket_through_depth_mm / 2;
+pod_attachment_post_lock_bridge_width_mm =
+    pod_attachment_post_spacing_x_mm + pod_attachment_post_lock_pin_diameter_mm;
 pod_cap_corner_radius_mm = max(pod_corner_radius_mm - pod_cap_fit_clearance_mm, 0.8);
 pod_cap_insert_local_x_positions_mm = [
     for (insert_index = [0:pod_cap_insert_count - 1])
@@ -338,6 +351,19 @@ pod_cap_insert_tab_depth_mm =
     pod_cap_insert_receiver_outer_diameter_mm + 2 * pod_cap_insert_tab_margin_mm;
 pod_cap_insert_socket_bore_diameter_mm =
     pod_cap_insert_diameter_mm + 2 * pod_cap_insert_socket_clearance_mm;
+pod_cap_insert_socket_through_depth_mm =
+    pod_cap_insert_socket_depth_mm + 2 * pod_cap_insert_external_wall_overlap_mm;
+pod_cap_insert_lock_hole_diameter_mm =
+    pod_cap_insert_keeper_pin_diameter_mm + 2 * pod_cap_insert_keeper_pin_clearance_mm;
+pod_cap_insert_lock_leg_length_mm =
+    pod_outer_depth_mm
+    + 2 * pod_cap_insert_lock_wrap_clearance_mm;
+pod_cap_insert_lock_bridge_center_y_mm =
+    -pod_cap_insert_lock_leg_length_mm / 2
+    - pod_cap_insert_lock_bridge_depth_mm / 2
+    + solid_merge_overlap_mm / 2;
+pod_cap_insert_lock_bridge_width_mm =
+    pod_cap_insert_spacing_mm + pod_cap_insert_keeper_pin_diameter_mm;
 pod_cap_insert_pin_root_depth_clamped_mm =
     min(
         pod_cap_insert_pin_root_depth_mm,
@@ -371,6 +397,10 @@ pod_center_z_mm =
     + pod_center_offset_z_mm;
 pod_cable_entry_center_z_mm = pod_center_z_mm - pod_outer_height_mm / 2 + pod_cable_entry_local_z_mm;
 pod_cap_installed_top_z_mm = pod_center_z_mm + pod_outer_height_mm / 2;
+pod_attachment_post_lock_center_z_mm =
+    pod_center_z_mm
+    - pod_outer_height_mm / 2
+    + pod_attachment_post_center_z_from_bottom_mm;
 
 emitter_board_center_x_mm =
     pod_center_x_mm
@@ -426,6 +456,24 @@ case_total_height_mm =
     + top_roof_thickness_mm
     + top_cover_internal_clearance_mm;
 top_cover_height_mm = case_total_height_mm - tray_wall_height_mm;
+pod_attachment_post_lock_hole_bottom_z_mm =
+    pod_attachment_post_lock_center_z_mm
+    - pod_attachment_post_lock_pin_engagement_depth_mm;
+pod_attachment_post_lock_hole_center_z_mm =
+    (case_total_height_mm + pod_attachment_post_lock_hole_bottom_z_mm) / 2;
+pod_attachment_post_lock_hole_depth_mm =
+    case_total_height_mm - pod_attachment_post_lock_hole_bottom_z_mm;
+pod_attachment_post_lock_pin_lower_length_mm =
+    pod_attachment_post_lock_hole_depth_mm;
+pod_attachment_post_lock_pin_length_mm =
+    pod_attachment_post_lock_pin_lower_length_mm;
+pod_attachment_post_lock_bridge_center_z_mm =
+    case_total_height_mm + pod_attachment_post_lock_bridge_height_mm / 2;
+pod_cap_insert_lock_center_z_from_cap_top_mm =
+    -pod_cap_thickness_mm - pod_cap_insert_insertion_depth_mm / 2;
+pod_cap_insert_lock_center_z_from_pod_center_mm =
+    pod_outer_height_mm / 2
+    + pod_cap_insert_lock_center_z_from_cap_top_mm;
 
 pi_micro_sd_cutout_width_mm =
     micro_sd_card_width_mm + micro_sd_card_total_clearance_mm;
@@ -591,6 +639,8 @@ module pi_zero_usb_grove_ir_enclosure_assembly(
     pi_zero_usb_grove_ir_top_cover();
     pi_zero_usb_grove_ir_ir_pod();
     pi_zero_usb_grove_ir_pod_top_cap();
+    pi_zero_usb_grove_ir_pod_attachment_post_lock();
+    pi_zero_usb_grove_ir_pod_cap_insert_lock();
 
     if (show_case_electronics) {
         pi_zero_usb_grove_ir_electronics_reference();
@@ -618,6 +668,24 @@ module pi_zero_usb_grove_ir_printable_layout() {
         0
     ])
         pi_zero_usb_grove_ir_printable_pod_top_cap();
+
+    translate([
+        outer_length_mm + printable_layout_spacing_mm + pod_outer_width_mm + pod_cap_outer_width_mm + 2 * pod_cap_print_gap_mm,
+        0,
+        0
+    ])
+        pi_zero_usb_grove_ir_printable_pod_cap_insert_lock();
+
+    translate([
+        outer_length_mm + printable_layout_spacing_mm
+            + pod_outer_width_mm + pod_cap_outer_width_mm
+            + 2 * pod_cap_print_gap_mm
+            + pod_cap_insert_lock_bridge_width_mm
+            + printable_layout_spacing_mm,
+        0,
+        0
+    ])
+        pi_zero_usb_grove_ir_printable_pod_attachment_post_lock();
 }
 
 module pi_zero_usb_grove_ir_electronics_reference(
@@ -696,7 +764,29 @@ module pi_zero_usb_grove_ir_printable_ir_pod() {
 
 module pi_zero_usb_grove_ir_printable_pod_top_cap() {
     color(pod_colour)
-        pi_zero_usb_grove_ir_pod_top_cap_geometry();
+        rotate([180, 0, 0])
+            pi_zero_usb_grove_ir_pod_top_cap_geometry();
+}
+
+module pi_zero_usb_grove_ir_printable_pod_cap_insert_lock() {
+    color(standoff_colour)
+    translate([
+        0,
+        0,
+        max(pod_cap_insert_keeper_pin_diameter_mm, pod_cap_insert_lock_bridge_height_mm) / 2
+    ])
+        pi_zero_usb_grove_ir_pod_cap_insert_lock_geometry();
+}
+
+module pi_zero_usb_grove_ir_printable_pod_attachment_post_lock() {
+    color(standoff_colour)
+    translate([
+        0,
+        0,
+        max(pod_attachment_post_lock_pin_diameter_mm, pod_attachment_post_lock_bridge_depth_mm) / 2
+    ])
+        rotate([90, 0, 0])
+            pi_zero_usb_grove_ir_pod_attachment_post_lock_geometry();
 }
 
 module pi_zero_usb_grove_ir_bottom_tray() {
@@ -735,6 +825,7 @@ module pi_zero_usb_grove_ir_top_cover() {
         pi_zero_usb_grove_ir_main_internal_cable_path_volume();
         pi_zero_usb_grove_ir_top_vent_holes();
         pi_zero_usb_grove_ir_cover_pod_attachment_socket_holes();
+        pi_zero_usb_grove_ir_pod_attachment_post_lock_holes();
     }
 }
 
@@ -755,6 +846,8 @@ module pi_zero_usb_grove_ir_ir_pod() {
             pi_zero_usb_grove_ir_ir_led_aperture();
             pi_zero_usb_grove_ir_pod_internal_cable_path_volume();
             pi_zero_usb_grove_ir_pod_top_cap_socket_bores();
+            pi_zero_usb_grove_ir_pod_cap_insert_lock_holes();
+            pi_zero_usb_grove_ir_pod_attachment_post_lock_holes();
         }
 }
 
@@ -956,15 +1049,19 @@ module pi_zero_usb_grove_ir_pod_top_cap() {
 }
 
 module pi_zero_usb_grove_ir_pod_top_cap_geometry() {
-    union() {
-        pi_zero_usb_grove_ir_rounded_box(
-            [pod_cap_outer_width_mm, pod_cap_outer_depth_mm, pod_cap_thickness_mm],
-            pod_cap_corner_radius_mm,
-            [0, 0, -pod_cap_thickness_mm / 2]
-        );
+    difference() {
+        union() {
+            pi_zero_usb_grove_ir_rounded_box(
+                [pod_cap_outer_width_mm, pod_cap_outer_depth_mm, pod_cap_thickness_mm],
+                pod_cap_corner_radius_mm,
+                [0, 0, -pod_cap_thickness_mm / 2]
+            );
 
-        pi_zero_usb_grove_ir_pod_top_cap_insert_pins();
-        pi_zero_usb_grove_ir_pod_top_cap_insert_tab();
+            pi_zero_usb_grove_ir_pod_top_cap_insert_pins();
+            pi_zero_usb_grove_ir_pod_top_cap_insert_tab();
+        }
+
+        pi_zero_usb_grove_ir_pod_top_cap_insert_lock_holes_local();
     }
 }
 
@@ -1020,7 +1117,7 @@ module pi_zero_usb_grove_ir_pod_top_cap_socket_volumes() {
                     pod_outer_height_mm / 2 - pod_cap_insert_socket_depth_mm / 2
                 ])
                     cylinder(
-                        h = pod_cap_insert_socket_depth_mm,
+                        h = pod_cap_insert_socket_through_depth_mm,
                         d = pod_cap_insert_receiver_outer_diameter_mm,
                         center = true
                     );
@@ -1038,12 +1135,92 @@ module pi_zero_usb_grove_ir_pod_top_cap_socket_bores() {
                         pod_outer_height_mm / 2 - pod_cap_insert_socket_depth_mm / 2
                     ])
                         cylinder(
-                            h = pod_cap_insert_socket_depth_mm + preview_overlap_mm,
+                            h = pod_cap_insert_socket_through_depth_mm + 2 * preview_overlap_mm,
                             d = pod_cap_insert_socket_bore_diameter_mm,
                             center = true
                         );
                 }
             }
+}
+
+module pi_zero_usb_grove_ir_pod_top_cap_insert_lock_holes_local() {
+    for (insert_x_mm = pod_cap_insert_local_x_positions_mm) {
+        translate([
+            insert_x_mm,
+            pod_cap_insert_center_y_mm,
+            pod_cap_insert_lock_center_z_from_cap_top_mm
+        ])
+            rotate([90, 0, 0])
+                cylinder(
+                    h = pod_cap_insert_lock_leg_length_mm + 2 * preview_overlap_mm,
+                    d = pod_cap_insert_lock_hole_diameter_mm,
+                    center = true
+                );
+    }
+}
+
+module pi_zero_usb_grove_ir_pod_cap_insert_lock_holes() {
+    translate([pod_center_x_mm, pod_center_y_mm, pod_center_z_mm])
+        rotate([0, 0, pod_base_rotation_deg])
+            for (insert_x_mm = pod_cap_insert_local_x_positions_mm) {
+                translate([
+                    insert_x_mm,
+                    pod_cap_insert_center_y_mm,
+                    pod_cap_insert_lock_center_z_from_pod_center_mm
+                ])
+                    rotate([90, 0, 0])
+                        cylinder(
+                            h = pod_cap_insert_lock_leg_length_mm + 2 * preview_overlap_mm,
+                            d = pod_cap_insert_lock_hole_diameter_mm,
+                            center = true
+                        );
+            }
+}
+
+module pi_zero_usb_grove_ir_pod_cap_insert_lock_geometry() {
+    for (insert_x_mm = pod_cap_insert_local_x_positions_mm) {
+        translate([
+            insert_x_mm,
+            pod_cap_insert_center_y_mm,
+            0
+        ])
+            rotate([90, 0, 0])
+            cylinder(
+                h = pod_cap_insert_lock_leg_length_mm + solid_merge_overlap_mm,
+                d = pod_cap_insert_keeper_pin_diameter_mm,
+                center = true
+            );
+    }
+
+    pi_zero_usb_grove_ir_rounded_box(
+        [
+            pod_cap_insert_lock_bridge_width_mm,
+            pod_cap_insert_lock_bridge_depth_mm,
+            pod_cap_insert_lock_bridge_height_mm
+        ],
+        min(
+            pod_cap_insert_keeper_pin_diameter_mm / 2,
+            pod_cap_insert_lock_bridge_depth_mm / 2,
+            pod_cap_insert_lock_bridge_height_mm / 2
+        ),
+        [
+            0,
+            pod_cap_insert_lock_bridge_center_y_mm,
+            0
+        ]
+    );
+}
+
+module pi_zero_usb_grove_ir_pod_cap_insert_lock() {
+    color(standoff_colour)
+    translate([pod_center_x_mm, pod_center_y_mm, pod_center_z_mm])
+        rotate([0, 0, pod_base_rotation_deg])
+            translate([
+                0,
+                0,
+                pod_cap_insert_lock_center_z_from_pod_center_mm
+            ])
+                pi_zero_usb_grove_ir_pod_cap_insert_lock_geometry();
 }
 
 module pi_zero_usb_grove_ir_pod_shell() {
@@ -1084,12 +1261,83 @@ module pi_zero_usb_grove_ir_pod_attachment_posts() {
             color(standoff_colour)
                 translate([post_world_x_mm, post_world_center_y_mm, post_world_z_mm])
                     rotate([90, 0, 0])
-                        cylinder(
-                            h = pod_attachment_post_insertion_length_mm + pod_attachment_post_root_overlap_mm,
-                            d = pod_attachment_post_diameter_mm,
-                            center = true
-                        );
+                cylinder(
+                    h = pod_attachment_post_insertion_length_mm + pod_attachment_post_root_overlap_mm,
+                    d = pod_attachment_post_diameter_mm,
+                    center = true
+                );
         }
+    }
+}
+
+module pi_zero_usb_grove_ir_pod_attachment_post_lock_holes() {
+    if (active_pod_attachment_post_count > 0) {
+        for (post_index = [0:active_pod_attachment_post_count - 1]) {
+            post_local_center_mm = pod_attachment_post_local_centers_mm[post_index];
+            post_world_x_mm = pod_center_x_mm + rotate_x_mm(post_local_center_mm[0], post_local_center_mm[1], pod_base_rotation_deg);
+
+            translate([
+                post_world_x_mm,
+                pod_attachment_post_lock_center_y_mm,
+                pod_attachment_post_lock_hole_center_z_mm
+            ])
+                    cylinder(
+                        h = pod_attachment_post_lock_hole_depth_mm + 2 * preview_overlap_mm,
+                        d = pod_attachment_post_lock_hole_diameter_mm,
+                        center = true
+                    );
+        }
+    }
+}
+
+module pi_zero_usb_grove_ir_pod_attachment_post_lock_geometry() {
+    if (active_pod_attachment_post_count > 0) {
+        for (post_index = [0:active_pod_attachment_post_count - 1]) {
+            post_local_center_mm = pod_attachment_post_local_centers_mm[post_index];
+
+            translate([
+                post_local_center_mm[0] - pod_attachment_post_x_offset_mm,
+                0,
+                -pod_attachment_post_lock_bridge_height_mm / 2
+                - pod_attachment_post_lock_pin_lower_length_mm / 2
+                + solid_merge_overlap_mm / 2
+            ])
+                cylinder(
+                    h = pod_attachment_post_lock_pin_lower_length_mm + solid_merge_overlap_mm,
+                    d = pod_attachment_post_lock_pin_diameter_mm,
+                    center = true
+                );
+        }
+
+        pi_zero_usb_grove_ir_rounded_box(
+            [
+                pod_attachment_post_lock_bridge_width_mm,
+                pod_attachment_post_lock_bridge_depth_mm,
+                pod_attachment_post_lock_bridge_height_mm
+            ],
+            min(
+                pod_attachment_post_lock_pin_diameter_mm / 2,
+                pod_attachment_post_lock_bridge_depth_mm / 2,
+                pod_attachment_post_lock_bridge_height_mm / 2
+            ),
+            [
+                0,
+                0,
+                0
+            ]
+        );
+    }
+}
+
+module pi_zero_usb_grove_ir_pod_attachment_post_lock() {
+    if (active_pod_attachment_post_count > 0) {
+        color(standoff_colour)
+            translate([
+                pod_center_x_mm + rotate_x_mm(pod_attachment_post_x_offset_mm, 0, pod_base_rotation_deg),
+                pod_attachment_post_lock_center_y_mm,
+                pod_attachment_post_lock_bridge_center_z_mm
+            ])
+                pi_zero_usb_grove_ir_pod_attachment_post_lock_geometry();
     }
 }
 
