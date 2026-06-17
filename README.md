@@ -403,7 +403,8 @@ Default dimensions are configurable at the top of `designs/pi_zero_usb_grove_ir_
 - Waveshare front RJ45/Ethernet and USB-A cutout X defaults come from the local `designs/waveshare_eth_usb_hub_hat.scad` reference: `waveshare_rj45_cutout_center_x_mm = -7.76` and `waveshare_front_usb_a_cutout_center_x_mm = 10.83`.
 - Top-cover USB opening defaults: at least 15.4 mm effective width and 7.4 mm effective height for the external Pi Zero Micro USB power port, Waveshare front USB-A, Waveshare left USB-A, and Waveshare right USB-A openings.
 - Seeed Grove Base Hat for Raspberry Pi Zero mounted above the USB HAT with the adjustable measured spacer default; tune the spacing after physical measurement if the preview or hardware stack needs more clearance.
-- Seeed Grove Infrared Emitter board planning defaults: measured 20.25 mm x 23.75 mm PCB at 1.6 mm thickness, with a 9.65 mm connector top envelope and 2.0 mm bottom-pin protrusion clearance.
+- Seeed Grove Infrared Emitter board planning defaults: measured 20.25 mm x 23.75 mm PCB at 1.6 mm thickness.
+- Source-of-truth Grove IR emitter defaults from `designs/grove_infrared_emitter.scad`: connector center `(0.0, -8.1)`, total connector top envelope `9.65` mm from PCB bottom, LED diameter `5.0` mm, LED center height `4.0` mm, and LED extension beyond PCB `7.5` mm.
 - The IR emitter PCB reference uses exactly two mounting holes centered on the left/right PCB margins along the board length; hole diameter and X-edge inset remain adjustable fit-planning parameters.
 - Common M2.5-class fasteners for the board standoffs.
 - microSD card width: 11.0 mm, with a default 2.0 mm total clearance for the tray pass-through opening.

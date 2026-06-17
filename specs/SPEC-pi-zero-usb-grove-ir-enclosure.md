@@ -716,6 +716,48 @@ Impact and regression considerations for this iteration:
 - Removing unused locator code must not remove the Grove IR emitter reference pose, pod support bosses, optional/now-default pilot holes, LED aperture alignment, cable entry, board retainer behavior if retained, or detachable top service panel behavior.
 - README and validation language must not continue to tell users that pilot holes are disabled by default or that side/front board locators are part of the default pod body after this iteration.
 
+## Iteration: IR Pod PCB Source-Of-Truth Refresh
+
+Requested changes:
+
+- Update the IR pod enclosure for the user's revised Grove Infrared Emitter PCB details and sizes.
+- Treat `designs/grove_infrared_emitter.scad` as the source of truth for the IR pod's Grove Infrared Emitter PCB, connector, LED, cable clearance, and mounting-hole defaults.
+
+Updated deterministic behavior:
+
+- The enclosure's IR pod board defaults must be refreshed from the current local `designs/grove_infrared_emitter.scad` reference model rather than stale enclosure-only Grove 20 mm-class assumptions.
+- The IR pod PCB default dimensions must match the current Grove Infrared Emitter reference defaults:
+  - `pcb_width_mm = 20.25`,
+  - `pcb_length_mm = 23.75`,
+  - `pcb_thickness_mm = 1.6`.
+- The enclosure must no longer default to the stale IR pod PCB dimensions `20.0 mm x 24.0 mm`.
+- The IR pod board mounting-hole defaults must match the current Grove Infrared Emitter reference's two-hole layout:
+  - exactly two mounting holes by default,
+  - one on the left PCB margin and one on the right PCB margin,
+  - both centered on the PCB length centerline by default,
+  - X placement derived from the reference default `mounting_hole_edge_offset_x_mm = 2.5` against the 20.25 mm PCB width.
+- The enclosure must no longer default to four IR PCB support bosses or four IR PCB pilot-hole positions for the Grove Infrared Emitter PCB.
+- The IR pod support bosses, optional/default pilot holes, printed retainer/service window sizing, emitter reference pose, IR LED aperture, pod cable entry, pod internal cable guide, and any cutout guides must all remain derived from the refreshed IR PCB and emitter placement values.
+- The IR LED local placement and aperture behavior must be refreshed from, or remain consistent with, the current Grove Infrared Emitter reference defaults:
+  - `ir_led_diameter_mm = 5.0`,
+  - `ir_led_center_height_mm = 4.0`,
+  - `ir_led_extension_beyond_pcb_mm = 7.5`,
+  - LED direction remains toward the board's positive Y direction before enclosure pod rotation.
+- The IR pod Grove connector and cable-clearance defaults must be refreshed from, or remain consistent with, the current Grove Infrared Emitter reference defaults:
+  - connector center at `grove_connector_center_x_mm = 0.0` and `grove_connector_center_y_mm = -8.1`,
+  - total top envelope `grove_connector_total_top_envelope_mm = 9.65` from the PCB bottom,
+  - cable/plug clearance defaults sized from the reference model's connector and cable clearance behavior.
+- The enclosure may keep enclosure-specific pod wall, service-panel, retainer, cable-entry, and aperture clearances where those values are enclosure fit allowances rather than PCB source-of-truth dimensions.
+- README documentation must state that the IR pod PCB dimensions, two-hole layout, connector placement/envelope, cable clearance, and LED extension are sourced from `designs/grove_infrared_emitter.scad`.
+- README documentation and manual inspection guidance must no longer describe the IR pod as using a 20.0 mm x 24.0 mm PCB or a four-hole IR PCB mounting pattern by default.
+
+Impact and regression considerations for this iteration:
+
+- Changing the IR pod from four board support positions to the current two-hole layout can affect PCB stability and retainer behavior. The implementation must preserve serviceable board support and retention for the measured PCB without reintroducing the stale four-hole assumption.
+- The pod's current 29.0 mm body width should still fit the 20.25 mm PCB, but the refreshed board, retainer, service window, and boss layout must preserve printable wall material, slide-slot clearance, cable-entry clearance, and LED aperture alignment.
+- The refreshed IR PCB defaults must not move the external pod back over the Waveshare RJ45/Ethernet opening or change the approved top-cover-owned pod attachment ownership.
+- Updating IR pod PCB defaults must preserve existing board stack geometry, Waveshare/Pi Zero port cutouts, cover pin/socket behavior, top ventilation holes, printable orientation behavior, and generated-mesh exclusion.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -732,6 +774,8 @@ Impact and regression considerations for this iteration:
 - Changing the IR emitter pod or emitter position changes the IR emitter reference, pod mount bosses, mount holes, LED aperture, cable entry, and related pod/main cable cutouts together.
 - The board stack renders in the correct vertical order when `show_electronics = true`.
 - The bottom tray includes Pi Zero-aligned mounting standoffs and adjustable M2.5-class screw clearance.
+- The IR pod PCB defaults match the current `designs/grove_infrared_emitter.scad` measured defaults for 20.25 mm PCB width, 23.75 mm PCB length, 1.6 mm PCB thickness, two centerline mounting holes, connector placement/envelope, and LED extension behavior.
+- The IR pod no longer defaults to stale 20.0 mm x 24.0 mm PCB dimensions or four IR PCB support boss/pilot-hole positions.
 - The Grove IR emitter PCB has a mounting location inside the external IR emitter pod with support bosses and default enabled pilot holes accessible through the detachable pod top service panel.
 - Unused IR pod PCB side/front locator geometry, parameters, modules, documentation, and validation language are removed when they no longer serve the intended design.
 - The Grove IR emitter PCB can be screwed into the pod through the detachable pod top service opening without requiring the Grove cable to be disconnected first.
@@ -816,6 +860,9 @@ Impact and regression considerations for this iteration:
   - every top-cover USB opening defaults to at least 15.4 mm effective width and 7.4 mm effective height and remains adjustable,
   - the wireless dongle remains outside the case through an accessible USB-A cutout,
   - the external IR emitter pod, printed PCB retention geometry, LED aperture, and main-to-pod cable path are present,
+  - the IR pod PCB dimensions, mounting-hole count and placement, connector defaults, cable-clearance defaults, and LED extension defaults match the current local `designs/grove_infrared_emitter.scad` source of truth,
+  - the IR pod no longer uses stale 20.0 mm x 24.0 mm PCB defaults or a four-hole Grove 20 mm-class IR PCB mounting pattern,
+  - the refreshed two-hole support and retention behavior still provides serviceable PCB support, pilot-hole/screw access when enabled, retainer/service-window fit, cable entry clearance, and LED aperture alignment,
   - only the IR LED path is exposed outside the pod by default,
   - the IR emitter PCB can be fastened through the detachable pod top service opening with the Grove cable remaining connected,
   - the removable top cover uses plug-in pin/socket attachment, has no cover screws, and does not depend on board mounting screws,
@@ -857,6 +904,8 @@ Impact and regression considerations for this iteration:
 - Document that the four bottom-tray board-stack holes exist because the Pi Zero/HAT stack has four mounting points, and that top-cover pin/socket features and pod attachment features are separate.
 - Document the revised `top_cover`-mounted IR pod attachment method and note that pod retention is part of the removable upper assembly.
 - Document that the IR emitter PCB can be screwed into the pod through the detachable pod top service opening, with the Grove cable allowed to remain connected during service.
+- Document that the IR pod PCB dimensions, two-hole mounting pattern, Grove connector placement/envelope, cable clearance, and LED extension defaults are sourced from `designs/grove_infrared_emitter.scad`.
+- Remove or update stale README language that describes the IR pod PCB as 20.0 mm x 24.0 mm or as using a four-hole mounting pattern by default.
 - Document that the pod itself mounts tool-free to the top cover through the implemented clip or slide interface.
 - Document that the additional loose IR pod printable part is the removable PCB retainer when that design is retained.
 - Document the detachable IR pod top service panel as a separate printable closure part, including that it exists to avoid inaccessible Bambu Studio tree supports inside the pod.

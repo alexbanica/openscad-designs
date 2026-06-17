@@ -146,8 +146,9 @@ pod_slide_root_gusset_height_mm = 10.0;
 pod_slide_root_embed_depth_mm = 2.4;
 
 // IR emitter pod board mount
-ir_pcb_width_mm = 20.0;
-ir_pcb_length_mm = 24.0;
+// Source of truth: designs/grove_infrared_emitter.scad
+ir_pcb_width_mm = 20.25;
+ir_pcb_length_mm = 23.75;
 ir_pcb_thickness_mm = 1.6;
 emitter_board_center_local_x_mm = 0.0;
 emitter_board_center_local_y_mm = 1.5;
@@ -158,7 +159,6 @@ ir_mount_screw_hole_diameter_mm = 2.1;
 ir_mount_pilot_hole_depth_mm = 7.5;
 enable_ir_mount_optional_pilot_holes = true;
 ir_mounting_hole_edge_offset_x_mm = 2.5;
-ir_mounting_hole_edge_offset_y_mm = 2.5;
 ir_pcb_retainer_face_thickness_mm = 2.0;
 ir_pcb_retainer_bar_depth_mm = 3.0;
 ir_pcb_retainer_bar_height_mm = 3.2;
@@ -166,13 +166,18 @@ ir_pcb_retainer_overlap_mm = 0.8;
 ir_pcb_retainer_fit_clearance_mm = 0.3;
 ir_grove_connector_local_x_mm = 0.0;
 ir_grove_connector_local_y_mm = -8.1;
-ir_grove_connector_local_cable_z_mm = 11.2;
+ir_grove_connector_total_top_envelope_mm = 9.65;
+ir_grove_connector_local_cable_z_allowance_mm = 1.55;
+ir_grove_connector_local_cable_z_mm =
+    ir_grove_connector_total_top_envelope_mm
+    + ir_grove_connector_local_cable_z_allowance_mm;
 
 // IR LED aperture
 ir_led_diameter_mm = 5.0;
+ir_led_body_length_mm = 7.0;
+ir_led_extension_beyond_pcb_mm = 7.5;
 ir_led_aperture_diameter_mm = 6.2;
 ir_led_local_center_x_mm = 0.0;
-ir_led_local_center_y_mm = 16.0;
 ir_led_local_center_z_mm = 4.0;
 ir_led_aperture_center_offset_x_mm = 0.0;
 ir_led_aperture_center_offset_z_mm = 0.0;
@@ -378,6 +383,11 @@ emitter_board_bottom_z_mm = pod_center_z_mm - pod_outer_height_mm / 2 + pod_floo
 emitter_board_top_z_mm = emitter_board_bottom_z_mm + ir_pcb_thickness_mm;
 emitter_board_rotation_global_deg = pod_base_rotation_deg + emitter_board_rotation_deg;
 
+ir_led_local_center_y_mm =
+    ir_pcb_length_mm / 2
+    + ir_led_extension_beyond_pcb_mm
+    - ir_led_body_length_mm / 2;
+
 ir_led_center_x_mm =
     emitter_board_center_x_mm
     + rotate_x_mm(ir_led_local_center_x_mm, ir_led_local_center_y_mm, emitter_board_rotation_global_deg);
@@ -497,12 +507,10 @@ pod_slide_retention_pocket_center_local_y_mm =
     - preview_overlap_mm;
 
 ir_mounting_hole_x_mm = ir_pcb_width_mm / 2 - ir_mounting_hole_edge_offset_x_mm;
-ir_mounting_hole_y_mm = ir_pcb_length_mm / 2 - ir_mounting_hole_edge_offset_y_mm;
+ir_mounting_hole_centerline_y_mm = 0.0;
 ir_mounting_hole_centers_mm = [
-    [-ir_mounting_hole_x_mm, -ir_mounting_hole_y_mm],
-    [ir_mounting_hole_x_mm, -ir_mounting_hole_y_mm],
-    [-ir_mounting_hole_x_mm, ir_mounting_hole_y_mm],
-    [ir_mounting_hole_x_mm, ir_mounting_hole_y_mm]
+    [-ir_mounting_hole_x_mm, ir_mounting_hole_centerline_y_mm],
+    [ir_mounting_hole_x_mm, ir_mounting_hole_centerline_y_mm]
 ];
 
 pod_service_window_width_mm =
