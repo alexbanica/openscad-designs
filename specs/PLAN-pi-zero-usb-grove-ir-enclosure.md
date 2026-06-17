@@ -8,14 +8,14 @@ Approved Spec: `specs/SPEC-pi-zero-usb-grove-ir-enclosure.md`
 
 No dedicated branch is required. Repository instructions allow committing directly to `main` when otherwise unspecified.
 
-Implementation must not revert unrelated dirty worktree changes.
+Implementation must not revert unrelated dirty worktree changes. The existing CRLF warning for `designs/pi_zero_usb_grove_ir_enclosure.scad` is not itself an implementation target.
 
 ## Affected Files
 
 - Update `designs/pi_zero_usb_grove_ir_enclosure.scad`.
 - Update `README.md`.
 - Keep generated mesh/export files out of source control.
-- Do not edit electronics reference files unless a direct syntax or import issue blocks validation.
+- Do not edit `designs/grove_infrared_emitter.scad` in this implementation unless the implementation command stops for an approved spec/plan amendment that explicitly adds that file.
 
 ## No-Research Constraint
 
@@ -25,7 +25,8 @@ Implementation must use only:
 - this approved implementation plan,
 - repository instructions,
 - the current `designs/pi_zero_usb_grove_ir_enclosure.scad`,
-- the current `README.md` enclosure section.
+- the current `README.md` enclosure section,
+- the current `designs/grove_infrared_emitter.scad` values only as local reference context for explaining the previous source-of-truth mismatch.
 
 Implementation must not perform additional product, architecture, scope, or planning research. It may inspect only the affected files, approved artifacts, repository instructions, and local syntax/render output needed to execute and validate this plan.
 
@@ -49,46 +50,40 @@ Subagents must receive only the approved spec, this approved plan, their exact a
 
 ## Implementation Steps
 
-1. In `designs/pi_zero_usb_grove_ir_enclosure.scad`, identify the current detachable IR pod top service panel geometry, panel side retention tabs, panel retention socket cutouts, attachment-side panel relief, pod service window, and separate IR PCB retainer geometry.
-2. Replace the detachable pod cap retention mechanism with a simple male/female insert interface:
-   - cap-owned male insert pins/posts by default,
-   - pod-body-owned matching female receiving sockets/holes by default,
-   - adjustable insert diameter or size, insertion depth, socket clearance, socket depth, count, spacing, and placement,
-   - no flexible clip tabs, side detents, hooks, latch tabs, rails, sliding lips, or flexing snap features as the default cap retention path.
-3. Make the detachable cap cover the complete top surface footprint of the IR pod by default:
-   - remove the attachment-side cap relief from the default cap,
-   - remove service-window or retainer-access gaps from the installed cap state,
-   - preserve only ordinary perimeter fit clearance needed for printable insertion/removal.
-4. Remove the separate gray IR PCB retainer from the default printable design:
-   - delete or disable the retainer printable object in `printable_layout`,
-   - remove retainer-specific modules, derived values, adjustable parameters, holes, service windows, slots, bars, and cutouts when they no longer serve the final design,
-   - ensure `render_mode = "ir_pod"` shows only the open-top pod body with cap insert receiving geometry,
-   - ensure `render_mode = "printable_layout"` shows bottom tray, top cover, open-top IR pod body, and full-cover cap as separate non-intersecting printable objects.
-5. Preserve the approved IR PCB retention path through support bosses plus enabled pilot holes:
-   - keep `enable_ir_mount_optional_pilot_holes = true` or an equivalent default enabled screw-access behavior,
-   - keep IR PCB support bosses aligned to the two-hole Grove IR emitter reference,
-   - keep screw access available after the full-cover cap is removed.
-6. Preserve unrelated approved enclosure behavior:
+1. In `designs/pi_zero_usb_grove_ir_enclosure.scad`, update the IR emitter pod board-fit parameter group so the enclosure has an explicit earlobe-inclusive IR PCB width defaulting to `23.65 mm`.
+2. Keep `ir_pcb_length_mm = 23.75`, `ir_pcb_thickness_mm = 1.6`, the two-hole layout, Grove connector defaults, cable-clearance defaults, and LED extension behavior aligned with the intended Grove emitter reference behavior.
+3. Update the derived IR mounting-hole spacing so IR PCB support bosses and optional pilot holes derive from the `23.65 mm` earlobe-inclusive width, with the existing adjustable edge inset or an equivalently clear measured hole-center parameter retained for physical tuning.
+4. Review and adjust the IR pod envelope as needed so the wider `23.65 mm` PCB envelope, earlobes, support bosses, pilot holes, cap sockets, pod walls, cable entry, LED aperture, and pod-to-top-cover attachment do not collide:
+   - increase `pod_outer_width_mm` only if needed,
+   - preserve the approved pod offset away from the Waveshare RJ45/Ethernet opening,
+   - preserve the pod cable entry, main cable exit, Grove cable path, LED aperture pass-through, and pod-to-top-cover plug-in attachment.
+5. Strengthen the removable full-cover IR pod cap male insert elements:
+   - increase insert diameter, reduce unsupported length, increase root overlap, add cap-side local root pads/gussets, or use an equivalent supported transition,
+   - keep the insert interface visually distinct from cover-to-tray pins, pod-to-cover posts, and IR PCB pilot holes,
+   - keep the cap printable as a separate object and hand-removable for IR PCB screw access.
+6. Add inversion-safe positive cap retention to the cap-to-pod male/female insert interface:
+   - tune socket clearance, insertion depth, insert/socket interference, small detent geometry, or equivalent simple printable male/female retention,
+   - expose named adjustable parameters for retention force tuning,
+   - do not reintroduce fragile flexible side clips, sliding rails, latch tabs, hooks, or the removed separate IR PCB retainer as default cap retention.
+7. Preserve unrelated approved enclosure behavior:
    - Pi Zero/Waveshare/Grove board stack geometry,
    - Pi Zero and Waveshare port cutouts,
    - top-cover-to-bottom-tray plug-in pins/sockets,
    - top-cover-owned pod attachment sockets and pod-owned male posts,
-   - pod placement offset away from the RJ45/Ethernet opening,
-   - pod side cable entry and main enclosure cable exit,
    - Grove cable path,
    - IR LED aperture full pass-through,
    - top ventilation holes,
    - anti-slide features,
    - render-mode names and printable orientations.
-7. Keep cap insert sockets visually distinct from IR PCB pilot holes and from the pod-to-top-cover plug-in socket interface.
-8. Keep OpenSCAD 2021.01-compatible syntax and existing named-module style.
+8. Update source comments near the IR emitter pod board mount parameters to state that the previous defaults were copied from `designs/grove_infrared_emitter.scad`, but this enclosure now uses the user's `23.65 mm` earlobe-inclusive measured width as a local pod-fit override.
 9. Update `README.md` so the enclosure section describes:
-   - the full-cover detachable IR pod cap,
-   - cap-owned male inserts and pod-body-owned female sockets/holes,
-   - cap insert tuning parameters,
-   - removal of the separate gray IR PCB retainer component and retainer-specific holes/openings,
-   - IR PCB retention through support bosses plus enabled pilot holes accessed after cap removal,
-   - assembly order with the Grove cable entering through the side cable entry rather than through a missing cap section.
+   - the answer that the previous IR pod holes were based on the Grove Infrared Emitter `.scad` values,
+   - the new `23.65 mm` earlobe-inclusive IR PCB width used for pod fit, support-boss placement, and pilot-hole alignment,
+   - whether the value is currently a local enclosure override rather than a Grove reference source change,
+   - strengthened cap insert roots,
+   - positive cap retention intended to prevent the cap falling out under inversion,
+   - cap fit and retention tuning parameters,
+   - continued screw access after cap removal and continued Grove cable serviceability.
 10. Do not add generated STL, STEP, 3MF, OFF, or similar files to source control.
 
 ## Validation Commands
@@ -99,7 +94,7 @@ Run:
 git diff --check
 ```
 
-Expected result: command exits successfully with no output.
+Expected result: command exits successfully with no output except any pre-existing CRLF warning already present for untouched files.
 
 Run OpenSCAD inspection renders to temporary files:
 
@@ -118,24 +113,26 @@ If OpenSCAD is unavailable or a render fails, report the failure and mark delive
 
 Review `designs/pi_zero_usb_grove_ir_enclosure.scad` and confirm:
 
-- the detachable pod cap uses only simple male/female insert retention by default,
-- cap inserts and receiving sockets have adjustable fit parameters near the IR pod cap parameters,
-- cap retention no longer uses side detents, flexible clip tabs, hooks, latch tabs, rail/slot retention, sliding lips, or flexing snap features,
-- the installed cap covers the whole top surface footprint by default,
-- attachment-side reliefs, service-window gaps, retainer-access openings, and other obsolete partial-top openings are removed from the default installed cap state,
-- the separate gray IR PCB retainer is removed from `printable_layout`,
-- retainer-specific service windows, slots, bars, holes, parameters, modules, and derived values are removed or no longer part of the default design,
-- IR PCB support bosses and enabled pilot holes remain present and aligned to the two-hole Grove IR emitter reference,
-- cap insert sockets are visually distinct from IR PCB pilot holes and pod-to-top-cover plug-in sockets,
+- IR pod support bosses and pilot holes derive from the `23.65 mm` earlobe-inclusive width by default,
+- the two-hole mounting pattern is preserved,
+- the exact hole-center spacing remains adjustable for later physical measurement,
+- the wider PCB envelope does not collide with pod walls, cap sockets, cable entry, LED aperture, or pod-to-top-cover attachment by code review,
+- any pod width increase is minimal and keeps the pod offset away from the Waveshare RJ45/Ethernet opening,
+- cap insert male elements have visibly stronger roots or equivalent supported transitions,
+- cap insert retention resists inversion in the modeled design through deeper engagement, tighter/interference fit, detent geometry, or equivalent simple male/female retention,
+- cap retention remains adjustable and hand-removable for screw access,
+- cap retention does not use fragile side clips, sliding rails, latch tabs, hooks, or the removed IR PCB retainer,
+- cap insert sockets remain visually distinct from IR PCB pilot holes and pod-to-top-cover plug-in sockets,
 - pod cable entry, main cable exit, Grove cable path, LED aperture, pod-to-top-cover attachment posts/sockets, top-cover-to-bottom-tray pins/sockets, port cutouts, and printable orientations remain preserved,
 - all remaining adjustable linear values use `_mm`,
 - no generated mesh/export artifacts are tracked.
 
 Review `README.md` and confirm:
 
-- it describes the full-cover cap and male/female insert retention,
-- it no longer describes cap side detents, retainer access gaps, attachment-side reliefs, or the separate gray IR PCB retainer as default behavior,
-- it documents IR PCB retention through support bosses plus enabled screw pilot holes after cap removal,
+- it answers that the previous IR pod holes were based on the Grove Infrared Emitter `.scad` values,
+- it documents the `23.65 mm` earlobe-inclusive enclosure override and distinguishes it from the current Grove reference value if that reference remains unchanged,
+- it documents strengthened cap insert roots and positive inversion-safe cap retention,
+- it documents cap retention tuning parameters and continued hand-removable screw access,
 - it distinguishes cap retention from pod-to-top-cover attachment, cover-to-tray attachment, and IR PCB support/pilot holes.
 
 ## QA Requirements
@@ -153,9 +150,9 @@ Main-agent QA is manual review plus the validation commands above:
 
 Required:
 
-- `README.md` Pi Zero USB Grove IR enclosure updates for the full-cover IR pod cap and male/female cap inserts.
-- `README.md` assembly and tuning guidance for cap insertion/removal, socket clearance, and fit adjustment.
-- Removal or rewrite of README text that describes the separate gray IR PCB retainer, retainer-specific openings, cap reliefs, or side-detent cap retention as default behavior.
+- `README.md` Pi Zero USB Grove IR enclosure updates for the corrected IR PCB width, screw-hole source clarification, cap insert strengthening, and positive cap retention.
+- `README.md` assembly and tuning guidance for cap insertion/removal, socket clearance/interference, retention force, and first-print calibration.
+- Removal or rewrite of README text that says IR pod PCB width is only `20.25 mm` for enclosure fit or implies the cap can rely on loose friction that falls out under inversion.
 
 No `AGENTS.md` update is required.
 
@@ -165,12 +162,14 @@ Implementation review must check for:
 
 - spec mismatch,
 - accidental behavior outside approved scope,
-- cap retaining clips, side detents, latch tabs, hooks, rails, sliding lips, or flexible snap features remaining as default cap retention,
-- the cap still failing to cover the full top surface by default,
-- the gray retainer component or retainer-specific holes/openings remaining in the default printable design,
+- IR pod support bosses or pilot holes still deriving from stale `20.25 mm` width,
+- the `23.65 mm` value not being documented as a local override when the Grove reference remains unchanged,
+- strengthened cap inserts still reading as fragile isolated rods,
+- cap retention still able to fall out under inversion by code/design inspection,
+- cap retention becoming non-removable or blocking screw access,
+- cap retaining clips, slide rails, latch tabs, hooks, or the removed retainer reintroduced as default cap retention,
 - IR PCB support bosses or pilot holes accidentally removed,
-- cap insert sockets confused with IR PCB pilot holes or pod-to-top-cover sockets,
-- pod cable entry, LED aperture, or pod-to-top-cover attachment regressed by the full-cover cap,
+- pod cable entry, LED aperture, or pod-to-top-cover attachment regressed,
 - stale README/source mismatch,
 - OpenSCAD syntax/render failures,
 - unrelated file churn.

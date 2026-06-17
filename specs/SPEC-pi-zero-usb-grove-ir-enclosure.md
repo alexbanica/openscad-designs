@@ -837,6 +837,48 @@ Impact and regression considerations for this iteration:
 - Cap insert sockets and PCB pilot holes must remain visually and functionally distinct so the cap retention holes are not confused with IR PCB mounting holes.
 - Physical insert fit still depends on printer/material calibration, so insert size, socket clearance, and socket depth must remain easy to tune near the other IR pod cap parameters.
 
+## Iteration: 2026-06-17 IR Pod PCB Fit And Cap Retention Failure
+
+Requested changes:
+
+- Correct the IR pod enclosure screw-hole and board-fit behavior because the printed IR pod screw holes are not usable.
+- Account for the measured IR PCB width of `23.65 mm`, where that width includes the earlobes around the mounting holes.
+- Answer whether the previous IR pod screw holes were created from the Grove Infrared Emitter `.scad` values.
+- Reinforce the removable IR pod cap male insert elements because they broke immediately after first use.
+- Add positive cap retention because the cap falls out if the assembled enclosure is turned over after insertion.
+
+Measured-source clarification:
+
+- The existing enclosure source derives IR PCB mount-hole spacing from local enclosure parameters currently copied from `designs/grove_infrared_emitter.scad`.
+- The current Grove Infrared Emitter reference defaults are `20.25 mm` PCB width and `23.75 mm` PCB length, with two holes derived from the PCB width and `mounting_hole_edge_offset_x_mm`.
+- The new physical measurement supersedes the current enclosure assumption for IR pod fit: the enclosure must treat `23.65 mm` as the earlobe-inclusive IR PCB width envelope for pod clearance, support-boss placement, and pilot-hole alignment.
+- If the Grove reference file remains at the older `20.25 mm` width during this enclosure iteration, the enclosure spec and README must explicitly document that the IR pod uses a local physically measured override until the Grove reference is corrected by a separate approved change.
+
+Updated deterministic behavior:
+
+- The IR pod must expose an adjustable IR PCB earlobe-inclusive width parameter defaulting to `23.65 mm`.
+- IR PCB support bosses, optional pilot holes, and any board-fit clearance envelope inside the pod must derive from the `23.65 mm` earlobe-inclusive width by default, not from the stale `20.25 mm` copied value.
+- The implementation must preserve the two-hole Grove IR emitter mounting pattern unless the user later supplies a different measured hole count.
+- The implementation must preserve an adjustable mounting-hole edge inset or equivalent measured hole-center parameter. If the exact hole-center distance is not known, the default must be derived from the `23.65 mm` earlobe-inclusive width plus the existing adjustable edge inset, and the parameter must remain easy to tune after measuring the hole centers directly.
+- The IR pod internal width, wall thickness, cap insert placement, cap socket placement, cable entry, LED aperture, and pod-to-top-cover attachment must be reviewed against the wider `23.65 mm` PCB envelope so the PCB, hole earlobes, support bosses, and fastener access do not collide with cap sockets, pod walls, cable entry, LED aperture, or attachment posts.
+- If the current default pod width cannot fit the `23.65 mm` PCB envelope plus support bosses, pilot holes, printable walls, and assembly clearance, the default pod width must increase only as much as needed while preserving the approved offset away from the Waveshare RJ45/Ethernet opening.
+- The cap-owned male insert elements must be strengthened because the printed male elements broke after first use. Strengthening may use larger insert diameter, shorter unsupported insertion length, broader root overlap into the cap, local cap-side root pads/gussets, or an equivalent solid transition, but the cap must still close the pod and remain distinguishable from the pod-to-cover and cover-to-tray plug-in interfaces.
+- The default cap insert root must have a visibly supported transition into the cap body by code review and printable render inspection, rather than a narrow isolated rod joined by a small contact patch.
+- The cap-to-pod interface must provide positive retention that resists the cap falling out when the enclosure is inverted after insertion.
+- Positive cap retention may use tighter adjustable socket clearance, deeper insert engagement, slight printed interference, a small detent on the insert/socket path, or another simple printable male/female retention feature. It must not reintroduce fragile flexible side clips, sliding rails, latch tabs, hooks, or the removed separate IR PCB retainer as the default cap-retention mechanism.
+- Cap retention force must remain tunable through named adjustable parameters so the user can loosen or tighten the fit after physical test prints.
+- The cap must remain removable by hand for IR PCB screw access and must not require disconnecting the Grove cable for normal service.
+- The cap retention changes must not make the cap block the IR LED aperture, pod cable entry, IR PCB loading path, support bosses, pilot-hole screw access, or pod-to-top-cover attachment.
+- README documentation must answer that the previous IR pod holes were based on the Grove Infrared Emitter `.scad` values, then document that the updated enclosure uses the user's `23.65 mm` earlobe-inclusive measured width for IR pod fit unless and until the Grove reference is separately updated.
+
+Impact and regression considerations for this iteration:
+
+- The new width measurement intentionally changes the IR pod fit envelope and can require pod width, hole spacing, cap insert spacing, and wall-clearance adjustments.
+- Enlarging the pod or moving pod internal features can regress the approved RJ45/Ethernet clearance; implementation must preserve or revalidate the pod's offset away from the Ethernet opening.
+- Reinforcing cap inserts can create new interference with the PCB, screw access, or cable path; implementation must check all cap insert positions against the widened PCB and support-boss geometry.
+- Increasing cap retention can make the cap too tight; the design must keep clearance/interference values adjustable for printer/material calibration.
+- Physical fit still requires slicer inspection and a test print before relying on final tolerances.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -853,7 +895,9 @@ Impact and regression considerations for this iteration:
 - Changing the IR emitter pod or emitter position changes the IR emitter reference, pod mount bosses, mount holes, LED aperture, cable entry, and related pod/main cable cutouts together.
 - The board stack renders in the correct vertical order when `show_electronics = true`.
 - The bottom tray includes Pi Zero-aligned mounting standoffs and adjustable M2.5-class screw clearance.
-- The IR pod PCB defaults match the current `designs/grove_infrared_emitter.scad` measured defaults for 20.25 mm PCB width, 23.75 mm PCB length, 1.6 mm PCB thickness, two centerline mounting holes, connector placement/envelope, and LED extension behavior.
+- The IR pod PCB defaults use the user's `23.65 mm` earlobe-inclusive PCB width for pod clearance, support-boss placement, and pilot-hole alignment.
+- README and source comments explain whether the IR pod is using a local `23.65 mm` measured override or matching an updated `designs/grove_infrared_emitter.scad` source value.
+- The remaining IR pod PCB defaults match the intended Grove emitter behavior for PCB length, 1.6 mm PCB thickness, two centerline mounting holes, connector placement/envelope, and LED extension behavior.
 - The IR pod no longer defaults to stale 20.0 mm x 24.0 mm PCB dimensions or four IR PCB support boss/pilot-hole positions.
 - The Grove IR emitter PCB has a mounting location inside the external IR emitter pod with support bosses and default enabled pilot holes accessible through the detachable pod top service panel.
 - Unused IR pod PCB side/front locator geometry, parameters, modules, documentation, and validation language are removed when they no longer serve the intended design.
@@ -907,6 +951,9 @@ Impact and regression considerations for this iteration:
 - The detachable IR pod top cap covers the complete top surface footprint by default and does not leave a cap relief, service-window gap, retainer access gap, or other partial-top opening after assembly.
 - The detachable IR pod top cap uses only simple male/female insert retention by default, with no clip tabs, side detents, hooks, latch tabs, rails, sliding lips, or flexing snap features.
 - The cap insert interface has adjustable insert size, insertion depth, socket clearance, socket depth, count, spacing, and placement.
+- The cap insert male elements are strengthened enough that their root transition into the cap does not read as a fragile isolated rod by code review or printable render inspection.
+- The cap-to-pod male/female insert interface provides positive retention so the cap does not fall out under enclosure inversion after insertion.
+- Cap retention remains hand-removable and tunable through named adjustable parameters for physical printer/material calibration.
 - The separate gray IR PCB retainer component is removed from the default printable design, and `printable_layout` no longer shows it as a loose printed object.
 - Retainer-specific openings, service windows, slots, holes, bars, parameters, modules, README language, validation checks, and plan instructions are removed or rewritten when they no longer serve the full-cover cap and screw-access PCB retention path.
 - The IR emitter PCB remains retained by support bosses plus enabled pilot holes that are accessible after removing the full-cover cap.
@@ -949,7 +996,9 @@ Impact and regression considerations for this iteration:
   - every top-cover USB opening defaults to at least 15.4 mm effective width and 7.4 mm effective height and remains adjustable,
   - the wireless dongle remains outside the case through an accessible USB-A cutout,
   - the external IR emitter pod, printed PCB retention geometry, LED aperture, and main-to-pod cable path are present,
-  - the IR pod PCB dimensions, mounting-hole count and placement, connector defaults, cable-clearance defaults, and LED extension defaults match the current local `designs/grove_infrared_emitter.scad` source of truth,
+  - the IR pod PCB dimensions use the user's `23.65 mm` earlobe-inclusive PCB width for support-boss placement, pilot-hole alignment, and pod clearance,
+  - the spec, source comments, and README clearly state whether that `23.65 mm` value is a local enclosure override or comes from an updated `designs/grove_infrared_emitter.scad`,
+  - the IR pod mounting-hole count and remaining connector defaults, cable-clearance defaults, and LED extension defaults match the intended Grove emitter reference behavior,
   - the IR pod no longer uses stale 20.0 mm x 24.0 mm PCB defaults or a four-hole Grove 20 mm-class IR PCB mounting pattern,
   - the refreshed two-hole support and retention behavior still provides serviceable PCB support, pilot-hole/screw access when enabled, retainer/service-window fit, cable entry clearance, and LED aperture alignment,
   - only the IR LED path is exposed outside the pod by default,
@@ -975,6 +1024,8 @@ Impact and regression considerations for this iteration:
   - the assembled pod panel closes the pod without blocking the LED aperture, cable entry, PCB loading path, PCB retainer, or slide attachment,
   - the detachable IR pod cap covers the complete top surface footprint by default without attachment-side reliefs, service-window gaps, retainer access gaps, or other obsolete partial-top openings,
   - the detachable IR pod cap retention uses only simple male/female inserts and receiving sockets/holes by default,
+  - the detachable IR pod cap male inserts have strengthened roots or equivalent supported transitions and do not read as fragile isolated rods,
+  - the detachable IR pod cap resists falling out when inverted after insertion while remaining removable by hand for PCB screw access,
   - obsolete cap clip tabs, side detents, latch tabs, hooks, sliding lips, retainer service windows, retainer slots, retainer bars, retainer-specific holes, and the separate gray IR PCB retainer component are removed from the default printable design,
   - cap insert sockets remain visually distinct from IR PCB pilot holes and from the pod-to-top-cover plug-in sockets,
   - IR PCB pilot holes are enabled by default or replaced by equivalent default screw-access behavior,
@@ -1001,7 +1052,9 @@ Impact and regression considerations for this iteration:
 - Document that the four bottom-tray board-stack holes exist because the Pi Zero/HAT stack has four mounting points, and that top-cover pin/socket features and pod attachment features are separate.
 - Document the revised `top_cover`-mounted IR pod plug-in male/female attachment method and note that pod retention is part of the removable upper assembly.
 - Document that the IR emitter PCB can be screwed into the pod through the detachable pod top service opening, with the Grove cable allowed to remain connected during service.
-- Document that the IR pod PCB dimensions, two-hole mounting pattern, Grove connector placement/envelope, cable clearance, and LED extension defaults are sourced from `designs/grove_infrared_emitter.scad`.
+- Document that the previous IR pod screw holes were based on the current Grove Infrared Emitter `.scad` values.
+- Document that the updated IR pod uses the user's `23.65 mm` earlobe-inclusive PCB width for pod fit, support-boss placement, and pilot-hole alignment, and clearly state whether that value is a local enclosure override or has also been applied to `designs/grove_infrared_emitter.scad`.
+- Document the IR pod PCB two-hole mounting pattern, Grove connector placement/envelope, cable clearance, and LED extension defaults.
 - Remove or update stale README language that describes the IR pod PCB as 20.0 mm x 24.0 mm or as using a four-hole mounting pattern by default.
 - Document that the pod itself mounts tool-free to the top cover through the implemented plug-in male/female interface.
 - Document that the additional loose IR pod printable part is the removable PCB retainer when that design is retained.
@@ -1010,6 +1063,7 @@ Impact and regression considerations for this iteration:
 - Document the adjustable detachable panel fit and retention parameters.
 - Document that the detachable IR pod top cap covers the whole top surface by default and no longer includes attachment-side reliefs, service-window gaps, or retainer access gaps after assembly.
 - Document that the detachable IR pod top cap uses only male/female insert retention by default, with tunable insert size, insertion depth, socket clearance, socket depth, count, spacing, and placement.
+- Document the strengthened removable IR pod cap male insert roots and the positive cap retention behavior intended to keep the cap installed when the enclosure is inverted.
 - Document that the separate gray IR PCB retainer component and its retainer-specific holes/openings are removed from the default design, and that IR PCB retention now relies on support bosses plus enabled screw pilot holes accessed by removing the full-cover cap.
 - Remove or update stale README language that says IR PCB pilot holes are disabled by default or that unused side/front board locators remain part of the default pod body.
 - Document that the IR LED aperture is intended to be a full pass-through opening in the pod wall.
