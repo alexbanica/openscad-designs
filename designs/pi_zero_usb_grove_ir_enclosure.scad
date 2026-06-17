@@ -927,7 +927,11 @@ module pi_zero_usb_grove_ir_pod_top_cap_geometry() {
 
 module pi_zero_usb_grove_ir_pod_top_cap_insert_pins() {
     for (insert_x_mm = pod_cap_insert_local_x_positions_mm) {
-        translate([insert_x_mm, pod_cap_insert_center_y_mm, -pod_cap_thickness_mm / 2 - pod_cap_insert_insertion_depth_mm / 2])
+        translate([
+            insert_x_mm,
+            pod_cap_insert_center_y_mm,
+            -pod_cap_thickness_mm - pod_cap_insert_insertion_depth_mm
+        ])
             cylinder(
                 h = pod_cap_insert_insertion_depth_mm + solid_merge_overlap_mm,
                 d = pod_cap_insert_diameter_mm
