@@ -124,7 +124,7 @@ pod_cap_insert_socket_clearance_mm = 0.35;
 pod_cap_insert_socket_depth_mm = 3.0;
 pod_cap_insert_receiver_wall_thickness_mm = 1.0;
 pod_cap_insert_count = 2;
-pod_cap_insert_spacing_mm = 18.0;
+pod_cap_insert_spacing_mm = 26.2;
 pod_cap_insert_center_y_mm = 0.0;
 pod_attachment_gap_mm = 0.4;
 pod_center_offset_x_mm = 24.5;
@@ -939,7 +939,11 @@ module pi_zero_usb_grove_ir_pod_top_cap_socket_volumes() {
     for (insert_x_mm = pod_cap_insert_local_x_positions_mm) {
         translate([pod_center_x_mm, pod_center_y_mm, pod_center_z_mm])
             rotate([0, 0, pod_base_rotation_deg])
-                translate([insert_x_mm, pod_cap_insert_center_y_mm, pod_outer_height_mm / 2 - pod_cap_insert_socket_depth_mm / 2])
+                translate([
+                    insert_x_mm,
+                    pod_cap_insert_center_y_mm,
+                    pod_outer_height_mm / 2 - pod_cap_insert_socket_depth_mm / 2
+                ])
                     cylinder(
                         h = pod_cap_insert_socket_depth_mm,
                         d = pod_cap_insert_receiver_outer_diameter_mm,
