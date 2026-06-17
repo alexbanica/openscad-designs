@@ -521,6 +521,13 @@ top_cover_usb_cutout_width_mm =
     top_cover_usb_effective_width_mm - port_cutout_extra_clearance_mm;
 top_cover_usb_cutout_height_mm =
     top_cover_usb_effective_height_mm - port_cutout_extra_clearance_mm;
+function top_cover_side_wall_cutout_depth_x_mm(center_x_mm) =
+    max(
+        2 * (outer_length_mm / 2 - abs(center_x_mm))
+            + 2 * preview_overlap_mm
+            - port_cutout_extra_clearance_mm,
+        0
+    );
 top_cover_pi_micro_usb_power_cutout_size_mm = [
     max(pi_micro_usb_power_cutout_size_mm[0], top_cover_usb_cutout_width_mm),
     pi_micro_usb_power_cutout_size_mm[1],
@@ -532,12 +539,18 @@ top_cover_waveshare_front_usb_a_cutout_size_mm = [
     max(waveshare_front_usb_a_cutout_size_mm[2], top_cover_usb_cutout_height_mm)
 ];
 top_cover_waveshare_left_usb_a_cutout_size_mm = [
-    waveshare_left_usb_a_cutout_size_mm[0],
+    max(
+        waveshare_left_usb_a_cutout_size_mm[0],
+        top_cover_side_wall_cutout_depth_x_mm(waveshare_left_usb_a_cutout_center_x_mm)
+    ),
     max(waveshare_left_usb_a_cutout_size_mm[1], top_cover_usb_cutout_width_mm),
     max(waveshare_left_usb_a_cutout_size_mm[2], top_cover_usb_cutout_height_mm)
 ];
 top_cover_waveshare_right_usb_a_cutout_size_mm = [
-    waveshare_right_usb_a_cutout_size_mm[0] + wireless_dongle_extra_clearance_x_mm,
+    max(
+        waveshare_right_usb_a_cutout_size_mm[0] + wireless_dongle_extra_clearance_x_mm,
+        top_cover_side_wall_cutout_depth_x_mm(waveshare_right_usb_a_cutout_center_x_mm)
+    ),
     max(waveshare_right_usb_a_cutout_size_mm[1], top_cover_usb_cutout_width_mm),
     max(waveshare_right_usb_a_cutout_size_mm[2], top_cover_usb_cutout_height_mm)
 ];
