@@ -6,10 +6,10 @@
 // from the PCB bottom face. The IR LED points toward +Y by default.
 //
 // This is an adjustable fit and clearance reference, not a vendor-certified
-// mechanical model. Defaults use the detailed 20.0 mm x 24.0 mm PCB with
+// mechanical model. Defaults use measured 20.25 mm x 23.75 mm PCB dimensions with
 // 7.5 mm IR LED extension; Seeed's wiki also lists a conflicting 20.0 mm x
-// 20.0 mm module size. Mounting-hole defaults are Grove 20 mm-class planning
-// assumptions until measured.
+// 20.0 mm module size. Mounting-hole defaults are planning assumptions until
+// measured.
 
 // ======================================================
 // Adjustable Parameters
@@ -25,21 +25,20 @@ show_labels = true;
 show_clearance_guides = true;
 
 // Board dimensions
-pcb_width_mm = 20.0;
-pcb_length_mm = 24.0;
+pcb_width_mm = 20.25;
+pcb_length_mm = 23.75;
 pcb_thickness_mm = 1.6;
 pcb_corner_radius_mm = 1.5;
 
 // Mounting holes
 mounting_hole_diameter_mm = 2.0;
 mounting_hole_edge_offset_x_mm = 2.5;
-mounting_hole_edge_offset_y_mm = 2.5;
 mounting_hole_marker_diameter_mm = 3.8;
 
 // Grove connector dimensions and placement
 grove_connector_width_mm = 8.0;
 grove_connector_length_mm = 7.5;
-grove_connector_height_mm = 5.8;
+grove_connector_total_top_envelope_mm = 9.65;
 grove_connector_center_x_mm = 0.0;
 grove_connector_center_y_mm = -8.1;
 grove_connector_z_clearance_mm = 0.0;
@@ -49,6 +48,13 @@ grove_cable_clearance_width_mm = 12.0;
 grove_cable_clearance_length_mm = 12.0;
 grove_cable_clearance_height_mm = 7.0;
 grove_cable_clearance_bottom_gap_mm = 0.2;
+
+// Bottom pin protrusion clearance
+grove_bottom_pin_protrusion_mm = 2.0;
+grove_bottom_pin_clearance_width_mm = 4.0;
+grove_bottom_pin_clearance_length_mm = 4.0;
+grove_bottom_pin_clearance_center_x_mm = 0.0;
+grove_bottom_pin_clearance_center_y_mm = 0.0;
 
 // IR LED body and extension dimensions
 ir_led_diameter_mm = 5.0;
@@ -98,17 +104,19 @@ pcb_half_length_mm = pcb_length_mm / 2;
 pcb_half_thickness_mm = pcb_thickness_mm / 2;
 mounting_hole_radius_mm = mounting_hole_diameter_mm / 2;
 mounting_hole_x_mm = pcb_half_width_mm - mounting_hole_edge_offset_x_mm;
-mounting_hole_y_mm = pcb_half_length_mm - mounting_hole_edge_offset_y_mm;
+mounting_hole_centerline_y_mm = 0.0;
 mounting_hole_centers_mm = [
-    [-mounting_hole_x_mm, -mounting_hole_y_mm],
-    [mounting_hole_x_mm, -mounting_hole_y_mm],
-    [-mounting_hole_x_mm, mounting_hole_y_mm],
-    [mounting_hole_x_mm, mounting_hole_y_mm]
+    [-mounting_hole_x_mm, mounting_hole_centerline_y_mm],
+    [mounting_hole_x_mm, mounting_hole_centerline_y_mm]
 ];
+grove_connector_height_mm =
+    grove_connector_total_top_envelope_mm - pcb_thickness_mm
+    - grove_connector_z_clearance_mm;
 grove_connector_center_z_mm =
     pcb_thickness_mm + grove_connector_height_mm / 2 + grove_connector_z_clearance_mm;
 grove_connector_top_z_mm =
     pcb_thickness_mm + grove_connector_z_clearance_mm + grove_connector_height_mm;
+grove_bottom_pin_clearance_center_z_mm = -grove_bottom_pin_protrusion_mm / 2;
 grove_cable_clearance_center_x_mm = grove_connector_center_x_mm;
 grove_cable_clearance_center_y_mm =
     grove_connector_center_y_mm;
@@ -264,6 +272,23 @@ module grove_infrared_emitter_grove_cable_clearance_preview() {
         ], center = true);
 }
 
+module grove_infrared_emitter_bottom_pin_clearance_preview() {
+    color(grove_clearance_colour, 0.35)
+    translate([
+        grove_bottom_pin_clearance_center_x_mm,
+        grove_bottom_pin_clearance_center_y_mm,
+        grove_bottom_pin_clearance_center_z_mm
+    ])
+        cube(
+            [
+                grove_bottom_pin_clearance_width_mm,
+                grove_bottom_pin_clearance_length_mm,
+                grove_bottom_pin_protrusion_mm
+            ],
+            center = true
+        );
+}
+
 // ======================================================
 // IR LED Body And Extension
 // ======================================================
@@ -315,7 +340,7 @@ module grove_infrared_emitter_label_previews(
     show_clearance_label = true
 ) {
     grove_infrared_emitter_top_label("Grove IR Emitter", [-8.7, 8.0, pcb_thickness_mm + label_z_offset_mm]);
-    grove_infrared_emitter_top_label("20 x 24 PCB", [-8.5, -1.4, pcb_thickness_mm + label_z_offset_mm]);
+    grove_infrared_emitter_top_label("20.25 x 23.75 PCB", [-8.75, -1.4, pcb_thickness_mm + label_z_offset_mm]);
 
     if (show_connector_label) {
         grove_infrared_emitter_top_label("Grove", [-4.4, -10.5, pcb_thickness_mm + label_z_offset_mm]);
@@ -342,6 +367,8 @@ module grove_infrared_emitter_clearance_guides(
     show_connector_clearance = show_grove_connector,
     show_led_clearance = show_ir_led
 ) {
+    grove_infrared_emitter_bottom_pin_clearance_preview();
+
     if (show_connector_clearance) {
         grove_infrared_emitter_grove_cable_clearance_preview();
     }

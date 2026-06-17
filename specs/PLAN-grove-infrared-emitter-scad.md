@@ -14,7 +14,7 @@ Implementation must not revert unrelated dirty worktree changes present at imple
 
 - Update `designs/grove_infrared_emitter.scad`.
 - Update `README.md`.
-- Update `specs/SPEC-grove-infrared-emitter-scad.md` only for the approved Grove cable-clearance correction.
+- Do not edit `specs/SPEC-grove-infrared-emitter-scad.md` during implementation except to read the approved behavior.
 - Do not edit existing Raspberry Pi reference source files.
 - Do not edit existing HAT design/spec/plan files.
 - Do not add generated mesh/export files.
@@ -51,7 +51,7 @@ The test-first phase is replaced by deterministic pre-implementation checklist c
    - X runs across the board width, Y runs along board length, Z rises from the PCB bottom face,
    - the IR LED points toward positive Y by default,
    - the model is an adjustable fit/clearance reference, not a vendor-certified model.
-4. Add grouped `Adjustable Parameters`:
+4. Update grouped `Adjustable Parameters`:
    - render controls,
    - board dimensions,
    - mounting holes,
@@ -59,13 +59,14 @@ The test-first phase is replaced by deterministic pre-implementation checklist c
    - Grove perpendicular cable/plug clearance dimensions,
    - IR LED body and extension dimensions,
    - component and label preview dimensions,
-   - clearance and sightline guide dimensions,
+   - clearance, bottom pin protrusion, and sightline guide dimensions,
    - printable layout,
    - visual settings.
-5. Add `Derived Values` for:
+5. Update `Derived Values` for:
    - board half dimensions,
-   - mounting-hole positions,
-   - Grove connector and perpendicular cable clearance placement,
+   - the two mounting-hole positions centered along PCB length and placed near the left/right PCB margins from adjustable X edge inset,
+   - Grove connector top envelope, body height/placement, and perpendicular cable clearance placement,
+   - bottom pin protrusion clearance placement below the PCB bottom,
    - IR LED center, forward extension envelope, and full mechanical envelope,
    - guide geometry constants.
 6. Implement render dispatch for:
@@ -84,50 +85,63 @@ The test-first phase is replaced by deterministic pre-implementation checklist c
    - clearance/sightline guides,
    - printable/fit-check layout,
    - reusable helper geometry.
-8. Use default board and LED values required by the approved spec:
-   - PCB width: 20.0 mm,
-   - PCB length: 24.0 mm,
+8. Use default board, connector envelope, bottom pin, and LED values required by the approved spec:
+   - PCB width: 20.25 mm,
+   - PCB length: 23.75 mm,
    - board thickness: 1.6 mm,
-   - IR LED extension beyond PCB: 7.5 mm.
-9. Implement mounting holes as adjustable planning references:
-   - include user-adjustable hole diameter and edge offsets,
-   - document in source comments and README that defaults are Grove 20 mm-class mechanical planning assumptions until measured.
+   - Grove connector total top envelope: 9.65 mm from the PCB bottom,
+   - bottom pin protrusion/clearance: up to 2.0 mm below the PCB bottom,
+   - preserve the existing adjustable IR LED extension behavior and positive-Y LED direction.
+9. Replace the four mounting-hole default with exactly two adjustable planning references:
+   - one left screw hole near the left PCB margin,
+   - one right screw hole near the right PCB margin,
+   - both screw holes centered on the PCB length centerline,
+   - keep user-adjustable hole diameter and X edge inset,
+   - remove or stop using Y edge-offset defaults for screw-hole placement,
+   - document in source comments and README that screw-hole diameter and X edge inset remain planning assumptions until measured.
 10. Implement Grove connector and cable clearance as simplified adjustable clearance volumes:
     - connector body near one PCB edge,
+    - connector/reference top reaches 9.65 mm above the PCB bottom by default,
     - independent cable/plug clearance guide,
     - default cable/plug clearance centered in X/Y over the Grove connector,
     - default cable/plug clearance extending upward along positive Z from above the connector body,
     - no horizontal off-board side-exit clearance in the default model,
     - controlled by `show_grove_connector` and `show_clearance_guides`.
-11. Implement IR LED geometry:
+11. Implement bottom pin protrusion clearance:
+    - add an adjustable `bottom_pin_protrusion_mm` or equivalent set to 2.0 mm by default,
+    - render the protrusion as a bottom-side clearance/reference guide below the PCB bottom,
+    - keep it controlled by `show_clearance_guides`,
+    - do not move the module origin away from the PCB bottom face.
+12. Implement IR LED geometry:
     - adjustable cylindrical LED body,
     - adjustable diameter, body length, center height, and forward extension,
     - positive-Y orientation by default,
+    - preserve existing extension behavior rather than introducing a new measured LED extension value,
     - controlled by `show_ir_led`.
-12. Implement optional IR sightline or beam guide:
+13. Implement optional IR sightline or beam guide:
     - use adjustable `ir_half_intensity_angle_deg` defaulting to 17 degrees,
     - treat it as visual/mechanical clearance context only,
     - controlled by `show_clearance_guides`.
-13. Implement simplified major component clearance blocks and label markers:
+14. Implement simplified major component clearance blocks and label markers:
     - controlled by `show_electronics` and `show_labels`,
     - keep dimensions and positions adjustable.
-14. Preserve independent visibility toggles:
+15. Preserve independent visibility toggles:
     - `show_electronics`,
     - `show_grove_connector`,
     - `show_ir_led`,
     - `show_labels`,
     - `show_clearance_guides`.
-15. Keep the file OpenSCAD 2021.01-compatible:
+16. Keep the file OpenSCAD 2021.01-compatible:
     - no external libraries,
     - no generated imports,
     - no unsupported syntax,
     - no user-adjustable value redefinitions inside modules.
-16. Update `README.md`:
+17. Update `README.md`:
     - list `designs/grove_infrared_emitter.scad`,
-    - document the selected detailed mechanical default,
-    - document the conflicting Seeed wiki size,
-    - document mounting-hole assumptions,
-    - document Grove connector, perpendicular cable clearance, IR LED extension, and optional sightline guide behavior,
+    - document the selected measured mechanical defaults: 20.25 mm x 23.75 mm PCB, 1.6 mm PCB thickness, 9.65 mm connector top envelope, and 2.0 mm bottom pin protrusion clearance,
+    - document that the measured default supersedes the earlier public-source dimensions,
+    - document the two-hole left/right margin-centered layout and remaining screw-hole diameter/X-inset assumptions,
+    - document Grove connector, perpendicular cable clearance, bottom pin protrusion clearance, IR LED extension behavior, and optional sightline guide behavior,
     - document render modes and visibility toggles,
     - document adjustable parameters and physical-measurement caveats,
     - document optional OpenSCAD commands for users with OpenSCAD installed,
@@ -154,10 +168,13 @@ Review `designs/grove_infrared_emitter.scad` and confirm:
 - any angle variables use `_deg`,
 - user-adjustable values are not redefined inside modules,
 - render modes dispatch deterministically,
-- PCB dimensions and IR LED extension match the approved spec,
-- mounting holes are adjustable and documented as assumptions,
+- PCB dimensions, PCB thickness, connector top envelope, bottom pin protrusion clearance, and IR LED extension behavior match the approved spec,
+- exactly two screw holes are rendered by default, centered on the PCB length centerline and placed near the left/right PCB margins,
+- screw-hole diameter and X edge inset are adjustable and documented as assumptions,
 - Grove connector and perpendicular cable clearance are independently adjustable,
+- Grove connector/reference top reaches 9.65 mm from the PCB bottom by default,
 - Grove cable/plug clearance is centered over the connector and extends upward from the connector instead of horizontally off the board,
+- bottom pin protrusion clearance is independently controlled by `show_clearance_guides`,
 - IR LED body and extension are independently adjustable,
 - optional sightline/beam guide uses an adjustable 17 degree half-intensity default,
 - visibility toggles control the intended groups,
@@ -167,8 +184,9 @@ Review `designs/grove_infrared_emitter.scad` and confirm:
 Review `README.md` and confirm:
 
 - the new design is listed,
-- selected source dimensions and source conflict notes match the approved spec,
-- mounting-hole assumptions are documented,
+- selected measured dimensions and superseded public-source notes match the approved spec,
+- the two-hole layout and remaining screw-hole assumptions are documented,
+- connector top envelope and bottom pin protrusion clearance are documented,
 - render modes match the OpenSCAD source,
 - optional commands are clearly optional for users with OpenSCAD installed,
 - validation guidance remains consistent with repository instructions.
@@ -188,7 +206,7 @@ Main-agent QA is manual review only:
 Required:
 
 - `README.md` design list update.
-- `README.md` Grove Infrared Emitter component assumptions, source dimensions, source conflict note, perpendicular cable clearance behavior, adjustable parameters, render modes, optional commands, fit notes, and manual inspection checklist.
+- `README.md` Grove Infrared Emitter component assumptions, measured source dimensions, superseded public-source note, two-hole layout, connector top envelope, bottom pin protrusion clearance, perpendicular cable clearance behavior, adjustable parameters, render modes, optional commands, fit notes, and manual inspection checklist.
 
 No `AGENTS.md` update is required.
 

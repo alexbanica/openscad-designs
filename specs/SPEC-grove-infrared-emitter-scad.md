@@ -16,10 +16,14 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
 
 - Add one editable OpenSCAD source file for the Grove - Infrared Emitter reference design.
 - Model the module PCB outline, thickness, corner radius, mounting holes, Grove connector body and perpendicular cable clearance, IR emitter LED body, LED forward extension, major component clearance blocks, and simple label/reference markers.
-- Use the detailed public mechanical default:
-  - PCB width: 20.0 mm,
-  - PCB length: 24.0 mm,
-  - IR LED extension beyond the PCB: 7.5 mm.
+- Use the 2026-06-17 user-measured mechanical defaults:
+  - PCB width: 20.25 mm,
+  - PCB length: 23.75 mm,
+  - PCB thickness: 1.6 mm,
+  - total top envelope with the Grove male connector installed: 9.65 mm from the PCB bottom,
+  - bottom pin protrusion below the PCB: up to 2.0 mm,
+  - two screw holes centered on the left and right PCB margins along the board length.
+- Preserve the current IR LED behavior: the LED exits the PCB in the existing positive-Y direction and keeps a separate adjustable forward extension beyond the PCB.
 - Include adjustable parameters that allow later physical calibration of PCB dimensions, mounting holes, connector placement, IR LED placement, LED extension, component clearances, and visual labels.
 - Include render modes for:
   - full assembly/reference preview,
@@ -57,20 +61,44 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
 - Seeed Studio wiki page: https://wiki.seeedstudio.com/Grove-Infrared_Emitter/
 - RobotShop-hosted Grove - Infrared Emitter PDF mirror with detailed mechanical note: https://cdn.robotshop.com/media/s/see/rb-see-184/pdf/grove-infrared-emitter-wls12148p.pdf
 
+## Iteration: 2026-06-17 Measured PCB And Screw-Hole Correction
+
+The user clarified the physical Grove Infrared Emitter module dimensions and mounting-hole count:
+
+- The PCB has exactly two screw holes, not four.
+- The two screw holes are located at the centers of the left and right PCB margins along the board length.
+- The PCB length is 23.75 mm.
+- The PCB width is 20.25 mm.
+- The PCB thickness is 1.6 mm.
+- The existing LED direction and off-board extension behavior are correct and must be preserved.
+- The top envelope from the PCB bottom to the top of the Grove male connector is 9.65 mm total.
+- Small pins protrude from the PCB bottom by up to 2.0 mm.
+
+This iteration replaces the earlier public-source default of 20.0 mm x 24.0 mm and the earlier four-hole Grove 20 mm-class mounting-hole assumption. The older public source notes remain useful historical context, but the implementation defaults and README must treat the measured 23.75 mm x 20.25 mm PCB and two-hole layout as authoritative.
+
 ## Inputs And Constraints
 
 - The OpenSCAD source must target OpenSCAD 2021.01-compatible syntax.
 - The OpenSCAD source must not require external libraries.
 - Generated mesh exports must not be added to source control.
-- Default module dimensions must use the detailed mechanical source selected by the user:
-  - PCB width: 20.0 mm,
-  - PCB length: 24.0 mm,
-  - IR LED extension beyond the PCB: 7.5 mm.
-- The Seeed wiki lists the module size as 20.0 mm x 20.0 mm, which conflicts with the more detailed mechanical source. The implementation and README must document the detailed 20.0 mm x 24.0 mm PCB plus 7.5 mm extension as the selected default, and keep dimensions adjustable for physical calibration.
-- Default board thickness must be an adjustable 1.6 mm common PCB reference unless a measured value is approved later.
+- Default module dimensions must use the 2026-06-17 user-measured values:
+  - PCB width: 20.25 mm,
+  - PCB length: 23.75 mm,
+  - PCB thickness: 1.6 mm,
+  - total top envelope with the Grove male connector installed: 9.65 mm from the PCB bottom,
+  - bottom pin protrusion below the PCB: up to 2.0 mm.
+- The IR LED must continue to exit the PCB as in the existing design, pointing toward positive Y by default and retaining a separately adjustable extension beyond the PCB edge.
+- The Seeed wiki lists the module size as 20.0 mm x 20.0 mm, and the previous detailed mechanical source was interpreted as 20.0 mm x 24.0 mm plus LED extension. The implementation and README must document that the 2026-06-17 measured 20.25 mm x 23.75 mm PCB with two screw holes supersedes those earlier defaults.
+- Default board thickness must be adjustable and set to the measured 1.6 mm value.
 - Default board corner radius must be adjustable.
-- Mounting holes must be included as adjustable fit references. If exact published hole positions are not available in the approved sources, defaults must be documented as Grove 20 mm-class module assumptions and left adjustable.
+- Mounting holes must be included as exactly two adjustable fit references by default:
+  - left screw hole on the left PCB margin,
+  - right screw hole on the right PCB margin,
+  - both holes centered along the PCB length by default.
+- Screw-hole diameter and X edge inset must remain adjustable planning values because the user supplied hole count and centerline placement but did not provide exact hole diameter or edge-inset measurements.
 - The Grove connector body must be represented as a simplified adjustable clearance volume near one PCB edge, with separate adjustable cable/plug clearance guidance.
+- The Grove connector top envelope must default to a total 9.65 mm height from the PCB bottom, including the 1.6 mm PCB thickness. The connector body height or derived top clearance must be adjusted so the visible connector/reference envelope reaches that total height.
+- Bottom-side pin protrusions must be represented as an optional adjustable underside clearance guide extending up to 2.0 mm below the PCB bottom. This guide must be independently controllable with other clearance guides and must not alter the PCB origin definition.
 - The Grove cable/plug clearance guide must model the actual cable exit direction as perpendicular to the PCB plane:
   - centered in X/Y on the Grove connector by default,
   - extending upward along positive Z from above the connector body,
@@ -98,13 +126,17 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
 - `show_grove_connector` controls the Grove connector body and cable/plug clearance guidance independently from other component previews.
 - `show_ir_led` controls the IR LED body and forward extension independently from other component previews.
 - `show_labels` controls simple text labels independently from connector and LED bodies.
-- `show_clearance_guides` controls IR sightline, LED extension envelope, and Grove perpendicular cable/plug clearance guides independently from solid component bodies.
-- The board outline must render as a 20.0 mm x 24.0 mm PCB by default.
-- The IR LED must point out from the positive Y board edge by default and extend 7.5 mm beyond that edge by default.
+- `show_clearance_guides` controls IR sightline, LED extension envelope, Grove perpendicular cable/plug clearance guides, and bottom pin protrusion clearance guides independently from solid component bodies.
+- The board outline must render as a 20.25 mm x 23.75 mm PCB by default.
+- The PCB thickness must render as 1.6 mm by default.
+- The two screw holes must render on the PCB length centerline, one on the left PCB margin and one on the right PCB margin, using adjustable X edge inset and diameter values.
+- The IR LED must point out from the positive Y board edge by default and preserve the existing adjustable extension behavior beyond that edge.
 - The full default mechanical envelope must account for the PCB length plus the IR LED extension in positive Y, while keeping PCB dimensions distinct from extension dimensions.
 - The Grove connector must be positioned on the board as an adjustable clearance block suitable for cable access planning.
+- The Grove connector/reference envelope must reach 9.65 mm above the PCB bottom by default.
 - The default Grove cable/plug clearance guide must be a vertical clearance volume over the connector, with its bottom at or above the top of the connector body and its height adjustable.
-- Mounting-hole positions and diameters must be adjustable, and the source must document that defaults are mechanical planning assumptions until physically measured.
+- The optional bottom pin clearance guide must extend downward from the PCB bottom by up to 2.0 mm by default.
+- Mounting-hole diameter and X edge inset must be adjustable, and the source must document that those two values remain planning assumptions until physically measured.
 - The model must remain usable as a child design reference through `use <...>` and named module calls.
 
 ## Assumptions
@@ -112,9 +144,9 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
 - The user's phrase "IR groove emitter" means the Seeed Studio Grove - Infrared Emitter module.
 - The requested deliverable is a `.scad` OpenSCAD source file, not a generated mesh export.
 - The requested design is a mechanical reference model, not a printable enclosure or holder.
-- The detailed mechanical source selected by the user is authoritative for defaults: 20.0 mm x 24.0 mm PCB with the IR LED extending 7.5 mm beyond the PCB.
+- The 2026-06-17 user-measured dimensions are authoritative for defaults: 20.25 mm x 23.75 mm PCB, 1.6 mm PCB thickness, 9.65 mm total top envelope with the Grove male connector, up to 2.0 mm bottom pin protrusion, and two screw holes on the left/right PCB margins.
 - A simplified PCB, connector, LED, and component clearance model is acceptable for enclosure and stack planning.
-- Exact mounting-hole and component coordinates are not treated as certified dimensions unless physically measured later; defaults must remain adjustable and documented as fit-planning assumptions.
+- Exact screw-hole diameter and edge inset are not treated as certified dimensions unless physically measured later; defaults must remain adjustable and documented as fit-planning assumptions.
 
 ## Impact And Regression Considerations
 
@@ -129,14 +161,19 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
 - The file has `Adjustable Parameters` and `Derived Values` sections near the top.
 - The file uses OpenSCAD 2021.01-compatible syntax and no external library dependencies.
 - The file provides named modules for the full reference, PCB board, mounting holes, Grove connector preview, IR LED preview, component previews, labels, clearance/sightline guides, printable/fit-check layout, and helper geometry.
-- Default PCB dimensions are adjustable and set to 20.0 mm x 24.0 mm.
-- Default IR LED extension beyond the PCB is adjustable and set to 7.5 mm.
+- Default PCB dimensions are adjustable and set to 20.25 mm x 23.75 mm.
+- Default IR LED extension beyond the PCB remains adjustable and preserves the existing design behavior.
 - Default board thickness is adjustable and set to 1.6 mm.
+- Default total top envelope with the Grove male connector is adjustable and set to 9.65 mm from the PCB bottom.
+- Default bottom pin protrusion/clearance is adjustable and set to 2.0 mm maximum below the PCB bottom.
 - Render modes include `assembly`, `pcb`, `clearance`, and `printable_layout`.
 - Visibility toggles independently control electronics/components, Grove connector, IR LED, labels, and clearance/sightline guides.
-- The source documents the selected detailed mechanical default and the conflicting public 20.0 mm x 20.0 mm wiki size.
-- Mounting-hole positions and diameters are adjustable and documented as assumptions until measured.
+- The source documents that the 2026-06-17 measured default supersedes the earlier public-source dimensional defaults.
+- The source renders exactly two screw holes by default, centered on the left and right PCB margins along the PCB length.
+- Screw-hole diameter and edge inset are adjustable and documented as assumptions until measured.
 - Grove connector body, perpendicular cable clearance, IR LED body, IR LED extension, and major component clearance blocks are adjustable.
+- Grove connector/reference envelope reaches 9.65 mm above the PCB bottom by default.
+- Bottom pin protrusion clearance is represented below the PCB and controlled with clearance guides.
 - README documents the new design file, assumptions, source dimensions, render modes, common adjustable parameters, optional OpenSCAD commands, fit notes, and manual inspection checklist.
 - `git diff --check` passes after implementation.
 - No generated mesh/export artifacts are added.
@@ -149,8 +186,8 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
   - the source follows repository OpenSCAD naming and section rules,
   - adjustable dimensions are grouped and not redefined inside modules,
   - render modes select the intended assemblies,
-  - the PCB dimensions and IR LED extension match the approved defaults,
-  - the Grove connector, perpendicular cable clearance, IR LED, component blocks, labels, and clearance guides are independently adjustable and toggleable,
+  - the PCB dimensions, PCB thickness, two-hole layout, connector top envelope, bottom pin protrusion, and IR LED extension behavior match the approved defaults,
+  - the Grove connector, perpendicular cable clearance, bottom pin protrusion guide, IR LED, component blocks, labels, and clearance guides are independently adjustable and toggleable,
   - the implementation documents source conflicts and physical-measurement caveats,
   - README entries match the implemented behavior,
   - no generated mesh/export artifacts are present.
@@ -159,7 +196,9 @@ The repository contains editable OpenSCAD references for Raspberry Pi boards and
 
 - Update `README.md` to add `designs/grove_infrared_emitter.scad` under design files.
 - Add a Grove Infrared Emitter section with component assumptions, adjustable parameters, render modes, source notes, and print/fit notes.
-- Document the selected default dimensions: 20.0 mm x 24.0 mm PCB with 7.5 mm IR LED extension beyond the PCB.
-- Document that Seeed's wiki lists 20.0 mm x 20.0 mm, while the detailed mechanical PDF lists the selected larger PCB default.
+- Document the selected default dimensions: 20.25 mm x 23.75 mm PCB, 1.6 mm PCB thickness, 9.65 mm total top envelope with the Grove male connector, and up to 2.0 mm bottom pin protrusion.
+- Document that the IR LED exits the PCB as in the existing design and keeps adjustable off-board extension behavior.
+- Document that the PCB has two screw holes centered on the left/right PCB margins along the board length, while screw-hole diameter and edge inset remain adjustable until measured.
+- Document that the 2026-06-17 measured dimensions supersede the earlier public-source defaults.
 - Add optional OpenSCAD commands for the new render modes.
-- Add manual inspection checklist items for the PCB footprint, mounting-hole assumptions, perpendicular Grove connector cable clearance, IR LED extension, and no generated mesh exports.
+- Add manual inspection checklist items for the PCB footprint, two-hole layout, connector top envelope, bottom pin protrusion clearance, perpendicular Grove connector cable clearance, IR LED extension behavior, and no generated mesh exports.

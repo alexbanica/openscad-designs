@@ -38,19 +38,21 @@ The Pi Zero reference exposes toggles for the full reference, test pads, GPIO he
 
 Default dimensions are configurable at the top of the `.scad` file. The initial defaults assume:
 
-- Grove Infrared Emitter PCB: 20.0 mm x 24.0 mm x 1.6 mm.
+- Grove Infrared Emitter PCB: 20.25 mm x 23.75 mm x 1.6 mm.
+- Grove connector total top envelope from PCB bottom: 9.65 mm.
+- Bottom pin protrusion clearance: up to 2.0 mm below PCB bottom.
 - IR LED extension beyond the +Y PCB edge: 7.5 mm.
 - Board corner radius: 1.5 mm.
-- Four mounting holes: 2.0 mm diameter, 2.5 mm from each board edge.
-- Simplified Grove connector body: 8.0 mm x 7.5 mm x 5.8 mm, centered near the -Y board edge.
+- Exactly two mounting holes: 2.0 mm diameter, 2.5 mm from each left/right board edge (centered on the PCB length centerline by default).
+- Simplified Grove connector body: 8.0 mm x 7.5 mm with default top envelope set to 9.65 mm, centered near the -Y board edge.
 - Simplified Grove cable/plug clearance guide centered over the connector and extending upward perpendicular to the PCB.
 - Simplified 5.0 mm IR LED body, centered 4.0 mm above the PCB bottom face and pointing toward +Y.
 - Optional IR sightline guide using the public 17 degree half-intensity angle as visual clearance context only.
 - Simplified component clearance blocks and text labels.
 
-The selected mechanical default is the detailed source value of a 20.0 mm x 24.0 mm PCB with a 7.5 mm IR LED extension. Seeed's wiki also lists a conflicting 20.0 mm x 20.0 mm module size. Keep these dimensions adjustable and measure the actual module before precision enclosure work.
+The selected mechanical default is the 2026-06-17 measured value of a 20.25 mm x 23.75 mm PCB with a 9.65 mm connector top envelope and 2.0 mm bottom-pin clearance. Seeed's wiki also lists a conflicting 20.0 mm x 20.0 mm module size. Keep these dimensions adjustable and measure the actual module before precision enclosure work.
 
-Mounting-hole positions are Grove 20 mm-class planning assumptions, not certified dimensions. Tune `mounting_hole_diameter_mm`, `mounting_hole_edge_offset_x_mm`, and `mounting_hole_edge_offset_y_mm` after measuring the board.
+Mounting-hole positions are treated as planning assumptions until board hardware is measured. The two-hole defaults are centered on the PCB length centerline, with adjustable diameter and X-edge inset only. Tune `mounting_hole_diameter_mm` and `mounting_hole_edge_offset_x_mm` after measuring the board.
 
 ### Adjustable Parameters
 
@@ -74,9 +76,9 @@ Common edits:
 - Set `show_grove_connector = false` to hide only the Grove connector body and its guide-dependent cable clearance.
 - Set `show_ir_led = false` to hide only the IR LED body and guide-dependent LED extension/sightline previews.
 - Set `show_labels = false` to hide text labels.
-- Set `show_clearance_guides = false` to hide the Grove cable/plug clearance, IR LED extension envelope, and 17 degree sightline guides.
+- Set `show_clearance_guides = false` to hide the Grove cable/plug clearance, IR LED extension envelope, bottom-pin clearance guide, and 17 degree sightline guides.
 - Tune `pcb_width_mm`, `pcb_length_mm`, `pcb_thickness_mm`, and `ir_led_extension_beyond_pcb_mm` after physical measurement.
-- Tune `grove_connector_*`, `grove_cable_clearance_*`, and `ir_led_*` parameters for enclosure clearance and cable routing.
+- Tune `grove_connector_*`, `grove_connector_total_top_envelope_mm`, `grove_cable_clearance_*`, `grove_bottom_pin_*`, and `ir_led_*` parameters for enclosure clearance and cable routing.
 
 ### Render Modes
 
@@ -99,18 +101,20 @@ openscad -o /tmp/grove_infrared_emitter_printable_layout.off -D 'render_mode="pr
 ### Fit Notes
 
 - Use the model as a child design reference with `use <grove_infrared_emitter.scad>` and call `grove_infrared_emitter_reference_model(...)` explicitly.
-- The model coordinate origin is the PCB center on the bottom face. X runs across the 20.0 mm width, Y runs along the 24.0 mm length, and the IR LED points toward +Y.
-- Keep `show_clearance_guides = true` during early enclosure planning to account for the upward Grove cable/plug area, LED extension envelope, and 17 degree sightline guide.
-- Leave additional printed-case clearance above the Grove connector, around the cable/plug, and at the LED opening until the actual board and Grove cable are measured.
+- The model coordinate origin is the PCB center on the bottom face. X runs across the 20.25 mm width, Y runs along the 23.75 mm length, and the IR LED points toward +Y.
+- Keep `show_clearance_guides = true` during early enclosure planning to account for the upward Grove cable/plug area, LED extension envelope, bottom-pin clearance guide, and 17 degree sightline guide.
+- Leave additional printed-case clearance above the Grove connector, around the cable/plug, and at the LED opening until the actual board, Grove cable, and lower-pin geometry are measured.
 - Treat the 940 nm wavelength and 17 degree half-intensity angle as non-electrical visual context only; this file models mechanical fit and clearance.
 - The design guidance remains compatible with Bambu Lab P2S and AMS 2 Pro fit-check workflows; no generated mesh exports are committed.
 
 Manual inspection checklist:
 
-- Confirm the PCB footprint defaults to 20.0 mm x 24.0 mm x 1.6 mm.
+- Confirm the PCB footprint defaults to 20.25 mm x 23.75 mm x 1.6 mm.
 - Confirm the IR LED points toward +Y and extends 7.5 mm beyond the PCB edge by default.
-- Confirm the selected 20.0 mm x 24.0 mm source default and conflicting 20.0 mm x 20.0 mm wiki size are documented.
-- Confirm mounting-hole defaults are adjustable and documented as assumptions until measured.
+- Confirm the measured 20.25 mm x 23.75 mm source default and conflicting 20.0 mm x 20.0 mm wiki size are documented.
+- Confirm mounting-hole defaults are exactly two, centered on PCB length centerline, with diameter and X-offset adjustable, documented as assumptions until measured.
+- Confirm the connector top envelope defaults to 9.65 mm above PCB bottom and can be tuned via `grove_connector_total_top_envelope_mm`.
+- Confirm bottom-pin clearance defaults to 2.0 mm and is controlled by `show_clearance_guides`.
 - Confirm `show_electronics`, `show_grove_connector`, `show_ir_led`, `show_labels`, and `show_clearance_guides` independently control their intended visual groups.
 - Confirm the simplified Grove connector and perpendicular cable clearance are adjustable and visible in `assembly` and `clearance` modes when enabled.
 - Confirm the IR LED body, extension envelope, and 17 degree sightline guide are adjustable and visible when enabled.
@@ -399,7 +403,8 @@ Default dimensions are configurable at the top of `designs/pi_zero_usb_grove_ir_
 - Waveshare front RJ45/Ethernet and USB-A cutout X defaults come from the local `designs/waveshare_eth_usb_hub_hat.scad` reference: `waveshare_rj45_cutout_center_x_mm = -7.76` and `waveshare_front_usb_a_cutout_center_x_mm = 10.83`.
 - Top-cover USB opening defaults: at least 15.4 mm effective width and 7.4 mm effective height for the external Pi Zero Micro USB power port, Waveshare front USB-A, Waveshare left USB-A, and Waveshare right USB-A openings.
 - Seeed Grove Base Hat for Raspberry Pi Zero mounted above the USB HAT with the adjustable measured spacer default; tune the spacing after physical measurement if the preview or hardware stack needs more clearance.
-- Seeed Grove Infrared Emitter board planning size: 20.0 mm x 24.0 mm with a 5.0 mm IR LED.
+- Seeed Grove Infrared Emitter board planning defaults: measured 20.25 mm x 23.75 mm PCB at 1.6 mm thickness, with a 9.65 mm connector top envelope and 2.0 mm bottom-pin protrusion clearance.
+- The IR emitter PCB reference uses exactly two mounting holes centered on the left/right PCB margins along the board length; hole diameter and X-edge inset remain adjustable fit-planning parameters.
 - Common M2.5-class fasteners for the board standoffs.
 - microSD card width: 11.0 mm, with a default 2.0 mm total clearance for the tray pass-through opening.
 - Micro USB bridge/addon protrusion outside the Pi Zero PCB: 10.9 mm, plus 1.0 mm default printable fit clearance used to size the tray and top-cover Y envelope.
@@ -450,7 +455,7 @@ Common edits:
 - Tune `grove_selected_socket_*` and the cable exit/entry offsets to match the actual Grove connector you use on the Grove Base Hat.
 - Tune `cover_skirt_drop_depth_mm`, `cover_pin_diameter_mm`, `cover_pin_insertion_length_mm`, `cover_pin_offset_x_mm`, `cover_pin_offset_y_mm`, `cover_pin_count`, `tray_socket_clearance_mm`, and `tray_socket_depth_mm` after physical test fitting. The defaults use four simple round 3.0 mm male pins, 5.2 mm insertion length, 0.35 mm socket diameter clearance, and female socket holes placed directly in the thickened tray corner walls.
 - The default `wall_thickness_mm` is 6.0 mm so the cover pins and socket holes live near the center of the wall/corner volume instead of relying on added internal socket bosses. The default `cover_pin_offset_x_mm` and `cover_pin_offset_y_mm` center the 3.35 mm socket holes in the wall/corner volume, leaving about 1.3 mm of material on both the inner and outer sides of the thickened walls. If pin fit is too tight, increase `tray_socket_clearance_mm`; if it is loose, reduce clearance in small increments while keeping enough clearance for the printer/material combination.
-- Tune `pod_attachment_side`, `pod_center_offset_*`, `pod_outer_width_mm`, `pod_panel_*`, `pod_slide_*`, `pod_slide_retention_*`, `pod_slide_root_*`, `pod_slide_root_embed_depth_mm`, `emitter_board_center_local_*`, `emitter_board_rotation_deg`, `ir_led_*`, `pod_cable_entry_*`, `ir_pcb_retainer_*`, `ir_pcb_retainer_print_gap_mm`, and `pod_panel_print_gap_mm` together. The emitter reference, pod board bosses, printed retainer, detachable top service panel, relieved side seating pads, attachment-side panel reliefs, detent sockets, LED aperture, pod cable entry, top-cover slide rails, rooted rail support, pod slide slots, and cable endpoint are all derived from the same pod/emitter pose. The default pod X offset keeps the pod clear of the Ethernet opening while preserving room for the 20.0 mm IR PCB, and the default slide root width keeps the attachment inside the top-cover X margin.
+- Tune `pod_attachment_side`, `pod_center_offset_*`, `pod_outer_width_mm`, `pod_panel_*`, `pod_slide_*`, `pod_slide_retention_*`, `pod_slide_root_*`, `pod_slide_root_embed_depth_mm`, `emitter_board_center_local_*`, `emitter_board_rotation_deg`, `ir_led_*`, `pod_cable_entry_*`, `ir_pcb_retainer_*`, `ir_pcb_retainer_print_gap_mm`, and `pod_panel_print_gap_mm` together. The emitter reference, pod board bosses, printed retainer, detachable top service panel, relieved side seating pads, attachment-side panel reliefs, detent sockets, LED aperture, pod cable entry, top-cover slide rails, rooted rail support, pod slide slots, and cable endpoint are all derived from the same pod/emitter pose. The default pod X offset keeps the pod clear of the Ethernet opening while preserving room for the 20.25 mm x 23.75 mm IR PCB reference, and the default slide root width keeps the attachment inside the top-cover X margin.
 - Tune `pod_panel_thickness_mm`, `pod_panel_fit_clearance_mm`, `pod_panel_seating_depth_mm`, `pod_panel_retention_tab_*`, `pod_panel_attachment_relief_extra_depth_mm`, and `pod_panel_retention_socket_clearance_mm` after printing a small fit sample or inspecting the first pod. The service panel uses shallow side detents, matching wall sockets, and attachment-side reliefs that preserve the cable entry and upper slide-slot paths; it is separate from the cover-to-tray pins, pod-to-top-cover slide rails, and IR PCB retainer.
 - Keep `enable_ir_mount_optional_pilot_holes = true` for the default removable retainer-and-screw retention path. Set it false only if you intentionally want a tool-free retained path and will validate that the path remains stable.
 - The main enclosure cable exit and the pod cable entry are separate features. The cable guide starts at the Grove HAT connector area, passes through the top-cover-owned main enclosure exit, enters the pod, and terminates at the emitter connector area.
@@ -564,10 +569,11 @@ Manual inspection for the Grove Infrared Emitter reference:
 
 - `designs/grove_infrared_emitter.scad` has clearly labeled `Adjustable Parameters` and `Derived Values` sections.
 - Adjustable linear variables use `_mm`, angle variables use `_deg`, and render modes dispatch deterministically.
-- Board defaults are 20.0 mm x 24.0 mm x 1.6 mm with a 1.5 mm corner radius.
+- Board defaults are 20.25 mm x 23.75 mm x 1.6 mm with a 1.5 mm corner radius.
 - IR LED extension beyond the +Y PCB edge defaults to 7.5 mm.
-- The source documents the selected detailed mechanical default and the conflicting 20.0 mm x 20.0 mm wiki size.
-- Mounting holes default to adjustable Grove 20 mm-class planning assumptions and are documented as assumptions until measured.
+- The source documents the 2026-06-17 measured detail default and keeps the 20.0 mm x 20.0 mm wiki size as historical context only.
+- Mounting holes default to exactly two holes centered on the left/right PCB margins along the board length; hole diameter and X-edge inset are adjustable planning defaults, then validated against measured hardware.
+- Connector top envelope defaults to 9.65 mm above PCB bottom, and bottom pin protrusion clearance defaults to 2.0 mm below PCB bottom for fit checking.
 - Grove connector body and cable/plug clearance guide are simplified, adjustable, and controlled by `show_grove_connector` and `show_clearance_guides`.
 - IR LED body, extension envelope, and 17 degree sightline guide are simplified, adjustable, and controlled by `show_ir_led` and `show_clearance_guides`.
 - `show_electronics`, `show_grove_connector`, `show_ir_led`, `show_labels`, and `show_clearance_guides` independently control their intended visual groups.
@@ -649,7 +655,7 @@ Manual inspection for the Pi Zero USB Grove IR enclosure:
 - The `ir_pod` render mode shows only the open-top IR pod body on its floor at Z=0, without the detachable top service panel or IR PCB retainer fused into it.
 - The `assembly` render mode shows the detachable IR pod top service panel installed so the pod is closed after PCB installation.
 - The `printable_layout` render mode shows the bottom tray, top cover, open-top IR pod body, detachable IR pod top service panel, and IR PCB retainer as distinct non-intersecting objects with build-plate contact.
-- The external pod contains the IR emitter PCB on adjustable support bosses using Grove 20 mm-class mounting-hole planning assumptions, plus a removable printed retainer and a detachable screwless top service panel. IR PCB pilot holes are enabled by default (`enable_ir_mount_optional_pilot_holes = true`), so board screw retention can be completed by opening the service panel.
+- The external pod contains the IR emitter PCB on adjustable support bosses using the measured 20.25 mm x 23.75 mm PCB reference with exactly two left/right margin mounting bosses, plus a removable printed retainer and a detachable screwless top service panel. IR PCB pilot holes are enabled by default (`enable_ir_mount_optional_pilot_holes = true`), so board screw retention can be completed by opening the service panel.
 - The IR emitter PCB loads through the cable-side pod service window with the Grove cable already connected, then is retained by the printed retainer and set with screws accessible from the service panel opening.
 - The top service panel uses adjustable screwless side-pad/tab retention and matching pod wall sockets that are distinct from the cover-to-tray pin/socket interface, pod-to-cover slide attachment, and IR PCB retainer.
 - The top service panel can be installed after normal PCB and Grove cable installation, and allows IR PCB screws to be reached and tightened without disconnecting the Grove cable.
