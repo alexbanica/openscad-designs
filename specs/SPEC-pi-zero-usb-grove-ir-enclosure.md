@@ -758,6 +758,41 @@ Impact and regression considerations for this iteration:
 - The refreshed IR PCB defaults must not move the external pod back over the Waveshare RJ45/Ethernet opening or change the approved top-cover-owned pod attachment ownership.
 - Updating IR pod PCB defaults must preserve existing board stack geometry, Waveshare/Pi Zero port cutouts, cover pin/socket behavior, top ventilation holes, printable orientation behavior, and generated-mesh exclusion.
 
+## Iteration: IR Pod Plug-In Attachment
+
+Requested changes:
+
+- Revise the connection method between the removable top cover and the IR emitter pod.
+- Use the same male/female plug-in approach already used for the `bottom_tray` to `top_cover` connection.
+- Replace the current IR pod attachment because the existing setup is not working in real life.
+- Reverse the initial plug-in direction so the top cover carries the female sockets and the IR pod carries the male plug-in features.
+
+Updated deterministic behavior:
+
+- The default IR pod-to-top-cover attachment must no longer use the current slide rail, slide slot, slide detent, or slide-and-lock interface as the normal assembly method.
+- The default IR pod-to-top-cover attachment must use a plug-in male/female interface modeled after the approved bottom-tray/top-cover connection pattern.
+- The `top_cover` side of the pod attachment must own the female socket/hole features by default, and the IR pod body must own the matching male plug-in features by default.
+- The pod-owned male features must be simple, sturdy, primarily vertical plug-in pins or posts with adjustable diameter/size, insertion length, spacing, and offsets.
+- The top-cover-owned female features must be matching socket/hole subtractions in reinforced or thickened top-cover material with adjustable clearance and depth for FDM test fitting.
+- The pod attachment must provide at least two male/female engagement points by default. Four engagement points may be used when they fit without weakening the pod wall, cable entry, service panel, LED aperture, or top-cover margin.
+- Pod attachment male features must not be thin fragile tabs. The narrowest default cross-section must be at least `3.0 mm`, matching the bottom-tray/top-cover pin robustness rule.
+- Pod-owned male feature roots must be visibly continuous with the IR pod body by code review, with enough parent material or local reinforcement to avoid reading as floating geometry in `ir_pod`, `assembly`, or `printable_layout`.
+- Top-cover-owned sockets must be integrated into reinforced or thickened top-cover material and must remain visually separate from the top-cover-to-bottom-tray pins, top-cover ventilation holes, main cable exit, and other top-cover features.
+- Pod-owned male features must remain visually separate from the IR PCB support bosses, IR PCB pilot holes, IR PCB retainer, detachable pod top service panel retention, cable entry, and LED aperture.
+- The plug-in assembly/removal direction must be compatible with normal top-cover and pod handling. The default must not require screws, nuts, screwdriver access, flexing fragile clips, or Pi Zero stack fastener removal.
+- The plug-in pod attachment must remain `top_cover`-owned on the main enclosure side, so removing the top cover may carry the pod with it.
+- The plug-in pod attachment must preserve the main enclosure cable exit, pod cable entry, Grove cable path, detachable pod top service panel, IR PCB retainer path, and full IR LED aperture pass-through.
+- The plug-in pod attachment must preserve the default pod X offset that keeps the pod away from the Waveshare RJ45/Ethernet cutout unless direct clearance correction is needed to maintain that approved behavior.
+- Old pod slide rail, slide slot, slide retention bump, slide pocket, and slide relief adjustable values, derived values, modules, and README text must be removed or renamed/refactored when they no longer serve the final plug-in attachment design.
+- README documentation must describe the pod-to-top-cover plug-in male/female attachment, its tuning parameters, the expected vertical insertion/removal behavior, and how it differs from the bottom-tray/top-cover plug-in interface and from IR PCB retention.
+
+Impact and regression considerations for this iteration:
+
+- The change intentionally replaces the current IR pod attachment topology because the physical print is not working in real life.
+- Reusing the bottom-tray/top-cover male/female approach should improve printability and reduce fragile or sliding engagement surfaces, but reversing the direction means the top-cover socket area must preserve cover strength and avoid the cable exit, vent holes, and cover-to-tray pins while the pod male features must avoid the cable entry, panel retention sockets, LED aperture, and PCB support geometry.
+- The implementation must preserve existing board stack geometry, Pi Zero and Waveshare cutouts, top-cover-to-bottom-tray plug-in pins/sockets, IR PCB source-of-truth defaults, two-hole PCB support/pilot-hole behavior, detachable pod panel behavior, printable orientations, and generated-mesh exclusion.
+- The implementation must not reintroduce cover screws, pod attachment screws, long vertical screws, front-face hardware near the opening-dense face, fragile clip tabs, or a continuous top-cover alignment lip.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -810,8 +845,12 @@ Impact and regression considerations for this iteration:
 - The top cover sits flush on the bottom tray in assembled orientation; cover pin geometry does not create a raised tray-to-cover gap.
 - The cover-to-tray interface provides plug-in alignment and practical retention without using cover screws.
 - The IR pod attachment is mounted to the removable top cover rather than to fixed tray/main-body geometry.
-- The IR pod attachment geometry is visibly continuous with its parent printed part by code review and does not read as detached floating geometry.
-- The IR pod mounts to the top cover through a tool-free clip or slide interface with positive retention and a plausible repeated-use insertion/removal path.
+- The default IR pod attachment uses a tool-free plug-in male/female interface rather than the prior slide rail/slot interface.
+- The top-cover side of the IR pod attachment owns female sockets/holes by default, and the IR pod body owns matching simple sturdy male plug-in pins/posts by default.
+- The IR pod plug-in male features have a narrowest default cross-section of at least `3.0 mm`.
+- The IR pod plug-in sockets have adjustable FDM clearance and depth and are integrated into reinforced or thickened top-cover material.
+- The IR pod attachment geometry is visibly continuous with its parent printed parts by code review and does not read as detached floating geometry.
+- The IR pod mounts to the top cover through a tool-free plug-in interface with positive retention and a plausible repeated-use insertion/removal path.
 - `render_mode = "top_cover"` and `render_mode = "printable_layout"` show simple round male cover pins without cross ribs, root pads, broad bosses, fillets, or other default male-side reinforcement.
 - Any separate IR pod retainer part, if kept, is clearly intentional in both geometry and documentation rather than appearing as an unexplained extra object.
 - Any separate IR pod retainer part is clearly separated from the pod body in `printable_layout` and its installation interface is visually understandable.
@@ -870,6 +909,10 @@ Impact and regression considerations for this iteration:
   - the top-cover pins are visibly attached to the top-cover skirt or shell without added male-side reinforcement, and tray sockets are supported by thickened wall/corner material,
   - anti-slide features are present,
   - the IR pod retention is mounted to the removable top cover rather than to fixed tray/main-body geometry,
+  - the IR pod attachment uses a top-cover-owned female and pod-owned male plug-in interface by default,
+  - the pod-owned male features are simple sturdy pins/posts with at least `3.0 mm` default narrowest cross-section,
+  - the top-cover-owned sockets are integrated into reinforced or thickened top-cover material with adjustable clearance and depth,
+  - old pod slide rail, slide slot, slide detent, slide pocket, and slide relief features are removed or refactored when they no longer serve the final plug-in attachment design,
   - the IR pod attachment features are visibly attached to and supported by their parent solids,
   - the pod-to-cover interface is tool-free and does not require screws for normal installation,
   - the cover-to-tray and cover-to-pod attachment geometry no longer reads as floating or air-gapped in printable views,
@@ -902,11 +945,11 @@ Impact and regression considerations for this iteration:
 - Document the external IR emitter pod render mode, attachment interface, cable exit/entry path, and top cover ventilation/access hole pattern.
 - Document that the top cover is plug-in attachable/detachable with simple round male pins and wall-integrated female sockets and does not use cover screws.
 - Document that the four bottom-tray board-stack holes exist because the Pi Zero/HAT stack has four mounting points, and that top-cover pin/socket features and pod attachment features are separate.
-- Document the revised `top_cover`-mounted IR pod attachment method and note that pod retention is part of the removable upper assembly.
+- Document the revised `top_cover`-mounted IR pod plug-in male/female attachment method and note that pod retention is part of the removable upper assembly.
 - Document that the IR emitter PCB can be screwed into the pod through the detachable pod top service opening, with the Grove cable allowed to remain connected during service.
 - Document that the IR pod PCB dimensions, two-hole mounting pattern, Grove connector placement/envelope, cable clearance, and LED extension defaults are sourced from `designs/grove_infrared_emitter.scad`.
 - Remove or update stale README language that describes the IR pod PCB as 20.0 mm x 24.0 mm or as using a four-hole mounting pattern by default.
-- Document that the pod itself mounts tool-free to the top cover through the implemented clip or slide interface.
+- Document that the pod itself mounts tool-free to the top cover through the implemented plug-in male/female interface.
 - Document that the additional loose IR pod printable part is the removable PCB retainer when that design is retained.
 - Document the detachable IR pod top service panel as a separate printable closure part, including that it exists to avoid inaccessible Bambu Studio tree supports inside the pod.
 - Document the detachable pod panel assembly order and distinguish it from the IR PCB retainer and the pod-to-top-cover attachment.
@@ -921,3 +964,4 @@ Impact and regression considerations for this iteration:
 - Document that printable render modes and `printable_layout` are Bambu Lab-friendly, with separate parts placed on the build plate and no generated mesh exports committed.
 - Document that the plug-in pin/socket iteration intentionally changes the bottom tray only for sockets, socket reinforcement, and directly required clearance preservation.
 - Document that every top-cover USB opening defaults to at least 15.4 mm effective width and 7.4 mm effective height, with adjustable dimensions for physical calibration.
+- Document that the previous pod slide rail/slot attachment is no longer the default, and document the pod plug-in tuning parameters, socket clearance, insertion depth, and distinction from IR PCB retention and the bottom-tray/top-cover plug-in interface.

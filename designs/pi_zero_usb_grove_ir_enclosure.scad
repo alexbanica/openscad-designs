@@ -125,25 +125,21 @@ pod_panel_retention_tab_height_mm = 0.8;
 pod_panel_retention_tab_center_y_offset_mm = 8.0;
 pod_panel_retention_tab_center_depth_mm = 3.2;
 pod_panel_retention_socket_clearance_mm = 0.25;
-pod_panel_attachment_relief_extra_depth_mm = 1.0;
 pod_attachment_gap_mm = 0.4;
 pod_center_offset_x_mm = 24.5;
 pod_center_offset_z_mm = 0.0;
-pod_slide_rail_width_mm = 8.0;
-pod_slide_rail_height_mm = 12.0;
-pod_slide_rail_length_mm = 2.8;
-pod_slide_rail_spacing_x_mm = 18.0;
-pod_slide_rail_center_z_mm = 15.0;
-pod_slide_rail_slot_clearance_mm = 0.35;
-pod_slide_retention_bump_length_mm = 1.4;
-pod_slide_retention_bump_height_mm = 1.8;
-pod_slide_root_plate_extra_width_mm = 1.5;
-pod_slide_root_plate_depth_mm = 4.4;
-pod_slide_root_plate_height_mm = 15.0;
-pod_slide_root_gusset_width_mm = 4.0;
-pod_slide_root_gusset_depth_mm = 7.0;
-pod_slide_root_gusset_height_mm = 10.0;
-pod_slide_root_embed_depth_mm = 2.4;
+pod_attachment_post_count = 2;
+pod_attachment_post_spacing_x_mm = 18.0;
+pod_attachment_post_x_offset_mm = 0.0;
+pod_attachment_post_local_y_offset_mm = 2.0;
+pod_attachment_post_root_overlap_mm = 2.0; // Root overlap into pod wall for default male posts
+pod_attachment_post_center_z_from_bottom_mm = 8.0;
+pod_attachment_post_diameter_mm = 3.0;
+pod_attachment_post_insertion_length_mm = 6.0;
+pod_attachment_socket_clearance_mm = 0.35;
+pod_attachment_socket_depth_mm = 6.0;
+pod_attachment_socket_reinforcement_thickness_mm = 1.2;
+pod_attachment_socket_reinforcement_length_mm = 1.5;
 
 // IR emitter pod board mount
 // Source of truth: designs/grove_infrared_emitter.scad
@@ -323,17 +319,30 @@ pod_panel_retention_tab_centers_y_mm = [
     -pod_panel_retention_tab_center_y_offset_mm,
     pod_panel_retention_tab_center_y_offset_mm
 ];
-pod_slide_slot_width_mm = pod_slide_rail_width_mm + 2 * pod_slide_rail_slot_clearance_mm;
-pod_slide_slot_depth_mm = pod_slide_rail_length_mm + 2 * pod_slide_rail_slot_clearance_mm;
-pod_panel_slide_relief_width_mm =
-    pod_slide_slot_width_mm + 2 * pod_panel_fit_clearance_mm;
-pod_panel_slide_relief_depth_mm =
-    min(
-        pod_panel_outer_depth_mm,
-        pod_slide_slot_depth_mm
-            + pod_panel_attachment_relief_extra_depth_mm
-            + 2 * preview_overlap_mm
-    );
+pod_attachment_post_local_centers_mm = [
+    [
+        -pod_attachment_post_spacing_x_mm / 2 + pod_attachment_post_x_offset_mm,
+        -pod_outer_depth_mm / 2 + pod_attachment_post_root_overlap_mm - pod_attachment_post_local_y_offset_mm
+    ],
+    [
+        pod_attachment_post_spacing_x_mm / 2 + pod_attachment_post_x_offset_mm,
+        -pod_outer_depth_mm / 2 + pod_attachment_post_root_overlap_mm - pod_attachment_post_local_y_offset_mm
+    ]
+];
+active_pod_attachment_post_count = min(pod_attachment_post_count, len(pod_attachment_post_local_centers_mm));
+pod_attachment_axis_sign_mm = (pod_attachment_side == "front") ? 1 : -1;
+pod_attachment_socket_diameter_mm =
+    pod_attachment_post_diameter_mm + 2 * pod_attachment_socket_clearance_mm;
+pod_attachment_socket_reinforcement_diameter_mm =
+    pod_attachment_post_diameter_mm
+    + 2 * pod_attachment_socket_reinforcement_thickness_mm;
+pod_attachment_post_socket_reinforcement_extent_mm =
+    pod_attachment_socket_reinforcement_length_mm + pod_attachment_post_insertion_length_mm;
+pod_panel_attachment_relief_height_mm =
+    pod_panel_thickness_mm
+        + pod_panel_seating_depth_mm
+        + pod_panel_retention_tab_height_mm
+        + 2 * solid_merge_overlap_mm;
 pod_panel_cable_relief_width_mm =
     pod_cable_entry_size_mm[0] + 2 * pod_panel_fit_clearance_mm;
 pod_panel_cable_relief_depth_mm =
@@ -341,14 +350,9 @@ pod_panel_cable_relief_depth_mm =
         pod_panel_outer_depth_mm,
         pod_cable_entry_size_mm[1]
             + pod_wall_thickness_mm
-            + pod_panel_attachment_relief_extra_depth_mm
+        + pod_panel_attachment_relief_height_mm
             + 2 * preview_overlap_mm
     );
-pod_panel_attachment_relief_height_mm =
-    pod_panel_thickness_mm
-        + pod_panel_seating_depth_mm
-        + pod_panel_retention_tab_height_mm
-        + 2 * solid_merge_overlap_mm;
 
 pod_cable_entry_center_x_mm =
     pod_center_x_mm
@@ -478,33 +482,6 @@ tray_socket_hole_center_z_mm =
     - tray_socket_depth_mm / 2
     + preview_overlap_mm / 2;
 tray_socket_hole_diameter_mm = cover_pin_diameter_mm + tray_socket_clearance_mm;
-
-pod_slide_rail_centers_mm = [
-    [-pod_slide_rail_spacing_x_mm / 2, pod_slide_rail_center_z_mm],
-    [pod_slide_rail_spacing_x_mm / 2, pod_slide_rail_center_z_mm]
-];
-pod_slide_root_plate_width_mm =
-    pod_slide_rail_spacing_x_mm
-    + pod_slide_rail_width_mm
-    + 2 * pod_slide_root_plate_extra_width_mm;
-pod_slide_rail_bottom_z_mm =
-    pod_center_z_mm
-    - pod_outer_height_mm / 2
-    + pod_slide_rail_center_z_mm
-    - pod_slide_rail_height_mm / 2;
-pod_slide_slot_bottom_local_z_mm = pod_slide_rail_center_z_mm - pod_slide_rail_height_mm / 2;
-pod_slide_slot_top_local_z_mm = pod_outer_height_mm / 2 + preview_overlap_mm;
-pod_slide_slot_height_mm = pod_slide_slot_top_local_z_mm - pod_slide_slot_bottom_local_z_mm;
-pod_slide_slot_center_local_z_mm = pod_slide_slot_bottom_local_z_mm + pod_slide_slot_height_mm / 2;
-pod_slide_retention_center_local_z_mm =
-    pod_slide_slot_bottom_local_z_mm
-    + pod_slide_retention_bump_height_mm / 2
-    + pod_slide_rail_slot_clearance_mm;
-pod_slide_retention_pocket_center_local_y_mm =
-    -pod_outer_depth_mm / 2
-    + pod_slide_slot_depth_mm
-    + pod_slide_retention_bump_length_mm / 2
-    - preview_overlap_mm;
 
 ir_mounting_hole_x_mm = ir_pcb_width_mm / 2 - ir_mounting_hole_edge_offset_x_mm;
 ir_mounting_hole_centerline_y_mm = 0.0;
@@ -806,13 +783,14 @@ module pi_zero_usb_grove_ir_top_cover() {
         union() {
             pi_zero_usb_grove_ir_cover_shell();
             pi_zero_usb_grove_ir_cover_plug_pins();
-            pi_zero_usb_grove_ir_cover_pod_slide_rails();
+            pi_zero_usb_grove_ir_cover_pod_attachment_reinforcement();
         }
 
         pi_zero_usb_grove_ir_top_cover_port_cutout_volumes();
         pi_zero_usb_grove_ir_main_cable_exit_volume();
         pi_zero_usb_grove_ir_main_internal_cable_path_volume();
         pi_zero_usb_grove_ir_top_vent_holes();
+        pi_zero_usb_grove_ir_cover_pod_attachment_socket_holes();
     }
 }
 
@@ -825,10 +803,10 @@ module pi_zero_usb_grove_ir_ir_pod(
             union() {
                 pi_zero_usb_grove_ir_pod_shell();
                 pi_zero_usb_grove_ir_pod_board_mount();
+                pi_zero_usb_grove_ir_pod_attachment_posts();
             }
 
             pi_zero_usb_grove_ir_pod_service_window_volume();
-            pi_zero_usb_grove_ir_pod_slide_slots();
             if (enable_ir_mount_optional_pilot_holes) {
                 pi_zero_usb_grove_ir_pod_mount_holes();
             }
@@ -972,76 +950,44 @@ module pi_zero_usb_grove_ir_stack_standoff_holes() {
     }
 }
 
-module pi_zero_usb_grove_ir_cover_pod_slide_rails() {
-    color(standoff_colour)
-    translate([
-        pod_center_x_mm,
-        rotate_y_mm(
-            0,
-            outer_width_mm / 2 + pod_slide_root_plate_depth_mm / 2 - pod_slide_root_embed_depth_mm / 2,
-            pod_base_rotation_deg
-        ),
-        pod_slide_rail_bottom_z_mm + pod_slide_root_plate_height_mm / 2
-    ])
-        rotate([0, 0, pod_base_rotation_deg])
-            cube(
-                [
-                    pod_slide_root_plate_width_mm,
-                    pod_slide_root_plate_depth_mm + pod_slide_root_embed_depth_mm,
-                    pod_slide_root_plate_height_mm
-                ],
-                center = true
-            );
+module pi_zero_usb_grove_ir_cover_pod_attachment_reinforcement() {
+    if (active_pod_attachment_post_count > 0) {
+        color(standoff_colour)
+            for (post_index = [0:active_pod_attachment_post_count - 1]) {
+                post_local_center_mm = pod_attachment_post_local_centers_mm[post_index];
+                post_world_x_mm = pod_center_x_mm + rotate_x_mm(post_local_center_mm[0], post_local_center_mm[1], pod_base_rotation_deg);
+                post_world_y_mm = pod_center_y_mm + rotate_y_mm(post_local_center_mm[0], post_local_center_mm[1], pod_base_rotation_deg);
+                post_world_z_mm = pod_center_z_mm - pod_outer_height_mm / 2 + pod_attachment_post_center_z_from_bottom_mm;
+                post_socket_wall_y_mm = post_world_y_mm + pod_attachment_axis_sign_mm * pod_attachment_post_insertion_length_mm / 2;
 
-    for (rail_center_mm = pod_slide_rail_centers_mm) {
-        translate([
-            pod_center_x_mm + rail_center_mm[0],
-            rotate_y_mm(
-                0,
-                outer_width_mm / 2 + pod_slide_root_gusset_depth_mm / 2 - pod_slide_root_embed_depth_mm / 2,
-                pod_base_rotation_deg
-            ),
-            pod_slide_rail_bottom_z_mm + pod_slide_root_gusset_height_mm / 2
-        ])
-            rotate([0, 0, pod_base_rotation_deg])
-                cube(
-                    [
-                        pod_slide_root_gusset_width_mm,
-                        pod_slide_root_gusset_depth_mm + pod_slide_root_embed_depth_mm,
-                        pod_slide_root_gusset_height_mm
-                    ],
-                    center = true
-                );
+                translate([post_world_x_mm, post_socket_wall_y_mm, post_world_z_mm])
+                    rotate([90, 0, 0])
+                        cylinder(
+                            h = pod_attachment_post_socket_reinforcement_extent_mm,
+                            d = pod_attachment_socket_reinforcement_diameter_mm,
+                            center = true
+                        );
+            }
+    }
+}
 
-        translate([
-            pod_center_x_mm + rail_center_mm[0],
-            rotate_y_mm(0, outer_width_mm / 2 + pod_slide_rail_length_mm / 2 - pod_slide_root_embed_depth_mm / 2, pod_base_rotation_deg),
-            pod_slide_rail_bottom_z_mm + pod_slide_rail_height_mm / 2
-        ])
-            rotate([0, 0, pod_base_rotation_deg])
-                cube(
-                    [
-                        pod_slide_rail_width_mm,
-                        pod_slide_rail_length_mm + pod_slide_root_embed_depth_mm,
-                        pod_slide_rail_height_mm
-                    ],
-                    center = true
-                );
+module pi_zero_usb_grove_ir_cover_pod_attachment_socket_holes() {
+    if (active_pod_attachment_post_count > 0) {
+        for (post_index = [0:active_pod_attachment_post_count - 1]) {
+            post_local_center_mm = pod_attachment_post_local_centers_mm[post_index];
+            post_world_x_mm = pod_center_x_mm + rotate_x_mm(post_local_center_mm[0], post_local_center_mm[1], pod_base_rotation_deg);
+            post_world_y_mm = pod_center_y_mm + rotate_y_mm(post_local_center_mm[0], post_local_center_mm[1], pod_base_rotation_deg);
+            post_world_z_mm = pod_center_z_mm - pod_outer_height_mm / 2 + pod_attachment_post_center_z_from_bottom_mm;
+            post_socket_wall_y_mm = post_world_y_mm + pod_attachment_axis_sign_mm * pod_attachment_post_insertion_length_mm / 2;
 
-        translate([
-            pod_center_x_mm + rail_center_mm[0],
-            rotate_y_mm(0, outer_width_mm / 2 + pod_slide_rail_length_mm + pod_slide_retention_bump_length_mm / 2 - pod_slide_root_embed_depth_mm / 2, pod_base_rotation_deg),
-            pod_center_z_mm - pod_outer_height_mm / 2 + pod_slide_retention_center_local_z_mm
-        ])
-            rotate([0, 0, pod_base_rotation_deg])
-                cube(
-                    [
-                        pod_slide_rail_width_mm,
-                        pod_slide_retention_bump_length_mm + pod_slide_root_embed_depth_mm,
-                        pod_slide_retention_bump_height_mm
-                    ],
-                    center = true
-                );
+            translate([post_world_x_mm, post_socket_wall_y_mm, post_world_z_mm])
+                rotate([90, 0, 0])
+                    cylinder(
+                        h = pod_attachment_socket_depth_mm,
+                        d = pod_attachment_socket_diameter_mm,
+                        center = true
+                    );
+        }
     }
 }
 
@@ -1097,14 +1043,6 @@ module pi_zero_usb_grove_ir_pod_top_service_panel_attachment_reliefs() {
         pod_panel_cable_relief_width_mm,
         pod_panel_cable_relief_depth_mm
     );
-
-    for (rail_center_mm = pod_slide_rail_centers_mm) {
-        pi_zero_usb_grove_ir_pod_top_service_panel_edge_relief(
-            rail_center_mm[0],
-            pod_panel_slide_relief_width_mm,
-            pod_panel_slide_relief_depth_mm
-        );
-    }
 }
 
 module pi_zero_usb_grove_ir_pod_top_service_panel_edge_relief(
@@ -1239,40 +1177,25 @@ module pi_zero_usb_grove_ir_pod_service_window_volume() {
                 );
 }
 
-module pi_zero_usb_grove_ir_pod_slide_slots() {
-    translate([pod_center_x_mm, pod_center_y_mm, 0])
-        rotate([0, 0, pod_base_rotation_deg])
-            for (rail_center_mm = pod_slide_rail_centers_mm) {
-                union() {
-                    translate([
-                        rail_center_mm[0],
-                        -pod_outer_depth_mm / 2 + pod_slide_slot_depth_mm / 2 - preview_overlap_mm,
-                        pod_center_z_mm - pod_outer_height_mm / 2 + pod_slide_slot_center_local_z_mm
-                    ])
-                        cube(
-                            [
-                                pod_slide_slot_width_mm,
-                                pod_slide_slot_depth_mm + 2 * preview_overlap_mm,
-                                pod_slide_slot_height_mm
-                            ],
-                            center = true
-                        );
+module pi_zero_usb_grove_ir_pod_attachment_posts() {
+    if (active_pod_attachment_post_count > 0) {
+        for (post_index = [0:active_pod_attachment_post_count - 1]) {
+            post_local_center_mm = pod_attachment_post_local_centers_mm[post_index];
+            post_world_x_mm = pod_center_x_mm + rotate_x_mm(post_local_center_mm[0], post_local_center_mm[1], pod_base_rotation_deg);
+            post_world_y_mm = pod_center_y_mm + rotate_y_mm(post_local_center_mm[0], post_local_center_mm[1], pod_base_rotation_deg);
+            post_world_z_mm = pod_center_z_mm - pod_outer_height_mm / 2 + pod_attachment_post_center_z_from_bottom_mm;
+            post_world_center_y_mm = post_world_y_mm + pod_attachment_axis_sign_mm * pod_attachment_post_insertion_length_mm / 2;
 
-                    translate([
-                        rail_center_mm[0],
-                        pod_slide_retention_pocket_center_local_y_mm,
-                        pod_center_z_mm - pod_outer_height_mm / 2 + pod_slide_retention_center_local_z_mm
-                    ])
-                        cube(
-                            [
-                                pod_slide_slot_width_mm,
-                                pod_slide_retention_bump_length_mm + 2 * preview_overlap_mm,
-                                pod_slide_retention_bump_height_mm + 2 * pod_slide_rail_slot_clearance_mm
-                            ],
+            color(standoff_colour)
+                translate([post_world_x_mm, post_world_center_y_mm, post_world_z_mm])
+                    rotate([90, 0, 0])
+                        cylinder(
+                            h = pod_attachment_post_insertion_length_mm,
+                            d = pod_attachment_post_diameter_mm,
                             center = true
                         );
-                }
-            }
+        }
+    }
 }
 
 module pi_zero_usb_grove_ir_pod_board_mount() {
