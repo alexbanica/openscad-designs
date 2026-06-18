@@ -6,10 +6,11 @@ This repository contains editable OpenSCAD designs.
 
 - `designs/pi_zero.scad`
 - `designs/rpi5.scad`
+- `designs/rpi5_active_cooler.scad`
+- `designs/rpi5_ai_hat_plus_26t.scad`
 - `designs/grove_infrared_emitter.scad`
 - `designs/seeed_grove_base_hat_zero.scad`
 - `designs/waveshare_eth_usb_hub_hat.scad`
-- `designs/rpi5_ai_hat_dual_heatsink_vision_case.scad`
 - `designs/pi_zero_usb_grove_ir_enclosure.scad`
 
 All files target OpenSCAD 2021.01 and have no external library dependencies.
@@ -319,73 +320,86 @@ openscad -o /tmp/waveshare_eth_usb_hub_hat_printable_layout.off -D 'render_mode=
 - Leave additional printed-case clearance around RJ45, USB-A, and Micro USB features until measured against the actual board and adapter.
 - The design guidance remains compatible with Bambu Lab P2S and AMS 2 Pro fit-check workflows; no generated mesh exports are committed.
 
-## Raspberry Pi 5 AI HAT+ Vision Case
+## Raspberry Pi 5 AI HAT+ 26T Reference
 
-The Raspberry Pi 5 design is a printable open tower frame with a forward camera arm, adjustable tilt holder, bottom intake, top exhaust opening, and CSI ribbon relief.
+`designs/rpi5_ai_hat_plus_26t.scad` is a fit and clearance reference for the Raspberry Pi AI HAT+ 26 TOPS (Hailo-8, 26 TOPS).
+
+`designs/rpi5_active_cooler.scad` now holds the reusable Raspberry Pi 5 active-cooler preview geometry used by `designs/rpi5.scad` and the AI HAT+ reference.
 
 ### Component Assumptions
 
-Default dimensions are configurable at the top of the `.scad` file. The initial defaults assume:
+The file is a planning-only model, not vendor CAD. Default dimensions come from public Raspberry Pi product data and readable source assumptions.
 
-- Raspberry Pi 5 board: 85 mm x 56 mm.
-- Raspberry Pi AI HAT+ or compatible HAT footprint: about 66 mm x 56.5 mm.
-- Raspberry Pi Camera Module 3 Standard: 25 mm x 24 mm x 11.5 mm envelope.
-- Common M2.5 Raspberry Pi mounting hardware.
-- A Pi active cooler below the HAT and a second active cooler above the AI HAT.
+- Raspberry Pi AI HAT+ board defaults: 65.0 mm x 56.5 mm x 1.6 mm.
+- Pi-to-AI-HAT+ stack distance: 20.0 mm (from stacked mounting-envelope assumptions).
+- AI module pin/socket stack default: 23.0 mm from AI HAT PCB.
+- Default Hailo-8 package footprint: 17.0 mm x 17.0 mm.
+- Mounting-hole positions and Pi 5 active-cooler placement use the Raspberry Pi 5 reference coordinates from `designs/rpi5.scad` and the extracted active-cooler helper.
+- Common M2.5 Raspberry Pi hardware assumptions.
 
-The cooler models are clearance volumes for fit and airflow inspection, not vendor-accurate cosmetic models.
+The dimensions are approximate. Direct measurement is required before precision enclosure or CAM work.
 
 ### Adjustable Parameters
 
-The OpenSCAD source starts with an `Adjustable Parameters` section grouped by:
+The source starts with an `Adjustable Parameters` section grouped by:
 
 - render controls,
-- board dimensions,
-- stack and cooler clearances,
-- case structure,
-- ventilation,
-- camera system,
-- CSI ribbon routing,
-- fasteners and print tolerances.
+- AI HAT+ board geometry,
+- mounting hardware,
+- stack and GPIO/header stack,
+- AI HAT+ cooling geometry,
+- PCIe guidance,
+- clearance visuals,
+- printable layout.
 
 Common edits:
 
-- Change `render_mode` to export a specific printable part.
-- Set `show_electronics = false` for printable-only previews.
-- Adjust `camera_arm_forward_offset_mm` and `camera_tilt_angle_deg` for camera placement.
-- Increase `case_board_clearance_mm`, `fit_tolerance_mm`, or `layer_friendly_clearance_mm` for looser prints.
-- Adjust cooler clearance heights if a specific heatsink or fan stack is taller than the defaults.
+- Set `render_mode = "assembly"`, `"hat"`, `"cooling"`, or `"printable_layout"`.
+- Tune `ai_hat_board_length_mm`, `ai_hat_board_width_mm`, and `ai_hat_board_thickness_mm` for measured hardware.
+- Tune `ai_hat_stack_distance_mm` and `ai_hat_header_pin_height_mm` after measuring actual stack mechanics.
+- Tune `ai_hat_npu_package_size_mm` for a verified Hailo package envelope.
+- Tune AI cooler parameters and placement if a measured local cooler sketch is available.
+- Tune PCIe connector and cable guidance parameters for wiring route fit.
+- Independently disable preview layers with `show_rpi5_active_cooler`, `show_ai_hat_electronics`, `show_ai_hat_cooler`, `show_gpio_stack`, `show_pcie_guidance`, `show_labels`, and `show_clearance_guides`.
 
 ### Render Modes
 
 Set `render_mode` to one of:
 
-- `assembly`: full preview with tower, camera arm, holder, and optional electronics.
-- `tower`: tower/base printable part.
-- `camera_arm`: forward camera arm printable part.
-- `camera_holder`: camera holder and tilt hinge printable part.
-- `printable_layout`: printable parts arranged side-by-side for inspection.
+- `assembly`: Raspberry Pi 5 with active cooler, AI HAT+ PCB/hardware, stack clearance, and cooling/cable guides.
+- `hat`: AI HAT+ board and header/reference only.
+- `cooling`: stack and cooling-focused view for active cooler clearance and AI HAT+ cooler relationship.
+- `printable_layout`: separated fit-check groups for visual inspection only (no generated mesh files in source control).
 
-Example export command:
-
-```sh
-openscad -o tower.stl -D 'render_mode="tower"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
-```
-
-For inspection with electronics hidden:
+Optional inspection commands:
 
 ```sh
-openscad -o assembly.off -D 'render_mode="assembly"' -D 'show_electronics=false' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o /tmp/rpi5_ai_hat_plus_26t_assembly.off -D 'render_mode="assembly"' designs/rpi5_ai_hat_plus_26t.scad
+openscad -o /tmp/rpi5_ai_hat_plus_26t_hat.off -D 'render_mode="hat"' designs/rpi5_ai_hat_plus_26t.scad
+openscad -o /tmp/rpi5_ai_hat_plus_26t_cooling.off -D 'render_mode="cooling"' designs/rpi5_ai_hat_plus_26t.scad
+openscad -o /tmp/rpi5_ai_hat_plus_26t_printable_layout.off -D 'render_mode="printable_layout"' designs/rpi5_ai_hat_plus_26t.scad
+openscad -o /tmp/rpi5_reference_after_cooler_extract.off designs/rpi5.scad
+openscad -o /tmp/rpi5_active_cooler.off -D 'rpi5_active_cooler_reference();' designs/rpi5_active_cooler.scad
 ```
 
-### Bambu Lab Print Notes
+### Fit and Validation Notes
 
-- Print tower, camera arm, and holder as separate parts.
-- Use PLA, PETG, or another material appropriate for the target thermal environment.
-- Prefer at least three perimeters for the tower posts and camera hinge.
-- Orient the tower on the base plate, the arm flat on its broad face, and the camera holder with the back face on the bed.
-- Use normal supports only if your slicer flags the camera hinge or holder lips for your chosen orientation.
-- Do not block the bottom intake slots or top exhaust opening with adhesive pads, labels, or accessory mounts.
+- Use the model as a child design with `use <rpi5_ai_hat_plus_26t.scad>` and call `rpi5_ai_hat_plus_26t_reference_model(...)` explicitly.
+- Use `use <rpi5_active_cooler.scad>` and `rpi5_active_cooler_reference()` when you only need Pi 5 cooler-envelope geometry.
+- AI HAT+ defaults are planning values for a 26 TOPS HAT+ and are not vendor-accurate mechanical details.
+- `show_labels` only controls text, and clearance guides are optional by construction.
+- Use `show_clearance_guides = true` during initial stack and enclosure planning for Pi 5 cooler/AI HAT spacing checks.
+- Keep `show_pcie_guidance = true` unless enclosure design intentionally removes the PCIe routing path.
+- Verify and re-measure dimensions against real hardware before final dimensioning of an enclosure.
+
+Manual inspection checklist:
+
+- Confirm AI HAT+ defaults are 65.0 mm x 56.5 mm x 1.6 mm.
+- Confirm stack distance is 20.0 mm and the GPIO/header stack envelope extends 23.0 mm above the AI HAT PCB.
+- Confirm the Hailo-8 package default is 17.0 mm x 17.0 mm and visually aligned to the AI HAT cooler target.
+- Confirm Pi 5 active cooler geometry is present and reusable through `rpi5_active_cooler.scad`.
+- Confirm `show_rpi5_reference`, `show_rpi5_active_cooler`, `show_ai_hat_electronics`, `show_ai_hat_cooler`, `show_gpio_stack`, `show_pcie_guidance`, `show_labels`, and `show_clearance_guides` independently control those groups.
+- Confirm `assembly`, `hat`, `cooling`, and `printable_layout` behavior renders the intended views with the default parameters.
 
 ## Raspberry Pi Zero USB Ethernet Grove IR Enclosure
 
@@ -540,11 +554,10 @@ openscad -o /tmp/waveshare_eth_usb_hub_hat_assembly.off -D 'render_mode="assembl
 openscad -o /tmp/waveshare_eth_usb_hub_hat_only.off -D 'render_mode="hat"' designs/waveshare_eth_usb_hub_hat.scad
 openscad -o /tmp/waveshare_eth_usb_hub_hat_adapter.off -D 'render_mode="micro_usb_adapter"' designs/waveshare_eth_usb_hub_hat.scad
 openscad -o /tmp/waveshare_eth_usb_hub_hat_printable_layout.off -D 'render_mode="printable_layout"' designs/waveshare_eth_usb_hub_hat.scad
-openscad -o /tmp/rpi5_ai_hat_dual_heatsink_vision_case.off -D 'render_mode="assembly"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_tower.off -D 'render_mode="tower"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_camera_arm.off -D 'render_mode="camera_arm"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_camera_holder.off -D 'render_mode="camera_holder"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
-openscad -o /tmp/rpi5_ai_hat_printable_layout.off -D 'render_mode="printable_layout"' designs/rpi5_ai_hat_dual_heatsink_vision_case.scad
+openscad -o /tmp/rpi5_ai_hat_plus_26t_assembly.off -D 'render_mode="assembly"' designs/rpi5_ai_hat_plus_26t.scad
+openscad -o /tmp/rpi5_ai_hat_plus_26t_hat.off -D 'render_mode="hat"' designs/rpi5_ai_hat_plus_26t.scad
+openscad -o /tmp/rpi5_ai_hat_plus_26t_cooling.off -D 'render_mode="cooling"' designs/rpi5_ai_hat_plus_26t.scad
+openscad -o /tmp/rpi5_ai_hat_plus_26t_printable_layout.off -D 'render_mode="printable_layout"' designs/rpi5_ai_hat_plus_26t.scad
 openscad -o /tmp/pi_zero_usb_grove_ir_assembly.off -D 'render_mode="assembly"' designs/pi_zero_usb_grove_ir_enclosure.scad
 openscad -o /tmp/pi_zero_usb_grove_ir_bottom_tray.off -D 'render_mode="bottom_tray"' designs/pi_zero_usb_grove_ir_enclosure.scad
 openscad -o /tmp/pi_zero_usb_grove_ir_top_cover.off -D 'render_mode="top_cover"' designs/pi_zero_usb_grove_ir_enclosure.scad
