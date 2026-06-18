@@ -8,6 +8,7 @@ This repository contains editable OpenSCAD designs.
 - `designs/rpi5.scad`
 - `designs/rpi5_active_cooler.scad`
 - `designs/rpi5_ai_hat_plus_26t.scad`
+- `designs/rpi5_ai_hat_plus_26t_enclosure.scad`
 - `designs/grove_infrared_emitter.scad`
 - `designs/seeed_grove_base_hat_zero.scad`
 - `designs/waveshare_eth_usb_hub_hat.scad`
@@ -403,6 +404,103 @@ Manual inspection checklist:
 - Confirm `show_rpi5_reference`, `show_rpi5_active_cooler`, `show_ai_hat_electronics`, `show_ai_hat_cooler`, `show_gpio_stack`, `show_pcie_guidance`, `show_labels`, and `show_clearance_guides` independently control those groups.
 - Confirm `show_pcie_guidance` controls only `rpi5_ai_hat_plus_26t_pcie_reference()` and that PCIe guidance stays as a left-side on-board connector/routing feature centered on the PCB side margin.
 - Confirm `assembly`, `hat`, `cooling`, and `printable_layout` behavior renders the intended views with the default parameters.
+
+## Raspberry Pi 5 AI HAT+ 26T Enclosure
+
+`designs/rpi5_ai_hat_plus_26t_enclosure.scad` is a printable bottom-tray and removable-top-cover enclosure for the Raspberry Pi 5 plus `designs/rpi5_ai_hat_plus_26t.scad` stack. It targets Bambu Lab P2S and AMS 2 Pro-friendly printable layouts, keeps generated mesh exports out of source control, and treats OpenSCAD renders as visual validation only.
+
+### Component Assumptions
+
+The enclosure uses `use <rpi5.scad>`, `use <rpi5_ai_hat_plus_26t.scad>`, and `use <rpi5_active_cooler.scad>` for electronics/reference previews. Because OpenSCAD `use` does not expose source variables, the enclosure locally mirrors the current Pi 5 and AI HAT+ reference values with names ending in `_mirror_mm`.
+
+Mirrored Raspberry Pi 5 values include:
+
+- board footprint: 85.0 mm x 56.0 mm x 1.6 mm, with 3.0 mm corner radius,
+- mounting-hole centers: `[3.5, 3.5]`, `[61.5, 3.5]`, `[3.5, 52.5]`, and `[61.5, 52.5]`,
+- USB-A, Ethernet, USB-C power, micro-HDMI, camera/display, PCIe, and microSD connector origins and sizes from `designs/rpi5.scad`.
+
+Mirrored AI HAT+ values include:
+
+- board footprint: 65.0 mm x 56.5 mm x 1.6 mm,
+- Pi-to-HAT stack distance: 20.0 mm,
+- GPIO/header pin envelope: 23.0 mm above a 2.5 mm header body on the AI HAT PCB,
+- three header-connected cable paths are accounted for by the default header/cable error margin,
+- AI HAT+ cooler/fan envelope and PCIe guidance defaults from `designs/rpi5_ai_hat_plus_26t.scad`.
+
+These mirrors are audit points. If the source references change, refresh the enclosure mirror values before precision fitting.
+
+### Adjustable Parameters
+
+The source starts with grouped adjustable parameters for:
+
+- render controls and reference visibility toggles,
+- enclosure wall, floor, roof, fit-clearance, and component-clearance values,
+- Raspberry Pi 5 mirrored board, mounting, connector, and microSD values,
+- AI HAT+ mirrored board, stack, cooler, fan, and PCIe values,
+- board mounting/supports,
+- top-cover male plug pins and bottom-tray female socket holes,
+- bottom anti-slide rubber foot recesses,
+- port/service cutout clearances,
+- lateral side ventilation,
+- top ventilation,
+- printable layout spacing,
+- visual colours.
+
+Common edits:
+
+- Set `render_mode = "assembly"`, `"bottom_tray"`, `"top_cover"`, `"electronics"`, or `"printable_layout"`.
+- Tune `component_clearance_xy_mm`, `component_clearance_z_mm`, `wall_thickness_mm`, `cover_fit_clearance_mm`, and `edge_port_clearance_mm` after hardware measurement.
+- Tune `ai_hat_stack_distance_mirror_mm` to adjust the distance between the Raspberry Pi 5 PCB and the AI HAT+ PCB.
+- Tune `ai_hat_pcb_top_to_cover_top_height_mm` to adjust the height from the AI HAT+ PCB top surface to the top surface of the top cover. The effective value is clamped to at least the mirrored header body plus `ai_hat_header_pin_height_mirror_mm` plus `ai_hat_header_cable_error_margin_mm`.
+- Tune `ai_hat_header_cable_error_margin_mm` for the three header-connected cables and any measurement or print-fit margin above the header stack.
+- Tune `cover_pin_diameter_mm`, `cover_pin_insertion_length_mm`, `tray_socket_clearance_mm`, `tray_socket_depth_mm`, `cover_pin_count`, `cover_pin_offset_x_mm`, and `cover_pin_offset_y_mm` for the male/female connection fit.
+- Tune `enable_anti_slide_foot_recesses`, `anti_slide_foot_recess_diameter_mm`, `anti_slide_foot_recess_depth_mm`, and `anti_slide_foot_recess_centers_mm` for adhesive or press-in rubber feet on the tray underside.
+- Tune `side_vent_count`, `side_vent_width_mm`, `side_vent_height_mm`, `side_vent_spacing_mm`, `side_vent_center_x_mm`, and `side_vent_center_z_mm` for lateral airflow while keeping vents clear of the cover-pin socket bosses.
+- Tune `top_vent_columns`, `top_vent_rows`, `top_vent_hole_diameter_mm`, `top_vent_spacing_x_mm`, `top_vent_spacing_y_mm`, and top vent offsets for the AI HAT+ cooler/fan area.
+
+### Render Modes
+
+Set `render_mode` to one of:
+
+- `assembly`: bottom tray, top cover, male/female connector interface, optional electronics/reference stack, and optional cutout/clearance guides.
+- `bottom_tray`: printable bottom tray only, with female cover-pin sockets and Raspberry Pi 5 mounting supports.
+- `top_cover`: printable top cover only, inverted onto the print plane with male cover pins, service openings, and ventilation cutouts.
+- `electronics`: Raspberry Pi 5 plus AI HAT+ reference stack only.
+- `printable_layout`: bottom tray and top cover separated on the print plane with no floating printable geometry.
+
+Optional inspection commands:
+
+```sh
+openscad -o /tmp/rpi5_ai_hat_plus_26t_enclosure_assembly.off -D 'render_mode="assembly"' designs/rpi5_ai_hat_plus_26t_enclosure.scad
+openscad -o /tmp/rpi5_ai_hat_plus_26t_enclosure_bottom_tray.off -D 'render_mode="bottom_tray"' designs/rpi5_ai_hat_plus_26t_enclosure.scad
+openscad -o /tmp/rpi5_ai_hat_plus_26t_enclosure_top_cover.off -D 'render_mode="top_cover"' designs/rpi5_ai_hat_plus_26t_enclosure.scad
+openscad -o /tmp/rpi5_ai_hat_plus_26t_enclosure_electronics.off -D 'render_mode="electronics"' designs/rpi5_ai_hat_plus_26t_enclosure.scad
+openscad -o /tmp/rpi5_ai_hat_plus_26t_enclosure_printable_layout.off -D 'render_mode="printable_layout"' designs/rpi5_ai_hat_plus_26t_enclosure.scad
+```
+
+### Fit and Validation Notes
+
+- The top cover owns the male cylindrical plug pins by default; they protrude below the cover skirt in assembly and stand proud in the inverted printable top-cover render.
+- The bottom tray owns matching top-open female socket holes in wall-integrated receiver bosses by default.
+- The bottom tray includes shallow bottom-open recesses for anti-slide rubber feet by default.
+- Raspberry Pi 5 edge ports are exposed through side or front wall cutouts for USB-A, Ethernet, USB-C power, micro-HDMI, and microSD access.
+- Camera/display and PCIe connectors use top service openings because cable routing depends on the installed ribbon/cable path.
+- Lateral ventilation is enabled on both long side walls by default.
+- Top ventilation is enabled above the AI HAT+ cooler/fan area by default.
+- The top cover height derives from the larger of the AI HAT+ cooler/fan clearance and the effective AI-PCB-top-to-cover-top clearance, so taller headers or header-connected cables can raise the enclosure without moving port or board-source dimensions.
+- Default pin/socket positions are placed near enclosure corners to avoid Raspberry Pi 5 ports, mounting supports, side vents, and the AI HAT+ cooler/fan envelope.
+- Physical fit remains unvalidated until measured against real hardware and test printed.
+
+Manual inspection checklist:
+
+- Confirm `assembly`, `bottom_tray`, `top_cover`, `electronics`, and `printable_layout` all render.
+- Confirm the printable layout has the tray and cover separated and resting on the print plane.
+- Confirm the top cover has male plug pins and the tray has matching female socket holes.
+- Confirm the tray underside has anti-slide rubber-foot recesses and that they do not break through the floor.
+- Confirm USB-A, Ethernet, USB-C power, micro-HDMI, camera/display, PCIe, and microSD openings are visible.
+- Confirm side and top ventilation are real subtractive openings.
+- Confirm the reference stack, AI HAT+ header stack, and three header-connected cable clearance assumptions do not visibly intersect the top cover, side walls, standoffs, or pin/socket interface.
+- Confirm generated OFF/STL/STEP/3MF files remain under `/tmp` and are not tracked.
 
 ## Raspberry Pi Zero USB Ethernet Grove IR Enclosure
 
