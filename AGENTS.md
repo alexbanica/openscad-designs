@@ -38,6 +38,7 @@ Allowed OpenSCAD usage:
 
 - Render `.scad` files locally to inspect whether geometry is connected, aligned, and plausibly printable.
 - Only render printable_layout and assembly without including electronic components.
+- Any background terminal that takes more than 15 seconds to render should be stopped.
 - Export temporary preview artifacts to `/tmp` for review when helpful.
 - Use OpenSCAD-generated previews to evaluate clip engagement, pod attachment, hole placement, cutout alignment, wall continuity, and other visible printability risks.
 - Use OpenSCAD as a supplement to code review when a user asks for stronger confidence in fit or printability.
