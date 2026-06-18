@@ -109,7 +109,7 @@ micro_usb_bridge_fit_clearance_mm = 1.0;
 
 // External IR emitter pod dimensions and attachment interface
 pod_attachment_side = "front"; // [front/rear]
-pod_outer_width_mm = 29.0;
+pod_outer_width_mm = 31.8;
 pod_outer_depth_mm = 32.0;
 pod_outer_height_mm = 24.0;
 pod_wall_thickness_mm = 2.4;
@@ -119,15 +119,15 @@ pod_corner_radius_mm = 2.0;
 pod_cap_thickness_mm = pod_roof_thickness_mm;
 pod_cap_fit_clearance_mm = 0.25;
 pod_cap_insert_diameter_mm = 3.2;
-pod_cap_insert_insertion_depth_mm = 3.0;
+pod_cap_insert_insertion_depth_mm = 4.5;
 pod_cap_insert_socket_clearance_mm = 0.35;
-pod_cap_insert_socket_depth_mm = 3.6;
+pod_cap_insert_socket_depth_mm = 5.1;
 pod_cap_insert_receiver_wall_thickness_mm = 1.0;
 // Cap-side root shoulder is a short, direct transition from the cap underside into the pin body.
 pod_cap_insert_pin_root_diameter_mm = 3.8;
 pod_cap_insert_pin_root_depth_mm = 0.4;
 pod_cap_insert_keeper_pin_diameter_mm = 1.2;
-pod_cap_insert_keeper_pin_clearance_mm = 0.2;
+pod_cap_insert_keeper_pin_clearance_mm = 0.45;
 pod_cap_insert_lock_wrap_clearance_mm = 1.2;
 pod_cap_insert_lock_bridge_depth_mm = 1.2;
 pod_cap_insert_lock_bridge_height_mm = 1.2;
@@ -147,7 +147,7 @@ pod_attachment_post_center_z_from_bottom_mm = 8.0;
 pod_attachment_post_diameter_mm = 3.0;
 pod_attachment_post_insertion_length_mm = 6.0;
 pod_attachment_post_lock_pin_diameter_mm = 1.2;
-pod_attachment_post_lock_pin_clearance_mm = 0.2;
+pod_attachment_post_lock_pin_clearance_mm = 0.45;
 pod_attachment_post_lock_pin_engagement_depth_mm = 4.0;
 pod_attachment_post_lock_bridge_depth_mm = 1.2;
 pod_attachment_post_lock_bridge_height_mm = 1.2;
@@ -171,7 +171,7 @@ ir_mount_standoff_outer_diameter_mm = 4.8;
 ir_mount_screw_hole_diameter_mm = 2.1;
 ir_mount_pilot_hole_depth_mm = 7.5;
 enable_ir_mount_optional_pilot_holes = true;
-ir_mounting_hole_edge_offset_x_mm = 2.5;
+ir_mounting_hole_edge_offset_x_mm = 1.75;
 ir_grove_connector_local_x_mm = 0.0;
 ir_grove_connector_local_y_mm = -8.1;
 ir_grove_connector_total_top_envelope_mm = 9.65;
@@ -618,7 +618,7 @@ if (render_mode == "assembly") {
 } else if (render_mode == "top_cover") {
     pi_zero_usb_grove_ir_printable_top_cover();
 } else if (render_mode == "ir_pod") {
-    pi_zero_usb_grove_ir_printable_ir_pod();
+    pi_zero_usb_grove_ir_printable_ir_pod_assembly();
 } else if (render_mode == "printable_layout") {
     pi_zero_usb_grove_ir_printable_layout();
 } else if (render_mode == "electronics") {
@@ -760,6 +760,17 @@ module pi_zero_usb_grove_ir_printable_ir_pod() {
         -(pod_center_z_mm - pod_outer_height_mm / 2)
     ])
         pi_zero_usb_grove_ir_ir_pod();
+}
+
+module pi_zero_usb_grove_ir_printable_ir_pod_assembly() {
+    translate([
+        -pod_center_x_mm,
+        -pod_center_y_mm,
+        -(pod_center_z_mm - pod_outer_height_mm / 2)
+    ]) {
+        pi_zero_usb_grove_ir_ir_pod();
+        pi_zero_usb_grove_ir_pod_top_cap();
+    }
 }
 
 module pi_zero_usb_grove_ir_printable_pod_top_cap() {

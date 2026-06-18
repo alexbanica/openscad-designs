@@ -34,19 +34,11 @@ Implementation must not perform additional product, architecture, scope, or plan
 
 Automated unit tests are not applicable. This is an OpenSCAD design repository with no test framework, and repository instructions state QA/unit tests are not required unless explicitly requested.
 
-For implementation-command compliance, behavior-changing implementation must still use exactly one clean-context test-focused subagent before production implementation if subagent tooling is available. The test-focused subagent must produce a deterministic inspection checklist mapped to the approved spec and this plan, not production source changes.
+For the current 2026-06-18 artifact synchronization and fit-tuning update, the user explicitly instructed not to use implementation skills or create subagents. No subagents are required or permitted for this update.
 
 ## Implementation Subagents
 
-If implementation proceeds under the implementation command and subagent tooling is available, use:
-
-- exactly one clean-context test-focused subagent before production implementation,
-- exactly one clean-context implementation subagent for production source/doc edits,
-- exactly one clean-context code-review subagent after implementation.
-
-If required subagent tooling is unavailable, stop and report the blocker before production implementation.
-
-Subagents must receive only the approved spec, this approved plan, their exact assignment, ownership boundary, and minimal relevant file context.
+No implementation subagents are used for the current 2026-06-18 update because the user explicitly prohibited subagent creation for this work.
 
 ## Implementation Steps
 
@@ -58,11 +50,24 @@ Current approved cap insert collision fix: move the removable IR pod cap female 
 
 Current approved cap insertion fix: remove the removable IR pod cap insert retention shoulder/interference section completely. The cap-to-pod interface must use straight male insert pins into straight female socket bores, with fit controlled by insert diameter, insertion depth, socket clearance, and socket depth only.
 
+Current approved physical fit tuning:
+
+- Increase `pod_cap_insert_insertion_depth_mm` from `3.0` to `4.5`.
+- Increase `pod_cap_insert_socket_depth_mm` from `3.6` to `5.1` so the deeper cap inserts have socket bottom clearance.
+- Increase both U-shaped lock receiving-hole clearances from `0.2` to `0.45` while keeping the printed U-lock leg diameters unchanged:
+  - `pod_cap_insert_keeper_pin_clearance_mm`,
+  - `pod_attachment_post_lock_pin_clearance_mm`.
+- Increase the IR PCB support-boss/pilot-hole center spacing by `1.5 mm` total by changing `ir_mounting_hole_edge_offset_x_mm` from `2.5` to `1.75`.
+- Increase `pod_outer_width_mm` from `29.0` to `31.8` so the widened IR PCB support bosses and pilot holes retain printable side margin. The cap/top-hat width remains derived from `pod_outer_width_mm` and `pod_cap_fit_clearance_mm`.
+- Change `render_mode = "ir_pod"` from a body-only standalone view to a pod assembly view showing the pod body with the seated cap/top cover. Keep `printable_layout` as the separate printable-parts view.
+
 1. In `designs/pi_zero_usb_grove_ir_enclosure.scad`, update the IR emitter pod board-fit parameter group so the enclosure has an explicit earlobe-inclusive IR PCB width defaulting to `23.65 mm`.
 2. Keep `ir_pcb_length_mm = 23.75`, `ir_pcb_thickness_mm = 1.6`, the two-hole layout, Grove connector defaults, cable-clearance defaults, and LED extension behavior aligned with the intended Grove emitter reference behavior.
 3. Update the derived IR mounting-hole spacing so IR PCB support bosses and optional pilot holes derive from the `23.65 mm` earlobe-inclusive width, with the existing adjustable edge inset or an equivalently clear measured hole-center parameter retained for physical tuning.
+   - For the 2026-06-18 physical fit tuning, decrease the default X edge inset by `0.75 mm` per side so the two-hole center spacing increases by `1.5 mm` total.
 4. Review and adjust the IR pod envelope as needed so the wider `23.65 mm` PCB envelope, earlobes, support bosses, pilot holes, cap sockets, pod walls, cable entry, LED aperture, and pod-to-top-cover attachment do not collide:
    - increase `pod_outer_width_mm` only if needed,
+   - for the 2026-06-18 tuning, increase the default pod width enough to preserve side margin around the widened support bosses and pilot holes,
    - preserve the approved pod offset away from the Waveshare RJ45/Ethernet opening,
    - preserve the pod cable entry, main cable exit, Grove cable path, LED aperture pass-through, and pod-to-top-cover plug-in attachment.
 5. Strengthen the removable full-cover IR pod cap male insert elements:
@@ -73,6 +78,14 @@ Current approved cap insertion fix: remove the removable IR pod cap insert reten
    - keep straight cap-side male inserts and straight pod-side female socket bores,
    - control cap fit only through socket clearance, insertion depth, insert diameter, and socket depth,
    - do not reintroduce insert/socket interference sections, detents, fragile flexible side clips, sliding rails, latch tabs, hooks, or the removed separate IR PCB retainer as default cap retention.
+6a. Tune the pod-cap/top-hat insert and lock interface for the user's printed fit:
+   - increase cap insert insertion depth,
+   - increase socket depth to stay deeper than the longer insert,
+   - increase pod-cap/top-hat U-lock receiving-hole clearance,
+   - keep the pod-cap/top-hat U-lock leg diameter unchanged.
+6b. Tune the pod-to-top-cover lock interface for the user's printed fit:
+   - increase the receiving-hole clearance through the top-cover socket sleeve and pod post lock path,
+   - keep the pod-to-top-cover U-lock leg diameter unchanged.
 7. Preserve unrelated approved enclosure behavior:
    - Pi Zero/Waveshare/Grove board stack geometry,
    - Pi Zero and Waveshare port cutouts,
@@ -83,16 +96,20 @@ Current approved cap insertion fix: remove the removable IR pod cap insert reten
    - top ventilation holes,
    - anti-slide features,
    - render-mode names and printable orientations.
-8. Update source comments near the IR emitter pod board mount parameters to state that the previous defaults were copied from `designs/grove_infrared_emitter.scad`, but this enclosure now uses the user's `23.65 mm` earlobe-inclusive measured width as a local pod-fit override.
-9. Update `README.md` so the enclosure section describes:
+8. Update `render_mode = "ir_pod"` dispatch so the standalone IR pod render shows the pod body with the seated cap/top cover. Preserve `printable_layout` as separate printable pod body and cap objects.
+9. Update source comments near the IR emitter pod board mount parameters to state that the previous defaults were copied from `designs/grove_infrared_emitter.scad`, but this enclosure now uses the user's `23.65 mm` earlobe-inclusive measured width as a local pod-fit override.
+10. Update `README.md` so the enclosure section describes:
    - the answer that the previous IR pod holes were based on the Grove Infrared Emitter `.scad` values,
    - the new `23.65 mm` earlobe-inclusive IR PCB width used for pod fit, support-boss placement, and pilot-hole alignment,
    - whether the value is currently a local enclosure override rather than a Grove reference source change,
+   - the `1.5 mm` wider IR PCB support-boss/pilot-hole spacing,
+   - the increased pod width and derived cap/top-hat width used to preserve boss side margin,
    - strengthened cap insert roots,
    - removal of the prior cap retention shoulder/interference section,
-   - cap fit tuning parameters,
+   - cap fit tuning parameters, including longer insert insertion depth, deeper sockets, and larger U-lock receiving-hole clearances,
+   - standalone `ir_pod` render mode showing the assembled pod body plus cap/top cover,
    - continued screw access after cap removal and continued Grove cable serviceability.
-10. Do not add generated STL, STEP, 3MF, OFF, or similar files to source control.
+11. Do not add generated STL, STEP, 3MF, OFF, or similar files to source control.
 
 ## Validation Commands
 
@@ -104,18 +121,7 @@ git diff --check
 
 Expected result: command exits successfully with no output except any pre-existing CRLF warning already present for untouched files.
 
-Run OpenSCAD inspection renders to temporary files:
-
-```sh
-openscad -o /tmp/pi_zero_usb_grove_ir_pod.off -D 'render_mode="ir_pod"' designs/pi_zero_usb_grove_ir_enclosure.scad
-openscad -o /tmp/pi_zero_usb_grove_ir_assembly.off -D 'render_mode="assembly"' designs/pi_zero_usb_grove_ir_enclosure.scad
-openscad -o /tmp/pi_zero_usb_grove_ir_printable_layout.off -D 'render_mode="printable_layout"' designs/pi_zero_usb_grove_ir_enclosure.scad
-openscad -o /tmp/pi_zero_usb_grove_ir_top_cover.off -D 'render_mode="top_cover"' designs/pi_zero_usb_grove_ir_enclosure.scad
-```
-
-Expected result: each command exits successfully. Generated `.off` artifacts remain under `/tmp` and are not added to source control.
-
-If OpenSCAD is unavailable or a render fails, report the failure and mark delivery as draft unless the user explicitly accepts source-review-only validation.
+Do not run OpenSCAD inspection renders for this update while the user instruction to avoid OpenSCAD execution remains active. If the user later explicitly allows OpenSCAD, temporary inspection renders may be generated under `/tmp` and must not be added to source control.
 
 ## Manual Review Requirements
 
@@ -124,15 +130,21 @@ Review `designs/pi_zero_usb_grove_ir_enclosure.scad` and confirm:
 - IR pod support bosses and pilot holes derive from the `23.65 mm` earlobe-inclusive width by default,
 - the two-hole mounting pattern is preserved,
 - the exact hole-center spacing remains adjustable for later physical measurement,
+- the default two-hole center spacing is `1.5 mm` wider than before through the adjusted X edge inset,
 - the wider PCB envelope does not collide with pod walls, cap sockets, cable entry, LED aperture, or pod-to-top-cover attachment by code review,
-- any pod width increase is minimal and keeps the pod offset away from the Waveshare RJ45/Ethernet opening,
+- the pod width increase preserves side margin around the widened support bosses and pilot holes and keeps the pod offset away from the Waveshare RJ45/Ethernet opening,
+- the cap/top-hat width remains derived from pod width and cap fit clearance,
 - cap insert male elements have visibly stronger roots or equivalent supported transitions,
+- cap insert insertion depth and matching socket depth allow the male inserts to pass far enough through the pod-side receiver margins for the U-shaped lock path,
+- both U-shaped lock interfaces use larger receiving-hole clearances while keeping their printed lock leg diameters unchanged,
 - cap insert female receiver/socket volumes sit laterally outside the IR pod enclosure cavity and leave the male inserts a full insertion path,
 - cap insert geometry uses straight male pins and straight female socket bores with no retention shoulder, interference section, or detent,
 - cap fit remains adjustable and hand-removable for screw access,
 - cap closure does not use fragile side clips, sliding rails, latch tabs, hooks, or the removed IR PCB retainer,
 - cap insert sockets remain visually distinct from IR PCB pilot holes and pod-to-top-cover plug-in sockets,
 - pod cable entry, main cable exit, Grove cable path, LED aperture, pod-to-top-cover attachment posts/sockets, top-cover-to-bottom-tray pins/sockets, port cutouts, and printable orientations remain preserved,
+- `render_mode = "ir_pod"` shows the pod body assembled with the seated cap/top cover,
+- `printable_layout` still shows the pod body and cap/top cover as separate printable objects,
 - all remaining adjustable linear values use `_mm`,
 - no generated mesh/export artifacts are tracked.
 
@@ -142,6 +154,7 @@ Review `README.md` and confirm:
 - it documents the `23.65 mm` earlobe-inclusive enclosure override and distinguishes it from the current Grove reference value if that reference remains unchanged,
 - it documents strengthened cap insert roots and removal of the prior retention shoulder/interference section,
 - it documents cap fit tuning parameters and continued hand-removable screw access,
+- it documents the increased IR PCB pilot-hole spacing, increased pod width, and standalone `ir_pod` assembled render behavior,
 - it distinguishes cap retention from pod-to-top-cover attachment, cover-to-tray attachment, and IR PCB support/pilot holes.
 
 ## QA Requirements
@@ -150,8 +163,7 @@ Main-agent QA is manual review plus the validation commands above:
 
 - inspect the final diff against the approved spec and this plan,
 - run `git diff --check`,
-- run the OpenSCAD inspection renders listed above or report why they could not be run,
-- confirm temporary OpenSCAD artifacts are under `/tmp`,
+- do not run OpenSCAD inspection renders while the user's no-OpenSCAD instruction remains active,
 - confirm no generated mesh/export files were added,
 - confirm unrelated dirty worktree changes were not reverted.
 
@@ -161,6 +173,7 @@ Required:
 
 - `README.md` Pi Zero USB Grove IR enclosure updates for the corrected IR PCB width, screw-hole source clarification, cap insert strengthening, and removed cap retention shoulder.
 - `README.md` assembly and tuning guidance for cap insertion/removal, socket clearance, and first-print calibration.
+- `README.md` updates for the wider IR PCB pilot-hole/support-boss spacing, widened pod/cap default, larger U-lock receiving-hole clearances, and `ir_pod` assembled render mode.
 - Removal or rewrite of README text that says IR pod PCB width is only `20.25 mm` for enclosure fit or implies the cap uses positive-lock retention by default.
 
 No `AGENTS.md` update is required.

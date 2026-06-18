@@ -129,7 +129,7 @@ The requested assembly needs a deterministic printable main enclosure that provi
 - `render_mode = "assembly"` displays the complete case with optional electronics/reference stack.
 - `render_mode = "bottom_tray"` displays only the printable bottom tray.
 - `render_mode = "top_cover"` displays only the removable printable upper case section.
-- `render_mode = "ir_pod"` displays only the printable external IR emitter enclosure.
+- `render_mode = "ir_pod"` displays the printable external IR emitter enclosure body assembled with its seated full-cover cap/top cover.
 - `render_mode = "printable_layout"` displays printable parts arranged side-by-side for inspection and export.
 - `render_mode = "electronics"` displays the imported electronics/reference stack and IR emitter placement without printable case geometry.
 - `show_electronics` controls the Pi Zero, HAT, and IR emitter reference models without hiding printable case geometry.
@@ -227,7 +227,7 @@ Updated deterministic behavior:
 - The main enclosure must no longer mount the Grove Infrared Emitter PCB internally.
 - The Grove Infrared Emitter PCB must mount inside a separate printable pod that is attachable to the main enclosure.
 - The IR emitter pod must be included in `assembly`, `ir_pod`, `printable_layout`, and `electronics`/reference behavior as applicable.
-- `render_mode = "ir_pod"` must show only the printable IR emitter pod.
+- `render_mode = "ir_pod"` must show the printable IR emitter pod body with the seated pod cap/top cover.
 - `render_mode = "printable_layout"` must arrange the bottom tray, top cover, and IR emitter pod as separate printable parts.
 - The pod must attach to the main enclosure using an adjustable screw-fastened tab-and-boss interface by default.
 - The pod attachment interface must be independent from Pi Zero stack mounting holes and top-cover clip/catch features.
@@ -679,7 +679,7 @@ Updated deterministic behavior:
 - The detachable panel must not require disconnecting the Grove cable after the IR emitter PCB is installed.
 - Panel fit parameters must be user-adjustable near the existing IR pod parameters, including panel thickness, fit clearance, retention feature size, and retention feature placement. Linear values must use `_mm`.
 - The panel interface must leave enough material around the pod walls, LED aperture, cable entry, service window, slide slots, and PCB mounting/retention features for plausible Bambu Lab P2S FDM printing.
-- `render_mode = "ir_pod"` must show only the printable pod body by default unless the implementation explicitly adds an adjustable option to include the detachable panel in that standalone view.
+- `render_mode = "ir_pod"` must show the printable pod body with the seated detachable full-cover cap/top cover by default.
 - `render_mode = "printable_layout"` must place the pod body, detachable top service panel, and existing separate IR PCB retainer as distinct non-intersecting printable objects with independent build-plate contact.
 - `render_mode = "assembly"` must show the IR pod with the detachable top service panel installed.
 - `render_mode = "electronics"` behavior must remain a fit/reference view and must not depend on printable panel placement.
@@ -755,7 +755,7 @@ Updated deterministic behavior:
 Impact and regression considerations for this iteration:
 
 - Changing the IR pod from four board support positions to the current two-hole layout can affect PCB stability and retainer behavior. The implementation must preserve serviceable board support and retention for the measured PCB without reintroducing the stale four-hole assumption.
-- The pod's current 29.0 mm body width should still fit the 20.25 mm PCB, but the refreshed board, retainer, service window, and boss layout must preserve printable wall material, slide-slot clearance, cable-entry clearance, and LED aperture alignment.
+- The pod body width must fit the current IR PCB reference and support-boss layout while preserving printable wall material, cable-entry clearance, LED aperture alignment, and the approved top-cover-owned pod attachment ownership. Later physical-fit tuning may increase the default pod width when support-boss or pilot-hole spacing requires more side margin.
 - The refreshed IR PCB defaults must not move the external pod back over the Waveshare RJ45/Ethernet opening or change the approved top-cover-owned pod attachment ownership.
 - Updating IR pod PCB defaults must preserve existing board stack geometry, Waveshare/Pi Zero port cutouts, cover pin/socket behavior, top ventilation holes, printable orientation behavior, and generated-mesh exclusion.
 
@@ -825,7 +825,7 @@ Updated deterministic behavior:
 - The IR emitter PCB must be retained by the default support bosses plus enabled pilot-hole/screw path accessible after removing the full-cover cap. The separate IR PCB retainer component must be removed by default unless a later approved spec restores a distinct retention need.
 - The IR pod service window, retainer slot, retainer bar, retainer-specific opening, and retainer-specific README/spec/plan language must be removed or rewritten when they no longer serve the final design.
 - Removing the retainer and cap reliefs must not remove the Grove IR emitter reference pose, IR PCB support bosses, default enabled pilot holes, LED aperture alignment, pod cable entry, pod-to-top-cover attachment posts, or printable layout separation for the remaining parts.
-- `render_mode = "ir_pod"` must show only the open-top pod body with cap insert receiving geometry and no separate retainer or partial cap fused into it.
+- `render_mode = "ir_pod"` must show the open-top pod body with cap insert receiving geometry and the separate full-cover cap/top cover seated on the pod, with no separate retainer or partial cap fused into the pod body.
 - `render_mode = "assembly"` must show the full-cover cap installed, closing the full top surface without blocking the LED aperture, side cable entry, PCB screw access after cap removal, or pod-to-top-cover plug-in attachment.
 - `render_mode = "printable_layout"` must show the bottom tray, top cover, open-top IR pod body, and full-cover IR pod cap as distinct non-intersecting printable objects with independent build-plate contact. It must not show the removed gray IR PCB retainer component.
 - README documentation must describe the full-cover cap, cap insert tuning parameters, assembly order, and removal of the separate retainer component.
@@ -879,6 +879,38 @@ Impact and regression considerations for this iteration:
 - Increasing cap retention can make the cap too tight; the design must keep clearance/interference values adjustable for printer/material calibration.
 - Physical fit still requires slicer inspection and a test print before relying on final tolerances.
 
+## Iteration: 2026-06-18 IR Pod Physical Fit Tuning And Standalone Pod Assembly View
+
+Requested changes:
+
+- Increase the removable IR pod cap/top-hat male insert length because the printed inserts do not extend far enough through the female receiver margins for the U-shaped lock to pass through.
+- Increase the U-shaped lock receiving hole diameters because the printed C/U-shaped lock elements are naturally inconsistent enough that the current holes are too tight.
+- Apply the U-lock hole clearance increase to both lock interfaces:
+  - the pod-cap/top-hat lock through the cap-owned male inserts and pod-side receiver bosses,
+  - the pod-to-top-cover lock through the top-cover socket sleeves and IR pod posts.
+- Spread the IR PCB fixing/pilot holes in the IR pod farther apart by `1.5 mm` total.
+- If the wider IR PCB fixing-hole/support-boss placement touches the pod side margins, increase `pod_outer_width_mm` by the needed amount plus a small printable error margin.
+- When rendering the standalone `ir_pod` mode, include the seated pod cap/top cover with the pod body.
+
+Updated deterministic behavior:
+
+- The cap-owned male insert insertion depth must default to a longer engagement than the prior `3.0 mm`; the matching pod-side socket depth must remain deeper than the insert depth so full insertion is not blocked by the socket bottom.
+- The pod-cap/top-hat U-lock hole diameter must derive from the unchanged U-lock leg diameter plus a larger clearance suitable for inconsistent printed C/U-lock legs.
+- The pod-to-top-cover U-lock hole diameter must derive from the unchanged U-lock leg diameter plus the same larger clearance approach.
+- The printed U-lock leg diameters must not be increased by this tuning change; the receiving holes get looser while the lock parts remain the same size.
+- The two IR PCB support-boss/pilot-hole centers must be spread `1.5 mm` farther apart than the previous default by tuning the adjustable X edge inset or equivalent center-spacing parameter.
+- The IR pod body width must increase when needed to preserve printable side margin around the widened support bosses and pilot holes.
+- The full-cover pod cap/top hat width must continue to derive from the pod body width and cap fit clearance, so widening the pod also widens the cap consistently.
+- `render_mode = "ir_pod"` must show the pod body on its floor at `Z=0` with the cap/top cover seated in assembled orientation, while `printable_layout` must continue to show the pod body and cap as separate printable objects.
+
+Impact and regression considerations for this iteration:
+
+- Increasing cap insert length moves the cap insert lock-hole height because the lock-hole center is derived from insertion depth. Existing printed pod bodies may not align with newly printed caps unless the pod body is reprinted or the model later gets a separate lock-hole offset parameter.
+- Larger U-lock receiving holes reduce insertion friction and tolerance sensitivity, but may also make the locks looser; physical test fitting remains required.
+- Spreading IR PCB pilot holes increases support-boss side reach; pod width must be checked so the bosses do not collide with the pod wall or cap receiver geometry.
+- Widening the pod also widens the cap and printable layout footprint and can reduce nearby clearance to main-enclosure features; the approved front offset away from the Waveshare RJ45/Ethernet opening must remain unchanged unless a later approved spec changes it.
+- The standalone `ir_pod` render mode becomes an assembled inspection view rather than a single-part export view. Users who need separate printable parts must use `printable_layout`.
+
 ## Acceptance Criteria
 
 - A new `designs/pi_zero_usb_grove_ir_enclosure.scad` file exists.
@@ -896,6 +928,8 @@ Impact and regression considerations for this iteration:
 - The board stack renders in the correct vertical order when `show_electronics = true`.
 - The bottom tray includes Pi Zero-aligned mounting standoffs and adjustable M2.5-class screw clearance.
 - The IR pod PCB defaults use the user's `23.65 mm` earlobe-inclusive PCB width for pod clearance, support-boss placement, and pilot-hole alignment.
+- The IR PCB two-hole support-boss/pilot-hole spacing defaults to `1.5 mm` wider than the prior default through the adjustable X edge inset, and the exact spacing remains tunable after physical measurement.
+- The IR pod width defaults wide enough to preserve printable side margin around the widened support bosses and pilot holes.
 - README and source comments explain whether the IR pod is using a local `23.65 mm` measured override or matching an updated `designs/grove_infrared_emitter.scad` source value.
 - The remaining IR pod PCB defaults match the intended Grove emitter behavior for PCB length, 1.6 mm PCB thickness, two centerline mounting holes, connector placement/envelope, and LED extension behavior.
 - The IR pod no longer defaults to stale 20.0 mm x 24.0 mm PCB dimensions or four IR PCB support boss/pilot-hole positions.
@@ -953,6 +987,8 @@ Impact and regression considerations for this iteration:
 - The detachable IR pod top cap covers the complete top surface footprint by default and does not leave a cap relief, service-window gap, retainer access gap, or other partial-top opening after assembly.
 - The detachable IR pod top cap uses only simple male/female insert retention by default, with no clip tabs, side detents, hooks, latch tabs, rails, sliding lips, or flexing snap features.
 - The cap insert interface has adjustable insert size, insertion depth, socket clearance, socket depth, count, spacing, and placement.
+- The cap insert insertion depth and matching socket depth default to values that let the male inserts pass far enough through the pod-side receiver margins for the U-shaped pod-cap lock path.
+- The pod-cap/top-hat U-lock receiving holes and pod-to-top-cover U-lock receiving holes default to larger clearances around the unchanged printed U-lock leg diameter.
 - The cap insert male elements are strengthened enough that their root transition into the cap does not read as a fragile isolated rod by code review or printable render inspection.
 - The cap-to-pod female receiver/socket volumes must sit laterally outside the IR pod enclosure cavity, one at each side by default, so the cap male inserts can fully pass into the sockets without colliding with the pod walls.
 - The cap-to-pod male/female insert interface uses straight removable inserts and straight socket bores by default, with no retention shoulder, detent, interference section, or forced positive-lock feature.
@@ -961,7 +997,7 @@ Impact and regression considerations for this iteration:
 - Retainer-specific openings, service windows, slots, holes, bars, parameters, modules, README language, validation checks, and plan instructions are removed or rewritten when they no longer serve the full-cover cap and screw-access PCB retention path.
 - The IR emitter PCB remains retained by support bosses plus enabled pilot holes that are accessible after removing the full-cover cap.
 - The IR LED aperture is visibly and mechanically a pass-through opening in the pod wall by code review of the subtraction geometry.
-- `bottom_tray`, `top_cover`, `ir_pod`, and `printable_layout` printable outputs contain no floating printable objects in their intended printable orientation.
+- `bottom_tray`, `top_cover`, and `printable_layout` printable outputs contain no floating printable objects in their intended printable orientation; standalone `ir_pod` is an assembled pod inspection view with the cap seated on the pod body.
 - `printable_layout` places each printable object as a separate, non-intersecting, independently printable object.
 - Every printable object in printable render modes rests on the build plate at `Z=0` with its broadest, most material-heavy, or most stable face downward unless this spec explicitly documents a different orientation.
 - Printable render-mode transforms do not alter the assembled-world positions used by `assembly` or `electronics`.
@@ -973,7 +1009,7 @@ Impact and regression considerations for this iteration:
 ## Validation Plan
 
 - Run `git diff --check`.
-- Optionally run local OpenSCAD inspection commands when useful for printability confidence; any generated inspection artifacts must be written under `/tmp` and must not be committed.
+- Do not run OpenSCAD inspection commands for the current update while the user instruction to avoid OpenSCAD execution is active. If the user later permits OpenSCAD, optional inspection artifacts must be written under `/tmp` and must not be committed.
 - Perform code review/manual inspection to confirm:
   - the source follows repository OpenSCAD naming and section rules,
   - adjustable dimensions are grouped and not redefined inside modules,
@@ -1000,6 +1036,8 @@ Impact and regression considerations for this iteration:
   - the wireless dongle remains outside the case through an accessible USB-A cutout,
   - the external IR emitter pod, printed PCB retention geometry, LED aperture, and main-to-pod cable path are present,
   - the IR pod PCB dimensions use the user's `23.65 mm` earlobe-inclusive PCB width for support-boss placement, pilot-hole alignment, and pod clearance,
+  - the IR PCB pilot-hole/support-boss spacing is `1.5 mm` wider than the prior default and remains adjustable,
+  - the pod width and derived cap width preserve side margin around the widened support-boss/pilot-hole placement,
   - the spec, source comments, and README clearly state whether that `23.65 mm` value is a local enclosure override or comes from an updated `designs/grove_infrared_emitter.scad`,
   - the IR pod mounting-hole count and remaining connector defaults, cable-clearance defaults, and LED extension defaults match the intended Grove emitter reference behavior,
   - the IR pod no longer uses stale 20.0 mm x 24.0 mm PCB defaults or a four-hole Grove 20 mm-class IR PCB mounting pattern,
@@ -1029,7 +1067,9 @@ Impact and regression considerations for this iteration:
   - the detachable IR pod cap covers the complete top surface footprint by default without attachment-side reliefs, service-window gaps, retainer access gaps, or other obsolete partial-top openings,
   - the detachable IR pod cap retention uses only simple male/female inserts and receiving sockets/holes by default,
   - the detachable IR pod cap male inserts have strengthened roots or equivalent supported transitions and do not read as fragile isolated rods,
+  - the detachable IR pod cap male inserts use longer insertion depth with matching deeper sockets,
   - the detachable IR pod cap female receiver/socket volumes sit laterally outside the IR pod enclosure cavity instead of consuming internal wall/cavity space,
+  - the U-shaped lock receiving holes for both the pod-cap/top-hat lock and pod-to-top-cover lock use larger clearances around unchanged lock leg diameters,
   - the detachable IR pod cap remains removable by hand for PCB screw access and does not use a retention shoulder or interference section that can block insertion,
   - obsolete cap clip tabs, side detents, latch tabs, hooks, sliding lips, retainer service windows, retainer slots, retainer bars, retainer-specific holes, and the separate gray IR PCB retainer component are removed from the default printable design,
   - cap insert sockets remain visually distinct from IR PCB pilot holes and from the pod-to-top-cover plug-in sockets,
@@ -1041,6 +1081,7 @@ Impact and regression considerations for this iteration:
   - printable render modes and `printable_layout` contain no floating printable objects,
   - each printable object in `printable_layout` is separated from the others and has independent build-plate contact at `Z=0`,
   - printable-only orientation transforms do not affect assembled-world geometry,
+  - `render_mode = "ir_pod"` shows the pod body with the full-cover cap/top cover seated, while `printable_layout` still shows separate printable pod and cap parts,
   - README entries match the implemented behavior,
   - no generated mesh/export artifacts are present.
 
@@ -1061,6 +1102,7 @@ Impact and regression considerations for this iteration:
 - Document that the previous IR pod screw holes were based on the current Grove Infrared Emitter `.scad` values.
 - Document that the updated IR pod uses the user's `23.65 mm` earlobe-inclusive PCB width for pod fit, support-boss placement, and pilot-hole alignment, and clearly state whether that value is a local enclosure override or has also been applied to `designs/grove_infrared_emitter.scad`.
 - Document the IR pod PCB two-hole mounting pattern, Grove connector placement/envelope, cable clearance, and LED extension defaults.
+- Document the widened IR PCB pilot-hole/support-boss spacing and the widened pod/cap default used to preserve side margin.
 - Remove or update stale README language that describes the IR pod PCB as 20.0 mm x 24.0 mm or as using a four-hole mounting pattern by default.
 - Document that the pod itself mounts tool-free to the top cover through the implemented plug-in male/female interface.
 - Document that the additional loose IR pod printable part is the removable PCB retainer when that design is retained.
@@ -1069,6 +1111,7 @@ Impact and regression considerations for this iteration:
 - Document the adjustable detachable panel fit and retention parameters.
 - Document that the detachable IR pod top cap covers the whole top surface by default and no longer includes attachment-side reliefs, service-window gaps, or retainer access gaps after assembly.
 - Document that the detachable IR pod top cap uses only straight male/female inserts by default, with tunable insert size, insertion depth, socket clearance, socket depth, count, spacing, and placement.
+- Document that the cap insert insertion depth, socket depth, and both U-shaped lock hole clearances are tuning points for printed fit.
 - Document the strengthened removable IR pod cap male insert roots and the removal of the prior retention shoulder/interference section.
 - Document that the separate gray IR PCB retainer component and its retainer-specific holes/openings are removed from the default design, and that IR PCB retention now relies on support bosses plus enabled screw pilot holes accessed by removing the full-cover cap.
 - Remove or update stale README language that says IR PCB pilot holes are disabled by default or that unused side/front board locators remain part of the default pod body.
