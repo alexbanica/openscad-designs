@@ -70,11 +70,25 @@ pi_micro_sd_cutout_height_mm = 5.0;
 pi_micro_sd_cutout_center_x_mm = -32.5;
 pi_micro_sd_cutout_center_y_mm = 1.1;
 pi_micro_sd_cutout_local_center_z_mm = 1.4;
-pi_mini_hdmi_cutout_size_mm = [13.5, 7.5, 7.0];
+pi_mini_hdmi_head_length_mm = 20.80;
+pi_mini_hdmi_head_height_mm = 11.30;
+pi_mini_hdmi_cutout_depth_mm = 7.5;
+pi_mini_hdmi_cutout_size_mm = [
+    pi_mini_hdmi_head_length_mm,
+    pi_mini_hdmi_cutout_depth_mm,
+    pi_mini_hdmi_head_height_mm
+];
 pi_mini_hdmi_cutout_center_x_mm = -20.1;
 pi_mini_hdmi_cutout_center_y_offset_mm = 0.0;
 pi_mini_hdmi_cutout_local_center_z_mm = 1.8;
-pi_micro_usb_power_cutout_size_mm = [9.5, 7.5, 6.0];
+pi_micro_usb_power_head_length_mm = 10.30;
+pi_micro_usb_power_head_height_mm = 7.15;
+pi_micro_usb_power_cutout_depth_mm = 7.5;
+pi_micro_usb_power_cutout_size_mm = [
+    pi_micro_usb_power_head_length_mm,
+    pi_micro_usb_power_cutout_depth_mm,
+    pi_micro_usb_power_head_height_mm
+];
 pi_micro_usb_power_cutout_center_x_mm = 21.5;
 pi_micro_usb_power_cutout_center_y_offset_mm = 0.0;
 pi_micro_usb_power_cutout_local_center_z_mm = 1.4;

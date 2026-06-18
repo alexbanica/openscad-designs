@@ -210,3 +210,119 @@ After implementation, review, QA, validation, documentation, and final main-agen
 - push if repository access exists and no validation/review/QA/documentation item is blocked.
 
 If validation, review, QA, or documentation is incomplete or blocked, either do not commit or use a `DRAFT` commit message if committing is explicitly needed.
+
+## 2026-06-18 Super-Agent Micro USB Bottom-Tray Fit Update
+
+Status: Approved
+
+Approved Spec: `specs/SPEC-pi-zero-usb-grove-ir-enclosure.md`
+
+### Affected Files
+
+- `designs/pi_zero_usb_grove_ir_enclosure.scad`
+- `README.md`
+- `specs/SPEC-pi-zero-usb-grove-ir-enclosure.md`
+- `specs/PLAN-pi-zero-usb-grove-ir-enclosure.md`
+
+### Implementation Steps Performed
+
+1. Added explicit measured Micro USB plug-head parameters:
+   - `pi_micro_usb_power_head_length_mm = 10.30`
+   - `pi_micro_usb_power_head_height_mm = 7.15`
+   - `pi_micro_usb_power_cutout_depth_mm = 7.5`
+2. Changed `pi_micro_usb_power_cutout_size_mm` to derive X length and Z height from the measured head parameters.
+3. Preserved the existing shared `port_cutout_extra_clearance_mm` subtraction margin so the default effective bottom-tray opening is measured plug head plus `0.6 mm`.
+4. Updated README assumptions and tuning guidance for the measured Micro USB bottom-tray power-side entry.
+5. Recorded this completed `super-agent` update in the approved spec and plan artifacts.
+
+### Validation Run
+
+- `git diff --check`
+
+### Validation Skipped
+
+- OpenSCAD render/export inspection was skipped because it can exceed the `super-agent` short-validation budget and was not requested.
+- Physical fit validation was not performed.
+
+### QA Skipped
+
+QA was skipped by design under the `super-agent` workflow.
+
+### Code Review Skipped
+
+Code review was skipped by design under the `super-agent` workflow.
+
+### Documentation Updates
+
+- README documents the measured 10.30 mm x 7.15 mm Micro USB plug-head default and the shared port cutout error margin.
+
+### Commit Status
+
+Not committed; the user did not request a commit.
+
+### Push Status
+
+Not pushed; the user did not request a push.
+
+### Residual Risk
+
+- The default opening has not been render-inspected or physically fit-tested.
+- The shared `port_cutout_extra_clearance_mm` still affects every port cutout, not only the Micro USB power-side opening.
+
+## 2026-06-18 Super-Agent HDMI Bottom-Tray Fit Update
+
+Status: Approved
+
+Approved Spec: `specs/SPEC-pi-zero-usb-grove-ir-enclosure.md`
+
+### Affected Files
+
+- `designs/pi_zero_usb_grove_ir_enclosure.scad`
+- `README.md`
+- `specs/SPEC-pi-zero-usb-grove-ir-enclosure.md`
+- `specs/PLAN-pi-zero-usb-grove-ir-enclosure.md`
+
+### Implementation Steps Performed
+
+1. Added explicit measured HDMI plug-head parameters:
+   - `pi_mini_hdmi_head_length_mm = 20.80`
+   - `pi_mini_hdmi_head_height_mm = 11.30`
+   - `pi_mini_hdmi_cutout_depth_mm = 7.5`
+2. Changed `pi_mini_hdmi_cutout_size_mm` to derive X length and Z height from the measured head parameters.
+3. Preserved the existing shared `port_cutout_extra_clearance_mm` subtraction margin so the default effective bottom-tray opening is measured plug head plus `0.6 mm`.
+4. Updated README assumptions and tuning guidance for the measured HDMI bottom-tray entry.
+5. Recorded this completed `super-agent` update in the approved spec and plan artifacts.
+
+### Validation Run
+
+- `git diff --check`
+
+### Validation Skipped
+
+- OpenSCAD render/export inspection was skipped because it can exceed the `super-agent` short-validation budget and was not requested.
+- Physical fit validation was not performed.
+
+### QA Skipped
+
+QA was skipped by design under the `super-agent` workflow.
+
+### Code Review Skipped
+
+Code review was skipped by design under the `super-agent` workflow.
+
+### Documentation Updates
+
+- README documents the measured 20.80 mm x 11.30 mm HDMI plug-head default and the shared port cutout error margin.
+
+### Commit Status
+
+Not committed; the user did not request a commit.
+
+### Push Status
+
+Not pushed; the user did not request a push.
+
+### Residual Risk
+
+- The default opening has not been render-inspected or physically fit-tested.
+- The shared `port_cutout_extra_clearance_mm` still affects every port cutout, not only the HDMI opening.

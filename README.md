@@ -425,6 +425,8 @@ Default dimensions are configurable at the top of `designs/pi_zero_usb_grove_ir_
 - The IR emitter PCB reference uses exactly two mounting holes centered on the left/right PCB margins along the board length; hole diameter and X-edge inset remain adjustable fit-planning parameters.
 - Common M2.5-class fasteners for the board standoffs.
 - microSD card width: 11.0 mm, with a default 2.0 mm total clearance for the tray pass-through opening.
+- External Pi Zero HDMI plug head: 20.80 mm length and 11.30 mm height for the bottom-tray HDMI entry, plus the shared 0.6 mm port cutout error margin.
+- External Pi Zero Micro USB plug head: 10.30 mm length and 7.15 mm height for the bottom-tray power-side entry, plus the shared 0.6 mm port cutout error margin.
 - Micro USB bridge/addon protrusion outside the Pi Zero PCB: 10.9 mm, plus 1.0 mm default printable fit clearance used to size the tray and top-cover Y envelope.
 - The Grove IR emitter PCB stays inside the external pod, not in the main tray.
 - IR emitter PCB support bosses are solid locating/support features, and IR PCB pilot holes are enabled by default (`enable_ir_mount_optional_pilot_holes = true`).
@@ -466,6 +468,8 @@ Common edits:
 - Set `show_cutout_guides = false` to hide port, IR aperture, and cable path guide previews without changing printable solids.
 - Adjust Pi Zero microSD, mini-HDMI, Micro USB, and camera cutout positions after a test fit.
 - Tune `micro_sd_card_width_mm`, `micro_sd_card_total_clearance_mm`, `pi_micro_sd_cutout_*`, and `micro_sd_wall_through_overlap_mm` if the card slot needs more access clearance or a deeper wall-piercing subtraction after print inspection.
+- Tune `pi_mini_hdmi_head_length_mm`, `pi_mini_hdmi_head_height_mm`, and `pi_mini_hdmi_cutout_depth_mm` if your external HDMI plug head differs from the 20.80 mm x 11.30 mm default. The shared `port_cutout_extra_clearance_mm` remains the default printable error margin applied to the bottom-tray opening.
+- Tune `pi_micro_usb_power_head_length_mm`, `pi_micro_usb_power_head_height_mm`, and `pi_micro_usb_power_cutout_depth_mm` if your external Micro USB plug head differs from the 10.30 mm x 7.15 mm default. The shared `port_cutout_extra_clearance_mm` remains the default printable error margin applied to the bottom-tray opening.
 - Tune `micro_usb_bridge_outside_pcb_y_mm` and `micro_usb_bridge_fit_clearance_mm` if the measured bridge/addon protrusion differs; the derived internal Y envelope expands the bottom tray and top cover consistently while keeping the board stack centered.
 - Tune the Waveshare RJ45, front USB-A, left USB-A, and right USB-A cutout positions independently after measuring the USB HAT. The shipped front RJ45/Ethernet and front USB-A X centers are refreshed from the local Waveshare reference defaults, `-7.76 mm` and `10.83 mm`.
 - Tune `top_cover_usb_effective_width_mm` and `top_cover_usb_effective_height_mm` if the top-cover USB openings need more clearance after physical calibration. These top-cover USB dimensions are derived separately from the bottom-tray/shared cutouts so the tray port openings remain unchanged by this iteration.
@@ -531,8 +535,9 @@ openscad -o /tmp/pi_zero_usb_grove_ir_assembly.off -D 'render_mode="assembly"' -
 - The top cover uses simple round plug-in pins and matching tray sockets cut into the thickened tray walls; it does not use cover screws and it does not depend on the Pi Zero stack mounting screws. The cover lowers vertically onto the tray, and removal should be tuned by socket clearance and pin insertion depth rather than by flexing latch features.
 - The top-cover pod attachment includes local reinforcement around the socket regions so the interface is visibly rooted into the cover side wall while remaining separate from the cover-to-tray pin/socket interface.
 - The four bottom-tray stack holes exist because the Pi Zero/HAT stack has four mounting points. Those holes are distinct from the top-cover pin/socket interface and from the pod post/socket interface.
+- Bottom-tray HDMI entry defaults to a measured 20.80 mm plug-head length and 11.30 mm plug-head height, with the shared port cutout error margin added by the cutout subtraction.
 - The Pi Zero opening for the internally occupied Micro USB adapter side is intentionally closed. The remaining external Pi Zero Micro USB opening is the power-side opening.
-- Bottom-tray USB cutout behavior still uses the shared tray cutout defaults.
+- Bottom-tray Micro USB power-side entry defaults to a measured 10.30 mm plug-head length and 7.15 mm plug-head height, with the shared port cutout error margin added by the cutout subtraction.
 - The microSD opening is sized from the 11.0 mm card-width assumption plus default clearance, and its subtraction over-travels the tray wall so the access slot remains a true pass-through.
 - The main enclosure Y envelope is sized from the 10.9 mm Micro USB bridge/addon outside-PCB protrusion plus fit clearance; this is internal footprint clearance and does not reopen the internally occupied adapter-side Micro USB port.
 - Add rubber feet or pads to the default recesses after printing if anti-slide behavior is required.

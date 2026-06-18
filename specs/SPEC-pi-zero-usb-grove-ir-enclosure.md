@@ -1130,3 +1130,142 @@ Impact and regression considerations for this iteration:
 - Document that the plug-in pin/socket iteration intentionally changes the bottom tray only for sockets, socket reinforcement, and directly required clearance preservation.
 - Document that every top-cover USB opening defaults to at least 15.4 mm effective width and 7.4 mm effective height, with adjustable dimensions for physical calibration.
 - Document that the previous pod slide rail/slot attachment is no longer the default, and document the pod plug-in tuning parameters, socket clearance, insertion depth, and distinction from IR PCB retention and the bottom-tray/top-cover plug-in interface.
+
+## 2026-06-18 Super-Agent Micro USB Bottom-Tray Fit Update
+
+Status: Approved
+
+### Purpose
+
+Update the externally used Pi Zero Micro USB bottom-tray entry to fit the user's measured common plug-head dimensions.
+
+### Requested Behavior
+
+The bottom-tray power-side Micro USB opening must use explicit measured plug-head dimensions of `10.30 mm` length and `7.15 mm` height, with a printable error margin applied to that opening.
+
+### Scope
+
+- Update `designs/pi_zero_usb_grove_ir_enclosure.scad`.
+- Update `README.md`.
+- Preserve the internally occupied Pi Zero Micro USB side as closed.
+- Preserve the Micro USB bridge/addon outside-PCB envelope behavior.
+- Preserve unrelated Pi Zero, Waveshare, IR pod, cover, and tray features.
+
+### Out Of Scope
+
+- Changing the internally consumed Micro USB adapter-side opening behavior.
+- Changing Waveshare USB-A, RJ45, microSD, mini-HDMI, camera, pod, or cover geometry.
+- Running OpenSCAD render QA or physical-fit validation.
+
+### Inputs And Constraints
+
+- User-provided plug-head length: `10.30 mm`.
+- User-provided plug-head height: `7.15 mm`.
+- Existing shared port cutout error margin: `port_cutout_extra_clearance_mm = 0.6`.
+- The actual subtraction adds the shared error margin around the nominal cutout size.
+
+### Deterministic Behavior Delivered
+
+- `pi_micro_usb_power_head_length_mm` defaults to `10.30`.
+- `pi_micro_usb_power_head_height_mm` defaults to `7.15`.
+- `pi_micro_usb_power_cutout_size_mm` derives its X length and Z height from those measured head parameters.
+- The bottom-tray subtraction continues to apply the shared `port_cutout_extra_clearance_mm`, making the default effective Micro USB entry size measured plug head plus `0.6 mm`.
+- The top-cover USB effective opening logic remains separate and unchanged.
+
+### Assumptions
+
+- "erro margin" means a printable fit error margin around the measured plug-head dimensions.
+- The existing shared port cutout extra clearance is the correct margin mechanism for this narrow update.
+
+### Impact And Regression Considerations
+
+- The bottom-tray Micro USB power-side cutout becomes wider and taller.
+- Other port entries are not intentionally changed.
+- The generic port-cutout subtraction still controls final margin behavior, so changing `port_cutout_extra_clearance_mm` continues to affect all port cutouts.
+
+### Validation Performed
+
+- `git diff --check`.
+
+### Validation Skipped
+
+- OpenSCAD render/export inspection was skipped because the `super-agent` workflow avoids commands expected to exceed 10 seconds and this request did not ask for render QA.
+- Physical fit validation was not performed.
+
+### Documentation Changes
+
+- README component assumptions and tuning guidance now document the 10.30 mm x 7.15 mm Micro USB plug-head default and the shared 0.6 mm margin behavior.
+
+## 2026-06-18 HDMI Bottom-Tray Fit Update
+
+Status: Approved
+
+### Purpose
+
+Update the Pi Zero HDMI bottom-tray entry so a physically larger HDMI plug head can fit easily.
+
+### Requested Behavior
+
+The bottom-tray Pi Zero HDMI opening must fit a user-measured HDMI plug head with `20.80 mm` length and `11.30 mm` height.
+
+### Scope
+
+- Update the Pi Zero HDMI cutout dimensions in `designs/pi_zero_usb_grove_ir_enclosure.scad`.
+- Update `README.md` to document the measured HDMI plug-head default and tuning parameters.
+- Update the matching implementation plan after this spec is approved.
+- Preserve the current HDMI cutout center position, cutout depth, and board-tier Z derivation unless implementation inspection shows a direct collision created by the larger opening.
+- Preserve unrelated Micro USB, microSD, camera, Waveshare, top-cover, tray socket, IR pod, and printable layout behavior.
+
+### Out Of Scope
+
+- Changing HDMI connector electronics-reference geometry.
+- Changing the Pi Zero board reference.
+- Changing unrelated port cutouts.
+- OpenSCAD render QA unless included in the approved plan or explicitly requested.
+
+### Inputs And Constraints
+
+- User-provided HDMI plug-head length: `20.80 mm`.
+- User-provided HDMI plug-head height: `11.30 mm`.
+- Existing HDMI cutout depth: `7.5 mm`, retained by default.
+- Existing shared port cutout error margin: `port_cutout_extra_clearance_mm = 0.6`.
+- The actual subtraction adds the shared error margin around the nominal cutout size.
+
+### Deterministic Behavior Delivered
+
+- Add explicit adjustable parameters for the HDMI plug-head length and height.
+- Derive the HDMI cutout X length and Z height from those measured parameters.
+- Keep the existing HDMI cutout Y depth.
+- Keep using the shared port cutout subtraction margin so the default effective HDMI entry is the measured plug head plus `0.6 mm`.
+
+### Assumptions
+
+- "length" maps to the X dimension of `pi_mini_hdmi_cutout_size_mm`.
+- "height" maps to the Z dimension of `pi_mini_hdmi_cutout_size_mm`.
+- "easily fit" means using the measured plug-head dimensions as the nominal opening and applying the existing shared printable port margin.
+
+### Impact And Regression Considerations
+
+- The HDMI opening will become wider and taller than the current default.
+- The larger opening may reduce front-wall material near neighboring Pi Zero front-edge features, so implementation should inspect the local source geometry and preserve current centers unless a direct collision requires a scoped adjustment.
+- Other ports must remain unchanged.
+
+### Acceptance Criteria
+
+- The HDMI cutout nominal dimensions derive from `20.80 mm` length and `11.30 mm` height adjustable values.
+- The effective cutout continues to include the shared port margin applied by the common port cutout subtraction.
+- The README documents the measured HDMI dimensions and tuning guidance.
+- The plan documents validation and skipped QA according to the selected workflow.
+
+### Validation Performed
+
+- `git diff --check`.
+
+### Validation Skipped
+
+- OpenSCAD render/export inspection was skipped because the `super-agent` workflow avoids commands expected to exceed 10 seconds and this request did not ask for render QA.
+- Physical fit validation was not performed.
+
+### Documentation Changes
+
+- README component assumptions and tuning guidance now document the 20.80 mm x 11.30 mm HDMI plug-head default and the shared 0.6 mm margin behavior.
