@@ -130,6 +130,7 @@ The requested assembly needs a deterministic printable main enclosure that provi
 - `render_mode = "bottom_tray"` displays only the printable bottom tray.
 - `render_mode = "top_cover"` displays only the removable printable upper case section.
 - `render_mode = "ir_pod"` displays the printable external IR emitter enclosure body assembled with its seated full-cover cap/top cover.
+- `render_mode = "ir_pod_cap"` displays only the full-cover IR pod cap/top hat as a standalone printable object.
 - `render_mode = "printable_layout"` displays printable parts arranged side-by-side for inspection and export.
 - `render_mode = "electronics"` displays the imported electronics/reference stack and IR emitter placement without printable case geometry.
 - `show_electronics` controls the Pi Zero, HAT, and IR emitter reference models without hiding printable case geometry.
@@ -894,7 +895,11 @@ Requested changes:
 
 Updated deterministic behavior:
 
-- The cap-owned male insert insertion depth must default to a longer engagement than the prior `3.0 mm`; the matching pod-side socket depth must remain deeper than the insert depth so full insertion is not blocked by the socket bottom.
+- The cap-owned male insert insertion depth must default to a longer engagement than the prior `3.0 mm`.
+- The delivered cap-owned male insert insertion depth defaults to `6.0 mm`, increased from the prior `4.5 mm` physical-fit value because the two printed top-hat male pins were still not tall enough to reach the female receiver lock-hole path. The pod-side female socket depth remains unchanged at the prior `5.1 mm`.
+- The pod-side female receiver U-lock cross-hole centerline must stay compatible with the already-printed receiver position derived from the prior `4.5 mm` cap insert depth.
+- The cap-owned male insert U-lock cross-holes must move near the free end of the longer `6.0 mm` male pins, leaving at least one lock-hole radius of material below the cut, so the printable cap/top-hat hole is at the bottom of the male pin rather than close to the cap body.
+- `render_mode = "ir_pod_cap"` must show only the full-cover IR pod cap/top hat as a standalone printable object so the user can reprint only that part.
 - The pod-cap/top-hat U-lock hole diameter must derive from the unchanged U-lock leg diameter plus a larger clearance suitable for inconsistent printed C/U-lock legs.
 - The pod-to-top-cover U-lock hole diameter must derive from the unchanged U-lock leg diameter plus the same larger clearance approach.
 - The printed U-lock leg diameters must not be increased by this tuning change; the receiving holes get looser while the lock parts remain the same size.

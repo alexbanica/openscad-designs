@@ -52,8 +52,11 @@ Current approved cap insertion fix: remove the removable IR pod cap insert reten
 
 Current approved physical fit tuning:
 
-- Increase `pod_cap_insert_insertion_depth_mm` from `3.0` to `4.5`.
-- Increase `pod_cap_insert_socket_depth_mm` from `3.6` to `5.1` so the deeper cap inserts have socket bottom clearance.
+- Increase `pod_cap_insert_insertion_depth_mm` from `3.0` to `6.0`; this includes the follow-up increase from the prior `4.5` value after physical assembly showed the two top-hat male pins still did not reach the female receiver lock holes.
+- Keep the pod-side female `pod_cap_insert_socket_depth_mm` unchanged at the prior `5.1`; this follow-up changes only the cap/top-hat male pin length.
+- Keep the pod-side female U-lock cross-hole centerline compatible with the already-printed receiver by deriving it from the prior `4.5` cap insert depth.
+- Move only the reprinted cap/top-hat male insert U-lock hole near the free end of the longer `6.0 mm` male pin, leaving at least one lock-hole radius of material below the cut.
+- Add `render_mode = "ir_pod_cap"` so only the full-cover IR pod cap/top hat can be exported for reprint.
 - Increase both U-shaped lock receiving-hole clearances from `0.2` to `0.45` while keeping the printed U-lock leg diameters unchanged:
   - `pod_cap_insert_keeper_pin_clearance_mm`,
   - `pod_attachment_post_lock_pin_clearance_mm`.

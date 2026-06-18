@@ -103,10 +103,9 @@ ai_hat_cooler_fan_cable_spacing_mm = 1.4;
 ai_hat_cooler_fan_cable_size_mm = [7.0, 0.7, 0.7];
 
 // PCIe guidance
-// Left-side on-board PCIe connector and routing guidance (no hanging/off-board device)
-ai_hat_pcie_connector_origin_mm = [1.0, 8.0, ai_hat_board_thickness_mm];
+// Left-side on-board PCIe connector and routing guidance (no hanging/off-board device).
+// The connector center defaults to the middle of the PCB side margin.
 ai_hat_pcie_connector_size_mm = [4.0, 6.0, 4.5];
-ai_hat_pcie_routing_origin_mm = [1.6, 3.0, ai_hat_board_thickness_mm + 1.8];
 ai_hat_pcie_routing_size_mm = [2.8, 20.0, 1.4];
 ai_hat_pcie_connector_colour = "SlateGray";
 
@@ -136,6 +135,18 @@ ai_hat_cooler_thermal_pad_colour = [0.45, 0.95, 1, 0.36];
 ai_hat_board_stack_z_mm = rpi5_board_thickness_reference_mm + ai_hat_stack_distance_mm;
 ai_hat_board_half_length_mm = ai_hat_board_length_mm / 2;
 ai_hat_board_half_width_mm = ai_hat_board_width_mm / 2;
+
+ai_hat_pcie_connector_center_y_mm = ai_hat_board_half_width_mm;
+ai_hat_pcie_connector_origin_mm = [
+    1.0,
+    ai_hat_pcie_connector_center_y_mm - ai_hat_pcie_connector_size_mm[1] / 2,
+    ai_hat_board_thickness_mm
+];
+ai_hat_pcie_routing_origin_mm = [
+    1.6,
+    ai_hat_pcie_connector_center_y_mm - ai_hat_pcie_routing_size_mm[1] / 2,
+    ai_hat_board_thickness_mm + 1.8
+];
 
 ai_hat_cooler_total_height_mm = ai_hat_cooler_base_height_mm + ai_hat_cooler_fin_height_mm;
 

@@ -20,6 +20,12 @@ The previous implementation rendered a hanging PCIe guidance feature at the AI H
 
 The AI HAT+ PCIe connector must instead be represented as a connector on the left part of the AI HAT+ PCB. The model may keep a small on-board connector clearance block and an optional low-profile cable/routing hint that starts from that left-side connector, but it must not render a separate unsupported vertical or dangling device outside the AI PCB edge.
 
+## Iteration: Center PCIe Port On PCB Side Margin
+
+The left-side AI HAT+ PCIe port must be positioned so its connector centerline sits in the middle of the PCB side margin by default.
+
+The default centerline must derive from the AI HAT+ board width rather than a fixed Y offset, so board-width tuning keeps the PCIe port centered on the side margin.
+
 ## Scope
 
 - Add an editable OpenSCAD reference model for Raspberry Pi AI HAT+ 26T.
@@ -90,6 +96,8 @@ The AI HAT+ PCIe connector must instead be represented as a connector on the lef
 - The model must include adjustable top-side component clearance blocks for major non-cooler components visible enough for enclosure planning, without attempting a trace-accurate board reproduction.
 - The model must include adjustable PCIe FPC connector and cable-guidance geometry because the AI HAT+ communicates with Raspberry Pi 5 over PCIe.
 - The PCIe FPC connector must be positioned on the left part of the AI HAT+ PCB by default.
+- The PCIe FPC connector centerline must default to the middle of the AI HAT+ PCB side margin along board width.
+- The PCIe FPC connector centerline must derive from the current AI HAT+ board width so side-margin centering is preserved when the board width is tuned.
 - PCIe guidance must not create a hanging, unsupported, vertical, or separate device at the AI HAT+ PCB level.
 - The model must remain usable as a child design reference through `use <...>` and named module calls.
 - All linear dimension variables must use `_mm`; all angle variables must use `_deg`.
@@ -117,7 +125,7 @@ The AI HAT+ PCIe connector must instead be represented as a connector on the lef
 - The AI HAT+ cooler must render above the AI HAT+ NPU package and visibly use the same simplified base/fins/fan/pad/fastener/cable visual grammar as the Raspberry Pi 5 active cooler.
 - The Hailo-8 package must be shown as a simplified adjustable package footprint and must be visibly associated with the AI HAT+ cooler contact area.
 - The PCIe FPC connector/cable guidance must be visible in assembly and cooling/clearance modes by default, because the AI HAT+ communicates using the Raspberry Pi 5 PCIe interface.
-- The default PCIe connector/guidance must sit on the left part of the AI HAT+ PCB and must not appear as a hanging object at the AI PCB level.
+- The default PCIe connector/guidance must sit on the left part of the AI HAT+ PCB, centered on the middle of the PCB side margin, and must not appear as a hanging object at the AI PCB level.
 - The model must make manual calibration straightforward by exposing the AI HAT+ board size, stack distance, header height, NPU package size/position, cooler size/position, PCIe connector/cable dimensions, and component clearance blocks as adjustable parameters.
 
 ## Assumptions
@@ -155,6 +163,7 @@ The AI HAT+ PCIe connector must instead be represented as a connector on the lef
 - The model includes a visible AI HAT+ cooling assembly above the Hailo-8 package using the same simplified cooling-mechanism style as the Raspberry Pi 5 active cooler.
 - The default Hailo-8 package footprint is adjustable and defaults to `17.0 mm x 17.0 mm`.
 - The model includes adjustable left-side on-board PCIe FPC connector and cable guidance.
+- The default PCIe FPC connector centerline derives from the AI HAT+ board width and sits at the middle of the PCB side margin.
 - The model does not render a hanging PCIe guide or unsupported device at the AI HAT+ PCB level.
 - Render modes include `assembly`, `hat`, `cooling`, and `printable_layout`.
 - Visibility toggles independently control Raspberry Pi 5 reference, Raspberry Pi 5 active cooler, AI HAT+ electronics, AI HAT+ cooler, GPIO/header stack, PCIe guidance, labels, and clearance guides.
@@ -185,7 +194,7 @@ The AI HAT+ PCIe connector must instead be represented as a connector on the lef
   - `23.0 mm` AI module header/pin envelope from the AI HAT+ PCB,
   - Raspberry Pi 5 active cooler clearance under the AI HAT+,
   - AI HAT+ cooler placement over the Hailo-8 package,
-  - PCIe connector/guidance located on the left part of the AI HAT+ PCB with no hanging off-board device at PCB level,
+  - PCIe connector/guidance located on the left part of the AI HAT+ PCB, centered on the PCB side margin, with no hanging off-board device at PCB level,
   - non-floating separated fit-check layout,
   - absence of obvious disconnected or inverted geometry.
 
@@ -198,5 +207,5 @@ The AI HAT+ PCIe connector must instead be represented as a connector on the lef
 - Document use of `designs/rpi5.scad` as the Raspberry Pi 5 fit reference.
 - Document the reusable active-cooler relationship if a helper source is introduced.
 - Document render modes, key visibility toggles, fit notes, optional OpenSCAD validation commands, and manual inspection checklist.
-- Document that PCIe guidance is a left-side on-board connector/routing reference and not a separate hanging device.
+- Document that PCIe guidance is a left-side on-board connector/routing reference, centered on the PCB side margin, and not a separate hanging device.
 - Remove or correct stale README references to missing AI HAT/case source files unless the approved implementation intentionally restores those files.

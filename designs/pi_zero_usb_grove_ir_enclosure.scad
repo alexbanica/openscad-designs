@@ -18,7 +18,7 @@ use <grove_infrared_emitter.scad>
 
 // Render controls
 $fn = 48;
-render_mode = "printable_layout"; // [assembly/bottom_tray/top_cover/ir_pod/printable_layout/electronics]
+render_mode = "printable_layout"; // [assembly/bottom_tray/top_cover/ir_pod/ir_pod_cap/printable_layout/electronics]
 show_electronics = true;
 show_cutout_guides = true;
 
@@ -119,10 +119,11 @@ pod_corner_radius_mm = 2.0;
 pod_cap_thickness_mm = pod_roof_thickness_mm;
 pod_cap_fit_clearance_mm = 0.25;
 pod_cap_insert_diameter_mm = 3.2;
-pod_cap_insert_insertion_depth_mm = 4.5;
+pod_cap_insert_insertion_depth_mm = 6.0;
 pod_cap_insert_socket_clearance_mm = 0.35;
 pod_cap_insert_socket_depth_mm = 5.1;
 pod_cap_insert_receiver_wall_thickness_mm = 1.0;
+pod_cap_insert_existing_receiver_lock_insert_depth_mm = 4.5;
 // Cap-side root shoulder is a short, direct transition from the cap underside into the pin body.
 pod_cap_insert_pin_root_diameter_mm = 3.8;
 pod_cap_insert_pin_root_depth_mm = 0.4;
@@ -469,11 +470,14 @@ pod_attachment_post_lock_pin_length_mm =
     pod_attachment_post_lock_pin_lower_length_mm;
 pod_attachment_post_lock_bridge_center_z_mm =
     case_total_height_mm + pod_attachment_post_lock_bridge_height_mm / 2;
-pod_cap_insert_lock_center_z_from_cap_top_mm =
-    -pod_cap_thickness_mm - pod_cap_insert_insertion_depth_mm / 2;
 pod_cap_insert_lock_center_z_from_pod_center_mm =
     pod_outer_height_mm / 2
-    + pod_cap_insert_lock_center_z_from_cap_top_mm;
+    - pod_cap_thickness_mm
+    - pod_cap_insert_existing_receiver_lock_insert_depth_mm / 2;
+pod_cap_insert_lock_center_z_from_cap_top_mm =
+    -pod_cap_thickness_mm
+    - pod_cap_insert_insertion_depth_mm
+    + pod_cap_insert_lock_hole_diameter_mm / 2;
 
 pi_micro_sd_cutout_width_mm =
     micro_sd_card_width_mm + micro_sd_card_total_clearance_mm;
@@ -619,6 +623,8 @@ if (render_mode == "assembly") {
     pi_zero_usb_grove_ir_printable_top_cover();
 } else if (render_mode == "ir_pod") {
     pi_zero_usb_grove_ir_printable_ir_pod_assembly();
+} else if (render_mode == "ir_pod_cap") {
+    pi_zero_usb_grove_ir_printable_pod_top_cap();
 } else if (render_mode == "printable_layout") {
     pi_zero_usb_grove_ir_printable_layout();
 } else if (render_mode == "electronics") {
