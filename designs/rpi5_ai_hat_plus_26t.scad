@@ -103,12 +103,11 @@ ai_hat_cooler_fan_cable_spacing_mm = 1.4;
 ai_hat_cooler_fan_cable_size_mm = [7.0, 0.7, 0.7];
 
 // PCIe guidance
-ai_hat_pcie_connector_origin_mm = [14.0, 1.0, ai_hat_board_thickness_mm];
-ai_hat_pcie_connector_size_mm = [24.0, 4.0, 4.5];
-ai_hat_pcie_cable_origin_mm = [12.0, -4.0, ai_hat_board_thickness_mm + 4.0];
-ai_hat_pcie_cable_path_size_mm = [5.0, 4.0, 11.0];
-ai_hat_pcie_flex_origin_mm = [12.0, -4.0, ai_hat_board_thickness_mm + 7.0];
-ai_hat_pcie_flex_size_mm = [4.0, 7.0, 16.0];
+// Left-side on-board PCIe connector and routing guidance (no hanging/off-board device)
+ai_hat_pcie_connector_origin_mm = [1.0, 8.0, ai_hat_board_thickness_mm];
+ai_hat_pcie_connector_size_mm = [4.0, 6.0, 4.5];
+ai_hat_pcie_routing_origin_mm = [1.6, 3.0, ai_hat_board_thickness_mm + 1.8];
+ai_hat_pcie_routing_size_mm = [2.8, 20.0, 1.4];
 ai_hat_pcie_connector_colour = "SlateGray";
 
 // Layout
@@ -393,17 +392,14 @@ module rpi5_ai_hat_plus_26t_cooler_reference() {
 }
 
 module rpi5_ai_hat_plus_26t_pcie_reference() {
+    // Left-side on-board PCIe FPC connector/routing reference.
     color(ai_hat_pcie_connector_colour)
     translate(ai_hat_pcie_connector_origin_mm)
         cube(ai_hat_pcie_connector_size_mm);
 
     color("Silver")
-    translate(ai_hat_pcie_cable_origin_mm)
-        cube(ai_hat_pcie_cable_path_size_mm);
-
-    color("Gray")
-    translate(ai_hat_pcie_flex_origin_mm)
-        cube(ai_hat_pcie_flex_size_mm);
+    translate(ai_hat_pcie_routing_origin_mm)
+        cube(ai_hat_pcie_routing_size_mm);
 }
 
 module rpi5_ai_hat_plus_26t_component_reference_blocks() {

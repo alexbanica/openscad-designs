@@ -14,10 +14,16 @@ The repository has a reusable Raspberry Pi 5 reference model in `designs/rpi5.sc
 
 Future Raspberry Pi 5 enclosure and stack planning needs a deterministic `.scad` source that models the AI HAT+ 26T board outline, HAT+ mounting relationship, GPIO/header stack height, PCIe cable/connector clearance, NPU package, and an AI-module cooling assembly that follows the same cooling-mechanism style as the Raspberry Pi 5 active cooler modeled in `designs/rpi5.scad`.
 
+## Iteration: Correct PCIe Connector Location
+
+The previous implementation rendered a hanging PCIe guidance feature at the AI HAT+ PCB level. That off-board hanging device is incorrect and must be removed.
+
+The AI HAT+ PCIe connector must instead be represented as a connector on the left part of the AI HAT+ PCB. The model may keep a small on-board connector clearance block and an optional low-profile cable/routing hint that starts from that left-side connector, but it must not render a separate unsupported vertical or dangling device outside the AI PCB edge.
+
 ## Scope
 
 - Add an editable OpenSCAD reference model for Raspberry Pi AI HAT+ 26T.
-- Model the AI HAT+ board outline, thickness, rounded corners, four mounting holes, GPIO header/socket stack, 26 TOPS Hailo-8 accelerator package, component clearance blocks, PCIe FPC connector/cable guidance, spacer/stack-height guidance, and AI-module cooler preview.
+- Model the AI HAT+ board outline, thickness, rounded corners, four mounting holes, GPIO header/socket stack, 26 TOPS Hailo-8 accelerator package, component clearance blocks, left-side on-board PCIe FPC connector/cable guidance, spacer/stack-height guidance, and AI-module cooler preview.
 - Use `designs/rpi5.scad` as the source of truth for Raspberry Pi 5 PCB dimensions, Raspberry Pi 5 mounting holes, Raspberry Pi 5 GPIO placement, Raspberry Pi 5 component clearance context, and Raspberry Pi 5 active-cooler envelope unless explicitly overridden by this spec.
 - Preserve the existing `designs/rpi5.scad` Raspberry Pi 5 reference behavior while allowing the Raspberry Pi 5 active cooler geometry to be shared with the AI HAT+ design.
 - The AI HAT+ model may use a separate reusable Raspberry Pi 5 active-cooler helper source so both `designs/rpi5.scad` and the new AI HAT+ source can call the same cooler geometry.
@@ -83,6 +89,8 @@ Future Raspberry Pi 5 enclosure and stack planning needs a deterministic `.scad`
 - The default Hailo-8 / NPU package footprint must be an adjustable `17.0 mm x 17.0 mm` package, placed as a simplified clearance feature based on the product-brief physical-specification callout.
 - The model must include adjustable top-side component clearance blocks for major non-cooler components visible enough for enclosure planning, without attempting a trace-accurate board reproduction.
 - The model must include adjustable PCIe FPC connector and cable-guidance geometry because the AI HAT+ communicates with Raspberry Pi 5 over PCIe.
+- The PCIe FPC connector must be positioned on the left part of the AI HAT+ PCB by default.
+- PCIe guidance must not create a hanging, unsupported, vertical, or separate device at the AI HAT+ PCB level.
 - The model must remain usable as a child design reference through `use <...>` and named module calls.
 - All linear dimension variables must use `_mm`; all angle variables must use `_deg`.
 - User-adjustable values must not be redefined inside modules.
@@ -90,13 +98,14 @@ Future Raspberry Pi 5 enclosure and stack planning needs a deterministic `.scad`
 
 ## Deterministic Behavior
 
-- `render_mode = "assembly"` displays the Raspberry Pi 5 reference, Raspberry Pi 5 active cooler, AI HAT+ PCB, AI HAT+ electronics, AI HAT+ cooler, GPIO/header stack, PCIe cable guidance, and clearance envelopes according to visibility toggles.
+- `render_mode = "assembly"` displays the Raspberry Pi 5 reference, Raspberry Pi 5 active cooler, AI HAT+ PCB, AI HAT+ electronics, AI HAT+ cooler, GPIO/header stack, left-side on-board PCIe cable guidance, and clearance envelopes according to visibility toggles.
 - `render_mode = "hat"` displays only the AI HAT+ PCB, mounting holes, GPIO/header reference, and optional board electronics according to visibility toggles.
 - `render_mode = "cooling"` emphasizes Raspberry Pi 5 active-cooler clearance below the HAT and AI HAT+ cooler clearance above the HAT.
 - `render_mode = "printable_layout"` displays separated reference/fit-check groups for visual inspection; it must not imply generated printable parts are being committed.
 - `show_rpi5_reference` controls the Raspberry Pi 5 board/components reference independently from the AI HAT+.
 - `show_rpi5_active_cooler` controls the Raspberry Pi 5 active cooler independently from the Raspberry Pi 5 board reference.
-- `show_ai_hat_electronics` controls the Hailo-8 package, component clearance blocks, PCIe connector/cable guidance, and other board electronics without hiding the AI HAT+ PCB or mounting holes.
+- `show_ai_hat_electronics` controls the Hailo-8 package, component clearance blocks, and other board electronics without hiding the AI HAT+ PCB or mounting holes.
+- `show_pcie_guidance` controls the left-side on-board PCIe connector/routing guidance independently.
 - `show_ai_hat_cooler` controls the AI HAT+ cooling assembly independently from other AI HAT+ electronics.
 - `show_gpio_stack` controls the GPIO/header/socket stack preview independently from board and electronics previews.
 - `show_clearance_guides` controls translucent stack-height, active-cooler, header-pin, and top-cooling clearance envelopes.
@@ -108,6 +117,7 @@ Future Raspberry Pi 5 enclosure and stack planning needs a deterministic `.scad`
 - The AI HAT+ cooler must render above the AI HAT+ NPU package and visibly use the same simplified base/fins/fan/pad/fastener/cable visual grammar as the Raspberry Pi 5 active cooler.
 - The Hailo-8 package must be shown as a simplified adjustable package footprint and must be visibly associated with the AI HAT+ cooler contact area.
 - The PCIe FPC connector/cable guidance must be visible in assembly and cooling/clearance modes by default, because the AI HAT+ communicates using the Raspberry Pi 5 PCIe interface.
+- The default PCIe connector/guidance must sit on the left part of the AI HAT+ PCB and must not appear as a hanging object at the AI PCB level.
 - The model must make manual calibration straightforward by exposing the AI HAT+ board size, stack distance, header height, NPU package size/position, cooler size/position, PCIe connector/cable dimensions, and component clearance blocks as adjustable parameters.
 
 ## Assumptions
@@ -144,7 +154,8 @@ Future Raspberry Pi 5 enclosure and stack planning needs a deterministic `.scad`
 - The model includes a visible Raspberry Pi 5 active-cooler clearance relationship under the AI HAT+.
 - The model includes a visible AI HAT+ cooling assembly above the Hailo-8 package using the same simplified cooling-mechanism style as the Raspberry Pi 5 active cooler.
 - The default Hailo-8 package footprint is adjustable and defaults to `17.0 mm x 17.0 mm`.
-- The model includes adjustable PCIe FPC connector and cable guidance.
+- The model includes adjustable left-side on-board PCIe FPC connector and cable guidance.
+- The model does not render a hanging PCIe guide or unsupported device at the AI HAT+ PCB level.
 - Render modes include `assembly`, `hat`, `cooling`, and `printable_layout`.
 - Visibility toggles independently control Raspberry Pi 5 reference, Raspberry Pi 5 active cooler, AI HAT+ electronics, AI HAT+ cooler, GPIO/header stack, PCIe guidance, labels, and clearance guides.
 - README documents the new design file, assumptions, render modes, common adjustable parameters, optional OpenSCAD commands, and manual inspection checklist.
@@ -174,6 +185,7 @@ Future Raspberry Pi 5 enclosure and stack planning needs a deterministic `.scad`
   - `23.0 mm` AI module header/pin envelope from the AI HAT+ PCB,
   - Raspberry Pi 5 active cooler clearance under the AI HAT+,
   - AI HAT+ cooler placement over the Hailo-8 package,
+  - PCIe connector/guidance located on the left part of the AI HAT+ PCB with no hanging off-board device at PCB level,
   - non-floating separated fit-check layout,
   - absence of obvious disconnected or inverted geometry.
 
@@ -186,4 +198,5 @@ Future Raspberry Pi 5 enclosure and stack planning needs a deterministic `.scad`
 - Document use of `designs/rpi5.scad` as the Raspberry Pi 5 fit reference.
 - Document the reusable active-cooler relationship if a helper source is introduced.
 - Document render modes, key visibility toggles, fit notes, optional OpenSCAD validation commands, and manual inspection checklist.
+- Document that PCIe guidance is a left-side on-board connector/routing reference and not a separate hanging device.
 - Remove or correct stale README references to missing AI HAT/case source files unless the approved implementation intentionally restores those files.

@@ -335,6 +335,7 @@ The file is a planning-only model, not vendor CAD. Default dimensions come from 
 - AI module pin/socket stack default: 23.0 mm from AI HAT PCB.
 - Default Hailo-8 package footprint: 17.0 mm x 17.0 mm.
 - Mounting-hole positions and Pi 5 active-cooler placement use the Raspberry Pi 5 reference coordinates from `designs/rpi5.scad` and the extracted active-cooler helper.
+- PCIe guidance is a left-side on-board connector and routing reference on the AI HAT+ PCB, not a separate hanging or dangling device.
 - Common M2.5 Raspberry Pi hardware assumptions.
 
 The dimensions are approximate. Direct measurement is required before precision enclosure or CAM work.
@@ -348,7 +349,7 @@ The source starts with an `Adjustable Parameters` section grouped by:
 - mounting hardware,
 - stack and GPIO/header stack,
 - AI HAT+ cooling geometry,
-- PCIe guidance,
+- left-side on-board PCIe guidance,
 - clearance visuals,
 - printable layout.
 
@@ -359,7 +360,7 @@ Common edits:
 - Tune `ai_hat_stack_distance_mm` and `ai_hat_header_pin_height_mm` after measuring actual stack mechanics.
 - Tune `ai_hat_npu_package_size_mm` for a verified Hailo package envelope.
 - Tune AI cooler parameters and placement if a measured local cooler sketch is available.
-- Tune PCIe connector and cable guidance parameters for wiring route fit.
+- Tune PCIe connector and on-board routing parameters (`ai_hat_pcie_connector_origin_mm`, `ai_hat_pcie_connector_size_mm`, `ai_hat_pcie_routing_origin_mm`, `ai_hat_pcie_routing_size_mm`) for wiring-route fit.
 - Independently disable preview layers with `show_rpi5_active_cooler`, `show_ai_hat_electronics`, `show_ai_hat_cooler`, `show_gpio_stack`, `show_pcie_guidance`, `show_labels`, and `show_clearance_guides`.
 
 ### Render Modes
@@ -387,6 +388,7 @@ openscad -o /tmp/rpi5_active_cooler.off -D 'rpi5_active_cooler_reference();' des
 - Use the model as a child design with `use <rpi5_ai_hat_plus_26t.scad>` and call `rpi5_ai_hat_plus_26t_reference_model(...)` explicitly.
 - Use `use <rpi5_active_cooler.scad>` and `rpi5_active_cooler_reference()` when you only need Pi 5 cooler-envelope geometry.
 - AI HAT+ defaults are planning values for a 26 TOPS HAT+ and are not vendor-accurate mechanical details.
+- `rpi5_ai_hat_plus_26t_pcie_reference()` renders the left-side on-board connector and routing reference and is gated by `show_pcie_guidance`.
 - `show_labels` only controls text, and clearance guides are optional by construction.
 - Use `show_clearance_guides = true` during initial stack and enclosure planning for Pi 5 cooler/AI HAT spacing checks.
 - Keep `show_pcie_guidance = true` unless enclosure design intentionally removes the PCIe routing path.
@@ -399,6 +401,7 @@ Manual inspection checklist:
 - Confirm the Hailo-8 package default is 17.0 mm x 17.0 mm and visually aligned to the AI HAT cooler target.
 - Confirm Pi 5 active cooler geometry is present and reusable through `rpi5_active_cooler.scad`.
 - Confirm `show_rpi5_reference`, `show_rpi5_active_cooler`, `show_ai_hat_electronics`, `show_ai_hat_cooler`, `show_gpio_stack`, `show_pcie_guidance`, `show_labels`, and `show_clearance_guides` independently control those groups.
+- Confirm `show_pcie_guidance` controls only `rpi5_ai_hat_plus_26t_pcie_reference()` and that PCIe guidance stays as a left-side on-board connector/routing feature.
 - Confirm `assembly`, `hat`, `cooling`, and `printable_layout` behavior renders the intended views with the default parameters.
 
 ## Raspberry Pi Zero USB Ethernet Grove IR Enclosure
