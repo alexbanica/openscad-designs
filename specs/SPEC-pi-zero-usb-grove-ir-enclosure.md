@@ -22,6 +22,8 @@ The IR PCB mount defaults to the right side of the front-facing wall so the fron
 
 The IR PCB screw bosses and pilot holes were still too far from the front wall that contains the IR LED aperture. The mount center must move 7.0 mm closer to that wall without changing the screw-hole spacing or the LED aperture wall position.
 
+The assembled Pi Zero enclosure also needs 5.0 mm more default vertical headroom, and the external Micro USB power-side opening must be the same default height as the mini-HDMI opening.
+
 ## Scope
 
 - Update `designs/pi_zero_usb_grove_ir_enclosure.scad`.
@@ -53,6 +55,9 @@ The IR PCB screw bosses and pilot holes were still too far from the front wall t
 - The IR PCB center defaults to `ir_top_cover_pcb_center_x_mm = 24.0`, placing the mount on the right side of the front-facing wall.
 - The IR PCB center defaults to `ir_top_cover_pcb_center_y_mm = -16.7`, which is 7.0 mm closer to the `-Y` front wall than the prior `-9.7` default.
 - Grove IR reference LED defaults remain `5.0 mm` LED diameter, `7.0 mm` LED body length, and `7.5 mm` LED extension beyond the PCB edge.
+- The user-provided measured stack height remains `35.0 mm`; the default extra upward headroom is increased from `8.0 mm` to `13.0 mm`.
+- The default mini-HDMI plug-head height is `11.30 mm`.
+- The external Micro USB power-side plug-head length remains `10.30 mm`, and its default cutout height derives from the mini-HDMI plug-head height.
 - Grove IR PCB thickness is modeled locally as `ir_top_cover_pcb_thickness_mm = 1.6` for the upside-down LED aperture height derivation.
 - IR PCB screw maximum total length is modeled as `ir_top_cover_mount_max_screw_length_including_head_mm = 5.0`.
 - Screw-head height is modeled as a tunable allowance, defaulting to `ir_top_cover_mount_screw_head_height_allowance_mm = 1.2`, because the 5.0 mm maximum includes the head.
@@ -73,6 +78,8 @@ The IR PCB screw bosses and pilot holes were still too far from the front wall t
 - The mounted PCB default center is shifted toward the front-right side so the LED path aligns with the right side of the front-facing top-cover wall.
 - The mounted PCB screw bosses and screw pilot holes are shifted 7.0 mm closer to the front-facing wall by setting `ir_top_cover_pcb_center_y_mm = -16.7`.
 - The top cover front-facing wall has a true horizontal pass-through IR LED aperture sized by `ir_top_cover_led_aperture_diameter_mm = 6.2`.
+- The default assembled enclosure height is 5.0 mm taller because `extra_upward_headroom_mm = 13.0`.
+- The default Micro USB power-side opening height matches the default mini-HDMI opening height by deriving `pi_micro_usb_power_head_height_mm` from `pi_mini_hdmi_head_height_mm`.
 - The LED aperture Z height derives from the upside-down mounting stack: `ir_top_cover_mount_boss_height_mm + ir_top_cover_pcb_thickness_mm + ir_top_cover_led_center_above_component_face_mm` below the top-cover roof inner face.
 - The LED aperture nominal depth derives from `wall_thickness_mm + ir_top_cover_led_aperture_wall_overtravel_mm`.
 - The LED aperture effective subtraction depth adds `port_cutout_extra_clearance_mm`, matching the front-wall center helper and piercing along the Y axis through the `-Y` front wall.
@@ -100,6 +107,8 @@ The IR PCB screw bosses and pilot holes were still too far from the front wall t
 - The roof vent grid may regain roof holes that were skipped only to avoid the previous vertical LED aperture, while still preserving keepouts for the screw bosses.
 - The internal bosses consume some of the previous vertical headroom under the top cover.
 - The design remains pod-free and still renders only bottom tray and top cover in `printable_layout`.
+- Increasing default upward headroom raises the top cover and assembled case height by 5.0 mm while preserving the bottom tray wall height and cover pin/socket interface.
+- Matching the Micro USB power-side opening height to the mini-HDMI height removes more material around that bottom-tray/front-wall access area.
 
 ## Validation Performed
 
@@ -110,9 +119,11 @@ The IR PCB screw bosses and pilot holes were still too far from the front wall t
 - The IR PCB boss height and pilot depth were updated to derive from the 5.0 mm maximum screw length including the screw head.
 - The IR PCB default center was moved to `X = 24.0` for right-side front-wall placement.
 - The IR PCB default center Y was moved from `-9.7` to `-16.7` so the screw bosses and pilot holes are 7.0 mm closer to the front-wall IR LED aperture.
-- `timeout 10 openscad -o /tmp/pi_zero_usb_grove_ir_top_cover_holes_7mm_closer.off -D 'render_mode="top_cover"' designs/pi_zero_usb_grove_ir_enclosure.scad` completed within 10 seconds with no warning output.
-- `timeout 10 openscad -o /tmp/pi_zero_usb_grove_ir_printable_layout_holes_7mm_closer.off -D 'render_mode="printable_layout"' designs/pi_zero_usb_grove_ir_enclosure.scad` completed within 10 seconds with no warning output.
-- `git diff --check` passed.
+- Source inspection confirmed the 5.0 mm height increase is delivered by changing `extra_upward_headroom_mm` from `8.0` to `13.0`.
+- Source inspection confirmed the Micro USB power-side opening height now derives from `pi_mini_hdmi_head_height_mm`.
+- `timeout 10 openscad -o /tmp/pi_zero_usb_grove_ir_height_usb_power.off -D 'render_mode="printable_layout"' designs/pi_zero_usb_grove_ir_enclosure.scad` completed within 10 seconds with no warning output.
+- `timeout 10 openscad -o /tmp/pi_zero_usb_grove_ir_height_usb_power_bottom_tray.off -D 'render_mode="bottom_tray"' designs/pi_zero_usb_grove_ir_enclosure.scad` completed within 10 seconds with no warning output.
+- `git diff --check` passed, with Git reporting that `designs/pi_zero_usb_grove_ir_enclosure.scad` will be normalized from CRLF to LF when Git next touches it.
 
 ## Validation Skipped
 
@@ -123,3 +134,4 @@ The IR PCB screw bosses and pilot holes were still too far from the front wall t
 
 - `README.md` documents the top-cover IR PCB screw mount parameters, front-facing wall LED aperture, tuning parameters, and assembly notes.
 - `README.md` documents the updated `ir_top_cover_pcb_center_y_mm = -16.7` default and the 7.0 mm closer-to-wall shift.
+- `README.md` documents the 13.0 mm default extra upward headroom and the Micro USB power-side opening height matching the mini-HDMI opening height.

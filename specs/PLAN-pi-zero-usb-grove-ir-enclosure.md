@@ -30,6 +30,9 @@ Approved Spec: `specs/SPEC-pi-zero-usb-grove-ir-enclosure.md`
 15. Replaced the previous spec and plan with these auto-approved completed-work artifacts describing the delivered front-wall LED orientation and pass-through bugfixes.
 16. Shifted the IR PCB top-cover mount center Y from `-9.7` to `-16.7`, moving the screw bosses and pilot holes 7.0 mm closer to the front-facing IR LED aperture wall while preserving the `20.15 mm` screw-hole spacing.
 17. Updated README and these auto-approved artifacts to record the completed 7.0 mm closer-to-wall screw-hole shift.
+18. Increased the default enclosure height by changing `extra_upward_headroom_mm` from `8.0` to `13.0`.
+19. Changed `pi_micro_usb_power_head_height_mm` to derive from `pi_mini_hdmi_head_height_mm`, making the Micro USB power-side opening the same default height as the mini-HDMI opening.
+20. Updated README and these auto-approved artifacts to record the completed height and Micro USB power opening changes.
 
 ## Validation Run
 
@@ -40,9 +43,11 @@ Approved Spec: `specs/SPEC-pi-zero-usb-grove-ir-enclosure.md`
 - Source inspection of the derived 5.0 mm including-head screw-depth constraint.
 - Source inspection of the front wall cutout spans and right-side IR PCB placement.
 - Source inspection confirming the IR PCB mount-hole centers derive from `ir_top_cover_pcb_center_y_mm = -16.7`.
-- `timeout 10 openscad -o /tmp/pi_zero_usb_grove_ir_top_cover_holes_7mm_closer.off -D 'render_mode="top_cover"' designs/pi_zero_usb_grove_ir_enclosure.scad` completed within 10 seconds with no warning output.
-- `timeout 10 openscad -o /tmp/pi_zero_usb_grove_ir_printable_layout_holes_7mm_closer.off -D 'render_mode="printable_layout"' designs/pi_zero_usb_grove_ir_enclosure.scad` completed within 10 seconds with no warning output.
-- `git diff --check`.
+- Source inspection confirming `extra_upward_headroom_mm = 13.0`.
+- Source inspection confirming `pi_micro_usb_power_head_height_mm = pi_mini_hdmi_head_height_mm`.
+- `timeout 10 openscad -o /tmp/pi_zero_usb_grove_ir_height_usb_power.off -D 'render_mode="printable_layout"' designs/pi_zero_usb_grove_ir_enclosure.scad` completed within 10 seconds with no warning output.
+- `timeout 10 openscad -o /tmp/pi_zero_usb_grove_ir_height_usb_power_bottom_tray.off -D 'render_mode="bottom_tray"' designs/pi_zero_usb_grove_ir_enclosure.scad` completed within 10 seconds with no warning output.
+- `git diff --check` passed, with Git reporting that `designs/pi_zero_usb_grove_ir_enclosure.scad` will be normalized from CRLF to LF when Git next touches it.
 
 ## Validation Skipped
 
@@ -59,6 +64,7 @@ Code review was skipped by design because this invocation used the `super-agent`
 ## Documentation Updates
 
 - `README.md` now documents the upside-down IR PCB mount, right-side front-facing wall placement, `ir_top_cover_pcb_center_y_mm = -16.7`, the 7.0 mm closer-to-wall screw-hole shift, front-facing `-Y` top-cover wall LED aperture, effective pass-through depth, 5.0 mm maximum screw length including head, top-cover IR PCB screw mount, prior-pod-derived `20.15 mm` screw-hole spacing, and assembly caveats.
+- `README.md` now documents the 13.0 mm default extra upward headroom and the Micro USB power-side opening height matching the mini-HDMI opening height.
 - The approved spec and plan were replaced with completed-work artifacts that describe the delivered front-wall LED orientation.
 
 ## Commit Status

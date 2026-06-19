@@ -26,7 +26,7 @@ board_length_mm = 65.0;
 board_width_mm = 30.0;
 board_thickness_mm = 1.6;
 measured_stack_height_mm = 35.0;
-extra_upward_headroom_mm = 8.0;
+extra_upward_headroom_mm = 13.0;
 board_clearance_x_mm = 5.0;
 board_clearance_y_mm = 5.0;
 pi_zero_standoff_height_mm = 4.0;
@@ -99,7 +99,7 @@ pi_mini_hdmi_cutout_center_x_mm = -20.1;
 pi_mini_hdmi_cutout_center_y_offset_mm = 0.0;
 pi_mini_hdmi_cutout_local_center_z_mm = 1.8;
 pi_micro_usb_power_head_length_mm = 10.30;
-pi_micro_usb_power_head_height_mm = 7.15;
+pi_micro_usb_power_head_height_mm = pi_mini_hdmi_head_height_mm;
 pi_micro_usb_power_cutout_depth_mm = 7.5;
 pi_micro_usb_power_cutout_size_mm = [
     pi_micro_usb_power_head_length_mm,
