@@ -20,6 +20,8 @@ The IR PCB screw length is constrained to 5.0 mm maximum including the screw hea
 
 The IR PCB mount defaults to the right side of the front-facing wall so the front-wall LED aperture is no longer centered on the front face.
 
+The IR PCB screw bosses and pilot holes were still too far from the front wall that contains the IR LED aperture. The mount center must move 7.0 mm closer to that wall without changing the screw-hole spacing or the LED aperture wall position.
+
 ## Scope
 
 - Update `designs/pi_zero_usb_grove_ir_enclosure.scad`.
@@ -49,6 +51,7 @@ The IR PCB mount defaults to the right side of the front-facing wall so the fron
 - Previous IR pod reference values from `origin/main` were used because `origin/master` is not present in this clone.
 - The previous pod-derived IR PCB mounting span is `20.15 mm`, from `23.65 mm` earlobe-inclusive PCB width and `1.75 mm` hole-center edge offset.
 - The IR PCB center defaults to `ir_top_cover_pcb_center_x_mm = 24.0`, placing the mount on the right side of the front-facing wall.
+- The IR PCB center defaults to `ir_top_cover_pcb_center_y_mm = -16.7`, which is 7.0 mm closer to the `-Y` front wall than the prior `-9.7` default.
 - Grove IR reference LED defaults remain `5.0 mm` LED diameter, `7.0 mm` LED body length, and `7.5 mm` LED extension beyond the PCB edge.
 - Grove IR PCB thickness is modeled locally as `ir_top_cover_pcb_thickness_mm = 1.6` for the upside-down LED aperture height derivation.
 - IR PCB screw maximum total length is modeled as `ir_top_cover_mount_max_screw_length_including_head_mm = 5.0`.
@@ -68,6 +71,7 @@ The IR PCB mount defaults to the right side of the front-facing wall so the fron
 - With the default 5.0 mm screw, 1.2 mm head allowance, and 1.6 mm PCB thickness, boss height and pilot depth default to 2.2 mm.
 - The screw pilot holes open from the underside free faces of the IR PCB mount bosses and cut upward into the boss material.
 - The mounted PCB default center is shifted toward the front-right side so the LED path aligns with the right side of the front-facing top-cover wall.
+- The mounted PCB screw bosses and screw pilot holes are shifted 7.0 mm closer to the front-facing wall by setting `ir_top_cover_pcb_center_y_mm = -16.7`.
 - The top cover front-facing wall has a true horizontal pass-through IR LED aperture sized by `ir_top_cover_led_aperture_diameter_mm = 6.2`.
 - The LED aperture Z height derives from the upside-down mounting stack: `ir_top_cover_mount_boss_height_mm + ir_top_cover_pcb_thickness_mm + ir_top_cover_led_center_above_component_face_mm` below the top-cover roof inner face.
 - The LED aperture nominal depth derives from `wall_thickness_mm + ir_top_cover_led_aperture_wall_overtravel_mm`.
@@ -88,6 +92,7 @@ The IR PCB mount defaults to the right side of the front-facing wall so the fron
 ## Impact And Regression Considerations
 
 - The top cover contains internal screw bosses and a front-wall LED opening.
+- Moving the screw bosses 7.0 mm toward the front wall reduces the gap between the IR PCB screw holes and the IR LED aperture wall while preserving the `20.15 mm` screw-hole spacing.
 - The front-wall LED aperture is a new opening near the front side and must be physically checked against the real Waveshare/Grove stack and cable routing before final tolerance reliance.
 - The right-side default keeps the LED aperture high on the front wall, but the board, screw bosses, and cable still need physical clearance checks against the actual hardware.
 - The lower LED aperture height gives more room near the top-cover roof for the Grove male port, but reduces vertical clearance lower in the enclosure and needs physical test fitting.
@@ -104,8 +109,9 @@ The IR PCB mount defaults to the right side of the front-facing wall so the fron
 - The LED aperture Z derivation was updated for upside-down PCB mounting with the Grove male port/component side facing down.
 - The IR PCB boss height and pilot depth were updated to derive from the 5.0 mm maximum screw length including the screw head.
 - The IR PCB default center was moved to `X = 24.0` for right-side front-wall placement.
-- `openscad -o /tmp/pi_zero_usb_grove_ir_top_cover.off -D 'render_mode="top_cover"' designs/pi_zero_usb_grove_ir_enclosure.scad` completed within 10 seconds with no warning output.
-- `openscad -o /tmp/pi_zero_usb_grove_ir_printable_layout.off -D 'render_mode="printable_layout"' designs/pi_zero_usb_grove_ir_enclosure.scad` completed within 10 seconds with no warning output.
+- The IR PCB default center Y was moved from `-9.7` to `-16.7` so the screw bosses and pilot holes are 7.0 mm closer to the front-wall IR LED aperture.
+- `timeout 10 openscad -o /tmp/pi_zero_usb_grove_ir_top_cover_holes_7mm_closer.off -D 'render_mode="top_cover"' designs/pi_zero_usb_grove_ir_enclosure.scad` completed within 10 seconds with no warning output.
+- `timeout 10 openscad -o /tmp/pi_zero_usb_grove_ir_printable_layout_holes_7mm_closer.off -D 'render_mode="printable_layout"' designs/pi_zero_usb_grove_ir_enclosure.scad` completed within 10 seconds with no warning output.
 - `git diff --check` passed.
 
 ## Validation Skipped
@@ -116,3 +122,4 @@ The IR PCB mount defaults to the right side of the front-facing wall so the fron
 ## Documentation Changes
 
 - `README.md` documents the top-cover IR PCB screw mount parameters, front-facing wall LED aperture, tuning parameters, and assembly notes.
+- `README.md` documents the updated `ir_top_cover_pcb_center_y_mm = -16.7` default and the 7.0 mm closer-to-wall shift.

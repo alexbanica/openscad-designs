@@ -63,7 +63,7 @@ tray_socket_depth_mm = 5.8;
 // IR PCB top-cover screw mount
 enable_top_cover_ir_pcb_mount = true;
 ir_top_cover_pcb_center_x_mm = 24.0;
-ir_top_cover_pcb_center_y_mm = -9.7;
+ir_top_cover_pcb_center_y_mm = -16.7;
 ir_top_cover_pcb_length_mm = 23.75;
 ir_top_cover_pcb_thickness_mm = 1.6;
 ir_top_cover_mount_hole_spacing_x_mm = 20.15;
