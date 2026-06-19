@@ -424,7 +424,7 @@ Mirrored AI HAT+ values include:
 - board footprint: 65.0 mm x 56.5 mm x 1.6 mm,
 - Pi-to-HAT stack distance: 20.0 mm,
 - GPIO/header pin envelope: 23.0 mm above a 2.5 mm header body on the AI HAT PCB,
-- three header-connected cable paths are accounted for by the default header/cable error margin,
+- three header-connected cable paths are documented in mirror defaults but are no longer used to force top-cover height above the internal-height target.
 - AI HAT+ cooler/fan envelope and PCIe guidance defaults from `designs/rpi5_ai_hat_plus_26t.scad`.
 
 These mirrors are audit points. If the source references change, refresh the enclosure mirror values before precision fitting.
@@ -451,8 +451,9 @@ Common edits:
 - Set `render_mode = "assembly"`, `"bottom_tray"`, `"top_cover"`, `"electronics"`, or `"printable_layout"`.
 - Tune `component_clearance_xy_mm`, `component_clearance_z_mm`, `wall_thickness_mm`, `cover_fit_clearance_mm`, and `edge_port_clearance_mm` after hardware measurement.
 - Tune `ai_hat_stack_distance_mirror_mm` to adjust the distance between the Raspberry Pi 5 PCB and the AI HAT+ PCB.
-- Tune `ai_hat_pcb_top_to_cover_top_height_mm` to adjust the height from the AI HAT+ PCB top surface to the top surface of the top cover. The default is 31.8 mm so the top-cover inner roof targets 62.4 mm above the enclosure origin when the Raspberry Pi PCB bottom is 7.4 mm and the AI HAT+ PCB top is 30.6 mm. The effective value is clamped to at least the mirrored header body plus `ai_hat_header_pin_height_mirror_mm` plus `ai_hat_header_cable_error_margin_mm`.
-- Tune `ai_hat_header_cable_error_margin_mm` for the three header-connected cables and any measurement or print-fit margin above the header stack.
+- Tune `assembled_internal_height_target_mm` to set the assembled internal-height target (bottom inner surface to top inner surface), in mm. The default is 45.0 mm.
+- The default `ai_hat_pcb_top_to_cover_top_height_mm` is derived from `floor_thickness_mm + assembled_internal_height_target_mm` and the mirrored AI HAT+ PCB top height. The default is 16.8 mm from the current stack defaults, and it is not clamped by mirrored header/cable heights.
+- `ai_hat_header_cable_error_margin_mm` defines a mirrored/reference clearance assumption for the three header-connected cables. It is not used to increase the default assembled internal-height target or to clamp top-cover height; tune only if you intentionally want to change that mirrored reference.
 - Tune `usb_c_cable_head_required_size_mm`, `micro_hdmi_adapter_head_required_size_mm`, and `front_cable_cutout_error_margin_mm` when the front-wall USB-C or micro-HDMI plug bodies need a larger pass-through than the mirrored connector bodies. The default micro-HDMI adapter requirement is 12.0 mm x 6.66 mm plus 0.6 mm total margin, and the default USB-C requirement is 12.0 mm x 7.0 mm plus 0.6 mm total margin.
 - Tune `cover_pin_diameter_mm`, `cover_pin_insertion_length_mm`, `tray_socket_clearance_mm`, `tray_socket_depth_mm`, `cover_pin_count`, `cover_pin_offset_x_mm`, and `cover_pin_offset_y_mm` for the male/female connection fit.
 - Tune `enable_anti_slide_foot_recesses`, `anti_slide_foot_recess_diameter_mm`, `anti_slide_foot_recess_depth_mm`, and `anti_slide_foot_recess_centers_mm` for adhesive or press-in rubber feet on the tray underside.
@@ -488,7 +489,8 @@ openscad -o /tmp/rpi5_ai_hat_plus_26t_enclosure_printable_layout.off -D 'render_
 - Camera/display and PCIe connectors use top service openings because cable routing depends on the installed ribbon/cable path.
 - Lateral ventilation is enabled on both long side walls by default.
 - Top ventilation is enabled above the AI HAT+ cooler/fan area by default.
-- The top cover height derives from the larger of the AI HAT+ cooler/fan clearance and the effective AI-PCB-top-to-cover-top clearance, so taller headers or header-connected cables can raise the enclosure without moving port or board-source dimensions.
+- The top cover height is driven by `floor_thickness_mm + assembled_internal_height_target_mm` (default top inner roof = 47.4 mm) and preserves AI HAT+ cooler/fan clearance if required. If the cooler/fan clearance exceeds this target, OpenSCAD prints a conflict warning instead of silently increasing the internal-height target.
+- The default assumes shorter installed AI HAT+ headers; the mirrored default header/cable clearance no longer auto-increases the height target.
 - Default pin/socket positions are placed near enclosure corners to avoid Raspberry Pi 5 ports, mounting supports, side vents, and the AI HAT+ cooler/fan envelope.
 - Physical fit remains unvalidated until measured against real hardware and test printed.
 
@@ -501,7 +503,10 @@ Manual inspection checklist:
 - Confirm USB-A, Ethernet, USB-C power, micro-HDMI, camera/display, PCIe, and microSD openings are visible, with the right-side USB-A/Ethernet access rendered as one continuous cutout.
 - Confirm the front USB-C opening clears at least 12.6 mm x 7.6 mm and each micro-HDMI opening clears at least 12.6 mm x 7.26 mm with the default cable-head margin.
 - Confirm side and top ventilation are real subtractive openings.
-- Confirm the reference stack, AI HAT+ header stack, and three header-connected cable clearance assumptions do not visibly intersect the top cover, side walls, standoffs, or pin/socket interface.
+- Confirm the default assembled internal height target is 45.0 mm, and the derived default top inner roof is 47.4 mm (`floor_thickness_mm + target`).
+- Confirm the default AI HAT+ PCB-top-to-inner-roof target is 16.8 mm and header/cable clearance is not used as the controlling clamp for the default internal height.
+- Confirm the **actual installed shorter-header** stack and connected cables visually fit under the reduced cover height in `assembly`, `top_cover`, and `electronics` without visible intersection at the top cover, side walls, standoffs, or pin/socket interface.
+- Confirm the mirrored default AI HAT+ header/cable clearance assumptions are for reference only and may not match this lower-height 45.0 mm build; validate real hardware stack clearance against measured geometry instead.
 - Confirm generated OFF/STL/STEP/3MF files remain under `/tmp` and are not tracked.
 
 ## Raspberry Pi Zero USB Ethernet Grove Enclosure

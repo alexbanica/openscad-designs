@@ -344,13 +344,17 @@ Remove the unnecessary enclosure wall split between the Raspberry Pi 5 right-sid
 
 - README now documents the continuous right-side USB-A/Ethernet access opening and corresponding manual inspection expectation.
 
-## Super-Agent Update: Top Cover Inner Roof Height
+## Historical Update (Superseded): Top Cover Inner Roof Height
 
-Status: Approved
+Status: Approved (Superseded by Iteration Update: 45.0 mm Internal Height)
+
+This section is retained for history and is not the current behavior.
 
 ### Purpose
 
-Raise the Raspberry Pi 5 AI HAT+ 26T enclosure top-cover inner roof target height to match the user's requested 55.0 mm clearance above the Raspberry Pi PCB bottom.
+Historical behavior: raised the Raspberry Pi 5 AI HAT+ 26T enclosure top-cover inner roof target height to match the user's requested 55.0 mm clearance above the Raspberry Pi PCB bottom.
+
+This behavior was later superseded by the 45.0 mm internal-height iteration.
 
 ### Requested Behavior
 
@@ -382,8 +386,8 @@ Raise the Raspberry Pi 5 AI HAT+ 26T enclosure top-cover inner roof target heigh
 
 ### Deterministic Behavior Delivered
 
-- `ai_hat_pcb_top_to_cover_top_height_mm` is now `31.8`.
-- The effective top-cover height calculation continues to clamp this value against the header-stack requirement using `ai_hat_pcb_top_to_cover_top_effective_height_mm`.
+- `ai_hat_pcb_top_to_cover_top_height_mm` was set to `31.8` for this historical pass.
+- This section no longer defines current default behavior. The active target is the `45.0 mm` internal-height iteration below.
 
 ### Assumptions
 
@@ -409,3 +413,76 @@ Raise the Raspberry Pi 5 AI HAT+ 26T enclosure top-cover inner roof target heigh
 ### Documentation Changes
 
 - README now documents the 31.8 mm default and the target inner roof calculation inputs.
+
+## Iteration Update: 45.0 mm Internal Height
+
+Status: Approved
+
+### Purpose
+
+Reduce the Raspberry Pi 5 AI HAT+ 26T enclosure assembled internal height to match the user's requested maximum 45.0 mm clearance from the bottom tray inner floor surface to the top cover inner roof surface.
+
+### Requested Behavior
+
+- Set the assembled enclosure height from bottom inner surface to top inner surface to a maximum of `45.0 mm`.
+- The height target is based on the current enclosure coordinate system:
+  - bottom inner surface Z: `floor_thickness_mm = 2.4 mm`,
+  - target top inner surface Z: `2.4 mm + 45.0 mm = 47.4 mm`,
+  - AI HAT+ PCB top Z: `30.6 mm`,
+  - required AI HAT+ PCB top to inner roof height: `47.4 mm - 30.6 mm = 16.8 mm`.
+- The implementation must not allow the existing mirrored default header/cable clearance requirement to raise the top inner surface above the 45.0 mm internal-height target.
+- The resulting lower height is valid for the user's physical build because the user has installed smaller headers than the mirrored default header geometry.
+
+### Scope
+
+- Update `designs/rpi5_ai_hat_plus_26t_enclosure.scad` height-related parameters and derived-height logic only as needed to make the assembled internal height no more than `45.0 mm`.
+- Update README documentation for the new default internal height and the shorter-header assumption.
+- Preserve all enclosure port cutouts, ventilation patterns, mounting supports, cover-pin, socket, anti-slide foot, printable-layout, and reference-model behavior unless a derived Z placement must follow the reduced case height.
+
+### Out Of Scope
+
+- Physical test-print validation.
+- Generated mesh exports committed to source control.
+- Changes to Raspberry Pi 5 reference models, Raspberry Pi 5 active-cooler helper, or AI HAT+ reference models.
+- Redesigning the AI HAT+ reference model to represent the user's shorter headers.
+- Changing XY dimensions, port source-of-truth mirrors, or printable part separation.
+
+### Inputs And Constraints
+
+- User-requested maximum internal height from bottom inner surface to top inner surface: `45.0 mm`.
+- The bottom inner surface is the tray floor top at `floor_thickness_mm`.
+- The top inner surface is the top cover inner roof at `case_total_height_mm - top_roof_thickness_mm`.
+- The user has installed smaller physical headers, so the current mirrored header pin height and cable margin are no longer a required clearance constraint for this printed enclosure.
+- OpenSCAD source must remain OpenSCAD 2021.01-compatible.
+
+### Deterministic Behavior
+
+- With default parameters, `case_total_height_mm - top_roof_thickness_mm - floor_thickness_mm` must evaluate to no more than `45.0 mm`.
+- The default top inner roof target must be `47.4 mm` above the enclosure origin.
+- The default AI HAT+ PCB top to inner roof target must be `16.8 mm`.
+- Height derivation must continue to account for the AI HAT+ cooler/fan clearance and the requested top inner roof target, but the mirrored default header/cable clearance must not override the 45.0 mm maximum internal-height target.
+
+### Assumptions
+
+- The user's shorter installed headers provide sufficient physical clearance even though the original mirrored header/cable model would not fit under the 45.0 mm internal height.
+- The reduced internal height may visually intersect the default reference header/cable clearance assumptions unless those reference-only assumptions are no longer displayed or no longer used as enforced case-height constraints.
+- No other enclosure dimensions need to change for this requested height reduction.
+
+### Impact And Regression Considerations
+
+- The assembled enclosure and top cover become shorter than the current default.
+- Reduced vertical clearance may conflict with the default reference stack if the physical hardware does not match the user's shorter-header build.
+- Top service cutouts, top ventilation, side ventilation Z placement, cover-pin root posts, and printable top-cover inversion depend on the case height and must remain coherent after the height reduction.
+- Physical fit remains unvalidated until checked against the real hardware and a printed part.
+
+### Validation Plan
+
+- Run `git diff --check`.
+- Run targeted source/documentation searches for the new `45.0 mm`, `47.4 mm`, and `16.8 mm` height values.
+- Run OpenSCAD render/export inspection for at least `top_cover` and `printable_layout` if the implementation command performs geometry validation.
+- Inspect derived expressions to confirm `case_total_height_mm - top_roof_thickness_mm - floor_thickness_mm` defaults to no more than `45.0 mm`.
+
+### Documentation Requirements
+
+- README must document the new 45.0 mm maximum internal height.
+- README must state that the lower default assumes the user's shorter installed headers and no longer preserves the prior mirrored default header/cable clearance clamp.

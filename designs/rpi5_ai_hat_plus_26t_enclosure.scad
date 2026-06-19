@@ -73,7 +73,8 @@ ai_hat_header_pin_height_mirror_mm = 23.0;
 ai_hat_gpio_header_size_mirror_mm = [51.0, 5.0, 2.5];
 ai_hat_header_cable_count = 3;
 ai_hat_header_cable_error_margin_mm = 3.0;
-ai_hat_pcb_top_to_cover_top_height_mm = 31.8;
+// Reference assumptions for inspection; these values are not used to increase the default internal-height target.
+assembled_internal_height_target_mm = 45.0;
 ai_hat_cooler_origin_mirror_mm = [4.0, 8.5, ai_hat_board_thickness_mirror_mm + 1.2];
 ai_hat_cooler_size_mirror_mm = [58.5, 35.0];
 ai_hat_cooler_base_height_mirror_mm = 2.8;
@@ -160,14 +161,8 @@ ai_hat_board_stack_z_mm =
     + rpi5_board_thickness_mirror_mm
     + ai_hat_stack_distance_mirror_mm;
 ai_hat_board_top_z_mm = ai_hat_board_stack_z_mm + ai_hat_board_thickness_mirror_mm;
-ai_hat_header_total_height_above_pcb_mm =
-    ai_hat_gpio_header_size_mirror_mm[2]
-    + ai_hat_header_pin_height_mirror_mm;
-ai_hat_header_required_height_above_pcb_mm =
-    ai_hat_header_total_height_above_pcb_mm
-    + ai_hat_header_cable_error_margin_mm;
-ai_hat_pcb_top_to_cover_top_effective_height_mm =
-    max(ai_hat_pcb_top_to_cover_top_height_mm, ai_hat_header_required_height_above_pcb_mm);
+inner_roof_target_z_mm = floor_thickness_mm + assembled_internal_height_target_mm;
+ai_hat_pcb_top_to_cover_top_height_mm = inner_roof_target_z_mm - ai_hat_board_top_z_mm;
 ai_hat_cooler_total_height_mm =
     ai_hat_cooler_base_height_mirror_mm + ai_hat_cooler_fin_height_mirror_mm;
 ai_hat_cooler_fan_origin_mirror_mm = [
@@ -175,22 +170,38 @@ ai_hat_cooler_fan_origin_mirror_mm = [
     ai_hat_cooler_origin_mirror_mm[1] + ai_hat_cooler_fan_origin_offset_mirror_mm[1],
     ai_hat_cooler_origin_mirror_mm[2] + ai_hat_cooler_total_height_mm + ai_hat_cooler_fan_origin_offset_mirror_mm[2]
 ];
+ai_hat_cooler_top_clearance_z_mm =
+    ai_hat_board_stack_z_mm
+    + ai_hat_cooler_fan_origin_mirror_mm[2]
+    + ai_hat_cooler_fan_height_mirror_mm
+    + component_clearance_z_mm;
 stack_top_z_mm =
     max(
-        ai_hat_board_stack_z_mm
-            + ai_hat_cooler_fan_origin_mirror_mm[2]
-            + ai_hat_cooler_fan_height_mirror_mm
-            + component_clearance_z_mm,
-        ai_hat_board_top_z_mm
-            + ai_hat_pcb_top_to_cover_top_effective_height_mm
+        ai_hat_cooler_top_clearance_z_mm,
+        ai_hat_board_top_z_mm + ai_hat_pcb_top_to_cover_top_height_mm
     );
+if (stack_top_z_mm > inner_roof_target_z_mm) {
+    echo(str(
+        "CONFLICT: stack/cooler clearance needs inner-roof height ",
+        stack_top_z_mm - floor_thickness_mm,
+        " mm (",
+        stack_top_z_mm - inner_roof_target_z_mm,
+        " mm above the ",
+        assembled_internal_height_target_mm,
+        " mm target)"
+    ));
+}
 
 internal_length_mm = rpi5_board_length_mirror_mm + 2 * component_clearance_xy_mm;
 internal_width_mm = max(rpi5_board_width_mirror_mm, ai_hat_board_width_mirror_mm) + 2 * component_clearance_xy_mm;
 outer_length_mm = internal_length_mm + 2 * wall_thickness_mm;
 outer_width_mm = internal_width_mm + 2 * wall_thickness_mm;
 tray_wall_height_mm = board_bottom_z_mm + rpi5_usb_port_size_mirror_mm[2] + 2.5;
-case_total_height_mm = max(tray_wall_height_mm + 9.0, stack_top_z_mm + top_roof_thickness_mm);
+case_total_height_mm = max(
+    tray_wall_height_mm + 9.0,
+    inner_roof_target_z_mm + top_roof_thickness_mm,
+    stack_top_z_mm + top_roof_thickness_mm
+);
 top_cover_height_mm = case_total_height_mm - tray_wall_height_mm + cover_skirt_drop_depth_mm;
 
 cover_pin_centers_mm = [

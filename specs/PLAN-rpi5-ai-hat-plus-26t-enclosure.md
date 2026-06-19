@@ -416,9 +416,11 @@ Status: Approved
 - Port fit remains unverified until checked against the real hardware and a printed part.
 - OpenSCAD exports completed for bottom tray, top cover, and printable layout; full assembly/electronics visual inspection was not performed.
 
-## Super-Agent Update: Top Cover Inner Roof Height
+## Historical Update (Superseded): Top Cover Inner Roof Height
 
-Status: Approved
+Status: Approved (Superseded by Iteration Plan: 45.0 mm Internal Height)
+
+This section is retained for history and is not the current implementation guidance.
 
 ## Approved Spec
 
@@ -477,3 +479,97 @@ Status: Approved
 - The top cover and assembled enclosure are 3.3 mm taller than the previous default.
 - Physical fit remains unverified until checked against the real hardware and a printed part.
 - No OpenSCAD visual render was performed in this super-agent pass.
+
+## Iteration Plan: 45.0 mm Internal Height
+
+Status: Approved
+
+## Approved Spec
+
+- `specs/SPEC-rpi5-ai-hat-plus-26t-enclosure.md`
+
+## Scope
+
+Implement the approved 45.0 mm maximum assembled internal-height update for the Raspberry Pi 5 AI HAT+ 26T enclosure.
+
+Do not implement behavior outside the approved spec.
+
+## Branch
+
+- Work may continue on `main`, because repository instructions allow direct commits to `main` when otherwise unspecified.
+- The user explicitly approved continuing implementation in the current session.
+
+## Affected Files
+
+- `designs/rpi5_ai_hat_plus_26t_enclosure.scad`
+- `README.md`
+- `specs/SPEC-rpi5-ai-hat-plus-26t-enclosure.md`
+- `specs/PLAN-rpi5-ai-hat-plus-26t-enclosure.md`
+
+Generated OpenSCAD outputs must be written only under `/tmp` and must not be committed.
+
+## Ownership Boundaries
+
+- `designs/rpi5_ai_hat_plus_26t_enclosure.scad`: height-related parameters and derived-height logic only, plus directly dependent derived Z values as needed to keep the reduced case coherent.
+- `README.md`: document the new default 45.0 mm maximum internal height and shorter-header assumption.
+- Spec and plan files: status and planning artifacts only.
+
+Do not change Raspberry Pi 5 reference models, Raspberry Pi 5 active-cooler helper, AI HAT+ reference models, XY envelope dimensions, port mirror source values, printable part separation, or unrelated design behavior.
+
+## Implementation Steps
+
+1. Verify the implementation entry gate.
+   - Confirm the spec and this plan are approved.
+   - Confirm the user explicitly approved current-session implementation.
+   - Inspect current branch and worktree state.
+
+2. Run the required test-first phase.
+   - Spawn exactly one clean-context test-focused subagent before production implementation.
+   - Assignment: map the approved 45.0 mm internal-height behavior to deterministic validation, identify whether code-level tests are applicable, and report any blocker or missing coverage.
+   - The test-focused subagent must not implement production changes.
+
+3. Implement the SCAD height update with exactly one clean-context implementation subagent.
+   - Add or adjust a user-adjustable internal-height target so the default assembled internal height is no more than `45.0 mm`.
+   - Derive the top inner roof target as `floor_thickness_mm + 45.0`.
+   - Derive the AI HAT+ PCB-top-to-inner-roof target as `16.8 mm` from the current default geometry.
+   - Ensure the mirrored default header/cable clearance no longer clamps the enclosure above the 45.0 mm maximum internal-height target.
+   - Preserve AI HAT+ cooler/fan clearance behavior unless it exceeds the requested height target, in which case report the conflict instead of silently exceeding the approved maximum.
+   - Keep top service cutouts, top ventilation, side ventilation, cover-pin root posts, and printable top-cover inversion coherent with the reduced `case_total_height_mm`.
+
+4. Update README documentation.
+   - Replace the old 31.8 mm / 62.4 mm height guidance with the new 45.0 mm internal-height target, 47.4 mm top inner roof target, and 16.8 mm AI HAT+ PCB-top-to-inner-roof target.
+   - Document that the lower default assumes the user's shorter installed headers and no longer preserves the prior mirrored default header/cable clearance clamp.
+
+5. Run the required code-review phase.
+   - Spawn exactly one clean-context code-review subagent after implementation.
+   - Review only the approved spec, approved plan, and current diff.
+   - The review subagent must not implement fixes.
+
+6. Main-agent QA and validation.
+   - Inspect derived expressions to confirm the default internal height calculation is no more than `45.0 mm`.
+   - Run `git diff --check`.
+   - Run targeted `rg` searches for stale `31.8`, `62.4`, and old clamp wording in the enclosure README/spec-relevant sections.
+   - Run OpenSCAD exports for `top_cover` and `printable_layout` under `/tmp` if they complete within the repository's render time constraints.
+
+7. Final acceptance.
+   - Confirm implementation maps to the approved spec and plan.
+   - Confirm review and QA findings are resolved or explicitly documented.
+   - Commit and push only if all required validation, review, QA, and documentation are complete and passing.
+
+## Validation Commands
+
+```sh
+git diff --check
+rg -n '45\.0|47\.4|16\.8|31\.8|62\.4|header.*clamp|cable.*clamp' designs/rpi5_ai_hat_plus_26t_enclosure.scad README.md specs/SPEC-rpi5-ai-hat-plus-26t-enclosure.md specs/PLAN-rpi5-ai-hat-plus-26t-enclosure.md
+timeout 15s openscad -o /tmp/rpi5_ai_hat_plus_26t_enclosure_top_cover.off -D 'render_mode="top_cover"' designs/rpi5_ai_hat_plus_26t_enclosure.scad
+timeout 15s openscad -o /tmp/rpi5_ai_hat_plus_26t_enclosure_printable_layout.off -D 'render_mode="printable_layout"' designs/rpi5_ai_hat_plus_26t_enclosure.scad
+```
+
+## Documentation Requirements
+
+- README must document the new 45.0 mm maximum internal height.
+- README must document the shorter-header assumption and the removal of the prior header/cable clamp as a default height constraint.
+
+## No-Research Implementation Constraint
+
+Implementation must not perform additional product research, architecture research, scope discovery, planning research, or plan discovery.
