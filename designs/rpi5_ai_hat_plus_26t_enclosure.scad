@@ -73,7 +73,7 @@ ai_hat_header_pin_height_mirror_mm = 23.0;
 ai_hat_gpio_header_size_mirror_mm = [51.0, 5.0, 2.5];
 ai_hat_header_cable_count = 3;
 ai_hat_header_cable_error_margin_mm = 3.0;
-ai_hat_pcb_top_to_cover_top_height_mm = 28.5;
+ai_hat_pcb_top_to_cover_top_height_mm = 31.8;
 ai_hat_cooler_origin_mirror_mm = [4.0, 8.5, ai_hat_board_thickness_mirror_mm + 1.2];
 ai_hat_cooler_size_mirror_mm = [58.5, 35.0];
 ai_hat_cooler_base_height_mirror_mm = 2.8;
@@ -116,6 +116,9 @@ edge_port_clearance_mm = 1.8;
 service_cutout_clearance_mm = 2.0;
 micro_sd_access_extension_mm = 8.0;
 port_cutout_depth_mm = 2 * wall_thickness_mm + 2.0;
+front_cable_cutout_error_margin_mm = 0.6;
+usb_c_cable_head_required_size_mm = [12.0, 7.0];
+micro_hdmi_adapter_head_required_size_mm = [12.0, 6.66];
 
 // Side ventilation
 enable_left_side_ventilation = true;
@@ -213,14 +216,54 @@ anti_slide_foot_recess_effective_depth_mm =
     max(0, min(anti_slide_foot_recess_depth_mm, floor_thickness_mm - 0.4));
 top_cutout_depth_mm = top_roof_thickness_mm + 2.0;
 side_cutout_depth_mm = 2 * wall_thickness_mm + 2.0;
+usb_c_cable_cutout_size_mm = [
+    usb_c_cable_head_required_size_mm[0] + front_cable_cutout_error_margin_mm,
+    usb_c_cable_head_required_size_mm[1] + front_cable_cutout_error_margin_mm
+];
+micro_hdmi_adapter_cutout_size_mm = [
+    micro_hdmi_adapter_head_required_size_mm[0] + front_cable_cutout_error_margin_mm,
+    micro_hdmi_adapter_head_required_size_mm[1] + front_cable_cutout_error_margin_mm
+];
+right_usb_ethernet_cutout_origin_mm = [
+    min(
+        rpi5_usb_port_lower_origin_mirror_mm[0],
+        rpi5_usb_port_upper_origin_mirror_mm[0],
+        rpi5_ethernet_port_origin_mirror_mm[0]
+    ),
+    min(
+        rpi5_usb_port_lower_origin_mirror_mm[1],
+        rpi5_usb_port_upper_origin_mirror_mm[1],
+        rpi5_ethernet_port_origin_mirror_mm[1]
+    ),
+    min(
+        rpi5_usb_port_lower_origin_mirror_mm[2],
+        rpi5_usb_port_upper_origin_mirror_mm[2],
+        rpi5_ethernet_port_origin_mirror_mm[2]
+    )
+];
+right_usb_ethernet_cutout_size_mm = [
+    max(
+        rpi5_usb_port_lower_origin_mirror_mm[0] + rpi5_usb_port_size_mirror_mm[0],
+        rpi5_usb_port_upper_origin_mirror_mm[0] + rpi5_usb_port_size_mirror_mm[0],
+        rpi5_ethernet_port_origin_mirror_mm[0] + rpi5_ethernet_port_size_mirror_mm[0]
+    ) - right_usb_ethernet_cutout_origin_mm[0],
+    max(
+        rpi5_usb_port_lower_origin_mirror_mm[1] + rpi5_usb_port_size_mirror_mm[1],
+        rpi5_usb_port_upper_origin_mirror_mm[1] + rpi5_usb_port_size_mirror_mm[1],
+        rpi5_ethernet_port_origin_mirror_mm[1] + rpi5_ethernet_port_size_mirror_mm[1]
+    ) - right_usb_ethernet_cutout_origin_mm[1],
+    max(
+        rpi5_usb_port_lower_origin_mirror_mm[2] + rpi5_usb_port_size_mirror_mm[2],
+        rpi5_usb_port_upper_origin_mirror_mm[2] + rpi5_usb_port_size_mirror_mm[2],
+        rpi5_ethernet_port_origin_mirror_mm[2] + rpi5_ethernet_port_size_mirror_mm[2]
+    ) - right_usb_ethernet_cutout_origin_mm[2]
+];
 
 port_cutouts_mm = [
-    ["usb_lower", rpi5_usb_port_lower_origin_mirror_mm, rpi5_usb_port_size_mirror_mm, "right"],
-    ["usb_upper", rpi5_usb_port_upper_origin_mirror_mm, rpi5_usb_port_size_mirror_mm, "right"],
-    ["ethernet", rpi5_ethernet_port_origin_mirror_mm, rpi5_ethernet_port_size_mirror_mm, "right"],
-    ["usb_c_power", rpi5_usb_c_power_origin_mirror_mm, rpi5_usb_c_power_size_mirror_mm, "front"],
-    ["micro_hdmi_left", rpi5_micro_hdmi_left_origin_mirror_mm, rpi5_micro_hdmi_size_mirror_mm, "front"],
-    ["micro_hdmi_right", rpi5_micro_hdmi_right_origin_mirror_mm, rpi5_micro_hdmi_size_mirror_mm, "front"],
+    ["right_usb_ethernet", right_usb_ethernet_cutout_origin_mm, right_usb_ethernet_cutout_size_mm, "right"],
+    ["usb_c_power", rpi5_usb_c_power_origin_mirror_mm, rpi5_usb_c_power_size_mirror_mm, "front", usb_c_cable_cutout_size_mm],
+    ["micro_hdmi_left", rpi5_micro_hdmi_left_origin_mirror_mm, rpi5_micro_hdmi_size_mirror_mm, "front", micro_hdmi_adapter_cutout_size_mm],
+    ["micro_hdmi_right", rpi5_micro_hdmi_right_origin_mirror_mm, rpi5_micro_hdmi_size_mirror_mm, "front", micro_hdmi_adapter_cutout_size_mm],
     ["camera_display_a", rpi5_camera_display_connector_a_origin_mirror_mm, rpi5_camera_display_connector_size_mirror_mm, "top"],
     ["camera_display_b", rpi5_camera_display_connector_b_origin_mirror_mm, rpi5_camera_display_connector_size_mirror_mm, "top"],
     ["pcie", rpi5_pcie_connector_origin_mirror_mm, rpi5_pcie_connector_size_mirror_mm, "top"],
@@ -522,6 +565,7 @@ module rpi5_ai_hat_plus_26t_port_cutout_volume(port_mm) {
     center_x_mm = rpi5_ai_hat_plus_26t_world_x(origin_mm[0] + size_mm[0] / 2);
     center_y_mm = rpi5_ai_hat_plus_26t_world_y(origin_mm[1] + size_mm[1] / 2);
     center_z_mm = board_bottom_z_mm + origin_mm[2] + size_mm[2] / 2;
+    front_cable_size_mm = len(port_mm) > 4 ? port_mm[4] : [0, 0];
 
     if (side == "right") {
         translate([
@@ -545,9 +589,9 @@ module rpi5_ai_hat_plus_26t_port_cutout_volume(port_mm) {
         ])
             cube(
                 [
-                    size_mm[0] + 2 * edge_port_clearance_mm,
+                    max(size_mm[0] + 2 * edge_port_clearance_mm, front_cable_size_mm[0]),
                     port_cutout_depth_mm,
-                    size_mm[2] + 2 * edge_port_clearance_mm
+                    max(size_mm[2] + 2 * edge_port_clearance_mm, front_cable_size_mm[1])
                 ],
                 center = true
             );

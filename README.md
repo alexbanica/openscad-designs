@@ -451,8 +451,9 @@ Common edits:
 - Set `render_mode = "assembly"`, `"bottom_tray"`, `"top_cover"`, `"electronics"`, or `"printable_layout"`.
 - Tune `component_clearance_xy_mm`, `component_clearance_z_mm`, `wall_thickness_mm`, `cover_fit_clearance_mm`, and `edge_port_clearance_mm` after hardware measurement.
 - Tune `ai_hat_stack_distance_mirror_mm` to adjust the distance between the Raspberry Pi 5 PCB and the AI HAT+ PCB.
-- Tune `ai_hat_pcb_top_to_cover_top_height_mm` to adjust the height from the AI HAT+ PCB top surface to the top surface of the top cover. The effective value is clamped to at least the mirrored header body plus `ai_hat_header_pin_height_mirror_mm` plus `ai_hat_header_cable_error_margin_mm`.
+- Tune `ai_hat_pcb_top_to_cover_top_height_mm` to adjust the height from the AI HAT+ PCB top surface to the top surface of the top cover. The default is 31.8 mm so the top-cover inner roof targets 62.4 mm above the enclosure origin when the Raspberry Pi PCB bottom is 7.4 mm and the AI HAT+ PCB top is 30.6 mm. The effective value is clamped to at least the mirrored header body plus `ai_hat_header_pin_height_mirror_mm` plus `ai_hat_header_cable_error_margin_mm`.
 - Tune `ai_hat_header_cable_error_margin_mm` for the three header-connected cables and any measurement or print-fit margin above the header stack.
+- Tune `usb_c_cable_head_required_size_mm`, `micro_hdmi_adapter_head_required_size_mm`, and `front_cable_cutout_error_margin_mm` when the front-wall USB-C or micro-HDMI plug bodies need a larger pass-through than the mirrored connector bodies. The default micro-HDMI adapter requirement is 12.0 mm x 6.66 mm plus 0.6 mm total margin, and the default USB-C requirement is 12.0 mm x 7.0 mm plus 0.6 mm total margin.
 - Tune `cover_pin_diameter_mm`, `cover_pin_insertion_length_mm`, `tray_socket_clearance_mm`, `tray_socket_depth_mm`, `cover_pin_count`, `cover_pin_offset_x_mm`, and `cover_pin_offset_y_mm` for the male/female connection fit.
 - Tune `enable_anti_slide_foot_recesses`, `anti_slide_foot_recess_diameter_mm`, `anti_slide_foot_recess_depth_mm`, and `anti_slide_foot_recess_centers_mm` for adhesive or press-in rubber feet on the tray underside.
 - Tune `side_vent_count`, `side_vent_width_mm`, `side_vent_height_mm`, `side_vent_spacing_mm`, `side_vent_center_x_mm`, and `side_vent_center_z_mm` for lateral airflow while keeping vents clear of the cover-pin socket bosses.
@@ -483,7 +484,7 @@ openscad -o /tmp/rpi5_ai_hat_plus_26t_enclosure_printable_layout.off -D 'render_
 - The top cover owns the male cylindrical plug pins by default; they protrude below the cover skirt in assembly and stand proud in the inverted printable top-cover render.
 - The bottom tray owns matching top-open female socket holes in wall-integrated receiver bosses by default.
 - The bottom tray includes shallow bottom-open recesses for anti-slide rubber feet by default.
-- Raspberry Pi 5 edge ports are exposed through side or front wall cutouts for USB-A, Ethernet, USB-C power, micro-HDMI, and microSD access.
+- Raspberry Pi 5 edge ports are exposed through side or front wall cutouts for USB-A, Ethernet, USB-C power, micro-HDMI, and microSD access. The two right-side USB-A ports and Ethernet share one continuous side-wall cutout with no divider between those connector openings. The USB-C and micro-HDMI front-wall openings keep the mirrored connector centers but expand to the configured cable-head minimums when those are larger than the connector-derived opening.
 - Camera/display and PCIe connectors use top service openings because cable routing depends on the installed ribbon/cable path.
 - Lateral ventilation is enabled on both long side walls by default.
 - Top ventilation is enabled above the AI HAT+ cooler/fan area by default.
@@ -497,7 +498,8 @@ Manual inspection checklist:
 - Confirm the printable layout has the tray and cover separated and resting on the print plane.
 - Confirm the top cover has male plug pins and the tray has matching female socket holes.
 - Confirm the tray underside has anti-slide rubber-foot recesses and that they do not break through the floor.
-- Confirm USB-A, Ethernet, USB-C power, micro-HDMI, camera/display, PCIe, and microSD openings are visible.
+- Confirm USB-A, Ethernet, USB-C power, micro-HDMI, camera/display, PCIe, and microSD openings are visible, with the right-side USB-A/Ethernet access rendered as one continuous cutout.
+- Confirm the front USB-C opening clears at least 12.6 mm x 7.6 mm and each micro-HDMI opening clears at least 12.6 mm x 7.26 mm with the default cable-head margin.
 - Confirm side and top ventilation are real subtractive openings.
 - Confirm the reference stack, AI HAT+ header stack, and three header-connected cable clearance assumptions do not visibly intersect the top cover, side walls, standoffs, or pin/socket interface.
 - Confirm generated OFF/STL/STEP/3MF files remain under `/tmp` and are not tracked.

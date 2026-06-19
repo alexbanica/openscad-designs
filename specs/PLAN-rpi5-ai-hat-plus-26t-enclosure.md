@@ -281,3 +281,199 @@ The final implementation completion report must include:
 - final or draft delivery status,
 - skipped or blocked Definition of Done items,
 - final main-agent acceptance confirmation.
+
+## Super-Agent Update: Front Cable Fit
+
+Status: Approved
+
+## Approved Spec
+
+- `specs/SPEC-rpi5-ai-hat-plus-26t-enclosure.md`
+
+## Affected Files
+
+- `designs/rpi5_ai_hat_plus_26t_enclosure.scad`
+- `README.md`
+- `specs/SPEC-rpi5-ai-hat-plus-26t-enclosure.md`
+- `specs/PLAN-rpi5-ai-hat-plus-26t-enclosure.md`
+
+## Implementation Steps Performed
+
+1. Inspected branch and worktree state.
+2. Loaded applicable repository and workspace instructions.
+3. Inspected the Raspberry Pi 5 AI HAT+ enclosure source, README section, and existing approved enclosure artifacts.
+4. Added explicit front cable-head fit parameters:
+   - `front_cable_cutout_error_margin_mm = 0.6`,
+   - `usb_c_cable_head_required_size_mm = [12.0, 7.0]`,
+   - `micro_hdmi_adapter_head_required_size_mm = [12.0, 6.66]`.
+5. Added derived effective opening sizes:
+   - USB-C: 12.6 mm x 7.6 mm,
+   - micro-HDMI: 12.6 mm x 7.26 mm.
+6. Updated the front-wall cutout logic so USB-C and micro-HDMI openings use the larger of the original connector-derived opening and the measured cable-head effective minimum.
+7. Updated README documentation for tuning parameters, port-access behavior, and manual inspection expectations.
+8. Updated the approved spec and plan artifacts to document the completed super-agent cable-fit change.
+
+## Validation Run
+
+- `git diff --check`
+- Targeted `rg` searches for front cable-fit parameters and README/spec/plan documentation.
+
+## Validation Skipped
+
+- OpenSCAD renders/exports were skipped because this `super-agent` workflow runs only short validation expected to complete within 10 seconds.
+- Physical fit and test-print validation were skipped.
+
+## QA Skipped
+
+- QA phase skipped by design under the `super-agent` workflow.
+
+## Code Review Skipped
+
+- Code-review phase skipped by design under the `super-agent` workflow.
+
+## Documentation Updates
+
+- README documents the new cable-head requirements, margin parameter, and default effective front opening sizes.
+- This plan and the approved spec document the completed lower-assurance cable-fit update.
+
+## Commit Status
+
+- Not committed.
+
+## Push Status
+
+- Not pushed.
+
+## Residual Risk
+
+- Larger USB-C and micro-HDMI openings may reduce front-wall material locally.
+- Cable fit remains unverified until checked against the real cable heads and a printed part.
+- No OpenSCAD visual render was performed in this super-agent pass.
+
+## Super-Agent Update: Combined Right-Side USB/Ethernet Cutout
+
+Status: Approved
+
+## Approved Spec
+
+- `specs/SPEC-rpi5-ai-hat-plus-26t-enclosure.md`
+
+## Affected Files
+
+- `designs/rpi5_ai_hat_plus_26t_enclosure.scad`
+- `README.md`
+- `specs/SPEC-rpi5-ai-hat-plus-26t-enclosure.md`
+- `specs/PLAN-rpi5-ai-hat-plus-26t-enclosure.md`
+
+## Implementation Steps Performed
+
+1. Inspected branch and worktree state.
+2. Loaded applicable repository and workspace instructions.
+3. Inspected the Raspberry Pi 5 AI HAT+ enclosure source, README section, and existing approved enclosure artifacts.
+4. Added derived `right_usb_ethernet_cutout_origin_mm` and `right_usb_ethernet_cutout_size_mm` values from the existing mirrored USB-A and Ethernet connector envelopes.
+5. Replaced the separate `usb_lower`, `usb_upper`, and `ethernet` right-side `port_cutouts_mm` entries with one `right_usb_ethernet` right-side cutout entry.
+6. Preserved the existing right-side cutout subtraction logic and grouped `edge_port_clearance_mm` behavior.
+7. Updated README documentation and manual inspection wording for the continuous right-side USB-A/Ethernet opening.
+8. Updated the approved spec and plan artifacts to document the completed super-agent right-side cutout change.
+
+## Validation Run
+
+- `git diff --check`
+- Targeted `rg` searches for the combined `right_usb_ethernet` cutout and stale separate right-side port entries.
+- `timeout 10s openscad -o /tmp/rpi5_ai_hat_plus_26t_enclosure_bottom_tray.off -D 'render_mode="bottom_tray"' designs/rpi5_ai_hat_plus_26t_enclosure.scad`
+- `timeout 10s openscad -o /tmp/rpi5_ai_hat_plus_26t_enclosure_top_cover.off -D 'render_mode="top_cover"' designs/rpi5_ai_hat_plus_26t_enclosure.scad`
+- `timeout 10s openscad -o /tmp/rpi5_ai_hat_plus_26t_enclosure_printable_layout.off -D 'render_mode="printable_layout"' designs/rpi5_ai_hat_plus_26t_enclosure.scad`
+
+## Validation Skipped
+
+- Full OpenSCAD assembly and electronics exports were skipped to stay within the bounded `super-agent` validation scope.
+- Physical fit and test-print validation were skipped.
+
+## QA Skipped
+
+- QA phase skipped by design under the `super-agent` workflow.
+
+## Code Review Skipped
+
+- Code-review phase skipped by design under the `super-agent` workflow.
+
+## Documentation Updates
+
+- README documents that the right-side USB-A and Ethernet access is one continuous cutout.
+- This plan and the approved spec document the completed lower-assurance right-side cutout update.
+
+## Commit Status
+
+- Not committed.
+
+## Push Status
+
+- Not pushed.
+
+## Residual Risk
+
+- Removing the divider reduces right-side wall material around the USB-A/Ethernet group.
+- Port fit remains unverified until checked against the real hardware and a printed part.
+- OpenSCAD exports completed for bottom tray, top cover, and printable layout; full assembly/electronics visual inspection was not performed.
+
+## Super-Agent Update: Top Cover Inner Roof Height
+
+Status: Approved
+
+## Approved Spec
+
+- `specs/SPEC-rpi5-ai-hat-plus-26t-enclosure.md`
+
+## Affected Files
+
+- `designs/rpi5_ai_hat_plus_26t_enclosure.scad`
+- `README.md`
+- `specs/SPEC-rpi5-ai-hat-plus-26t-enclosure.md`
+- `specs/PLAN-rpi5-ai-hat-plus-26t-enclosure.md`
+
+## Implementation Steps Performed
+
+1. Inspected branch and worktree state.
+2. Loaded applicable repository and workspace instructions.
+3. Inspected the Raspberry Pi 5 AI HAT+ enclosure source, README section, and existing approved enclosure artifacts.
+4. Changed `ai_hat_pcb_top_to_cover_top_height_mm` from `28.5` to `31.8`.
+5. Documented the delivered height calculation from Raspberry Pi PCB bottom Z 7.4 mm, target inner roof Z 62.4 mm, and AI HAT+ PCB top Z 30.6 mm.
+6. Updated README documentation for the new default top-cover height parameter.
+7. Updated the approved spec and plan artifacts to document the completed super-agent height update.
+
+## Validation Run
+
+- `git diff --check`
+- Targeted `rg` searches for `ai_hat_pcb_top_to_cover_top_height_mm` and `31.8`.
+
+## Validation Skipped
+
+- OpenSCAD renders/exports were skipped because this `super-agent` workflow runs only short validation expected to complete within 10 seconds.
+- Physical fit and test-print validation were skipped.
+
+## QA Skipped
+
+- QA phase skipped by design under the `super-agent` workflow.
+
+## Code Review Skipped
+
+- Code-review phase skipped by design under the `super-agent` workflow.
+
+## Documentation Updates
+
+- README documents the new 31.8 mm default and the target inner roof calculation inputs.
+- This plan and the approved spec document the completed lower-assurance height update.
+
+## Commit Status
+
+- Not committed.
+
+## Push Status
+
+- Not pushed.
+
+## Residual Risk
+
+- The top cover and assembled enclosure are 3.3 mm taller than the previous default.
+- Physical fit remains unverified until checked against the real hardware and a printed part.
+- No OpenSCAD visual render was performed in this super-agent pass.
