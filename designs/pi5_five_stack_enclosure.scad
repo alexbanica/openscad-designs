@@ -1,7 +1,7 @@
 // Raspberry Pi 5 five-board stack enclosure
 //
 // - one printable bottom tray, one printable top cover
-// - adjustable per-gap spacing for five PCB positions, with PCB 4 as Pi 5 by default
+// - adjustable per-gap spacing for five PCB positions, with PCB 4 from top as Pi 5 by default
 // - male/female removable top-cover connection
 // - air-gap aligned side ventilation for every inter-board gap
 // - anti-slip recesses on tray underside
@@ -28,7 +28,7 @@ show_clearance_guides = false;
 stack_board_count = 5;
 pi5_five_stack_gap_count = 4;
 pi5_stack_gap_z_mm = [15.0, 15.0, 15.0, 15.0];
-rpi5_stack_index = 4;
+rpi5_stack_index_from_top = 4;
 top_of_fifth_board_to_top_cover_clearance_mm = 7.0;
 electronics_preview_lift_mm = 0.0;
 
@@ -136,8 +136,8 @@ assert(
     "pi5_five_stack_enclosure is intentionally constrained to five boards."
 );
 assert(
-    rpi5_stack_index >= 1 && rpi5_stack_index <= stack_board_count,
-    "rpi5_stack_index must select one of the five PCB positions."
+    rpi5_stack_index_from_top >= 1 && rpi5_stack_index_from_top <= stack_board_count,
+    "rpi5_stack_index_from_top must select one of the five PCB positions."
 );
 assert(
     len(pi5_stack_gap_z_mm) == pi5_five_stack_gap_count,
@@ -173,12 +173,14 @@ function rpi5_five_stack_prefix_sum_mm(values_mm, count_mm, index_mm = 0, total_
 function rpi5_five_stack_board_enabled(board_index_1_based, index_list) =
     len([for (candidate = index_list) if (candidate == board_index_1_based) 1]) > 0;
 
+rpi5_stack_index = stack_board_count - rpi5_stack_index_from_top + 1;
+
 base_board_bottom_z_mm = floor_thickness_mm + board_mount_standoff_height_mm;
 stack_board_bottom_z_mm = [
     for (board_index = [0:stack_board_count - 1])
         base_board_bottom_z_mm
         + board_index * rpi5_board_thickness_mirror_mm
-        + rpi5_five_stack_prefix_sum_mm(pi5_stack_gap_z_mm, pi5_five_stack_gap_count, board_index)
+        + rpi5_five_stack_prefix_sum_mm(pi5_stack_gap_z_mm, board_index)
 ];
 
 stack_board_top_z_mm = [
