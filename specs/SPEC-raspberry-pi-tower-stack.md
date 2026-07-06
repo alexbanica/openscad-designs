@@ -13,6 +13,27 @@ The design must preserve later tuning of PCB spacing, the top-cover clearance
 above the stack, fan dimensions, fan placement, and display/window dimensions
 through user-adjustable parameters.
 
+## Iteration 2026-07-06: Alignment, Two-Fan Airflow, Under-Pi5 Cooling, And Screen Cover
+
+Physical/visual review of the first tower model showed several issues that the
+final design contract must make explicit:
+
+- PCB references must share one Raspberry Pi-size coordinate frame. The
+  Raspberry Pi 5 fourth-board reference must sit inside the same tower footprint
+  and enclosure envelope as the other PCB references, not outside the case.
+- The top cover must provide two usable internal fan mounts by default. The
+  fans mount on the inside face of the top cover, the top cover must include
+  real through-cover air openings or grilles for both fans, and the default
+  airflow intent is one intake fan and one exhaust fan.
+- The Pi 5 zone needs under-board airflow for NVMe modules with heatsinks and a
+  PCI splitter beneath the Raspberry Pi 5 PCB. The design must provide
+  adjustable bottom/side air passages under the Pi 5 board, not only top-cover
+  or side vents above the Pi 5.
+- The perpendicular screen/display assembly attached through the Pi 5 HAT
+  splitter must have an actual cover shown in assembly and available through the
+  display-cover/printable-layout render paths. The cover must hide the display
+  body/PCB while exposing only the screen face/window.
+
 ## Problem Statement
 
 The repository has reusable Raspberry Pi 5 reference geometry and existing
@@ -23,9 +44,10 @@ The requested tower needs to model most PCBs as simplified Raspberry Pi-size
 boards with headers, while using the existing Raspberry Pi 5 model for the
 fourth board so Raspberry Pi 5 holes, ports, service areas, and airflow needs
 remain accessible. The top cover must support internal fan mounting for two
-small square fans, with one fan mount usable initially. The design also needs a
-perpendicular display enclosure connected through a Raspberry Pi 5 HAT header
-splitter that provides both vertical and lateral header paths.
+small square fans, with one fan configured as intake and the other as exhaust.
+The design also needs a perpendicular display enclosure connected through a
+Raspberry Pi 5 HAT header splitter that provides both vertical and lateral
+header paths.
 
 ## Scope
 
@@ -51,9 +73,12 @@ splitter that provides both vertical and lateral header paths.
   PCB.
 - Provide extra air holes around the Raspberry Pi 5 board zone, with emphasis on
   side and/or top airflow paths near the Pi 5 active-cooler/SoC area.
+- Provide under-board air passages beneath the Raspberry Pi 5 PCB for NVMe
+  modules with heatsinks and the PCI splitter.
 - Provide internal top-cover mounting support for two small square fans matching
-  the supplied fan style, with the default assembly allowing only one fan to be
-  physically installed.
+  the supplied fan style, with both fan slots physically usable by default.
+- Provide air openings/grilles through the top cover for both fans and document
+  the default intake/exhaust direction intent.
 - Model the fan mounts as configurable square fan footprints with adjustable
   body size, thickness/envelope, hole spacing, hole diameter, screw boss size,
   and mounting position.
@@ -97,9 +122,13 @@ splitter that provides both vertical and lateral header paths.
   thickness where needed for the exterior top.
 - Fan mount: top-cover internal screw/boss and airflow opening geometry for a
   small square fan matching the supplied image style.
-- Active fan slot: a fan mount intended to receive a fan in the current physical
-  build. The design must provide two slots, while defaults may visually indicate
-  or document that only one fan is expected to be populated initially.
+- Intake fan slot: the fan mount documented and positioned to push air into the
+  enclosure through its top-cover opening.
+- Exhaust fan slot: the fan mount documented and positioned to pull air out of
+  the enclosure through its top-cover opening.
+- Under-Pi5 airflow path: adjustable bottom and/or lower-side ventilation
+  openings and internal clearance under the Raspberry Pi 5 PCB so air can move
+  across NVMe heatsinks and the PCI splitter beneath the Pi 5.
 - Display cover: the printed enclosure extension around the perpendicular
   display module, with a window/opening that exposes only the active display
   face.
@@ -139,6 +168,11 @@ implementation:
 - Fan mounting-hole spacing: configurable, initially assumed `24.0 mm` square
   hole-center spacing until measured.
 - Fan mounting-hole diameter: configurable, initially assumed `3.0 mm`.
+- Fan airflow direction labels/parameters: two default fan slots, one intake and
+  one exhaust, with direction documented as assembly intent rather than
+  simulated airflow.
+- Under-Pi5 NVMe/heatsink/PCI splitter envelope: configurable placeholder
+  clearance dimensions until the real modules and splitter are measured.
 - Display PCB/body size, active display window size, and display offset from the
   lateral header: configurable placeholder dimensions until the real display is
   measured.
@@ -158,6 +192,10 @@ implementation:
 - The Raspberry Pi 5 board must use `designs/rpi5.scad` for reference rendering
   and should mirror Raspberry Pi 5 source values only when OpenSCAD `use`
   visibility prevents direct variable access.
+- The Raspberry Pi 5 reference and all placeholder PCB references must be
+  transformed through the same board-origin convention so the Pi 5 PCB remains
+  inside the tower footprint, inside the tray/cover envelope, and aligned with
+  stack supports and cutouts.
 - Any mirrored Raspberry Pi 5 values must be clearly named and documented as
   local mirrors of `designs/rpi5.scad`.
 - Printable versions must be Bambu Lab-friendly:
@@ -205,6 +243,10 @@ implementation:
 - The five PCBs must be positioned from bottom to top using a configurable
   spacing list/vector so each inter-board gap can be tuned independently.
 - The fourth PCB must be the Raspberry Pi 5 reference by default.
+- The fourth-board Raspberry Pi 5 reference must align to the same enclosure
+  coordinate frame as the placeholder PCBs. The board outline, mounting holes,
+  GPIO/header area, and mirrored cutout references must be checked together so
+  the Pi 5 is not translated outside the shell.
 - The other four PCBs must render as simplified Raspberry Pi-size boards with
   mounting holes and header previews.
 - The bottom tray must include support/standoff or clearance features aligned to
@@ -223,20 +265,31 @@ implementation:
 - Raspberry Pi 5 airflow must include extra real subtractive air holes near the
   fourth-board Pi 5 zone. These holes must be adjustable by count, size,
   spacing, side/face enablement, and position.
+- Raspberry Pi 5 under-board airflow must include real subtractive lower
+  side-wall and/or bottom-tray air passages beneath the fourth PCB. These
+  passages must be adjustable by count, size, spacing, enablement, and position,
+  and must preserve tray strength around standoffs, sockets, and mounting
+  supports.
 - The top cover must provide two internal fan mounting positions by default.
 - Each fan mount must include:
   - a real airflow opening or grille through the top cover,
   - screw holes or screw bosses aligned to configurable fan-hole spacing,
   - adjustable fan body/envelope preview,
   - enough independent parameters to tune for the measured fan.
+- Both fan mounts must be internally mountable and physically usable by default.
+- One default fan mount must be documented as intake and the other as exhaust.
 - The two fan mounts must not intersect each other by default and must avoid the
-  cover pin/socket interface by default.
-- The design must not require both fans to be installed for the enclosure to
-  remain printable or usable.
+  cover pin/socket interface, top-cover walls, and display-cover geometry by
+  default.
+- The design may remain printable if one fan is omitted, but the default design
+  target is a two-fan intake/exhaust build.
 - The top-cover clearance above the stack must be controlled by an obvious
   user-adjustable parameter, with derived enclosure height values based on it.
 - The display cover must position a perpendicular display assembly off the Pi 5
   lateral header path.
+- The display cover must be present in the assembly view, isolated by the
+  `display_cover` render mode, and included in `printable_layout` unless a later
+  approved implementation explicitly integrates it into another printable part.
 - The display cover must subtract a display-window opening sized to the active
   display face plus adjustable clearance.
 - The default display cover must hide/cover the display PCB/body while leaving
@@ -262,7 +315,9 @@ implementation:
 - "Pi5 holes accessible" means the fourth-board mounting holes and relevant Pi 5
   service/port areas must not be buried behind solid printed walls by default.
 - "Air holes specially for the Pi 5 pcb" means extra ventilation is required
-  near the fourth-board Pi 5 area in addition to any fan/top ventilation.
+  near the fourth-board Pi 5 area in addition to any fan/top ventilation, and
+  this now includes under-board airflow for NVMe heatsinks and a PCI splitter
+  beneath the Pi 5.
 - The supplied fan image is treated as a small square axial fan with four corner
   screw holes and a wire pigtail; exact size must be measured and tuned through
   parameters.
@@ -272,6 +327,8 @@ implementation:
   side of the Pi 5 HAT header splitter.
 - The vertical header branch of the splitter supports another PCB above the Pi 5
   within the five-board stack.
+- The screen/display cover is required printable geometry, not only a preview
+  placeholder.
 - A functional rectangular/rounded tower enclosure with service openings,
   airflow, fan mounts, and adjustable display cover is preferred over cosmetic
   reproduction.
@@ -289,6 +346,9 @@ implementation:
 - Dense ventilation and fan openings can weaken the top cover and side walls;
   default placement must preserve material around cover pins, tray sockets,
   corners, board supports, and fan screw bosses.
+- Dense under-Pi5 ventilation can weaken the bottom tray near standoffs and
+  socket receivers; default placement must preserve structural material while
+  still creating an airflow path across the NVMe/heatsink/PCI splitter area.
 - The perpendicular display cover adds a side projection that may affect
   printability, stability, and support needs; printable layout must keep parts
   separable and Bambu Lab-friendly.
@@ -297,8 +357,8 @@ implementation:
 
 ## Acceptance Criteria
 
-- A proposed implementation plan can target a new OpenSCAD source under
-  `designs/` for the Raspberry Pi tower stack enclosure.
+- A proposed implementation plan can target the OpenSCAD source under `designs/`
+  for the Raspberry Pi tower stack enclosure.
 - The approved implementation must create grouped `Adjustable Parameters` and
   `Derived Values` sections near the top of the source.
 - The source must use OpenSCAD 2021.01-compatible syntax and no external library
@@ -306,6 +366,8 @@ implementation:
 - The source must use `designs/rpi5.scad` for the fourth-board Raspberry Pi 5
   reference.
 - The source must model five configurable Raspberry Pi-size PCB positions.
+- The Raspberry Pi 5 PCB reference must be visibly aligned inside the enclosure
+  and inside the same tower footprint as the placeholder PCBs.
 - PCB-to-PCB spacing must be configurable per inter-board gap.
 - The fourth PCB must default to the Raspberry Pi 5 reference.
 - The other four PCBs must default to simplified Raspberry Pi-size board models
@@ -318,12 +380,20 @@ implementation:
 - Raspberry Pi 5 mounting holes, ports, microSD, camera/display, and PCIe
   service areas must have openings or access paths by default.
 - Extra adjustable ventilation openings must exist near the Raspberry Pi 5 zone.
-- The top cover must support two configurable internal fan mounts.
-- The design must remain usable when only one fan is installed.
+- Extra adjustable under-Pi5 airflow openings/passages must exist for NVMe
+  heatsinks and the PCI splitter beneath the Pi 5 board.
+- The top cover must support two configurable internal fan mounts that are both
+  usable by default.
+- The top cover must include real air openings/grilles for both fan mounts.
+- The fan mounts must document one intake fan and one exhaust fan by default.
+- The design may remain usable when only one fan is installed, but the default
+  target is two-fan intake/exhaust airflow.
 - Fan dimensions, fan-hole spacing, screw-hole diameter, and fan positions must
   be adjustable.
 - The display cover must enclose the perpendicular display body/PCB and expose
   only the active display face through a window by default.
+- The display/screen cover must appear in assembly and printable-layout render
+  paths, and `display_cover` must isolate it for inspection.
 - Display body size, active display window size, and display offset must be
   adjustable.
 - The header splitter must be represented by simplified vertical and lateral
@@ -332,7 +402,7 @@ implementation:
   `display_cover`, `electronics`, and `printable_layout`.
 - `printable_layout` must contain only separable printable parts on the print
   plane with no floating printable objects.
-- README must document the new design file, assumptions, manually entered
+- README must document the tower design file, assumptions, manually entered
   dimensions, render modes, adjustable parameters, fan/display tuning, Pi 5
   access, ventilation, printing guidance, and validation commands.
 - `git diff --check` must pass after implementation.
@@ -363,7 +433,10 @@ implementation:
   - top-cover clearance behavior,
   - Raspberry Pi 5 service and port openings,
   - extra Pi 5-zone ventilation holes,
-  - two internal fan mounts with usable screw-hole/boss layout,
+  - under-Pi5 airflow passages for the NVMe/heatsink/PCI splitter area,
+  - two internal fan mounts with usable screw-hole/boss layout and through-cover
+    air openings,
+  - one fan documented as intake and the other documented as exhaust,
   - no default fan-mount collision with cover pins or walls,
   - perpendicular display cover and display window behavior,
   - header splitter vertical/lateral clearance geometry,
@@ -383,7 +456,9 @@ implementation:
 - Document the top-cover-male and bottom-tray-female connection method.
 - Document Raspberry Pi 5 access/opening strategy.
 - Document Pi 5-zone ventilation and top fan support strategy.
-- Document how to tune the two fan mounts and how to use only one fan initially.
+- Document under-Pi5 airflow support for NVMe heatsinks and the PCI splitter.
+- Document how to tune the two fan mounts and the default intake/exhaust airflow
+  intent.
 - Document the perpendicular display cover, display-window sizing, and header
   splitter assumptions.
 - Document that OpenSCAD render inspection is visual validation only and physical

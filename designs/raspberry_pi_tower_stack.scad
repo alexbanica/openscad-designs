@@ -171,12 +171,28 @@ pi5_top_vent_spacing_y_mm = 10.0;
 pi5_top_vent_offset_x_mm = 0.0;
 pi5_top_vent_offset_y_mm = 0.0;
 
-// Fan mounts and airflow previews (two mounts, one intended active by default)
+// Under-Pi5 NVMe/heatsink/PCI splitter airflow
+enable_under_pi5_airflow = true;
+enable_under_pi5_bottom_airflow = true;
+under_pi5_airflow_count = 3;
+under_pi5_airflow_slot_width_mm = 8.0;
+under_pi5_airflow_slot_length_mm = 32.0;
+under_pi5_airflow_slot_spacing_x_mm = 13.0;
+under_pi5_airflow_offset_x_mm = 0.0;
+under_pi5_airflow_offset_y_mm = -2.0;
+under_pi5_airflow_lower_side_count = 4;
+under_pi5_airflow_lower_side_width_mm = 7.0;
+under_pi5_airflow_lower_side_height_mm = 7.0;
+under_pi5_airflow_lower_side_spacing_mm = 10.0;
+under_pi5_airflow_offset_below_pi5_board_mm = 6.0;
+
+// Fan mounts and airflow previews (two usable mounts, intake + exhaust by default)
 fan_mount_centers_mm = [
-    [0.0, -22.0],
-    [26.0, -22.0]
+    [-18.0, -20.0],
+    [18.0, -20.0]
 ];
-fan_mount_enabled_flags = [true, false];
+fan_mount_enabled_flags = [true, true];
+fan_airflow_direction_labels = ["intake", "exhaust"];
 fan_body_size_mm = 30.0;
 fan_thickness_mm = 7.0;
 fan_body_clearance_mm = 0.6;
@@ -358,6 +374,11 @@ pi5_soc_world_x_mm = tower_board_world_x(rpi5_soc_origin_mirror_mm[0] + rpi5_soc
 pi5_soc_world_y_mm = tower_board_world_y(rpi5_soc_origin_mirror_mm[1] + rpi5_soc_size_mirror_mm[1] / 2);
 pi5_top_vent_center_x_mm = pi5_soc_world_x_mm + pi5_vent_x_offset_from_soc_mm;
 pi5_top_vent_center_y_mm = pi5_soc_world_y_mm + pi5_vent_y_offset_from_soc_mm;
+pi5_board_bottom_z_mm = tower_stack_bottom_z_mm(rpi5_stack_index - 1);
+under_pi5_airflow_center_z_mm = max(
+    floor_thickness_mm + under_pi5_airflow_lower_side_height_mm / 2 + 1.0,
+    pi5_board_bottom_z_mm - under_pi5_airflow_offset_below_pi5_board_mm
+);
 
 fan_mount_centers_count = len(fan_mount_centers_mm);
 fan_mount_body_opening_size_mm = fan_body_size_mm + fan_body_clearance_mm;
@@ -482,6 +503,7 @@ module raspberry_pi_tower_stack_printable_bottom_tray() {
         raspberry_pi_tower_stack_mounting_holes();
         raspberry_pi_tower_stack_port_cutout_volumes(include_top_service = false);
         raspberry_pi_tower_stack_pi5_zone_ventilation();
+        raspberry_pi_tower_stack_under_pi5_airflow();
     }
 }
 
@@ -518,18 +540,20 @@ module raspberry_pi_tower_stack_electronics_reference() {
                 board_bottom_z
             ]) {
                 if (is_rpi5) {
-                    rpi5_reference_model(
-                        show_reference = show_rpi5_reference,
-                        show_gpio_pins = true,
-                        show_micro_sd_card = true,
-                        show_active_cooler = show_rpi5_active_cooler_reference
-                    );
+                    translate([
+                        -rpi5_board_length_mirror_mm / 2,
+                        -rpi5_board_width_mirror_mm / 2,
+                        0
+                    ])
+                        rpi5_reference_model(
+                            show_reference = show_rpi5_reference,
+                            show_gpio_pins = true,
+                            show_micro_sd_card = true,
+                            show_active_cooler = show_rpi5_active_cooler_reference
+                        );
 
                     if (show_header_splitter_preview) {
-                        raspberry_pi_tower_splitter_and_display_preview(
-                            board_index,
-                            board_bottom_z
-                        );
+                        raspberry_pi_tower_splitter_and_display_preview(board_index);
                     }
                 } else {
                     raspberry_pi_tower_placeholder_board_reference();
@@ -817,6 +841,44 @@ module raspberry_pi_tower_stack_pi5_zone_ventilation() {
     }
 }
 
+module raspberry_pi_tower_stack_under_pi5_airflow() {
+    if (enable_under_pi5_airflow) {
+        if (enable_under_pi5_bottom_airflow) {
+            for (slot_index = [0:under_pi5_airflow_count - 1]) {
+                translate([
+                    pi5_top_vent_center_x_mm
+                        + under_pi5_airflow_offset_x_mm
+                        + (slot_index - (under_pi5_airflow_count - 1) / 2) * under_pi5_airflow_slot_spacing_x_mm,
+                    pi5_top_vent_center_y_mm + under_pi5_airflow_offset_y_mm,
+                    floor_thickness_mm / 2
+                ])
+                    cube([
+                        under_pi5_airflow_slot_width_mm,
+                        under_pi5_airflow_slot_length_mm,
+                        floor_thickness_mm + 1.0
+                    ], center = true);
+            }
+        }
+
+        for (vent_index = [0:under_pi5_airflow_lower_side_count - 1]) {
+            for (side_sign = [-1, 1]) {
+                translate([
+                    pi5_top_vent_center_x_mm
+                        + under_pi5_airflow_offset_x_mm
+                        + (vent_index - (under_pi5_airflow_lower_side_count - 1) / 2) * under_pi5_airflow_lower_side_spacing_mm,
+                    side_sign * outer_width_mm / 2,
+                    under_pi5_airflow_center_z_mm
+                ])
+                    cube([
+                        under_pi5_airflow_lower_side_width_mm,
+                        2 * wall_thickness_mm + 2.0,
+                        under_pi5_airflow_lower_side_height_mm
+                    ], center = true);
+            }
+        }
+    }
+}
+
 // ======================================================
 // Fan Mounts
 // ======================================================
@@ -978,12 +1040,12 @@ module raspberry_pi_tower_placeholder_board_header() {
     }
 }
 
-module raspberry_pi_tower_splitter_and_display_preview(stack_index, board_bottom_z) {
+module raspberry_pi_tower_splitter_and_display_preview(stack_index) {
     if (stack_index + 1 == rpi5_stack_index) {
         header_origin_x_mm = tower_board_world_x(rpi5_gpio_pin_origin_x_mirror_mm);
         header_origin_y_mm = tower_board_world_y(rpi5_gpio_pin_origin_y_mirror_mm);
-        header_top_z_mm = board_bottom_z + rpi5_gpio_header_size_mirror_mm[2] + rpi5_board_thickness_mirror_mm;
-        header_next_board_bottom_z = tower_stack_bottom_z_mm(stack_index + 1);
+        header_top_z_mm = rpi5_gpio_header_size_mirror_mm[2] + rpi5_board_thickness_mirror_mm;
+        header_next_board_bottom_z = tower_stack_bottom_z_mm(stack_index + 1) - tower_stack_bottom_z_mm(stack_index);
         vertical_height_mm = max(display_splitter_vertical_length_mm, header_next_board_bottom_z - header_top_z_mm + 1.0);
 
         // Vertical header leg supports board above Pi 5.
@@ -1047,45 +1109,39 @@ module raspberry_pi_tower_splitter_and_display_preview(stack_index, board_bottom
 }
 
 module raspberry_pi_tower_stack_display_cover_geometry() {
-    translate([
-        display_cover_length_mm,
-        0,
-        0
-    ])
-        rotate([0, 180, 0])
-            difference() {
-                // outer shell
-                color(cover_colour)
-                cube([
-                    display_cover_length_mm,
-                    display_cover_width_mm,
-                    display_cover_height_mm
-                ]);
+    difference() {
+        // outer shell
+        color(cover_colour)
+        cube([
+            display_cover_length_mm,
+            display_cover_width_mm,
+            display_cover_height_mm
+        ]);
 
-                // inner body cavity
-                translate([
-                    display_cover_wall_thickness_mm,
-                    display_cover_wall_thickness_mm,
-                    display_cover_wall_thickness_mm
-                ])
-                    cube([
-                        display_cover_length_mm - 2 * display_cover_wall_thickness_mm,
-                        display_cover_width_mm - 2 * display_cover_wall_thickness_mm,
-                        display_cover_height_mm - 2 * display_cover_wall_thickness_mm
-                    ]);
+        // inner body cavity
+        translate([
+            display_cover_wall_thickness_mm,
+            display_cover_wall_thickness_mm,
+            display_cover_wall_thickness_mm
+        ])
+            cube([
+                display_cover_length_mm - 2 * display_cover_wall_thickness_mm,
+                display_cover_width_mm - 2 * display_cover_wall_thickness_mm,
+                display_cover_height_mm - 2 * display_cover_wall_thickness_mm
+            ]);
 
-                // display window on the exposed face
-                translate([
-                    -0.02,
-                    (display_cover_width_mm - display_window_length_mm) / 2,
-                    (display_cover_height_mm - display_window_height_mm) / 2
-                ])
-                    cube([
-                        display_cover_wall_thickness_mm + 0.04,
-                        max(display_body_length_mm, display_window_length_mm),
-                        display_window_height_mm + display_window_clearance_mm
-                    ]);
-            }
+        // display window on the exposed face
+        translate([
+            -0.02,
+            (display_cover_width_mm - display_window_length_mm) / 2,
+            (display_cover_height_mm - display_window_height_mm) / 2
+        ])
+            cube([
+                display_cover_wall_thickness_mm + 0.04,
+                display_window_length_mm + display_window_clearance_mm,
+                display_window_height_mm + display_window_clearance_mm
+            ]);
+    }
 }
 
 // ======================================================

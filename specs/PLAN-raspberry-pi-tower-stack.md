@@ -8,8 +8,8 @@ Status: Approved
 
 ## Scope
 
-Implement the approved Raspberry Pi tower stack enclosure as a new OpenSCAD
-design and update README documentation.
+Implement the approved Raspberry Pi tower stack enclosure corrections in the
+existing OpenSCAD design and update README documentation.
 
 Do not implement behavior outside the approved spec.
 
@@ -32,8 +32,8 @@ committed.
 
 ## Ownership Boundaries
 
-- `designs/raspberry_pi_tower_stack.scad`: new printable tower-stack enclosure
-  source only.
+- `designs/raspberry_pi_tower_stack.scad`: printable tower-stack enclosure source
+  only.
 - `README.md`: document the new design source, assumptions, manually entered
   dimensions, render modes, adjustable parameters, Pi 5 access, ventilation,
   fan/display tuning, printability, and validation commands.
@@ -77,30 +77,39 @@ editing existing sources.
      - five-PCB stack parameters,
      - per-gap PCB spacing controls,
      - fourth-board Raspberry Pi 5 reference integration,
+     - fourth-board Raspberry Pi 5 alignment inside the shared tower footprint
+       and enclosure envelope,
      - top-cover clearance parameter,
      - top-cover male pin parameters/modules,
      - bottom-tray female socket parameters/modules,
      - Raspberry Pi 5 access/cutout references,
      - Pi 5-zone ventilation modules,
-     - two fan-mount parameters/modules,
+     - under-Pi5 airflow parameters/modules for NVMe heatsinks and PCI splitter,
+     - two usable fan-mount parameters/modules,
+     - fan airflow openings/grilles for both mounts,
+     - intake/exhaust fan direction parameters or documentation,
      - display-cover and display-window parameters/modules,
+     - display cover inclusion in assembly and printable layout,
      - header-splitter preview parameters/modules,
      - README documentation entries.
    - Permanent test files are not required unless the implementation command
      determines a small scoped script is worthwhile.
 
-4. Create `designs/raspberry_pi_tower_stack.scad`.
+4. Update `designs/raspberry_pi_tower_stack.scad`.
    - Use OpenSCAD 2021.01-compatible syntax and no external libraries.
    - Add grouped `Adjustable Parameters` near the top:
      - render controls and visibility toggles,
      - generic PCB and stack dimensions,
      - per-gap PCB spacing and top-cover clearance,
      - Raspberry Pi 5 board and port source values or local mirrors,
+     - Raspberry Pi 5 board transform/alignment offsets if needed,
      - enclosure wall/floor/roof/clearance values,
      - board mounting/support values,
      - top-cover male pin and bottom-tray socket values,
      - Raspberry Pi 5-zone ventilation values,
+     - under-Pi5 NVMe/heatsink/PCI splitter airflow and clearance values,
      - fan footprint, hole spacing, screw, boss, and placement values,
+     - fan intake/exhaust direction labels or flags,
      - display body/window/cover placement values,
      - vertical/lateral header-splitter preview values,
      - printable layout values,
@@ -112,7 +121,7 @@ editing existing sources.
    - Keep all linear variables suffixed `_mm` and angle variables suffixed
      `_deg`.
 
-5. Implement reference/electronics integration.
+5. Fix reference/electronics integration and PCB alignment.
    - `use <rpi5.scad>` for the fourth-board Raspberry Pi 5 visual reference.
    - Provide an electronics/reference render that can show:
      - all five board positions,
@@ -123,6 +132,12 @@ editing existing sources.
      - simplified vertical/lateral header splitter,
      - fan previews,
      - display preview.
+   - Normalize the Raspberry Pi 5 reference transform to the same board-origin
+     convention used by placeholder PCBs.
+   - Confirm the Pi 5 board outline, mounting-hole positions, GPIO/header area,
+     and port/service mirror references remain inside the tray/cover envelope.
+   - Keep cutout/source mirror coordinates consistent with the corrected Pi 5
+     transform.
    - Do not duplicate or alter existing reference modules.
 
 6. Implement stack positioning.
@@ -164,6 +179,10 @@ editing existing sources.
    - Subtract female socket holes for the top-cover pins.
    - Subtract tray-side portions of Raspberry Pi 5 port/service openings where
      the fourth-board service envelope intersects the tray.
+   - Add under-Pi5 airflow cutouts/passages beneath the fourth board for NVMe
+     heatsinks and the PCI splitter.
+   - Keep under-Pi5 cutouts adjustable and avoid weakening standoffs, socket
+     receivers, cover-pin interfaces, and mounting supports.
    - Keep the tray printable with the broad stable face on the print plane.
 
 9. Implement the top cover.
@@ -177,6 +196,8 @@ editing existing sources.
      top-of-highest-PCB-to-cover clearance parameter.
    - Subtract top-cover portions of Raspberry Pi 5 access openings where needed.
    - Subtract fan airflow openings and top-cover ventilation.
+   - Ensure the display cover geometry is visible in assembly and represented in
+     printable layout.
    - Ensure default pin/socket positions avoid ports, Pi 5 ventilation, fan
      mounts, display cover geometry, and board supports.
 
@@ -198,97 +219,114 @@ editing existing sources.
     - Add grouped clearance values so physical fit can be tuned later.
 
 11. Implement Raspberry Pi 5-zone ventilation.
-    - Add real subtractive side and/or top ventilation openings near the
-      fourth-board Raspberry Pi 5 zone.
-    - Make Pi 5-zone ventilation count, size, spacing, face/side enablement, and
-      position adjustable.
-    - Keep default ventilation from intersecting the male/female interface,
-      board supports, fan screw bosses, and required port cutouts.
+   - Add real subtractive side and/or top ventilation openings near the
+     fourth-board Raspberry Pi 5 zone.
+   - Make Pi 5-zone ventilation count, size, spacing, face/side enablement, and
+     position adjustable.
+   - Keep default ventilation from intersecting the male/female interface,
+     board supports, fan screw bosses, and required port cutouts.
+   - Add lower-side and/or bottom-tray under-Pi5 airflow openings for the NVMe
+     heatsink and PCI splitter area.
+   - Make under-Pi5 airflow count, size, spacing, enablement, and position
+     adjustable.
+   - Preserve material around tray sockets, standoffs, and board supports.
 
 12. Implement the two top-cover fan mounts.
-    - Add two configurable internal square fan footprints matching the supplied
-      small axial fan style.
-    - For each mount, include:
-      - a fan body/envelope preview toggle,
-      - a real airflow opening or grille through the top cover,
-      - configurable screw holes or bosses aligned to fan-hole spacing,
-      - configurable fan body size, thickness, hole spacing, screw-hole
-        diameter, boss diameter, and mount center.
-    - Defaults must allow only one fan to be populated physically while still
-      providing a second compatible mount.
-    - Keep the two fan mounts non-intersecting by default.
+   - Add two configurable internal square fan footprints matching the supplied
+     small axial fan style.
+   - For each mount, include:
+     - a fan body/envelope preview toggle,
+     - a real airflow opening or grille through the top cover,
+     - configurable screw holes or bosses aligned to fan-hole spacing,
+     - configurable fan body size, thickness, hole spacing, screw-hole diameter,
+       boss diameter, and mount center.
+   - Defaults must allow both fan mounts to be physically populated.
+   - Add parameters or clear source documentation for one default intake fan and
+     one default exhaust fan.
+   - Ensure both fans mount on the inside face of the top cover.
+   - Ensure both fan positions have through-cover airflow openings or grilles.
+   - Keep the two fan mounts non-intersecting by default.
 
 13. Implement the display cover and header splitter.
-    - Add simplified vertical and lateral header-splitter preview geometry
-      attached to the Pi 5 GPIO/header area.
-    - Add a perpendicular display preview connected to the lateral header path.
-    - Add printable display cover geometry around the display PCB/body.
-    - Subtract a display-window opening sized to the active display face plus
-      adjustable clearance.
-    - Ensure the default display cover hides/covers the display PCB/body while
-      leaving only the active display face/window exposed.
-    - If the display cover is separate, include it in `display_cover` and
-      `printable_layout`; if it is integrated, make `display_cover` isolate the
-      printable region for inspection.
+   - Add simplified vertical and lateral header-splitter preview geometry
+     attached to the Pi 5 GPIO/header area.
+   - Add a perpendicular display preview connected to the lateral header path.
+   - Add printable display cover geometry around the display PCB/body.
+   - Subtract a display-window opening sized to the active display face plus
+     adjustable clearance.
+   - Ensure the default display cover hides/covers the display PCB/body while
+     leaving only the active display face/window exposed.
+   - Ensure assembly mode shows the screen/display cover when display cover
+     previews are enabled.
+   - Ensure printable layout includes the display cover as a grounded, separated
+     printable part unless the implementation explicitly keeps it integrated
+     with another printable part.
+   - If the display cover is separate, include it in `display_cover` and
+     `printable_layout`; if it is integrated, make `display_cover` isolate the
+     printable region for inspection.
 
 14. Implement render modes.
-    - `assembly`: assembled enclosure with optional electronics/reference
-      geometry.
-    - `bottom_tray`: printable bottom tray only.
-    - `top_cover`: printable top cover only.
-    - `display_cover`: display cover or isolated display-cover region.
-    - `electronics`: five-board stack reference only.
-    - `printable_layout`: all printable parts separated on the print plane with
-      no floating printable geometry.
+   - `assembly`: assembled enclosure with optional electronics/reference
+     geometry.
+   - `bottom_tray`: printable bottom tray only.
+   - `top_cover`: printable top cover only.
+   - `display_cover`: display cover or isolated display-cover region.
+   - `electronics`: five-board stack reference only.
+   - `printable_layout`: all printable parts separated on the print plane with
+     no floating printable geometry.
 
 15. Update `README.md`.
-    - Add the new design file to the design list.
-    - Add a new Raspberry Pi tower stack enclosure section.
-    - Document component assumptions, manually entered dimensions, source
-      relationship to `rpi5.scad`, render modes, common adjustable parameters,
-      per-gap stack spacing, top-cover clearance, Pi 5 access, Pi 5-zone
-      ventilation, two-fan support, one-fan initial use, display cover/window
-      behavior, header-splitter assumptions, Bambu-friendly printability, and
-      validation commands.
-    - Document any mirrored Raspberry Pi 5 connector values if the
-      implementation uses local mirrors.
+   - Update the design file list entry as needed.
+   - Update the Raspberry Pi tower stack enclosure section.
+   - Document component assumptions, manually entered dimensions, source
+     relationship to `rpi5.scad`, render modes, common adjustable parameters,
+     per-gap stack spacing, top-cover clearance, Pi 5 access, Pi 5-zone
+     ventilation, under-Pi5 airflow for NVMe heatsinks/PCI splitter, two-fan
+     intake/exhaust support, display cover/window behavior, header-splitter
+     assumptions, Bambu-friendly printability, and validation commands.
+   - Document any mirrored Raspberry Pi 5 connector values if the implementation
+     uses local mirrors.
 
 16. Validate.
-    - Run `git diff --check`.
-    - Run deterministic source checks defined by the test-focused subagent or
-      equivalent shell checks.
-    - Run OpenSCAD exports to `/tmp`:
-      - `openscad -o /tmp/raspberry_pi_tower_stack_assembly.off -D 'render_mode="assembly"' designs/raspberry_pi_tower_stack.scad`
-      - `openscad -o /tmp/raspberry_pi_tower_stack_bottom_tray.off -D 'render_mode="bottom_tray"' designs/raspberry_pi_tower_stack.scad`
-      - `openscad -o /tmp/raspberry_pi_tower_stack_top_cover.off -D 'render_mode="top_cover"' designs/raspberry_pi_tower_stack.scad`
-      - `openscad -o /tmp/raspberry_pi_tower_stack_display_cover.off -D 'render_mode="display_cover"' designs/raspberry_pi_tower_stack.scad`
-      - `openscad -o /tmp/raspberry_pi_tower_stack_electronics.off -D 'render_mode="electronics"' designs/raspberry_pi_tower_stack.scad`
-      - `openscad -o /tmp/raspberry_pi_tower_stack_printable_layout.off -D 'render_mode="printable_layout"' designs/raspberry_pi_tower_stack.scad`
-    - If any OpenSCAD render takes more than 15 seconds, stop that render and
-      report the timeout as required by repository instructions.
-    - If local OpenSCAD fails or is unavailable, report the blocker and mark
-      delivery draft unless the user explicitly accepts source-only validation.
+   - Run `git diff --check`.
+   - Run deterministic source checks defined by the test-focused subagent or
+     equivalent shell checks.
+   - Run OpenSCAD exports to `/tmp`:
+     - `openscad -o /tmp/raspberry_pi_tower_stack_assembly.off -D 'render_mode="assembly"' designs/raspberry_pi_tower_stack.scad`
+     - `openscad -o /tmp/raspberry_pi_tower_stack_bottom_tray.off -D 'render_mode="bottom_tray"' designs/raspberry_pi_tower_stack.scad`
+     - `openscad -o /tmp/raspberry_pi_tower_stack_top_cover.off -D 'render_mode="top_cover"' designs/raspberry_pi_tower_stack.scad`
+     - `openscad -o /tmp/raspberry_pi_tower_stack_display_cover.off -D 'render_mode="display_cover"' designs/raspberry_pi_tower_stack.scad`
+     - `openscad -o /tmp/raspberry_pi_tower_stack_electronics.off -D 'render_mode="electronics"' designs/raspberry_pi_tower_stack.scad`
+     - `openscad -o /tmp/raspberry_pi_tower_stack_printable_layout.off -D 'render_mode="printable_layout"' designs/raspberry_pi_tower_stack.scad`
+   - If any OpenSCAD render takes more than 15 seconds, stop that render and
+     report the timeout as required by repository instructions.
+   - If local OpenSCAD fails or is unavailable, report the blocker and mark
+     delivery draft unless the user explicitly accepts source-only validation.
 
 17. Main-agent QA.
-    - Inspect diffs for spec mapping and regression risk.
-    - Inspect OpenSCAD outputs if generated successfully.
-    - Confirm:
-      - all required render modes generate,
-      - five board positions exist and use configurable spacing,
-      - fourth board is the Raspberry Pi 5 reference,
-      - top-cover clearance parameter affects enclosure height,
-      - all required Raspberry Pi 5 access openings exist,
-      - extra Pi 5-zone ventilation is real subtractive geometry,
-      - top cover has two fan mounts,
-      - one-fan use remains valid,
-      - display cover exposes only the display window by default,
-      - header splitter has vertical and lateral preview geometry,
-      - top cover has male pins,
-      - bottom tray has matching female sockets,
-      - default pin/socket geometry avoids ports, vents, fan mounts, display
-        cover geometry, and supports,
-      - printable layout has all printable parts separated on the print plane,
-      - no generated mesh files are tracked.
+   - Inspect diffs for spec mapping and regression risk.
+   - Inspect OpenSCAD outputs if generated successfully.
+   - Confirm:
+     - all required render modes generate,
+     - five board positions exist and use configurable spacing,
+     - fourth board is the Raspberry Pi 5 reference and is aligned inside the
+       tower footprint/enclosure envelope,
+     - top-cover clearance parameter affects enclosure height,
+     - all required Raspberry Pi 5 access openings exist,
+     - extra Pi 5-zone ventilation is real subtractive geometry,
+     - under-Pi5 airflow passages exist for the NVMe/heatsink/PCI splitter area,
+     - top cover has two internally usable fan mounts,
+     - both fan mounts have through-cover airflow openings,
+     - one fan is documented as intake and one as exhaust,
+     - display cover appears in assembly/printable layout and exposes only the
+       display window by default,
+     - header splitter has vertical and lateral preview geometry,
+     - top cover has male pins,
+     - bottom tray has matching female sockets,
+     - default pin/socket geometry avoids ports, vents, fan mounts, display cover
+       geometry, and supports,
+     - printable layout has all printable parts separated on the print plane,
+     - no generated mesh files are tracked.
 
 18. Final review and delivery.
     - Run a code-review pass against the approved spec and this plan.

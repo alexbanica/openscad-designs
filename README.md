@@ -516,10 +516,11 @@ Manual inspection checklist:
 removable-top-cover enclosure for a five-board Raspberry Pi-size stack with a
 Raspberry Pi 5 as the fourth board.
 
-It includes a top-down stack reference with adjustable per-PCB gap spacing, Pi 5
-service/access openings around the fourth-board zone, two small square fan mount
-positions (one visually populated by default), and a perpendicular display cover
-assembly preview with a clear window.
+It includes a centered stack reference with adjustable per-PCB gap spacing, Pi 5
+service/access openings around the fourth-board zone, under-Pi5 airflow for NVMe
+heatsinks and a PCI splitter, two small square fan mount positions configured as
+intake/exhaust by default, and a perpendicular display cover assembly preview
+with a clear window.
 
 ### Component Assumptions
 
@@ -542,8 +543,16 @@ The design defaults are planning values and remain fully adjustable:
   - `tray_socket_clearance_mm = 0.35`
   - `tray_socket_depth_mm = 5.8`
   - `tray_socket_receiver_diameter_mm = 7.0`.
+- Under-Pi5 airflow defaults provide bottom tray slots and lower side-wall vents
+  under the fourth-board Raspberry Pi 5 zone for an NVMe heatsink and PCI
+  splitter placeholder envelope. Tune `enable_under_pi5_airflow`,
+  `enable_under_pi5_bottom_airflow`, `under_pi5_airflow_count`,
+  `under_pi5_airflow_slot_width_mm`, `under_pi5_airflow_slot_length_mm`,
+  `under_pi5_airflow_lower_side_count`, and related spacing/offset parameters
+  after measuring the real modules.
 - Fan defaults are configurable square fan mounts with default mount centers at
-  `[[0.0, -22.0], [26.0, -22.0]]`, defaults `fan_mount_enabled_flags = [true, false]`,
+  `[[-18.0, -20.0], [18.0, -20.0]]`, defaults `fan_mount_enabled_flags = [true, true]`,
+  `fan_airflow_direction_labels = ["intake", "exhaust"]`,
   body size `30.0` mm, thickness `7.0` mm, clearance `0.6` mm,
   hole spacing `24.0` mm, screw-hole diameter `3.0` mm, boss diameter `6.0` mm,
   boss height `6.0` mm, wall-hole diameter `4.2` mm, wall-cutout padding `1.6` mm.
@@ -588,7 +597,8 @@ Top-level parameters are grouped in the source under:
 - supports, standoffs, pin/socket parameters,
 - Raspberry Pi 5 port access sizing and clearance,
 - side and top ventilation settings around the Pi 5 zone,
-- square fan mount parameters and mount enable flags,
+- under-Pi5 bottom and lower-side airflow settings for NVMe/heatsink and PCI splitter clearance,
+- square fan mount parameters, mount enable flags, and intake/exhaust labels,
 - display cover/window placement,
 - vertical/lateral header splitter preview parameters,
 - display cover/window clearances,
@@ -607,9 +617,14 @@ Common edits:
   clearance values to match measured connector and cable-head geometry.
 - Tune `enable_pi5_side_ventilation`, `enable_pi5_top_ventilation`, and all related
   vent counts/sizes/spacing.
+- Tune `enable_under_pi5_airflow`, `enable_under_pi5_bottom_airflow`,
+  `under_pi5_airflow_*`, and `under_pi5_airflow_lower_side_*` values to move or
+  resize bottom-tray and lower-side passages around real NVMe, heatsink, and
+  PCI splitter hardware.
 - Tune fan mounting (`fan_mount_centers_mm`, `fan_body_size_mm`,
   `fan_body_clearance_mm`, `fan_mount_*`) and `fan_mount_enabled_flags` for one or two fan builds.
-  Both mounts remain modeled by default.
+  Both mounts are populated by default; `fan_airflow_direction_labels` documents
+  the default intake/exhaust intent and does not simulate airflow.
 - Tune display cover (`display_body_*`, `display_window_*`, `display_cover_*`,
   `display_splitter_*`) and `display_cover_z_lift_mm` for branch geometry.
 
@@ -646,9 +661,11 @@ openscad -o /tmp/raspberry_pi_tower_stack_printable_layout.off -D 'render_mode="
   or `raspberry_pi_tower_stack_electronics_reference()` as needed.
 - The fourth-board Pi 5 access is provided for mounting holes, USB-A, Ethernet,
   USB-C power, both micro-HDMI ports, camera/display, PCIe, and microSD.
-- Airflow features include both Pi 5-side wall ventilation and Pi 5-top-zone vent holes.
-- Two fan mounts are always modeled; defaults keep one active mount visually populated and
-  the second available for the next stage.
+- Airflow features include Pi 5-side wall ventilation, Pi 5-top-zone vent holes,
+  bottom tray airflow slots, and lower side-wall passages below the Pi 5 board
+  for the NVMe/heatsink and PCI splitter area.
+- Two fan mounts are always modeled and both are populated by default, with
+  direction labels documenting one intake slot and one exhaust slot.
 - The display cover hides the display body and only exposes the configured window on the active
   display face.
 - Generated OFF/STL/STEP/3MF/3mf outputs must remain under `/tmp` only.
@@ -662,7 +679,10 @@ Manual inspection checklist:
 - Confirm top cover has male pins and tray has matching female socket bosses/holes.
 - Confirm USB-A, Ethernet, USB-C, micro-HDMI, camera/display, PCIe, and microSD openings are included.
 - Confirm Pi 5-zone ventilation exists on side walls and top openings.
-- Confirm two fan mounts are present and non-overlapping by default.
+- Confirm under-Pi5 bottom and lower-side airflow openings exist below the
+  fourth-board Raspberry Pi 5 zone.
+- Confirm two fan mounts are present, populated, non-overlapping by default, and
+  documented as intake/exhaust.
 - Confirm header splitter preview includes a vertical and lateral branch.
 - Confirm display window dimensions and cover offsets are documented defaults and adjustable.
 - Confirm generated mesh files remain untracked.
