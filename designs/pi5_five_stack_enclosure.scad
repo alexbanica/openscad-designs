@@ -371,7 +371,7 @@ module pi5_five_stack_tray_shell() {
             [0, 0, tray_wall_height_mm / 2]
         );
 
-        translate([0, 0, floor_thickness_mm + (tray_wall_height_mm - floor_thickness_mm) / 2])
+        translate([0, 0, floor_thickness_mm])
             pi5_five_stack_rounded_box(
                 [internal_length_mm, internal_width_mm, tray_wall_height_mm - floor_thickness_mm + preview_overlap_mm],
                 max(corner_radius_mm - wall_thickness_mm, 0.8),
