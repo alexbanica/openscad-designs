@@ -530,7 +530,8 @@ The enclosure models five Raspberry Pi 5 boards with shared footprint and coordi
 - Bottom tray base standoff defaults:
   - standoff height `4.6` mm,
   - standoff outer diameter `6.5` mm,
-  - screw pilot diameter follows the mirrored Raspberry Pi 5 PCB mounting-hole diameter, `2.75` mm by default, and is `5.0` mm deep.
+  - screw holes pass through the tray floor and standoffs by default,
+  - screw-hole diameter follows the mirrored Raspberry Pi 5 PCB mounting-hole diameter, `2.75` mm by default.
 - Top-cover male/female interface defaults:
   - pin count `4` at `cover_pin_offset_x_mm = 45.5`, `cover_pin_offset_y_mm = 31.0`,
   - pin diameter `3.2` mm, insertion length `5.2` mm,
@@ -559,7 +560,7 @@ Parameters are grouped in `Adjustable Parameters` and `Derived Values`:
 - stack geometry and derived Z mapping
 - Raspberry Pi 5 mirror geometry and connector parameters
 - wall/floor/roof clearances
-- bottom-tray standoff, pilot, and insert toggles
+- bottom-tray standoff, through-floor screw-hole, and insert toggles
 - male/female top-cover interface parameters
 - anti-slip recess controls
 - right/left side airflow controls and slot geometry
@@ -573,7 +574,7 @@ Common edits:
 - Tune `pi5_stack_gap_z_mm` for all four inter-PCB gaps and observe the derived stack Z map.
 - Tune `top_of_fifth_board_to_top_cover_clearance_mm` for headroom margin.
 - Keep `stack_board_count` at its default `5` for the default five-board contract.
-- Tune standoff and `enable_board_mount_inserts`, screw insert/pilot dimensions. By default the screw pilot diameter is derived from `rpi5_board_mounting_hole_diameter_mirror_mm`.
+- Tune standoff and `enable_board_mount_inserts`, screw insert/hole dimensions. By default `board_mount_screw_through_floor = true` and `board_mount_screw_hole_diameter_mm` is derived from `rpi5_board_mounting_hole_diameter_mirror_mm`.
 - Tune pin/socket dimensions for fit.
 - Tune `inter_pcb_airflow_slot_*` and per-side enable flags to reposition side vents.
 - Tune service clearances for USB-A/Ethernet/USB-C/micro-HDMI/camera-display/PCIe/header/microSD access.
@@ -606,6 +607,7 @@ openscad -o /tmp/pi5_five_stack_enclosure_printable_layout.off -D 'render_mode="
 - Five board Z offsets, highest-board Z, inter-gap centers, and derived envelope are computed from `pi5_stack_gap_z_mm` and board thickness.
 - All four inter-board gaps receive side-wall airflow slots by default on both opposing side walls.
 - Base-board USB-A/Ethernet, USB-C, micro-HDMI, and microSD ports are opened in the tray wall volume.
+- Base-board screw holes pass through the tray floor and standoffs at the mirrored Raspberry Pi 5 mounting-hole centers by default.
 - Bottom-tray female socket bosses are built from `tray_socket_receiver_diameter_mm` and provide material support behind each socket hole.
 - All five board stack levels receive service cutouts in the top cover for USB-A/Ethernet, USB-C, both micro-HDMI, top-clearance-side GPIO/display/PCIe, and microSD for configured board indices.
 - MicroSD openings can be kept to board 1 by default with `base_board_micro_sd_access_board_indices`, and expanded with `enable_additional_micro_sd_openings`.
