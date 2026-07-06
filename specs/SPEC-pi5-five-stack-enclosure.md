@@ -7,12 +7,12 @@ Status: Approved
 Create an editable OpenSCAD printable enclosure for five stacked PCB positions
 where the fourth PCB from bottom to top is the Raspberry Pi 5 by default.
 
-The enclosure must have exactly two printable enclosure parts by default: a
-bottom cover/tray and a top cover. The distance between every adjacent PCB must
-be easy to configure, airflow between every PCB is mandatory, the base PCB must
-mount to the bottom cover, the top cover must connect to the bottom cover using
-the repository's existing male/female pin-and-socket principle, and the bottom
-cover must provide anti-slip support.
+The enclosure must have exactly three printable enclosure parts by default: a
+bottom cover/tray, a middle cover, and an upper cover. The distance between
+every adjacent PCB must be easy to configure, airflow between every PCB is
+mandatory, the base PCB must mount to the bottom cover, the middle cover must
+connect to the bottom cover using the repository's existing male/female
+pin-and-socket principle, and the bottom cover must provide anti-slip support.
 
 ## Problem Statement
 
@@ -37,16 +37,18 @@ between boards.
 - Make each of the four distances between adjacent PCBs independently
   configurable.
 - Make the top clearance above the fifth/highest PCB configurable.
-- Provide only two default printable enclosure parts:
+- Provide only three default printable enclosure parts:
   - bottom cover/tray,
-  - top cover.
+  - middle cover up through the Pi 5 connector-access zone,
+  - upper cover for the tall headroom section above the Pi 5 connector-access
+    zone.
 - Mount the base PCB to the bottom cover/tray using standoffs aligned to the
   Raspberry Pi 5 mounting holes.
 - Provide configurable screw pilot holes or insert holes in the bottom-tray
   standoffs for the base PCB.
-- Connect the bottom cover/tray and top cover using the same principle as other
+- Connect the bottom cover/tray and middle cover using the same principle as other
   existing enclosures in this repository:
-  - male cylindrical plug pins owned by the removable top cover,
+  - male cylindrical plug pins owned by the removable middle cover,
   - matching female socket holes owned by the bottom cover/tray,
   - adjustable pin diameter, insertion length, socket clearance, socket depth,
     and pin positions.
@@ -58,8 +60,8 @@ between boards.
   above PCB 5 while keeping the roof fully closed.
 - Provide Raspberry Pi 5 access openings for the stack where necessary for
   serviceability and cable access.
-- Include render modes for assembly, bottom cover/tray, top cover, electronics,
-  and printable layout.
+- Include render modes for assembly, bottom cover/tray, middle cover, upper
+  cover, combined top cover, electronics, and printable layout.
 - Update `README.md` after implementation with the new design file,
   assumptions, manually entered dimensions, render modes, adjustable parameters,
   airflow strategy, bottom mounting, male/female connection, anti-slip behavior,
@@ -69,8 +71,8 @@ between boards.
 
 - Generated STL, STEP, 3MF, OFF, or other mesh/export files committed to source
   control.
-- Additional printable enclosure parts beyond the bottom cover/tray and top
-  cover.
+- Additional printable enclosure parts beyond the bottom cover/tray, middle
+  cover, and upper cover.
 - Fans, fan mounts, display covers, display windows, header splitters, NVMe
   board placeholders, Cluster HAT placeholders, or other board-specific add-ons.
 - Vendor-certified mechanical reproduction of Raspberry Pi 5 components,
@@ -94,9 +96,14 @@ between boards.
 - Bottom cover/tray: the lower printable enclosure body that provides the floor,
   shallow side wall or locating lip, base-PCB mounting standoffs, female cover
   sockets, and underside anti-slip features.
-- Top cover: the removable upper printable enclosure body that encloses the
-  stack height and owns the male cover pins.
-- Male/female connection method: cylindrical male pins extending from the top
+- Middle cover: the lower removable printable cover body that connects to the
+  tray, owns the male cover pins, and carries the Pi 5 connector-access
+  openings.
+- Upper cover: the upper removable printable cover body above the middle/upper
+  split, carrying the closed roof and upper headroom/ventilation section.
+- Top cover: the combined removable cover body made from the middle cover and
+  upper cover.
+- Male/female connection method: cylindrical male pins extending from the middle
   cover into matching female cylindrical socket holes in the bottom cover/tray,
   following the existing Pi Zero USB Grove IR enclosure and Raspberry Pi 5 AI
   HAT+ enclosure principle.
@@ -137,7 +144,8 @@ implementation:
   defaulting to at least `52.0` mm so the design provides the requested
   `50.0` mm minimum plus margin.
 - Bottom-tray wall/lip height: shallow enough that the bottom cover remains the
-  smaller enclosure half and the top cover carries the main stack height.
+  smaller enclosure half and the middle/upper cover pair carries the main stack
+  height.
 - Anti-slip recess diameter, depth, and positions: configurable bottom-open
   recesses for rubber feet, shallow enough not to break through the floor.
 - Base-PCB standoff height, outer diameter, screw pilot diameter/depth, and
@@ -174,7 +182,8 @@ implementation:
   gap centers, top-cover height, and related clearance geometry.
 - Printable versions must be Bambu Lab-friendly:
   - no floating printable objects in `printable_layout`,
-  - bottom cover/tray and top cover separable and independently printable,
+  - bottom cover/tray, middle cover, and upper cover separable and independently
+    printable,
   - broad/stable faces downward unless a specific approved geometry reason
     prevents it.
 - Generated mesh exports must not be added to source control.
@@ -186,20 +195,27 @@ implementation:
 - The new source must expose `render_mode` values for:
   - `assembly`,
   - `bottom_tray`,
+  - `middle_cover`,
+  - `upper_cover`,
   - `top_cover`,
   - `electronics`,
   - `printable_layout`.
-- `assembly` must show the bottom cover/tray, top cover, male/female connector
-  interface, and optional five-board Raspberry Pi 5 reference stack.
+- `assembly` must show the bottom cover/tray, middle cover, upper cover,
+  male/female connector interface, and optional five-board Raspberry Pi 5
+  reference stack.
 - `bottom_tray` must show only the printable lower body with base-PCB standoffs,
   female cover-pin sockets, and underside anti-slip recesses.
-- `top_cover` must show only the printable top cover with male cover pins and
-  stack airflow openings.
+- `middle_cover` must show only the printable lower cover section with male
+  cover pins, Pi 5 connector-access openings, and lower stack airflow openings.
+- `upper_cover` must show only the printable upper cover section with the closed
+  roof and upper wall airflow openings.
+- `top_cover` must show the printable middle cover and upper cover as separated
+  cover parts.
 - `electronics` must show the five PCB positions without printable enclosure
   bodies, with the Raspberry Pi 5 reference at the configured Pi 5 index and
   generic PCB placeholders for the other positions.
-- `printable_layout` must place the bottom cover/tray and top cover separated on
-  the print plane with no floating printable geometry.
+- `printable_layout` must place the bottom cover/tray, middle cover, and upper
+  cover separated on the print plane with no floating printable geometry.
 - Visibility toggles must independently control:
   - five-board Raspberry Pi 5 reference stack,
   - optional Raspberry Pi 5 active-cooler previews if used,
@@ -235,9 +251,9 @@ implementation:
   - default airflow openings must avoid cover pins, tray sockets, base standoffs,
     and required Raspberry Pi 5 access openings.
 - Additional top or bottom ventilation may be provided only if it remains part
-  of the two printable enclosure parts and does not replace the required
+  of the three printable enclosure parts and does not replace the required
   inter-PCB side/front/back airflow.
-- The top cover must own male plug pins by default.
+- The middle cover must own male plug pins by default.
 - The bottom cover/tray must subtract matching female socket holes by default.
 - The male/female interface must expose adjustable defaults comparable to the
   existing enclosures:
@@ -323,15 +339,18 @@ implementation:
 - The default distance from the top of PCB 5 to the inside top wall of the top
   cover must be at least `52.0` mm, representing `50.0` mm minimum clearance
   plus a default margin.
-- The default printable enclosure must be exactly two parts: bottom cover/tray
-  and top cover.
-- `printable_layout` must contain only the bottom cover/tray and top cover,
-  separated on the print plane with no floating printable objects.
+- The default printable enclosure must be exactly three parts: bottom cover/tray,
+  middle cover, and upper cover.
+- The middle/upper cover split must sit above the configured Pi 5 connector
+  cutouts so the middle cover owns those cutouts and the upper cover owns the
+  tall headroom section.
+- `printable_layout` must contain only the bottom cover/tray, middle cover, and
+  upper cover, separated on the print plane with no floating printable objects.
 - PCB 1 must mount to bottom-tray standoffs aligned to Raspberry Pi 5 mounting
   holes.
 - Bottom-tray standoffs must include configurable screw pilot holes or insert
   holes.
-- The top cover must own male plug pins by default.
+- The middle cover must own male plug pins by default.
 - The bottom cover/tray must own matching female socket holes by default.
 - The pin/socket interface must be adjustable and visibly similar in concept to
   the existing repository cover-pin/tray-socket interface.
@@ -351,8 +370,8 @@ implementation:
   blocked by the enclosure. The USB-A and Ethernet side access must be one
   continuous opening with no separator between connector openings. The top cover
   roof must not include service openings.
-- Render modes must include `assembly`, `bottom_tray`, `top_cover`,
-  `electronics`, and `printable_layout`.
+- Render modes must include `assembly`, `bottom_tray`, `middle_cover`,
+  `upper_cover`, `top_cover`, `electronics`, and `printable_layout`.
 - README must document the new design file, assumptions, manually entered
   dimensions, render modes, adjustable parameters, per-gap stack spacing,
   top-cover clearance, base-PCB mounting, anti-slip behavior, male/female
@@ -385,15 +404,18 @@ implementation:
   - coherent board spacing changes,
   - top-cover height derived from stack height and top clearance,
   - base PCB mounted to bottom-tray standoffs,
-  - bottom tray remains shallow and top cover carries the main height,
-  - top cover has male pins,
+  - bottom tray remains shallow and the middle/upper cover pair carries the main
+    height,
+  - middle cover has male pins,
+  - upper cover is independently printable above the Pi 5 connector cutouts,
   - bottom tray has matching female sockets,
   - anti-slip recesses exist on the tray underside,
   - every inter-PCB gap has real side, front, and back airflow openings,
   - airflow openings move with changed gap spacing,
   - airflow openings avoid default pin/socket and standoff geometry,
   - required Raspberry Pi 5 service/access openings exist,
-  - bottom tray and top cover are separated and grounded in printable layout,
+  - bottom tray, middle cover, and upper cover are separated and grounded in
+    printable layout,
   - no generated mesh exports are tracked by git.
 
 ## Documentation Requirements
@@ -405,7 +427,7 @@ implementation:
 - Document render modes and common adjustable parameters.
 - Document the per-gap PCB spacing controls and top-cover clearance control.
 - Document the base-PCB mounting strategy.
-- Document the top-cover-male and bottom-tray-female connection method.
+- Document the middle-cover-male and bottom-tray-female connection method.
 - Document bottom anti-slip recesses or foot pockets.
 - Document the mandatory inter-PCB side/front/back airflow strategy.
 - Document Raspberry Pi 5 access/opening strategy and any intentionally limited

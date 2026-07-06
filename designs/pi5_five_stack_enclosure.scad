@@ -1,6 +1,6 @@
 // Raspberry Pi 5 five-board stack enclosure
 //
-// - one printable bottom tray, one printable top cover
+// - one printable bottom tray, one printable middle cover, one printable upper cover
 // - adjustable per-gap spacing for five PCB positions, with PCB 4 as Pi 5 by default
 // - male/female removable top-cover connection
 // - air-gap aligned ventilation for every inter-board gap
@@ -17,7 +17,7 @@ use <rpi5.scad>
 
 // Render controls
 $fn = 48;
-render_mode = "printable_layout"; // [assembly/bottom_tray/top_cover/electronics/printable_layout]
+render_mode = "printable_layout"; // [assembly/bottom_tray/middle_cover/upper_cover/top_cover/electronics/printable_layout]
 show_rpi5_reference = true;
 show_rpi5_active_cooler_reference = false;
 show_rpi5_gpio_pins = true;
@@ -70,6 +70,7 @@ tray_wall_height_mm = 16.0;
 cover_skirt_drop_depth_mm = 4.0;
 cover_fit_clearance_mm = 0.35;
 cover_airtight_clearance_mm = 0.5;
+middle_cover_split_clearance_above_pi5_connector_mm = 4.0;
 corner_radius_mm = 4.0;
 preview_overlap_mm = 0.05;
 solid_merge_overlap_mm = 0.08;
@@ -194,6 +195,7 @@ stack_board_top_z_mm = [
 ];
 
 stack_highest_board_top_z_mm = stack_board_top_z_mm[stack_board_count - 1];
+rpi5_board_bottom_z_mm = stack_board_bottom_z_mm[rpi5_stack_index - 1];
 inter_pcb_gap_centers_z_mm = [
     for (gap_index = [0:pi5_five_stack_gap_count - 1])
         (stack_board_top_z_mm[gap_index] + stack_board_bottom_z_mm[gap_index + 1]) / 2
@@ -213,6 +215,21 @@ top_cover_height_mm = case_total_height_mm - tray_wall_height_mm + cover_skirt_d
 
 top_cover_hollow_start_z_mm = tray_wall_height_mm - cover_skirt_drop_depth_mm;
 top_cover_clearance_length_mm = 2 * (wall_thickness_mm + cover_fit_clearance_mm);
+
+rpi5_right_side_connector_cutout_top_z_mm = rpi5_board_bottom_z_mm + max(
+    rpi5_usb_port_lower_origin_mirror_mm[2] + rpi5_usb_port_lower_size_mirror_mm[2],
+    rpi5_usb_port_upper_origin_mirror_mm[2] + rpi5_usb_port_upper_size_mirror_mm[2],
+    rpi5_ethernet_port_origin_mirror_mm[2] + rpi5_ethernet_port_size_mirror_mm[2]
+) + edge_port_clearance_mm;
+rpi5_front_connector_cutout_top_z_mm = rpi5_board_bottom_z_mm + max(
+    rpi5_usb_c_power_origin_mirror_mm[2] + rpi5_usb_c_power_size_mirror_mm[2],
+    rpi5_micro_hdmi_left_origin_mirror_mm[2] + rpi5_micro_hdmi_size_mirror_mm[2],
+    rpi5_micro_hdmi_right_origin_mirror_mm[2] + rpi5_micro_hdmi_size_mirror_mm[2]
+) + edge_port_clearance_mm;
+middle_upper_cover_split_z_mm = max(
+    rpi5_right_side_connector_cutout_top_z_mm,
+    rpi5_front_connector_cutout_top_z_mm
+) + middle_cover_split_clearance_above_pi5_connector_mm;
 
 cover_pin_centers_mm = [
     [-cover_pin_offset_x_mm, -cover_pin_offset_y_mm],
@@ -277,6 +294,10 @@ if (render_mode == "assembly") {
     pi5_five_stack_enclosure_assembly();
 } else if (render_mode == "bottom_tray") {
     pi5_five_stack_printable_bottom_tray();
+} else if (render_mode == "middle_cover") {
+    pi5_five_stack_printable_middle_cover();
+} else if (render_mode == "upper_cover") {
+    pi5_five_stack_printable_upper_cover();
 } else if (render_mode == "top_cover") {
     pi5_five_stack_printable_top_cover();
 } else if (render_mode == "electronics") {
@@ -306,11 +327,13 @@ module pi5_five_stack_enclosure_assembly() {
 }
 
 module pi5_five_stack_printable_layout() {
-    translate([-(outer_length_mm + printable_layout_spacing_mm) / 2, 0, 0])
+    translate([-(outer_length_mm + printable_layout_spacing_mm), 0, 0])
         pi5_five_stack_printable_bottom_tray();
 
-    translate([(outer_length_mm + printable_layout_spacing_mm) / 2, 0, 0])
-        pi5_five_stack_printable_top_cover();
+    pi5_five_stack_printable_middle_cover();
+
+    translate([outer_length_mm + printable_layout_spacing_mm, 0, 0])
+        pi5_five_stack_printable_upper_cover();
 }
 
 module pi5_five_stack_reference_only() {
@@ -353,9 +376,23 @@ module pi5_five_stack_printable_bottom_tray() {
 }
 
 module pi5_five_stack_printable_top_cover() {
+    translate([-(outer_length_mm + printable_layout_spacing_mm) / 2, 0, 0])
+        pi5_five_stack_printable_middle_cover();
+
+    translate([(outer_length_mm + printable_layout_spacing_mm) / 2, 0, 0])
+        pi5_five_stack_printable_upper_cover();
+}
+
+module pi5_five_stack_printable_middle_cover() {
+    translate([0, 0, middle_upper_cover_split_z_mm])
+        rotate([180, 0, 0])
+            pi5_five_stack_middle_cover();
+}
+
+module pi5_five_stack_printable_upper_cover() {
     translate([0, 0, case_total_height_mm])
         rotate([180, 0, 0])
-            pi5_five_stack_top_cover();
+            pi5_five_stack_upper_cover();
 }
 
 // ======================================================
@@ -382,6 +419,31 @@ module pi5_five_stack_bottom_tray() {
 }
 
 module pi5_five_stack_top_cover() {
+    pi5_five_stack_middle_cover();
+    pi5_five_stack_upper_cover();
+}
+
+module pi5_five_stack_middle_cover() {
+    intersection() {
+        pi5_five_stack_top_cover_full();
+        pi5_five_stack_z_clip(
+            cover_pin_start_z_mm - solid_merge_overlap_mm,
+            middle_upper_cover_split_z_mm
+        );
+    }
+}
+
+module pi5_five_stack_upper_cover() {
+    intersection() {
+        pi5_five_stack_top_cover_full();
+        pi5_five_stack_z_clip(
+            middle_upper_cover_split_z_mm,
+            case_total_height_mm + solid_merge_overlap_mm
+        );
+    }
+}
+
+module pi5_five_stack_top_cover_full() {
     color(cover_colour)
     difference() {
         union() {
@@ -966,4 +1028,16 @@ module pi5_five_stack_rounded_box(size_mm, radius_mm, center_mm = [0, 0, 0]) {
                     cylinder(h = size_mm[2], r = radius_mm);
             }
         }
+}
+
+module pi5_five_stack_z_clip(min_z_mm, max_z_mm) {
+    translate([0, 0, (min_z_mm + max_z_mm) / 2])
+        cube(
+            [
+                outer_length_mm + 2 * wall_thickness_mm + 4.0,
+                outer_width_mm + 2 * wall_thickness_mm + 4.0,
+                max_z_mm - min_z_mm
+            ],
+            center = true
+        );
 }

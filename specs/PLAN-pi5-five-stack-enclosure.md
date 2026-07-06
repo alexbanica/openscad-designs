@@ -82,12 +82,12 @@ request plan amendment before editing existing sources.
      - spacing-derived airflow gap centers,
      - bottom-tray base-PCB standoffs,
      - bottom-tray screw pilot or insert parameters/modules,
-     - top-cover male pin parameters/modules,
+     - middle-cover male pin parameters/modules,
      - bottom-tray female socket parameters/modules,
      - bottom anti-slip recess parameters/modules,
      - Raspberry Pi 5 port/service access terms,
      - inter-PCB airflow parameters/modules,
-     - printable-layout two-part constraint,
+     - printable-layout three-part constraint,
      - README documentation entries.
    - Permanent test files are not required unless the implementation command
      determines a small scoped script is worthwhile.
@@ -101,11 +101,11 @@ request plan amendment before editing existing sources.
      - Raspberry Pi 5 board and port source values or local mirrors,
      - configured Pi 5 board index defaulting to PCB 4,
      - enclosure wall/floor/roof/clearance values,
-     - shallow bottom-tray and taller top-cover split values,
+     - shallow bottom-tray, middle-cover, upper-cover, and split-height values,
      - base-board mounting/support values,
      - screw pilot and optional insert values,
      - bottom anti-slip recess values,
-     - top-cover male pin and bottom-tray socket values,
+     - middle-cover male pin and bottom-tray socket values,
      - inter-PCB side/front/back airflow values,
      - upper top-cover wall airflow values,
      - optional top/bottom ventilation values if implemented,
@@ -144,7 +144,9 @@ request plan amendment before editing existing sources.
      - render dispatch,
      - assembled enclosure,
      - bottom tray,
-     - top cover,
+     - middle cover,
+     - upper cover,
+     - combined top cover,
      - printable layout,
      - electronics/reference preview,
      - tray shell,
@@ -176,11 +178,15 @@ request plan amendment before editing existing sources.
      bottom/base board service envelope intersects the tray.
    - Keep the tray printable with its broad stable face on the print plane.
 
-9. Implement the top cover.
-   - Include roof, tall side walls/skirt, fit clearance, internal clearance, and
-     male cylindrical plug pins.
-   - Keep the top cover the larger/taller enclosure half by default.
-   - Use top-cover-owned male pins and bottom-tray-owned female sockets by
+9. Implement the split top cover.
+   - Build the full cover envelope from roof, tall side walls/skirt, fit
+     clearance, internal clearance, and male cylindrical plug pins, then split
+     it into middle-cover and upper-cover printable sections.
+   - Derive the middle/upper split height from the configured Pi 5 connector
+     cutout tops plus a small configurable clearance so the middle cover owns
+     the Pi 5 connector openings and the upper cover owns the tall headroom
+     section.
+   - Use middle-cover-owned male pins and bottom-tray-owned female sockets by
      default.
    - Make pin diameter, insertion length, count, positions, socket clearance,
      and socket depth adjustable.
@@ -233,13 +239,16 @@ request plan amendment before editing existing sources.
       dimensions by default.
 
 12. Implement render modes.
-    - `assembly`: assembled bottom tray/top cover with optional five-board
-      reference stack and optional guides.
+    - `assembly`: assembled bottom tray, middle cover, upper cover, optional
+      five-board reference stack, and optional guides.
     - `bottom_tray`: printable bottom tray only.
-    - `top_cover`: printable top cover only.
+    - `middle_cover`: printable middle cover only.
+    - `upper_cover`: printable upper cover only.
+    - `top_cover`: printable middle cover and upper cover separated together.
     - `electronics`: five-board Raspberry Pi 5 reference stack only.
-    - `printable_layout`: bottom tray and top cover separated on the print plane
-      with no floating printable geometry and no extra printable parts.
+    - `printable_layout`: bottom tray, middle cover, and upper cover separated
+      on the print plane with no floating printable geometry and no extra
+      printable parts.
 
 13. Update `README.md`.
     - Add the new design file to the design list.
@@ -261,6 +270,8 @@ request plan amendment before editing existing sources.
       seconds:
       - `openscad -o /tmp/pi5_five_stack_enclosure_assembly.off -D 'render_mode="assembly"' designs/pi5_five_stack_enclosure.scad`
       - `openscad -o /tmp/pi5_five_stack_enclosure_bottom_tray.off -D 'render_mode="bottom_tray"' designs/pi5_five_stack_enclosure.scad`
+      - `openscad -o /tmp/pi5_five_stack_enclosure_middle_cover.off -D 'render_mode="middle_cover"' designs/pi5_five_stack_enclosure.scad`
+      - `openscad -o /tmp/pi5_five_stack_enclosure_upper_cover.off -D 'render_mode="upper_cover"' designs/pi5_five_stack_enclosure.scad`
       - `openscad -o /tmp/pi5_five_stack_enclosure_top_cover.off -D 'render_mode="top_cover"' designs/pi5_five_stack_enclosure.scad`
       - `openscad -o /tmp/pi5_five_stack_enclosure_electronics.off -D 'render_mode="electronics"' designs/pi5_five_stack_enclosure.scad`
       - `openscad -o /tmp/pi5_five_stack_enclosure_printable_layout.off -D 'render_mode="printable_layout"' designs/pi5_five_stack_enclosure.scad`
@@ -279,11 +290,14 @@ request plan amendment before editing existing sources.
       - changing spacing would move downstream board positions and gap airflow
         centers through derived values,
       - top-cover height derives from stack height and top clearance,
-      - bottom tray is shallow and top cover carries the main height,
+      - bottom tray is shallow while the middle and upper covers carry the main
+        height,
       - bottom tray includes base-PCB mounting standoffs,
       - bottom tray standoffs include screw pilot or insert holes,
       - bottom tray includes anti-slip recesses,
-      - top cover has male pins,
+      - middle cover has male pins,
+      - middle/upper split sits above the Pi 5 connector cutouts,
+      - upper cover is independently printable above the Pi 5 connector zone,
       - bottom tray has matching female sockets,
       - every inter-board gap has real side and back airflow grate openings,
       - non-conflicting front-face airflow grate openings exist,
@@ -293,8 +307,8 @@ request plan amendment before editing existing sources.
         openings,
       - required Raspberry Pi 5 service/access openings exist or README
         documents intentional limits,
-      - printable layout has exactly the two printable enclosure parts separated
-        on the print plane,
+      - printable layout has exactly the three printable enclosure parts
+        separated on the print plane,
       - no generated mesh files are tracked.
 
 16. Final review and delivery.
@@ -362,7 +376,7 @@ git diff --check
 Required source checks may be implemented as simple shell checks equivalent to:
 
 ```sh
-rg -n 'render_mode = "printable_layout"|bottom_tray|top_cover|electronics|assembly' designs/pi5_five_stack_enclosure.scad
+rg -n 'render_mode = "printable_layout"|bottom_tray|middle_cover|upper_cover|top_cover|electronics|assembly' designs/pi5_five_stack_enclosure.scad
 rg -n 'stack_board_count|rpi5_stack_index|pcb_stack_gap|inter.*gap|top.*clearance' designs/pi5_five_stack_enclosure.scad README.md
 rg -n 'cover_pin|plug_pin|male|tray_socket|socket|female' designs/pi5_five_stack_enclosure.scad README.md
 rg -n 'anti_slip|anti_slide|foot_recess|standoff|pilot|insert' designs/pi5_five_stack_enclosure.scad README.md
@@ -375,6 +389,8 @@ Required OpenSCAD inspection exports:
 ```sh
 timeout 15s openscad -o /tmp/pi5_five_stack_enclosure_assembly.off -D 'render_mode="assembly"' designs/pi5_five_stack_enclosure.scad
 timeout 15s openscad -o /tmp/pi5_five_stack_enclosure_bottom_tray.off -D 'render_mode="bottom_tray"' designs/pi5_five_stack_enclosure.scad
+timeout 15s openscad -o /tmp/pi5_five_stack_enclosure_middle_cover.off -D 'render_mode="middle_cover"' designs/pi5_five_stack_enclosure.scad
+timeout 15s openscad -o /tmp/pi5_five_stack_enclosure_upper_cover.off -D 'render_mode="upper_cover"' designs/pi5_five_stack_enclosure.scad
 timeout 15s openscad -o /tmp/pi5_five_stack_enclosure_top_cover.off -D 'render_mode="top_cover"' designs/pi5_five_stack_enclosure.scad
 timeout 15s openscad -o /tmp/pi5_five_stack_enclosure_electronics.off -D 'render_mode="electronics"' designs/pi5_five_stack_enclosure.scad
 timeout 15s openscad -o /tmp/pi5_five_stack_enclosure_printable_layout.off -D 'render_mode="printable_layout"' designs/pi5_five_stack_enclosure.scad
