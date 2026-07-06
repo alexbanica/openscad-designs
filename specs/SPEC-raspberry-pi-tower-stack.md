@@ -5,9 +5,10 @@ Status: Approved
 ## Purpose
 
 Create an editable OpenSCAD printable enclosure for a vertical Raspberry Pi-size
-tower stack with five PCBs, a Raspberry Pi 5 as the fourth PCB, top-cover fan
-mounting for two small square fans, strong Raspberry Pi 5 airflow, and a covered
-perpendicular display assembly that leaves only the display face exposed.
+tower stack with five PCBs, NVMe boards as PCB 1 and PCB 3, a Raspberry Pi 5 as
+PCB 4, a Cluster HAT-style top PCB as PCB 5, top-cover fan mounting for two
+small square fans, strong airflow, and a covered perpendicular display assembly
+that leaves only the display face exposed.
 
 The design must preserve later tuning of PCB spacing, the top-cover clearance
 above the stack, fan dimensions, fan placement, and display/window dimensions
@@ -18,6 +19,9 @@ through user-adjustable parameters.
 Physical/visual review of the first tower model showed several issues that the
 final design contract must make explicit:
 
+- The five-PCB order is fixed by default: PCB 1 NVMe, PCB 2 simplified
+  Raspberry Pi-size placeholder, PCB 3 NVMe, PCB 4 Raspberry Pi 5, PCB 5
+  Cluster HAT-style top board.
 - PCB references must share one Raspberry Pi-size coordinate frame. The
   Raspberry Pi 5 fourth-board reference must sit inside the same tower footprint
   and enclosure envelope as the other PCB references, not outside the case.
@@ -29,6 +33,10 @@ final design contract must make explicit:
   PCI splitter beneath the Raspberry Pi 5 PCB. The design must provide
   adjustable bottom/side air passages under the Pi 5 board, not only top-cover
   or side vents above the Pi 5.
+- PCB 1 and PCB 3 are NVMe boards and need their own adjustable bottom/side
+  airflow passages. PCB 1 is the bottom NVMe board, so bottom-tray airflow must
+  exist for that lower NVMe location.
+- The top PCB is a Cluster HAT-style board, not a generic placeholder.
 - The perpendicular screen/display assembly attached through the Pi 5 HAT
   splitter must have an actual cover shown in assembly and available through the
   display-cover/printable-layout render paths. The cover must hide the display
@@ -40,25 +48,31 @@ The repository has reusable Raspberry Pi 5 reference geometry and existing
 top-cover/bottom-tray enclosure patterns, but it does not yet have a generic
 five-PCB Raspberry Pi-size tower enclosure.
 
-The requested tower needs to model most PCBs as simplified Raspberry Pi-size
-boards with headers, while using the existing Raspberry Pi 5 model for the
-fourth board so Raspberry Pi 5 holes, ports, service areas, and airflow needs
-remain accessible. The top cover must support internal fan mounting for two
-small square fans, with one fan configured as intake and the other as exhaust.
-The design also needs a perpendicular display enclosure connected through a
-Raspberry Pi 5 HAT header splitter that provides both vertical and lateral
-header paths.
+The requested tower needs to model PCB 1 and PCB 3 as simplified NVMe boards,
+PCB 2 as a simplified Raspberry Pi-size board, PCB 4 with the existing
+Raspberry Pi 5 model, and PCB 5 as a simplified Cluster HAT-style top board. Pi
+5 holes, ports, service areas, and airflow needs must remain accessible. The top
+cover must support internal fan mounting for two small square fans, with one fan
+configured as intake and the other as exhaust. The design also needs a
+perpendicular display enclosure connected through a Raspberry Pi 5 HAT header
+splitter that provides both vertical and lateral header paths.
 
 ## Scope
 
 - Add a new editable OpenSCAD design for the Raspberry Pi tower stack enclosure.
-- Model a five-PCB vertical stack using Raspberry Pi-size board outlines.
+- Model a five-PCB vertical stack using Raspberry Pi-size board outlines with
+  PCB 1 and PCB 3 as NVMe boards, PCB 4 as the Raspberry Pi 5, and PCB 5 as a
+  Cluster HAT-style top board by default.
 - Use `designs/rpi5.scad` as the fit and clearance reference for the fourth PCB,
   including Raspberry Pi 5 board shape, mounting holes, port/service positions,
   GPIO/header position, microSD access, and optional active-cooler reference.
-- Model the other four PCBs as simplified Raspberry Pi-size placeholder boards
-  with adjustable board dimensions, thickness, mounting-hole geometry, and
-  header preview geometry.
+- Model PCB 2 as a simplified Raspberry Pi-size placeholder board with
+  adjustable board dimensions, thickness, mounting-hole geometry, and header
+  preview geometry.
+- Model PCB 1 and PCB 3 as simplified NVMe board references with adjustable
+  board, module, heatsink, and airflow geometry.
+- Model PCB 5 as a simplified Cluster HAT-style reference with adjustable board,
+  GPIO/socket, downstream socket, and header geometry.
 - Make PCB-to-PCB vertical spacing configurable for each gap, not only as one
   global stack height.
 - Make the distance from the top of the highest PCB to the top cover easily
@@ -75,6 +89,8 @@ header paths.
   side and/or top airflow paths near the Pi 5 active-cooler/SoC area.
 - Provide under-board air passages beneath the Raspberry Pi 5 PCB for NVMe
   modules with heatsinks and the PCI splitter.
+- Provide extra air passages around PCB 1 and PCB 3 for their NVMe modules and
+  heatsinks, including bottom-tray airflow for PCB 1.
 - Provide internal top-cover mounting support for two small square fans matching
   the supplied fan style, with both fan slots physically usable by default.
 - Provide air openings/grilles through the top cover for both fans and document
@@ -115,6 +131,9 @@ header paths.
 - Tower stack: five Raspberry Pi-size PCBs arranged vertically with configurable
   spacing between adjacent PCBs.
 - Fourth PCB: the Raspberry Pi 5 board in the stack, counted from bottom to top.
+- First PCB: an NVMe board at the bottom of the stack.
+- Third PCB: an NVMe board below the Raspberry Pi 5.
+- Fifth PCB: a simplified Cluster HAT-style top board above the Raspberry Pi 5.
 - Simplified PCB: a placeholder Raspberry Pi-size board body with mounting holes
   and header preview geometry but no detailed electronics.
 - Top-cover clearance: the configurable vertical distance from the top face of
@@ -129,6 +148,8 @@ header paths.
 - Under-Pi5 airflow path: adjustable bottom and/or lower-side ventilation
   openings and internal clearance under the Raspberry Pi 5 PCB so air can move
   across NVMe heatsinks and the PCI splitter beneath the Pi 5.
+- NVMe board airflow path: adjustable bottom and/or side ventilation openings
+  aligned to PCB 1 and PCB 3 NVMe module/heatsink reference areas.
 - Display cover: the printed enclosure extension around the perpendicular
   display module, with a window/opening that exposes only the active display
   face.
@@ -156,7 +177,9 @@ implementation:
   Raspberry Pi 5 mounting-hole coordinate pattern from `designs/rpi5.scad` by
   default.
 - Stack PCB count: `5`.
+- NVMe stack indices: `1` and `3`.
 - Raspberry Pi 5 stack index: `4`.
+- Cluster HAT stack index: `5`.
 - Initial per-gap PCB spacing: use an adjustable vector with conservative
   defaults rather than a hard-coded single height.
 - Top-of-PCB-to-top-cover clearance: use an adjustable value with a conservative
@@ -173,6 +196,10 @@ implementation:
   simulated airflow.
 - Under-Pi5 NVMe/heatsink/PCI splitter envelope: configurable placeholder
   clearance dimensions until the real modules and splitter are measured.
+- PCB 1 and PCB 3 NVMe module/heatsink envelope: configurable placeholder
+  dimensions until the real NVMe hardware is measured.
+- Cluster HAT-style top board sockets and header geometry: configurable
+  placeholders until the real board is measured.
 - Display PCB/body size, active display window size, and display offset from the
   lateral header: configurable placeholder dimensions until the real display is
   measured.
@@ -234,7 +261,9 @@ implementation:
   print plane with no floating printable geometry.
 - Visibility toggles must independently control:
   - simplified PCB placeholders,
+  - NVMe board references,
   - Raspberry Pi 5 reference,
+  - Cluster HAT-style top-board reference,
   - Raspberry Pi 5 active cooler if rendered through the reference,
   - headers/header splitter,
   - fan previews,
@@ -243,12 +272,18 @@ implementation:
 - The five PCBs must be positioned from bottom to top using a configurable
   spacing list/vector so each inter-board gap can be tuned independently.
 - The fourth PCB must be the Raspberry Pi 5 reference by default.
+- PCB 1 and PCB 3 must be NVMe board references by default.
+- PCB 5/top must be a Cluster HAT-style reference by default.
 - The fourth-board Raspberry Pi 5 reference must align to the same enclosure
   coordinate frame as the placeholder PCBs. The board outline, mounting holes,
   GPIO/header area, and mirrored cutout references must be checked together so
   the Pi 5 is not translated outside the shell.
-- The other four PCBs must render as simplified Raspberry Pi-size boards with
-  mounting holes and header previews.
+- PCB 2 must render as a simplified Raspberry Pi-size board with mounting holes
+  and header preview.
+- PCB 1 and PCB 3 must render as simplified NVMe boards with module/heatsink
+  previews.
+- PCB 5 must render as a simplified Cluster HAT-style board with GPIO/socket
+  previews.
 - The bottom tray must include support/standoff or clearance features aligned to
   the Raspberry Pi-size mounting-hole pattern.
 - The Raspberry Pi 5 service/access openings must include, at minimum:
@@ -270,6 +305,9 @@ implementation:
   passages must be adjustable by count, size, spacing, enablement, and position,
   and must preserve tray strength around standoffs, sockets, and mounting
   supports.
+- NVMe board airflow must include real subtractive side-wall passages for PCB 1
+  and PCB 3 plus bottom-tray passages for the bottom NVMe board. These passages
+  must be adjustable by count, size, spacing, enablement, and position.
 - The top cover must provide two internal fan mounting positions by default.
 - Each fan mount must include:
   - a real airflow opening or grille through the top cover,
@@ -310,8 +348,9 @@ implementation:
 
 - "Raspberry Pi size" means the Raspberry Pi 5 board outline by default:
   `85.0 mm x 56.0 mm`.
-- "5 pcb raspberry pi size" means five stacked boards using the same footprint,
-  with the fourth board replaced by the detailed Raspberry Pi 5 reference.
+- "5 pcb raspberry pi size" means five stacked boards using the same footprint:
+  PCB 1 NVMe, PCB 2 placeholder, PCB 3 NVMe, PCB 4 detailed Raspberry Pi 5, and
+  PCB 5 Cluster HAT-style top board.
 - "Pi5 holes accessible" means the fourth-board mounting holes and relevant Pi 5
   service/port areas must not be buried behind solid printed walls by default.
 - "Air holes specially for the Pi 5 pcb" means extra ventilation is required
@@ -325,8 +364,8 @@ implementation:
   must use clearly documented adjustable placeholder dimensions.
 - The display is mounted perpendicular to the tower through the lateral header
   side of the Pi 5 HAT header splitter.
-- The vertical header branch of the splitter supports another PCB above the Pi 5
-  within the five-board stack.
+- The vertical header branch of the splitter supports the Cluster HAT-style PCB
+  above the Pi 5 within the five-board stack.
 - The screen/display cover is required printable geometry, not only a preview
   placeholder.
 - A functional rectangular/rounded tower enclosure with service openings,
@@ -366,12 +405,15 @@ implementation:
 - The source must use `designs/rpi5.scad` for the fourth-board Raspberry Pi 5
   reference.
 - The source must model five configurable Raspberry Pi-size PCB positions.
+- The default board order must be PCB 1 NVMe, PCB 2 placeholder, PCB 3 NVMe,
+  PCB 4 Raspberry Pi 5, PCB 5 Cluster HAT-style top board.
 - The Raspberry Pi 5 PCB reference must be visibly aligned inside the enclosure
   and inside the same tower footprint as the placeholder PCBs.
 - PCB-to-PCB spacing must be configurable per inter-board gap.
 - The fourth PCB must default to the Raspberry Pi 5 reference.
-- The other four PCBs must default to simplified Raspberry Pi-size board models
-  with headers.
+- PCB 1 and PCB 3 must default to simplified NVMe board references.
+- PCB 5/top must default to a simplified Cluster HAT-style board reference.
+- PCB 2 must default to a simplified Raspberry Pi-size board model with header.
 - The distance from the top of the highest PCB to the top cover must be
   controlled by an obvious adjustable parameter.
 - The bottom tray/top cover must use a top-cover-male and bottom-tray-female
@@ -382,6 +424,8 @@ implementation:
 - Extra adjustable ventilation openings must exist near the Raspberry Pi 5 zone.
 - Extra adjustable under-Pi5 airflow openings/passages must exist for NVMe
   heatsinks and the PCI splitter beneath the Pi 5 board.
+- Extra adjustable NVMe airflow openings/passages must exist for PCB 1 and PCB
+  3, including bottom-tray passages for PCB 1.
 - The top cover must support two configurable internal fan mounts that are both
   usable by default.
 - The top cover must include real air openings/grilles for both fan mounts.
@@ -428,12 +472,15 @@ implementation:
   - `printable_layout`.
 - Visually inspect generated OpenSCAD outputs for:
   - five-board stack positioning,
+  - PCB 1 and PCB 3 NVMe board placement,
   - fourth-board Raspberry Pi 5 placement,
+  - fifth-board Cluster HAT-style placement,
   - configurable board spacing behavior,
   - top-cover clearance behavior,
   - Raspberry Pi 5 service and port openings,
   - extra Pi 5-zone ventilation holes,
   - under-Pi5 airflow passages for the NVMe/heatsink/PCI splitter area,
+  - NVMe airflow passages for PCB 1 and PCB 3,
   - two internal fan mounts with usable screw-hole/boss layout and through-cover
     air openings,
   - one fan documented as intake and the other documented as exhaust,
@@ -447,8 +494,9 @@ implementation:
 ## Documentation Requirements
 
 - Update `README.md` to list the new tower stack enclosure source.
-- Document the five-PCB stack model and that the fourth PCB is the Raspberry
-  Pi 5 reference by default.
+- Document the five-PCB stack model: PCB 1 and PCB 3 are NVMe boards, PCB 4 is
+  the Raspberry Pi 5 reference, and PCB 5 is the Cluster HAT-style top board by
+  default.
 - Document the manually entered dimension assumptions and that fan/display
   dimensions must be measured for final fit.
 - Document render modes and common adjustable parameters.
@@ -457,6 +505,7 @@ implementation:
 - Document Raspberry Pi 5 access/opening strategy.
 - Document Pi 5-zone ventilation and top fan support strategy.
 - Document under-Pi5 airflow support for NVMe heatsinks and the PCI splitter.
+- Document PCB 1 and PCB 3 NVMe airflow support.
 - Document how to tune the two fan mounts and the default intake/exhaust airflow
   intent.
 - Document the perpendicular display cover, display-window sizing, and header

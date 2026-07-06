@@ -38,6 +38,8 @@ show_tower_reference = true;
 show_stack_references = true;
 show_rpi5_reference = true;
 show_rpi5_active_cooler_reference = true;
+show_nvme_references = true;
+show_cluster_hat_reference = true;
 show_placeholder_board_headers = true;
 show_header_splitter_preview = true;
 show_fan_previews = true;
@@ -47,7 +49,9 @@ show_clearance_guides = false;
 
 // Stack count and spacing
 stack_board_count = 5;
+nvme_stack_indices = [1, 3]; // 1-based indices; PCB 1 and PCB 3 are NVMe boards
 rpi5_stack_index = 4; // 1-based index, defaulting the fourth board
+cluster_hat_stack_index = 5; // 1-based index, top PCB above the Pi 5
 pcb_stack_gap_z_mm = [14.0, 12.0, 14.0, 13.0];
 top_of_highest_board_to_top_cover_clearance_mm = 7.0;
 board_height_envelope_margin_mm = 1.4;
@@ -70,6 +74,31 @@ placeholder_board_header_size_mm = [51.0, 5.0, 2.5];
 placeholder_board_header_pin_pitch_mm = 2.54;
 placeholder_board_header_pin_size_mm = 0.64;
 placeholder_board_header_pin_height_mm = 6.0;
+
+// NVMe board references for PCB 1 and PCB 3.
+nvme_board_length_mm = 85.0;
+nvme_board_width_mm = 56.0;
+nvme_board_thickness_mm = 1.6;
+nvme_board_corner_radius_mm = 3.0;
+nvme_module_size_mm = [62.0, 22.0, 4.0];
+nvme_module_center_y_mm = 25.0;
+nvme_heatsink_size_mm = [54.0, 18.0, 5.0];
+nvme_heatsink_offset_z_mm = 4.0;
+
+// Top Cluster HAT-style PCB reference.
+cluster_hat_board_length_mm = 85.0;
+cluster_hat_board_width_mm = 56.0;
+cluster_hat_board_thickness_mm = 1.6;
+cluster_hat_board_corner_radius_mm = 3.0;
+cluster_hat_mounting_hole_diameter_mm = 2.75;
+cluster_hat_header_origin_mm = [8, 50, cluster_hat_board_thickness_mm];
+cluster_hat_header_size_mm = [51.0, 5.0, 2.5];
+cluster_hat_gpio_socket_size_mm = [51.0, 7.0, 4.0];
+cluster_hat_gpio_socket_origin_mm = [7.0, 47.5, cluster_hat_board_thickness_mm];
+cluster_hat_downstream_socket_count = 4;
+cluster_hat_downstream_socket_size_mm = [17.0, 7.0, 4.0];
+cluster_hat_downstream_socket_spacing_x_mm = 19.0;
+cluster_hat_downstream_socket_center_y_mm = 18.0;
 
 // Raspberry Pi 5 mirrored reference values from designs/rpi5.scad.
 // OpenSCAD `use` imports modules but not raw variables.
@@ -186,6 +215,20 @@ under_pi5_airflow_lower_side_height_mm = 7.0;
 under_pi5_airflow_lower_side_spacing_mm = 10.0;
 under_pi5_airflow_offset_below_pi5_board_mm = 6.0;
 
+// NVMe board airflow for PCB 1 and PCB 3
+enable_nvme_board_airflow = true;
+enable_bottom_nvme_airflow = true;
+nvme_airflow_slot_count = 4;
+nvme_airflow_slot_width_mm = 7.0;
+nvme_airflow_slot_length_mm = 34.0;
+nvme_airflow_slot_spacing_x_mm = 11.0;
+nvme_airflow_offset_y_mm = -2.0;
+nvme_side_vent_count = 4;
+nvme_side_vent_width_mm = 7.0;
+nvme_side_vent_height_mm = 8.0;
+nvme_side_vent_spacing_mm = 11.0;
+nvme_side_vent_center_above_board_mm = 8.0;
+
 // Fan mounts and airflow previews (two usable mounts, intake + exhaust by default)
 fan_mount_centers_mm = [
     [-18.0, -20.0],
@@ -248,6 +291,8 @@ board_bottom_z_mm = floor_thickness_mm + board_standoff_height_mm;
 function tower_board_thickness_mm(index) =
     (index + 1 == rpi5_stack_index)
         ? rpi5_board_thickness_mirror_mm
+        : (index + 1 == cluster_hat_stack_index)
+            ? cluster_hat_board_thickness_mm
         : placeholder_board_thickness_mm;
 
 function tower_board_width_mm() = placeholder_board_width_mm;
@@ -375,10 +420,12 @@ pi5_soc_world_y_mm = tower_board_world_y(rpi5_soc_origin_mirror_mm[1] + rpi5_soc
 pi5_top_vent_center_x_mm = pi5_soc_world_x_mm + pi5_vent_x_offset_from_soc_mm;
 pi5_top_vent_center_y_mm = pi5_soc_world_y_mm + pi5_vent_y_offset_from_soc_mm;
 pi5_board_bottom_z_mm = tower_stack_bottom_z_mm(rpi5_stack_index - 1);
+pi5_side_vent_world_center_z_mm = pi5_board_bottom_z_mm + pi5_side_vent_center_z_mm;
 under_pi5_airflow_center_z_mm = max(
     floor_thickness_mm + under_pi5_airflow_lower_side_height_mm / 2 + 1.0,
     pi5_board_bottom_z_mm - under_pi5_airflow_offset_below_pi5_board_mm
 );
+bottom_nvme_board_bottom_z_mm = tower_stack_bottom_z_mm(nvme_stack_indices[0] - 1);
 
 fan_mount_centers_count = len(fan_mount_centers_mm);
 fan_mount_body_opening_size_mm = fan_body_size_mm + fan_body_clearance_mm;
@@ -407,8 +454,23 @@ assert(
 );
 
 assert(
+    cluster_hat_stack_index == 5,
+    "Invariant check failed: cluster_hat_stack_index must be 5 so the top PCB is the Cluster HAT."
+);
+
+assert(
     len(pcb_stack_gap_z_mm) >= 4,
     "Invariant check failed: pcb_stack_gap_z_mm must contain at least 4 gap values for a 5-PCB stack."
+);
+
+assert(
+    len(nvme_stack_indices) == 2,
+    "Invariant check failed: nvme_stack_indices must identify PCB 1 and PCB 3."
+);
+
+assert(
+    nvme_stack_indices[0] == 1 && nvme_stack_indices[1] == 3,
+    "Invariant check failed: PCB 1 and PCB 3 must be NVMe boards."
 );
 
 assert(
@@ -504,6 +566,7 @@ module raspberry_pi_tower_stack_printable_bottom_tray() {
         raspberry_pi_tower_stack_port_cutout_volumes(include_top_service = false);
         raspberry_pi_tower_stack_pi5_zone_ventilation();
         raspberry_pi_tower_stack_under_pi5_airflow();
+        raspberry_pi_tower_stack_nvme_board_airflow();
     }
 }
 
@@ -533,6 +596,9 @@ module raspberry_pi_tower_stack_electronics_reference() {
         for (board_index = [0:stack_board_count - 1]) {
             board_bottom_z = tower_stack_bottom_z_mm(board_index);
             is_rpi5 = (board_index + 1 == rpi5_stack_index);
+            is_nvme = (board_index + 1 == nvme_stack_indices[0])
+                || (board_index + 1 == nvme_stack_indices[1]);
+            is_cluster_hat = (board_index + 1 == cluster_hat_stack_index);
 
             translate([
                 0,
@@ -555,6 +621,10 @@ module raspberry_pi_tower_stack_electronics_reference() {
                     if (show_header_splitter_preview) {
                         raspberry_pi_tower_splitter_and_display_preview(board_index);
                     }
+                } else if (is_nvme) {
+                    raspberry_pi_tower_stack_nvme_board_reference();
+                } else if (is_cluster_hat) {
+                    raspberry_pi_tower_stack_cluster_hat_reference();
                 } else {
                     raspberry_pi_tower_placeholder_board_reference();
                     if (show_placeholder_board_headers) {
@@ -744,7 +814,7 @@ module raspberry_pi_tower_stack_port_cutout_volume(
 ) {
     center_x_mm = tower_board_world_x(origin_mm[0] + size_mm[0] / 2);
     center_y_mm = tower_board_world_y(origin_mm[1] + size_mm[1] / 2);
-    center_z_mm = board_bottom_z_mm + origin_mm[2] + size_mm[2] / 2;
+    center_z_mm = pi5_board_bottom_z_mm + origin_mm[2] + size_mm[2] / 2;
     front_size_x_mm = max(size_mm[0], front_size_mm[0]);
     front_size_y_mm = max(size_mm[1], front_size_mm[1]);
 
@@ -814,7 +884,7 @@ module raspberry_pi_tower_stack_pi5_zone_ventilation() {
                 translate([
                     pi5_top_vent_center_x_mm + (vent_index - (pi5_side_vent_count - 1) / 2) * pi5_side_vent_spacing_mm,
                     side_sign * outer_width_mm / 2,
-                    pi5_side_vent_center_z_mm
+                    pi5_side_vent_world_center_z_mm
                 ])
                     cube(
                         [pi5_side_vent_width_mm, 2 * wall_thickness_mm + 2.0, pi5_side_vent_height_mm],
@@ -874,6 +944,45 @@ module raspberry_pi_tower_stack_under_pi5_airflow() {
                         2 * wall_thickness_mm + 2.0,
                         under_pi5_airflow_lower_side_height_mm
                     ], center = true);
+            }
+        }
+    }
+}
+
+module raspberry_pi_tower_stack_nvme_board_airflow() {
+    if (enable_nvme_board_airflow) {
+        if (enable_bottom_nvme_airflow) {
+            for (slot_index = [0:nvme_airflow_slot_count - 1]) {
+                translate([
+                    (slot_index - (nvme_airflow_slot_count - 1) / 2) * nvme_airflow_slot_spacing_x_mm,
+                    tower_board_world_y(nvme_module_center_y_mm) + nvme_airflow_offset_y_mm,
+                    floor_thickness_mm / 2
+                ])
+                    cube([
+                        nvme_airflow_slot_width_mm,
+                        nvme_airflow_slot_length_mm,
+                        floor_thickness_mm + 1.0
+                    ], center = true);
+            }
+        }
+
+        for (nvme_stack_index = nvme_stack_indices) {
+            board_index = nvme_stack_index - 1;
+            vent_center_z_mm = tower_stack_bottom_z_mm(board_index) + nvme_side_vent_center_above_board_mm;
+
+            for (vent_index = [0:nvme_side_vent_count - 1]) {
+                for (side_sign = [-1, 1]) {
+                    translate([
+                        (vent_index - (nvme_side_vent_count - 1) / 2) * nvme_side_vent_spacing_mm,
+                        side_sign * outer_width_mm / 2,
+                        vent_center_z_mm
+                    ])
+                        cube([
+                            nvme_side_vent_width_mm,
+                            2 * wall_thickness_mm + 2.0,
+                            nvme_side_vent_height_mm
+                        ], center = true);
+                }
             }
         }
     }
@@ -1009,6 +1118,103 @@ module raspberry_pi_tower_stack_placeholder_board_reference() {
                     h = placeholder_board_thickness_mm + 0.2,
                     d = placeholder_board_mounting_hole_diameter_mm
                 );
+        }
+    }
+}
+
+module raspberry_pi_tower_stack_nvme_board_reference() {
+    color("SeaGreen")
+    difference() {
+        raspberry_pi_tower_rounded_box(
+            [nvme_board_length_mm, nvme_board_width_mm, nvme_board_thickness_mm],
+            nvme_board_corner_radius_mm,
+            [0, 0, nvme_board_thickness_mm / 2]
+        );
+
+        for (hole_position_mm = placeholder_board_mounting_hole_positions_mm) {
+            translate([
+                tower_board_world_x(hole_position_mm[0]),
+                tower_board_world_y(hole_position_mm[1]),
+                -0.1
+            ])
+                cylinder(
+                    h = nvme_board_thickness_mm + 0.2,
+                    d = placeholder_board_mounting_hole_diameter_mm
+                );
+        }
+    }
+
+    if (show_nvme_references) {
+        color("DarkSlateGray")
+        translate([
+            -nvme_module_size_mm[0] / 2,
+            tower_board_world_y(nvme_module_center_y_mm) - nvme_module_size_mm[1] / 2,
+            nvme_board_thickness_mm
+        ])
+            cube(nvme_module_size_mm);
+
+        color("Silver")
+        translate([
+            -nvme_heatsink_size_mm[0] / 2,
+            tower_board_world_y(nvme_module_center_y_mm) - nvme_heatsink_size_mm[1] / 2,
+            nvme_board_thickness_mm + nvme_heatsink_offset_z_mm
+        ])
+            cube(nvme_heatsink_size_mm);
+    }
+
+    if (show_placeholder_board_headers) {
+        raspberry_pi_tower_placeholder_board_header();
+    }
+}
+
+module raspberry_pi_tower_stack_cluster_hat_reference() {
+    color("DarkGreen")
+    difference() {
+        raspberry_pi_tower_rounded_box(
+            [cluster_hat_board_length_mm, cluster_hat_board_width_mm, cluster_hat_board_thickness_mm],
+            cluster_hat_board_corner_radius_mm,
+            [0, 0, cluster_hat_board_thickness_mm / 2]
+        );
+
+        for (hole_position_mm = placeholder_board_mounting_hole_positions_mm) {
+            translate([
+                tower_board_world_x(hole_position_mm[0]),
+                tower_board_world_y(hole_position_mm[1]),
+                -0.1
+            ])
+                cylinder(
+                    h = cluster_hat_board_thickness_mm + 0.2,
+                    d = cluster_hat_mounting_hole_diameter_mm
+                );
+        }
+    }
+
+    if (show_placeholder_board_headers) {
+        color(connector_colour)
+        translate([
+            tower_board_world_x(cluster_hat_header_origin_mm[0]),
+            tower_board_world_y(cluster_hat_header_origin_mm[1]),
+            cluster_hat_header_origin_mm[2]
+        ])
+            cube(cluster_hat_header_size_mm);
+
+        color("Black")
+        translate([
+            tower_board_world_x(cluster_hat_gpio_socket_origin_mm[0]),
+            tower_board_world_y(cluster_hat_gpio_socket_origin_mm[1]),
+            cluster_hat_gpio_socket_origin_mm[2]
+        ])
+            cube(cluster_hat_gpio_socket_size_mm);
+
+        for (socket_index = [0:cluster_hat_downstream_socket_count - 1]) {
+            translate([
+                (socket_index - (cluster_hat_downstream_socket_count - 1) / 2) * cluster_hat_downstream_socket_spacing_x_mm
+                    - cluster_hat_downstream_socket_size_mm[0] / 2,
+                tower_board_world_y(cluster_hat_downstream_socket_center_y_mm)
+                    - cluster_hat_downstream_socket_size_mm[1] / 2,
+                cluster_hat_board_thickness_mm
+            ])
+                cube(cluster_hat_downstream_socket_size_mm);
         }
     }
 }

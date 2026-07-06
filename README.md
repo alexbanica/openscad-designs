@@ -514,26 +514,34 @@ Manual inspection checklist:
 
 `designs/raspberry_pi_tower_stack.scad` is a printable bottom-tray and
 removable-top-cover enclosure for a five-board Raspberry Pi-size stack with a
-Raspberry Pi 5 as the fourth board.
+Raspberry Pi 5 as the fourth board and a Cluster HAT-style PCB as the top board.
 
 It includes a centered stack reference with adjustable per-PCB gap spacing, Pi 5
-service/access openings around the fourth-board zone, under-Pi5 airflow for NVMe
-heatsinks and a PCI splitter, two small square fan mount positions configured as
-intake/exhaust by default, and a perpendicular display cover assembly preview
-with a clear window.
+service/access openings around the fourth-board zone, NVMe board references at
+PCB 1 and PCB 3, under-Pi5 airflow for NVMe heatsinks and a PCI splitter, extra
+NVMe airflow for the bottom and third PCBs, two small square fan mount positions
+configured as intake/exhaust by default, and a perpendicular display cover
+assembly preview with a clear window.
 
 ### Component Assumptions
 
 The design defaults are planning values and remain fully adjustable:
 
 - Five-board stack using Raspberry Pi-size footprints.
-- Fourth board is Raspberry Pi 5 by default (`rpi5_stack_index = 4`).
+- PCB 1 and PCB 3 are NVMe boards by default (`nvme_stack_indices = [1, 3]`).
+- PCB 4 is Raspberry Pi 5 by default (`rpi5_stack_index = 4`).
+- PCB 5/top is a Cluster HAT-style board by default
+  (`cluster_hat_stack_index = 5`).
 - Per-gap stack spacing vector defaults to `[14.0, 12.0, 14.0, 13.0]` mm.
 - Top-cover clearance (from the top of the highest PCB to the inner top-cover target)
   defaults to `7.0` mm via
   `top_of_highest_board_to_top_cover_clearance_mm`.
 - Generic placeholder PCB defaults: `85.0 mm x 56.0 mm x 1.6 mm` with Pi 5-style
   mounting pattern and simplified header geometry.
+- NVMe PCB defaults use the same `85.0 mm x 56.0 mm x 1.6 mm` Raspberry Pi-size
+  board outline with adjustable module and heatsink preview geometry.
+- Cluster HAT-style top-board defaults use the same Raspberry Pi-size board
+  outline with adjustable GPIO/socket and downstream socket preview geometry.
 - Top cover interface defaults are 4-pin male/female socket geometry:
   - pin count: `4` with `4` active pins by default at `(-42.0, -28.0)`,
     `(42.0, -28.0)`, `(-42.0, 28.0)`, `(42.0, 28.0)`
@@ -550,6 +558,10 @@ The design defaults are planning values and remain fully adjustable:
   `under_pi5_airflow_slot_width_mm`, `under_pi5_airflow_slot_length_mm`,
   `under_pi5_airflow_lower_side_count`, and related spacing/offset parameters
   after measuring the real modules.
+- NVMe airflow defaults provide bottom-tray slots below PCB 1 and side-wall vent
+  openings near PCB 1 and PCB 3. Tune `enable_nvme_board_airflow`,
+  `enable_bottom_nvme_airflow`, `nvme_airflow_*`, and `nvme_side_vent_*`
+  parameters after measuring the real NVMe modules and heatsinks.
 - Fan defaults are configurable square fan mounts with default mount centers at
   `[[-18.0, -20.0], [18.0, -20.0]]`, defaults `fan_mount_enabled_flags = [true, true]`,
   `fan_airflow_direction_labels = ["intake", "exhaust"]`,
@@ -592,6 +604,8 @@ Top-level parameters are grouped in the source under:
 
 - render controls, visibility toggles, and inspection helpers,
 - stack and spacing controls,
+- NVMe board and airflow controls,
+- Cluster HAT-style top-board controls,
 - Raspberry Pi 5 mirror values,
 - wall/floor/roof and clearances,
 - supports, standoffs, pin/socket parameters,
@@ -621,6 +635,11 @@ Common edits:
   `under_pi5_airflow_*`, and `under_pi5_airflow_lower_side_*` values to move or
   resize bottom-tray and lower-side passages around real NVMe, heatsink, and
   PCI splitter hardware.
+- Tune `nvme_stack_indices`, `nvme_module_size_mm`, `nvme_heatsink_size_mm`,
+  `enable_nvme_board_airflow`, `enable_bottom_nvme_airflow`, `nvme_airflow_*`,
+  and `nvme_side_vent_*` values for the PCB 1 and PCB 3 NVMe boards.
+- Tune `cluster_hat_*` values for the top Cluster HAT-style board sockets and
+  header geometry.
 - Tune fan mounting (`fan_mount_centers_mm`, `fan_body_size_mm`,
   `fan_body_clearance_mm`, `fan_mount_*`) and `fan_mount_enabled_flags` for one or two fan builds.
   Both mounts are populated by default; `fan_airflow_direction_labels` documents
@@ -637,7 +656,8 @@ Set `render_mode` to one of:
   mounting supports.
 - `top_cover`: printable top cover only, with male plug pins and top-coverage openings.
 - `display_cover`: display cover/extension geometry only.
-- `electronics`: only the five-board references (placeholder boards + Pi 5 fourth board).
+- `electronics`: only the five-board references (PCB 1/3 NVMe boards, PCB 2
+  placeholder, PCB 4 Pi 5, PCB 5 Cluster HAT-style board).
 - `printable_layout`: tray, top cover, and display cover arranged for separate printing inspection.
 
 Optional inspection commands:
@@ -662,8 +682,9 @@ openscad -o /tmp/raspberry_pi_tower_stack_printable_layout.off -D 'render_mode="
 - The fourth-board Pi 5 access is provided for mounting holes, USB-A, Ethernet,
   USB-C power, both micro-HDMI ports, camera/display, PCIe, and microSD.
 - Airflow features include Pi 5-side wall ventilation, Pi 5-top-zone vent holes,
-  bottom tray airflow slots, and lower side-wall passages below the Pi 5 board
-  for the NVMe/heatsink and PCI splitter area.
+  bottom tray airflow slots, lower side-wall passages below the Pi 5 board for
+  the NVMe/heatsink and PCI splitter area, and dedicated PCB 1/PCB 3 NVMe
+  airflow openings.
 - Two fan mounts are always modeled and both are populated by default, with
   direction labels documenting one intake slot and one exhaust slot.
 - The display cover hides the display body and only exposes the configured window on the active
@@ -674,13 +695,16 @@ Manual inspection checklist:
 
 - Confirm `assembly`, `bottom_tray`, `top_cover`, `display_cover`, `electronics`, and `printable_layout` all render.
 - Confirm `pcb_stack_gap_z_mm` affects each inter-board interval independently.
-- Confirm the fourth board is Raspberry Pi 5 and others are placeholder Raspberry Pi-size boards.
+- Confirm PCB 1 and PCB 3 are NVMe boards, PCB 4 is Raspberry Pi 5, and PCB 5 is
+  the Cluster HAT-style top board.
 - Confirm top-cover clearance is controlled by `top_of_highest_board_to_top_cover_clearance_mm`.
 - Confirm top cover has male pins and tray has matching female socket bosses/holes.
 - Confirm USB-A, Ethernet, USB-C, micro-HDMI, camera/display, PCIe, and microSD openings are included.
 - Confirm Pi 5-zone ventilation exists on side walls and top openings.
 - Confirm under-Pi5 bottom and lower-side airflow openings exist below the
   fourth-board Raspberry Pi 5 zone.
+- Confirm PCB 1 has bottom-tray NVMe airflow and PCB 1/PCB 3 have side-wall
+  NVMe airflow openings.
 - Confirm two fan mounts are present, populated, non-overlapping by default, and
   documented as intake/exhaust.
 - Confirm header splitter preview includes a vertical and lateral branch.

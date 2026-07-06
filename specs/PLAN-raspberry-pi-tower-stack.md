@@ -9,7 +9,9 @@ Status: Approved
 ## Scope
 
 Implement the approved Raspberry Pi tower stack enclosure corrections in the
-existing OpenSCAD design and update README documentation.
+existing OpenSCAD design and update README documentation, including the
+corrected board order: PCB 1 NVMe, PCB 2 placeholder, PCB 3 NVMe, PCB 4
+Raspberry Pi 5, PCB 5 Cluster HAT-style top board.
 
 Do not implement behavior outside the approved spec.
 
@@ -75,16 +77,19 @@ editing existing sources.
      source assertions for:
      - required render modes,
      - five-PCB stack parameters,
+     - PCB 1 and PCB 3 NVMe board parameters/modules,
      - per-gap PCB spacing controls,
      - fourth-board Raspberry Pi 5 reference integration,
      - fourth-board Raspberry Pi 5 alignment inside the shared tower footprint
        and enclosure envelope,
+     - fifth-board Cluster HAT-style top-board parameters/modules,
      - top-cover clearance parameter,
      - top-cover male pin parameters/modules,
      - bottom-tray female socket parameters/modules,
      - Raspberry Pi 5 access/cutout references,
      - Pi 5-zone ventilation modules,
      - under-Pi5 airflow parameters/modules for NVMe heatsinks and PCI splitter,
+     - PCB 1 and PCB 3 NVMe airflow parameters/modules,
      - two usable fan-mount parameters/modules,
      - fan airflow openings/grilles for both mounts,
      - intake/exhaust fan direction parameters or documentation,
@@ -100,9 +105,11 @@ editing existing sources.
    - Add grouped `Adjustable Parameters` near the top:
      - render controls and visibility toggles,
      - generic PCB and stack dimensions,
+     - NVMe board and airflow values for PCB 1 and PCB 3,
      - per-gap PCB spacing and top-cover clearance,
      - Raspberry Pi 5 board and port source values or local mirrors,
      - Raspberry Pi 5 board transform/alignment offsets if needed,
+     - Cluster HAT-style top-board values,
      - enclosure wall/floor/roof/clearance values,
      - board mounting/support values,
      - top-cover male pin and bottom-tray socket values,
@@ -125,8 +132,10 @@ editing existing sources.
    - `use <rpi5.scad>` for the fourth-board Raspberry Pi 5 visual reference.
    - Provide an electronics/reference render that can show:
      - all five board positions,
-     - simplified placeholder boards for boards 1, 2, 3, and 5,
+     - simplified NVMe board references for boards 1 and 3,
+     - simplified placeholder board for board 2,
      - the Raspberry Pi 5 reference for board 4,
+     - simplified Cluster HAT-style reference for board 5,
      - optional Raspberry Pi 5 active cooler if exposed by the reference,
      - simplified GPIO/header previews,
      - simplified vertical/lateral header splitter,
@@ -147,6 +156,8 @@ editing existing sources.
    - Ensure changing one gap affects only the intended adjacent board placement
      and downstream stack height.
    - Keep the fourth PCB defaulted to the Raspberry Pi 5 reference position.
+   - Keep PCB 1 and PCB 3 defaulted to NVMe board references.
+   - Keep PCB 5 defaulted to the Cluster HAT-style top board.
 
 7. Implement printable part modules.
    - Add named modules for:
@@ -164,6 +175,7 @@ editing existing sources.
      - tray socket holes,
      - Raspberry Pi 5 port/service cutout volumes,
      - Raspberry Pi 5-zone ventilation cutout volumes,
+     - NVMe board airflow cutout volumes,
      - fan mount bodies, bosses, holes, and airflow openings,
      - display cover body and display-window cutout,
      - header-splitter preview geometry,
@@ -181,6 +193,8 @@ editing existing sources.
      the fourth-board service envelope intersects the tray.
    - Add under-Pi5 airflow cutouts/passages beneath the fourth board for NVMe
      heatsinks and the PCI splitter.
+   - Add bottom-tray airflow cutouts for PCB 1 and side airflow cutouts for PCB
+     1 and PCB 3 NVMe board zones.
    - Keep under-Pi5 cutouts adjustable and avoid weakening standoffs, socket
      receivers, cover-pin interfaces, and mounting supports.
    - Keep the tray printable with the broad stable face on the print plane.
@@ -230,6 +244,9 @@ editing existing sources.
    - Make under-Pi5 airflow count, size, spacing, enablement, and position
      adjustable.
    - Preserve material around tray sockets, standoffs, and board supports.
+   - Add NVMe board airflow openings for PCB 1 and PCB 3.
+   - Make NVMe airflow count, size, spacing, enablement, and position
+     adjustable.
 
 12. Implement the two top-cover fan mounts.
    - Add two configurable internal square fan footprints matching the supplied
@@ -280,10 +297,11 @@ editing existing sources.
    - Update the Raspberry Pi tower stack enclosure section.
    - Document component assumptions, manually entered dimensions, source
      relationship to `rpi5.scad`, render modes, common adjustable parameters,
-     per-gap stack spacing, top-cover clearance, Pi 5 access, Pi 5-zone
-     ventilation, under-Pi5 airflow for NVMe heatsinks/PCI splitter, two-fan
-     intake/exhaust support, display cover/window behavior, header-splitter
-     assumptions, Bambu-friendly printability, and validation commands.
+     corrected board order, per-gap stack spacing, top-cover clearance, Pi 5
+     access, Pi 5-zone ventilation, under-Pi5 airflow for NVMe heatsinks/PCI
+     splitter, PCB 1/PCB 3 NVMe airflow, two-fan intake/exhaust support, display
+     cover/window behavior, header-splitter assumptions, Bambu-friendly
+     printability, and validation commands.
    - Document any mirrored Raspberry Pi 5 connector values if the implementation
      uses local mirrors.
 
@@ -309,12 +327,15 @@ editing existing sources.
    - Confirm:
      - all required render modes generate,
      - five board positions exist and use configurable spacing,
+     - PCB 1 and PCB 3 are NVMe board references,
      - fourth board is the Raspberry Pi 5 reference and is aligned inside the
        tower footprint/enclosure envelope,
+     - fifth board is the Cluster HAT-style top-board reference,
      - top-cover clearance parameter affects enclosure height,
      - all required Raspberry Pi 5 access openings exist,
      - extra Pi 5-zone ventilation is real subtractive geometry,
      - under-Pi5 airflow passages exist for the NVMe/heatsink/PCI splitter area,
+     - NVMe airflow passages exist for PCB 1 and PCB 3,
      - top cover has two internally usable fan mounts,
      - both fan mounts have through-cover airflow openings,
      - one fan is documented as intake and one as exhaust,
