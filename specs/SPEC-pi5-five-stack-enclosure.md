@@ -10,11 +10,28 @@ where the fourth PCB from bottom to top is the Raspberry Pi 5 by default.
 The enclosure must have exactly three printable enclosure parts by default: a
 bottom cover/tray, a middle cover, and an upper cover. The distance between
 every adjacent PCB must be easy to configure, airflow between every PCB is
-mandatory, the base PCB must mount to the bottom cover, the middle cover must
+mandatory, the upper cover must support two internal 40 mm fan positions to cool
+PCB 5, the base PCB must mount to the bottom cover, the middle cover must
 connect to the bottom cover using the repository's existing male/female
 pin-and-socket principle, the upper cover must connect to the middle cover with
 a second male/female pin-and-socket interface, and the bottom cover must provide
 anti-slip support.
+
+## Iteration: 2026-07-06 Internal Top-Cover Fans
+
+The previous approved behavior intentionally excluded fans and kept the upper
+cover roof fully closed. This iteration changes that final behavior:
+
+- The upper cover must provide mounting points for two internal 40 mm square
+  fans mounted on the inside face of the upper cover.
+- Each fan default is `40.0 mm x 40.0 mm x 10.0 mm`.
+- The upper cover height must increase so the internal fans, fan mounting
+  bosses, and fan screw/pilot geometry do not reduce the previously approved
+  PCB 5 headroom.
+- Fan airflow openings must be guarded rather than one full 40 mm open hole, so
+  the roof remains debris-resistant while still allowing strong circulation.
+- The fans are intended to cool PCB 5. Electrical fan routing, fan models,
+  thermal simulation, and real airflow testing remain out of scope.
 
 ## Problem Statement
 
@@ -38,7 +55,8 @@ between boards.
   Raspberry Pi 5 reference and service-access level.
 - Make each of the four distances between adjacent PCBs independently
   configurable.
-- Make the top clearance above the fifth/highest PCB configurable.
+- Make the top clearance above the fifth/highest PCB configurable and derive it
+  so the default includes room for internal fan thickness and mounting bosses.
 - Provide only three default printable enclosure parts:
   - bottom cover/tray,
   - middle cover up through the Pi 5 connector-access zone,
@@ -65,7 +83,12 @@ between boards.
   default on both side walls and the back face, with front-face openings where
   they do not interfere with the Pi 5 front connector cutouts.
 - Provide additional upper top-cover ventilation through the vertical walls
-  above PCB 5 while keeping the roof fully closed.
+  above PCB 5 while keeping non-fan roof areas closed.
+- Provide guarded fan airflow openings through the upper cover roof for two
+  internal fan positions, while preserving debris protection with ribs, grille
+  bars, or a comparable non-full-hole pattern.
+- Provide upper-cover inside fan mounting bosses or posts for two 40 mm square
+  fans.
 - Provide Raspberry Pi 5 access openings for the stack where necessary for
   serviceability and cable access.
 - Include render modes for assembly, bottom cover/tray, middle cover, upper
@@ -81,14 +104,17 @@ between boards.
   control.
 - Additional printable enclosure parts beyond the bottom cover/tray, middle
   cover, and upper cover.
-- Fans, fan mounts, display covers, display windows, header splitters, NVMe
-  board placeholders, Cluster HAT placeholders, or other board-specific add-ons.
+- Display covers, display windows, header splitters, NVMe board placeholders,
+  Cluster HAT placeholders, or other board-specific add-ons.
+- Electrical wiring, connectors, fan control, fan power delivery, thermal
+  simulation, airflow simulation, and fan vendor-specific cosmetic modeling.
 - Vendor-certified mechanical reproduction of Raspberry Pi 5 components,
   fasteners, labels, traces, heatsinks, coolers, cables, or board-to-board
   spacer hardware.
-- Electrical, thermal, airflow simulation, operating-system, or load testing.
+- Operating-system or load testing.
 - Physical test-print validation unless separately requested.
-- A sealed, dustproof, weatherproof, or acoustically optimized enclosure.
+- A sealed, dustproof, weatherproof, or acoustically optimized enclosure. The
+  fan grilles are only debris-resistant guards, not filtration.
 - Changes to existing Raspberry Pi 5 reference behavior unless an approved plan
   explicitly allows a minimal helper/accessor change.
 
@@ -112,6 +138,12 @@ between boards.
   short downward male pins that plug into the middle cover.
 - Top cover: the combined removable cover body made from the middle cover and
   upper cover.
+- Internal fan mount: upper-cover inside mounting geometry for one 40 mm square
+  fan body, including fan clearance, screw bosses or pilot holes, and a guarded
+  roof airflow grille aligned to the fan area.
+- Guarded fan airflow opening: a roof opening pattern made from multiple smaller
+  holes, slots, or grille gaps with remaining printed ribs/material, explicitly
+  not a single full-size 40 mm cutout.
 - Male/female connection method: cylindrical male pins extending from the middle
   cover into matching female cylindrical socket holes in the bottom cover/tray,
   following the existing Pi Zero USB Grove IR enclosure and Raspberry Pi 5 AI
@@ -128,9 +160,10 @@ between boards.
 - Existing top-cover/bottom-tray male/female connection reference:
   `designs/pi_zero_usb_grove_ir_enclosure.scad`.
 - Existing repository documentation: `README.md`.
+- User-provided fan size: `40.0 mm x 40.0 mm x 10.0 mm`.
 - Existing deleted-in-worktree tower-stack artifacts were reviewed only as prior
-  context; this spec intentionally excludes their fans, display cover, NVMe
-  boards, and Cluster HAT behavior.
+  context; this spec intentionally excludes their display cover, NVMe boards,
+  and Cluster HAT behavior.
 
 ## Manually Entered Dimension Assumptions
 
@@ -150,8 +183,16 @@ implementation:
 - Raspberry Pi 5 stack index: `4`, meaning the fourth PCB from bottom to top is
   the Pi 5 by default.
 - Top-of-fifth-PCB-to-inside-top-cover-wall clearance: an adjustable value,
-  defaulting to at least `52.0` mm so the design provides the requested
-  `50.0` mm minimum plus margin.
+  defaulting to at least `66.0` mm so the design preserves the prior `52.0` mm
+  default headroom while adding `10.0` mm fan thickness and `4.0` mm default
+  fan/boss margin.
+- Internal fan body size: `40.0 mm x 40.0 mm x 10.0 mm`, user-adjustable.
+- Internal fan count: `2` maximum/default positions in the upper cover.
+- Fan mount screw-hole spacing: adjustable, defaulting to `32.0 mm` center span
+  for a typical 40 mm fan until the actual fan is measured.
+- Fan screw pilot diameter/depth, boss diameter, boss height, body clearance,
+  roof grille diameter/slot dimensions, grille rib width, and fan center
+  positions: configurable planning defaults until real fans are measured.
 - Bottom-tray wall/lip height: shallow enough that the bottom cover remains the
   smaller enclosure half and the middle/upper cover pair carries the main stack
   height.
@@ -201,6 +242,9 @@ implementation:
 - Generated mesh exports must not be added to source control.
 - The design must favor adjustable fit and visual validation over pretending
   precision for unmeasured spacers, cables, heatsinks, or installed accessories.
+- Fan mount geometry must be adjustable rather than hard-coded to one vendor
+  fan. The default fan screw spacing is a planning assumption and must be easy to
+  tune after measuring the actual fans.
 
 ## Deterministic Behavior
 
@@ -220,7 +264,8 @@ implementation:
 - `middle_cover` must show only the printable lower cover section with male
   cover pins, Pi 5 connector-access openings, and lower stack airflow openings.
 - `upper_cover` must show only the printable upper cover section with the closed
-  roof and upper wall airflow openings.
+  roof areas, guarded fan airflow openings, internal fan mounting geometry, and
+  upper wall airflow openings.
 - `top_cover` must show the printable middle cover and upper cover as separated
   cover parts.
 - `electronics` must show the five PCB positions without printable enclosure
@@ -245,7 +290,8 @@ implementation:
 - Four inter-PCB distances must be controlled by an obvious adjustable vector or
   equivalent grouped parameters.
 - The top cover height must derive from PCB 5 top Z plus the configurable
-  top-of-stack clearance and roof thickness.
+  top-of-stack clearance, internal fan thickness, fan mount boss needs, and roof
+  thickness.
 - The bottom cover/tray must remain the smaller/shallow enclosure half by
   default; the top cover must carry the main stack height.
 - Airflow between PCBs is mandatory:
@@ -256,6 +302,8 @@ implementation:
     openings,
   - the upper top-cover wall area above PCB 5 must have additional vertical-wall
     airflow by default using smaller half-size slots,
+  - the upper cover roof must include guarded fan airflow openings aligned to
+    the two internal fan positions by default,
   - airflow openings must be derived from each gap center so spacing changes move
     the openings with the boards,
   - airflow count, slot size, spacing, face enablement, and margins must be
@@ -265,6 +313,15 @@ implementation:
 - Additional top or bottom ventilation may be provided only if it remains part
   of the three printable enclosure parts and does not replace the required
   inter-PCB side/front/back airflow.
+- The upper cover must support two internal fan mounts by default:
+  - fan body size defaults to `40.0 mm x 40.0 mm x 10.0 mm`,
+  - each fan mount must include adjustable screw/pilot mounting points or
+    bosses,
+  - fan positions must be adjustable,
+  - fan mounts must be inside the upper cover and oriented to move air through
+    the guarded roof openings and existing wall/inter-PCB ventilation,
+  - defaults must avoid the middle/upper connector pins and sockets,
+    cover/tray pins and sockets, walls, roof edges, and PCB 5 clearance.
 - The middle cover must own male plug pins by default.
 - The bottom cover/tray must subtract matching female socket holes by default.
 - The upper cover must own short downward male plug pins by default.
@@ -290,8 +347,9 @@ implementation:
     would otherwise be blocked,
   - microSD access for the base PCB when the Pi 5 is in the base position and
     access is practical without weakening the enclosure.
-- The top cover roof must remain fully closed by default, with no roof service
-  openings or roof ventilation holes.
+- The top cover roof must have no service openings. Roof openings are allowed
+  only for guarded fan airflow grilles that retain printed ribs/material for
+  debris protection.
 - Raspberry Pi 5 cutouts must derive from `designs/rpi5.scad` source values or
   clearly documented local mirror values plus adjustable clearance parameters.
 - Existing design files must keep their current behavior.
@@ -307,8 +365,8 @@ implementation:
   external hardware unless a later approved spec expands the printed support
   system.
 - Airflow between PCBs means lateral airflow through the enclosure at every
-  inter-board gap on the side, front, and back faces; this spec does not require
-  fan mounts.
+  inter-board gap on the side, front, and back faces, supplemented by guarded
+  roof fan airflow for two internal upper-cover fan positions.
 - The exact installed headers, heatsinks, coolers, cables, and spacers are not
   known, so their clearance must remain tunable through parameters and visual
   OpenSCAD inspection.
@@ -327,6 +385,12 @@ implementation:
 - Dense airflow across four gaps can weaken tall top-cover walls; default
   placement must preserve material around corners, pins, sockets, standoffs, and
   port openings.
+- Guarded roof fan grilles and fan screw bosses can weaken the upper cover roof;
+  default layout must preserve material around roof edges, grille ribs, fan
+  bosses, split-interface pins, and connector sockets.
+- Internal fans consume clearance above PCB 5; the default top-cover height must
+  increase instead of silently reducing the previously approved top-of-stack
+  usable headroom.
 - A five-board stack can become tall and flexible; physical fit and stability
   remain unvalidated until the real hardware is measured, sliced, and test
   printed.
@@ -352,8 +416,8 @@ implementation:
 - The distance from the top of PCB 5 to the top cover must be controlled by an
   obvious adjustable parameter.
 - The default distance from the top of PCB 5 to the inside top wall of the top
-  cover must be at least `52.0` mm, representing `50.0` mm minimum clearance
-  plus a default margin.
+  cover must be at least `66.0` mm, representing the previous `52.0` mm default
+  clearance plus `10.0` mm fan thickness and `4.0` mm default fan/boss margin.
 - The default printable enclosure must be exactly three parts: bottom cover/tray,
   middle cover, and upper cover.
 - The middle/upper cover split must sit above the configured Pi 5 connector
@@ -381,8 +445,17 @@ implementation:
 - Default airflow openings must avoid pin/socket, standoff, and major access
   geometry.
 - Upper top-cover airflow must be through side/front/back walls only and must not
-  pierce the roof. Upper top-cover airflow holes must default to at most half
-  the size of the inter-PCB airflow holes.
+  replace inter-PCB airflow. Upper top-cover wall airflow holes must default to
+  at most half the size of the inter-PCB airflow holes.
+- The upper cover roof must include two guarded fan airflow grille patterns by
+  default, aligned to two internal 40 mm fan positions. Each grille must retain
+  printed ribs/material and must not be implemented as one full 40 mm hole.
+- The upper cover must include inside mounting points for two internal
+  `40.0 mm x 40.0 mm x 10.0 mm` fans by default, with adjustable fan centers,
+  body clearance, screw/pilot spacing, boss dimensions, and screw/pilot
+  dimensions.
+- Fan mount defaults must avoid the split-interface pins/sockets and must not
+  visibly collide with PCB 5 in `assembly` or `upper_cover` inspection.
 - Raspberry Pi 5 USB-A, Ethernet, USB-C, micro-HDMI, and base-position microSD
   service zones must have side or front openings where they would otherwise be
   blocked by the enclosure. The USB-A and Ethernet side access must be one
@@ -421,6 +494,8 @@ implementation:
   - five PCB positions with the Raspberry Pi 5 reference at PCB 4 by default,
   - coherent board spacing changes,
   - top-cover height derived from stack height and top clearance,
+  - top-cover height increased enough to preserve PCB 5 clearance while adding
+    internal 40 mm fan thickness and mounting bosses,
   - base PCB mounted to bottom-tray standoffs,
   - bottom tray remains shallow and the middle/upper cover pair carries the main
     height,
@@ -431,6 +506,10 @@ implementation:
   - bottom tray has matching female sockets,
   - anti-slip recesses exist on the tray underside,
   - every inter-PCB gap has real side, front, and back airflow openings,
+  - two guarded roof fan airflow grille patterns exist and retain protective
+    printed material,
+  - two internal fan mounting point sets exist inside the upper cover,
+  - fan mounts avoid split-interface connectors and PCB 5 clearance,
   - airflow openings move with changed gap spacing,
   - airflow openings avoid default pin/socket and standoff geometry,
   - required Raspberry Pi 5 service/access openings exist,
@@ -446,11 +525,16 @@ implementation:
   coolers, headers, and cables must be measured for final fit.
 - Document render modes and common adjustable parameters.
 - Document the per-gap PCB spacing controls and top-cover clearance control.
+- Document the internal fan mount controls, default fan size, assumed screw-hole
+  spacing, fan-clearance contribution to top-cover height, and guarded roof
+  airflow pattern.
 - Document the base-PCB mounting strategy.
 - Document the middle-cover-male and bottom-tray-female connection method.
 - Document the upper-cover-male and middle-cover-female connection method.
 - Document bottom anti-slip recesses or foot pockets.
 - Document the mandatory inter-PCB side/front/back airflow strategy.
+- Document that roof airflow exists only as guarded fan grilles and is not a full
+  open fan hole.
 - Document Raspberry Pi 5 access/opening strategy and any intentionally limited
   access areas.
 - Document Bambu Lab-friendly printability expectations.

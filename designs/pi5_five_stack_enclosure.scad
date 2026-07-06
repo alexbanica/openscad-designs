@@ -4,6 +4,7 @@
 // - adjustable per-gap spacing for five PCB positions, with PCB 4 as Pi 5 by default
 // - male/female removable top-cover connection
 // - air-gap aligned ventilation for every inter-board gap
+// - two internal 40 mm fan mounts with guarded roof grilles
 // - anti-slip recesses on tray underside
 //
 // Units: mm
@@ -29,7 +30,8 @@ stack_board_count = 5;
 pi5_five_stack_gap_count = 4;
 pi5_stack_gap_z_mm = [15.0, 15.0, 15.0, 15.0];
 rpi5_stack_index = 4;
-top_of_fifth_board_to_top_cover_clearance_mm = 52.0;
+top_of_fifth_board_to_top_cover_clearance_mm = 66.0;
+minimum_pcb5_usable_headroom_without_internal_fans_mm = 52.0;
 electronics_preview_lift_mm = 0.0;
 
 // Raspberry Pi 5 mirrored reference (from designs/rpi5.scad)
@@ -129,6 +131,26 @@ upper_cover_airflow_slot_length_mm = inter_pcb_airflow_slot_length_mm / 2;
 upper_cover_airflow_gap_above_highest_board_mm = 10.0;
 upper_cover_airflow_roof_keepout_mm = 8.0;
 
+// Internal upper-cover fan mounts and guarded roof grilles
+enable_internal_fan_mounts = true;
+enable_guarded_fan_roof_grilles = true;
+internal_fan_body_size_mm = [40.0, 40.0, 10.0];
+internal_fan_body_clearance_mm = 1.0;
+internal_fan_center_positions_mm = [
+    [-22.5, 0.0],
+    [ 22.5, 0.0]
+];
+internal_fan_screw_hole_spacing_mm = 32.0;
+internal_fan_mount_boss_diameter_mm = 6.2;
+internal_fan_mount_boss_height_mm = 4.0;
+internal_fan_mount_screw_pilot_diameter_mm = 2.4;
+internal_fan_mount_screw_pilot_depth_mm = 3.4;
+guarded_fan_grille_slot_count = 5;
+guarded_fan_grille_slot_width_mm = 3.2;
+guarded_fan_grille_slot_length_mm = 22.0;
+guarded_fan_grille_slot_spacing_mm = 5.0;
+guarded_fan_grille_roof_overtravel_mm = 0.8;
+
 // Service access tuning
 base_board_micro_sd_access_board_indices = [1];
 enable_additional_micro_sd_openings = false;
@@ -158,6 +180,14 @@ assert(
 assert(
     !enable_upper_cover_wall_airflow || upper_cover_airflow_row_count >= 1,
     "upper_cover_airflow_row_count must be at least 1 when upper cover airflow is enabled."
+);
+assert(
+    !enable_internal_fan_mounts || len(internal_fan_center_positions_mm) == 2,
+    "internal_fan_center_positions_mm must contain two fan centers for the default two-fan upper cover."
+);
+assert(
+    !enable_guarded_fan_roof_grilles || guarded_fan_grille_slot_count >= 2,
+    "guarded fan grilles must retain printed ribs and cannot be a single full fan opening."
 );
 
 // Visual styles
@@ -214,7 +244,16 @@ internal_width_mm = rpi5_board_width_mirror_mm + 2 * (wall_thickness_mm + 2.0);
 outer_length_mm = internal_length_mm + 2 * wall_thickness_mm;
 outer_width_mm = internal_width_mm + 2 * wall_thickness_mm;
 
-stacked_case_inner_roof_z_mm = stack_highest_board_top_z_mm + top_of_fifth_board_to_top_cover_clearance_mm;
+internal_fan_clearance_envelope_mm =
+    enable_internal_fan_mounts
+    ? internal_fan_body_size_mm[2] + internal_fan_mount_boss_height_mm
+    : 0;
+effective_top_of_fifth_board_to_top_cover_clearance_mm = max(
+    top_of_fifth_board_to_top_cover_clearance_mm,
+    minimum_pcb5_usable_headroom_without_internal_fans_mm + internal_fan_clearance_envelope_mm
+);
+stacked_case_inner_roof_z_mm =
+    stack_highest_board_top_z_mm + effective_top_of_fifth_board_to_top_cover_clearance_mm;
 case_total_height_mm = max(
     stacked_case_inner_roof_z_mm + top_roof_thickness_mm,
     tray_wall_height_mm + 10.0
@@ -304,6 +343,21 @@ upper_cover_airflow_centers_z_mm = [
         upper_cover_airflow_low_z_mm
         + ((row_index + 1) * upper_cover_airflow_available_height_mm)
         / (upper_cover_airflow_row_count + 1)
+];
+
+upper_cover_inner_roof_z_mm = case_total_height_mm - top_roof_thickness_mm;
+internal_fan_boss_start_z_mm =
+    upper_cover_inner_roof_z_mm - internal_fan_mount_boss_height_mm;
+internal_fan_screw_offsets_mm = [
+    [-internal_fan_screw_hole_spacing_mm / 2, -internal_fan_screw_hole_spacing_mm / 2],
+    [ internal_fan_screw_hole_spacing_mm / 2, -internal_fan_screw_hole_spacing_mm / 2],
+    [-internal_fan_screw_hole_spacing_mm / 2,  internal_fan_screw_hole_spacing_mm / 2],
+    [ internal_fan_screw_hole_spacing_mm / 2,  internal_fan_screw_hole_spacing_mm / 2]
+];
+guarded_fan_grille_slot_centers_mm = [
+    for (slot_index = [0:guarded_fan_grille_slot_count - 1])
+        (slot_index - (guarded_fan_grille_slot_count - 1) / 2)
+            * guarded_fan_grille_slot_spacing_mm
 ];
 
 // ======================================================
@@ -479,6 +533,9 @@ module pi5_five_stack_top_cover_full() {
             pi5_five_stack_top_cover_shell();
             pi5_five_stack_cover_pin_root_posts();
             pi5_five_stack_cover_pins();
+            if (enable_internal_fan_mounts) {
+                pi5_five_stack_internal_fan_mount_bosses();
+            }
         }
 
         pi5_five_stack_top_cover_cutouts();
@@ -775,6 +832,12 @@ module pi5_five_stack_top_cover_cutouts() {
     if (enable_upper_cover_wall_airflow) {
         pi5_five_stack_upper_cover_wall_airflow();
     }
+    if (enable_guarded_fan_roof_grilles) {
+        pi5_five_stack_guarded_fan_roof_grille_cutouts();
+    }
+    if (enable_internal_fan_mounts) {
+        pi5_five_stack_internal_fan_screw_pilot_holes();
+    }
 }
 
 module pi5_five_stack_top_cover_port_cutouts() {
@@ -961,6 +1024,84 @@ module pi5_five_stack_upper_cover_wall_airflow() {
 }
 
 // ======================================================
+// Internal Fan Mounts And Guarded Roof Grilles
+// ======================================================
+
+module pi5_five_stack_internal_fan_mount_bosses() {
+    color(standoff_colour)
+    for (fan_center_mm = internal_fan_center_positions_mm) {
+        for (screw_offset_mm = internal_fan_screw_offsets_mm) {
+            translate([
+                fan_center_mm[0] + screw_offset_mm[0],
+                fan_center_mm[1] + screw_offset_mm[1],
+                internal_fan_boss_start_z_mm
+            ])
+                cylinder(
+                    h = internal_fan_mount_boss_height_mm + solid_merge_overlap_mm,
+                    d = internal_fan_mount_boss_diameter_mm
+                );
+        }
+    }
+}
+
+module pi5_five_stack_internal_fan_screw_pilot_holes() {
+    for (fan_center_mm = internal_fan_center_positions_mm) {
+        for (screw_offset_mm = internal_fan_screw_offsets_mm) {
+            translate([
+                fan_center_mm[0] + screw_offset_mm[0],
+                fan_center_mm[1] + screw_offset_mm[1],
+                internal_fan_boss_start_z_mm - preview_overlap_mm
+            ])
+                cylinder(
+                    h = internal_fan_mount_screw_pilot_depth_mm + 2 * preview_overlap_mm,
+                    d = internal_fan_mount_screw_pilot_diameter_mm
+                );
+        }
+    }
+}
+
+module pi5_five_stack_guarded_fan_roof_grille_cutouts() {
+    for (fan_center_mm = internal_fan_center_positions_mm) {
+        for (slot_center_y_mm = guarded_fan_grille_slot_centers_mm) {
+            translate([
+                fan_center_mm[0],
+                fan_center_mm[1] + slot_center_y_mm,
+                case_total_height_mm - top_roof_thickness_mm / 2
+            ])
+                cube(
+                    [
+                        guarded_fan_grille_slot_length_mm,
+                        guarded_fan_grille_slot_width_mm,
+                        top_roof_thickness_mm + 2 * guarded_fan_grille_roof_overtravel_mm
+                    ],
+                    center = true
+                );
+        }
+    }
+}
+
+module pi5_five_stack_internal_fan_clearance_guides() {
+    color([0.1, 0.45, 0.95, 0.18])
+    for (fan_center_mm = internal_fan_center_positions_mm) {
+        translate([
+            fan_center_mm[0],
+            fan_center_mm[1],
+            upper_cover_inner_roof_z_mm
+                - internal_fan_mount_boss_height_mm
+                - internal_fan_body_size_mm[2] / 2
+        ])
+            cube(
+                [
+                    internal_fan_body_size_mm[0] + 2 * internal_fan_body_clearance_mm,
+                    internal_fan_body_size_mm[1] + 2 * internal_fan_body_clearance_mm,
+                    internal_fan_body_size_mm[2]
+                ],
+                center = true
+            );
+    }
+}
+
+// ======================================================
 // Port Cutout Modules
 // ======================================================
 
@@ -1080,6 +1221,12 @@ module pi5_five_stack_reference_cutout_guides() {
     }
     if (enable_upper_cover_wall_airflow) {
         pi5_five_stack_upper_cover_wall_airflow();
+    }
+    if (enable_guarded_fan_roof_grilles) {
+        pi5_five_stack_guarded_fan_roof_grille_cutouts();
+    }
+    if (enable_internal_fan_mounts) {
+        pi5_five_stack_internal_fan_clearance_guides();
     }
 }
 

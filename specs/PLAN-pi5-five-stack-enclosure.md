@@ -10,7 +10,8 @@ Status: Approved
 
 Implement the approved five-stack enclosure as a new OpenSCAD design and update
 README documentation. The default five-position stack uses PCB 4 as the
-Raspberry Pi 5 reference/access level.
+Raspberry Pi 5 reference/access level. The upper cover includes two internal
+40 mm fan mount positions with guarded roof airflow grilles for cooling PCB 5.
 
 Do not implement behavior outside the approved spec.
 
@@ -89,6 +90,8 @@ request plan amendment before editing existing sources.
      - bottom anti-slip recess parameters/modules,
      - Raspberry Pi 5 port/service access terms,
      - inter-PCB airflow parameters/modules,
+     - internal fan mount parameters/modules,
+     - guarded fan grille parameters/modules,
      - printable-layout three-part constraint,
      - README documentation entries.
    - Permanent test files are not required unless the implementation command
@@ -111,12 +114,15 @@ request plan amendment before editing existing sources.
      - upper-cover male pin and middle-cover socket values,
      - inter-PCB side/front/back airflow values,
      - upper top-cover wall airflow values,
+     - internal 40 mm fan mount values, fan-body clearance, screw/pilot boss
+       geometry, guarded roof grille pattern values, and fan center positions,
      - optional top/bottom ventilation values if implemented,
      - printable layout values,
      - visual settings.
    - Add a separate `Derived Values` section for board positions, inter-PCB gap
      centers, enclosure envelope, stack height, internal dimensions, cutout
-     centers, printable-layout placement, and pin/socket centers.
+     centers, printable-layout placement, pin/socket centers, fan mount centers,
+     guarded fan grille placement, and fan-clearance-driven cover height.
    - Keep all linear variables suffixed `_mm` and angle variables suffixed
      `_deg`.
 
@@ -164,6 +170,9 @@ request plan amendment before editing existing sources.
      - Raspberry Pi 5 port/service cutout volumes,
      - inter-PCB side/front/back airflow cutout volumes,
      - upper top-cover wall airflow cutout volumes,
+     - internal fan mount bosses/posts,
+     - fan screw/pilot holes,
+     - guarded fan roof grille cutout volumes,
      - optional top/bottom ventilation cutout volumes if implemented,
      - rounded-box or repeated helper geometry.
    - Use difference/union structure similar to existing enclosures where
@@ -199,13 +208,25 @@ request plan amendment before editing existing sources.
    - Make pin diameter, insertion length, count, positions, socket clearance,
      and socket depth adjustable.
    - Derive top-cover height from the configured five-board stack height and
-     top-of-fifth-PCB-to-cover clearance parameter.
+     top-of-fifth-PCB-to-cover clearance parameter, preserving PCB 5 headroom
+     after adding the internal fan thickness and fan mounting bosses.
    - Subtract top-cover portions of Raspberry Pi 5 access openings where needed
      at the configured Raspberry Pi 5 board index.
    - Subtract inter-PCB airflow openings through the top cover side, front, and
      back walls for all four board gaps.
    - Subtract an additional upper-cover wall vent band above PCB 5 on vertical
-     walls only, preserving the closed roof.
+     walls only.
+   - Add two inside upper-cover fan mount positions for `40.0 mm x 40.0 mm x
+     10.0 mm` fans by default.
+   - Add adjustable fan screw/pilot bosses or posts using a configurable default
+     screw-hole span of `32.0 mm` until the actual fans are measured.
+   - Add guarded roof airflow grilles aligned with the two internal fans. The
+     grille pattern must retain printed ribs/material and must not be a single
+     full 40 mm opening.
+   - Keep non-fan roof areas closed and keep the roof free of service openings.
+   - Ensure default fan mounts and grille cutouts avoid middle/upper connector
+     pins and sockets, tray/cover pins and sockets, roof edges, walls, major
+     service openings, and PCB 5 clearance.
    - Ensure default pin/socket positions avoid boards, standoffs, side/front
      port openings, and airflow slots.
 
@@ -218,7 +239,8 @@ request plan amendment before editing existing sources.
       - base-position microSD access.
     - Implement USB-A and Ethernet side access as one continuous cutout with no
       separator between connector openings.
-    - Keep the top cover roof fully closed with no roof service openings.
+    - Keep the top cover roof free of service openings. Only guarded fan airflow
+      grilles may pierce the roof.
     - Derive from `rpi5.scad` connector origins/sizes when possible.
     - If OpenSCAD `use` visibility requires local mirrors, name them clearly as
       Raspberry Pi 5 reference mirrors and document them in code comments and
@@ -245,13 +267,17 @@ request plan amendment before editing existing sources.
     - Add upper top-cover ventilation rows in the wall area above PCB 5 without
       piercing the roof, using slot dimensions at most half the inter-PCB vent
       dimensions by default.
+    - Add guarded fan airflow through the upper-cover roof as supplemental forced
+      airflow for PCB 5. It must not replace the required inter-PCB and wall
+      airflow openings.
 
 12. Implement render modes.
     - `assembly`: assembled bottom tray, middle cover, upper cover, optional
       five-board reference stack, and optional guides.
     - `bottom_tray`: printable bottom tray only.
     - `middle_cover`: printable middle cover only.
-    - `upper_cover`: printable upper cover only.
+    - `upper_cover`: printable upper cover only, including internal fan mounts
+      and guarded roof fan grilles.
     - `top_cover`: printable middle cover and upper cover separated together.
     - `electronics`: five-board Raspberry Pi 5 reference stack only.
     - `printable_layout`: bottom tray, middle cover, and upper cover separated
@@ -265,8 +291,9 @@ request plan amendment before editing existing sources.
       relationship to `rpi5.scad`, render modes, common adjustable parameters,
       per-gap stack spacing, top-cover clearance, base-PCB mounting, anti-slip
       recesses, male/female connection method, mandatory inter-PCB airflow,
-      Raspberry Pi 5 access strategy, Bambu-friendly printability, validation
-      commands, and manual inspection checklist.
+      guarded fan grilles, internal fan mount assumptions, Raspberry Pi 5 access
+      strategy, Bambu-friendly printability, validation commands, and manual
+      inspection checklist.
     - Document any mirrored Raspberry Pi 5 connector values if the
       implementation uses local mirrors.
 
@@ -298,6 +325,8 @@ request plan amendment before editing existing sources.
       - changing spacing would move downstream board positions and gap airflow
         centers through derived values,
       - top-cover height derives from stack height and top clearance,
+      - top-cover height preserves PCB 5 clearance after adding the two internal
+        40 mm fans and mounting bosses,
       - bottom tray is shallow while the middle and upper covers carry the main
         height,
       - bottom tray includes base-PCB mounting standoffs,
@@ -312,7 +341,11 @@ request plan amendment before editing existing sources.
       - every inter-board gap has real side and back airflow grate openings,
       - non-conflicting front-face airflow grate openings exist,
       - upper top-cover wall airflow exists with half-size slots while the roof
-        remains closed,
+        keeps non-fan areas closed,
+      - two guarded roof fan grille patterns exist and are not full 40 mm holes,
+      - two internal fan mounting point sets exist inside the upper cover,
+      - fan mount defaults avoid split-interface pins/sockets and PCB 5
+        clearance,
       - default airflow avoids pins, sockets, standoffs, and major access
         openings,
       - required Raspberry Pi 5 service/access openings exist or README
@@ -391,6 +424,7 @@ rg -n 'stack_board_count|rpi5_stack_index|pcb_stack_gap|inter.*gap|top.*clearanc
 rg -n 'cover_pin|plug_pin|male|tray_socket|socket|female|middle_upper_connector' designs/pi5_five_stack_enclosure.scad README.md
 rg -n 'anti_slip|anti_slide|foot_recess|standoff|pilot|insert' designs/pi5_five_stack_enclosure.scad README.md
 rg -n 'airflow|vent|ventilation|gap_center|side.*opening' designs/pi5_five_stack_enclosure.scad README.md
+rg -n 'fan|grille|guard|40\\.0|32\\.0|roof.*airflow|fan_mount' designs/pi5_five_stack_enclosure.scad README.md
 rg -n 'usb|ethernet|usb_c|hdmi|camera|display|pcie|micro_sd|gpio' designs/pi5_five_stack_enclosure.scad README.md
 ```
 
@@ -411,7 +445,7 @@ Expected result:
 - `git diff --check` exits 0.
 - Source checks find render modes, five-stack spacing terms, male/female
   connection terms, anti-slip/standoff terms, airflow terms, Raspberry Pi 5 port
-  access terms, and README documentation.
+  access terms, internal fan/guarded grille terms, and README documentation.
 - OpenSCAD commands exit 0 within the repository's render-time guidance and
   write temporary outputs under `/tmp`.
 
@@ -422,8 +456,8 @@ Expected result:
 - README must document the new enclosure source, assumptions, manually entered
   dimensions, render modes, adjustable parameters, per-gap stack spacing,
   top-cover clearance, base-PCB mounting, anti-slip behavior, male/female
-  connection method, mandatory inter-PCB airflow strategy, Raspberry Pi 5 access
-  strategy, printability guidance, validation commands, and manual inspection
-  checklist.
+  connection method, mandatory inter-PCB airflow strategy, internal 40 mm fan
+  mounts, guarded roof fan grilles, Raspberry Pi 5 access strategy,
+  printability guidance, validation commands, and manual inspection checklist.
 - README must document local mirrored Raspberry Pi 5 connector values if
   implementation cannot directly derive them from `rpi5.scad`.

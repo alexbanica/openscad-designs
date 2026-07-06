@@ -513,7 +513,7 @@ Manual inspection checklist:
 
 ## Raspberry Pi 5 Five-Stack Enclosure
 
-`designs/pi5_five_stack_enclosure.scad` is a printable bottom tray, middle cover, and upper cover for a five-board stack with explicit per-gap spacing controls, Raspberry Pi 5 access at the configured Pi 5 board level, and matching inter-PCB airflow grates.
+`designs/pi5_five_stack_enclosure.scad` is a printable bottom tray, middle cover, and upper cover for a five-board stack with explicit per-gap spacing controls, Raspberry Pi 5 access at the configured Pi 5 board level, matching inter-PCB airflow grates, and two internal 40 mm fan mount positions in the upper cover.
 
 ### Component Assumptions
 
@@ -522,7 +522,7 @@ The enclosure models five same-footprint PCB positions with shared coordinate-fr
 - `stack_board_count = 5` (default).
 - Default inter-board gap vector (`pi5_stack_gap_z_mm`) is `[15.0, 15.0, 15.0, 15.0]` mm.
 - PCB 4 from bottom to top is the Raspberry Pi 5 by default (`rpi5_stack_index = 4`).
-- Top clearance above board 5 is `top_of_fifth_board_to_top_cover_clearance_mm = 52.0` mm by default, providing the requested `50.0` mm minimum plus `2.0` mm margin to the inside top wall.
+- Top clearance above board 5 is `top_of_fifth_board_to_top_cover_clearance_mm = 66.0` mm by default. The derived effective clearance also preserves `minimum_pcb5_usable_headroom_without_internal_fans_mm = 52.0` mm plus the current internal fan thickness and boss height, so increasing fan thickness can increase the cover height without reducing PCB 5 usable headroom.
 - The middle/upper cover split is derived above the configured Pi 5 connector cutouts, with `middle_cover_split_clearance_above_pi5_connector_mm = 4.0` mm by default. With the default PCB 4 Pi 5 placement, the split is approximately `79.0` mm above the tray-floor exterior.
 - Raspberry Pi 5 base mirror dimensions:
   - `85.0 mm x 56.0 mm x 1.6 mm` board,
@@ -559,12 +559,20 @@ The enclosure models five same-footprint PCB positions with shared coordinate-fr
   - `inter_pcb_airflow_slot_height_mm = 8.0`,
   - `inter_pcb_airflow_slot_length_mm = 18.0`.
 - Upper top-cover wall airflow defaults:
-  - enabled by default on the vertical walls only, keeping the roof closed,
+  - enabled by default on the vertical walls only,
   - `upper_cover_airflow_row_count = 4`,
   - upper side-wall slots are half-size by default at `3.0` mm wide x `4.0` mm tall,
   - upper front/back slots are half-size by default at `9.0` mm long x `4.0` mm tall,
   - starts at least `10.0` mm above PCB 5,
   - keeps `8.0` mm below the inside top wall clear of vent rows.
+- Internal fan and guarded roof grille defaults:
+  - two internal fan positions are enabled by default,
+  - `internal_fan_body_size_mm = [40.0, 40.0, 10.0]`,
+  - `internal_fan_center_positions_mm = [[-22.5, 0.0], [22.5, 0.0]]`,
+  - `internal_fan_screw_hole_spacing_mm = 32.0`,
+  - four inside screw/pilot bosses per fan use `internal_fan_mount_boss_diameter_mm = 6.2`, `internal_fan_mount_boss_height_mm = 4.0`, `internal_fan_mount_screw_pilot_diameter_mm = 2.4`, and `internal_fan_mount_screw_pilot_depth_mm = 3.4`,
+  - each roof grille is a guarded five-slot pattern using `guarded_fan_grille_slot_count = 5`, `guarded_fan_grille_slot_width_mm = 3.2`, `guarded_fan_grille_slot_length_mm = 22.0`, and `guarded_fan_grille_slot_spacing_mm = 5.0`,
+  - the guarded grilles are the only default roof openings and are not full 40 mm fan holes.
 
 ### Source and Mirrors
 
@@ -584,6 +592,7 @@ Parameters are grouped in `Adjustable Parameters` and `Derived Values`:
 - upper-cover/middle-cover male/female interface parameters
 - anti-slip recess controls
 - inter-PCB and upper top-cover wall airflow controls and slot geometry
+- internal 40 mm fan body, center, boss, screw/pilot, and guarded roof grille controls
 - microSD/port-access defaults and clearances
 - printable layout spacing
 - visual styling
@@ -593,7 +602,7 @@ Common edits:
 - Set `render_mode = "assembly"`, `"bottom_tray"`, `"middle_cover"`, `"upper_cover"`, `"top_cover"`, `"electronics"`, or `"printable_layout"`.
 - Tune `pi5_stack_gap_z_mm` for all four inter-PCB gaps and observe the derived stack Z map.
 - Tune `rpi5_stack_index` if the Raspberry Pi 5 board moves from the default fourth PCB position.
-- Tune `top_of_fifth_board_to_top_cover_clearance_mm` for headroom margin.
+- Tune `top_of_fifth_board_to_top_cover_clearance_mm` for headroom margin. The derived `effective_top_of_fifth_board_to_top_cover_clearance_mm` also accounts for `minimum_pcb5_usable_headroom_without_internal_fans_mm` and the internal fan clearance envelope, so PCB 5 headroom is not reduced by the two fans.
 - Tune `middle_cover_split_clearance_above_pi5_connector_mm` if the middle/upper split needs more material above the Pi 5 connector cutouts.
 - Keep `stack_board_count` at its default `5` for the default five-board contract.
 - Tune standoff and `enable_board_mount_inserts`, screw insert/hole dimensions. By default `board_mount_screw_hole_diameter_mm` is derived from `rpi5_board_mounting_hole_diameter_mirror_mm`, and the holes open from the inside standoff tops.
@@ -603,6 +612,7 @@ Common edits:
   than the middle-cover to tray fit.
 - Tune `inter_pcb_airflow_slot_*` and per-face enable flags to reposition vents.
 - Tune `enable_upper_cover_wall_airflow`, `upper_cover_airflow_row_count`, `upper_cover_airflow_gap_above_highest_board_mm`, and `upper_cover_airflow_roof_keepout_mm` for the upper-cover vent band.
+- Tune `enable_internal_fan_mounts`, `enable_guarded_fan_roof_grilles`, `internal_fan_body_size_mm`, `internal_fan_center_positions_mm`, `internal_fan_screw_hole_spacing_mm`, `internal_fan_mount_*`, and `guarded_fan_grille_*` after measuring the actual 40 mm fans.
 - Tune service clearances for USB-A/Ethernet/USB-C/micro-HDMI and base-position microSD access.
 - Tune `enable_anti_slip_recesses`, recess diameter/depth, and offsets.
 
@@ -613,7 +623,7 @@ Set `render_mode` to one of:
 - `assembly`: full assembled enclosure with optional bottom tray, middle cover, upper cover, and optional five-board reference stack.
 - `bottom_tray`: printed bottom tray only, including PCB supports, female cover-socket features, and tray anti-slip recesses.
 - `middle_cover`: printed middle cover only, inverted to the print plane with male pins, Pi 5 connector cutouts, and lower wall cutouts.
-- `upper_cover`: printed upper cover only, inverted to the print plane with the closed roof and upper wall ventilation.
+- `upper_cover`: printed upper cover only, inverted to the print plane with non-fan roof areas closed, guarded fan grilles, inside fan mounting bosses, and upper wall ventilation.
 - `top_cover`: printed middle and upper cover sections together, separated on the print plane for inspection.
 - `electronics`: five PCB positions only (no printed geometry), with the configured Raspberry Pi 5 board shown at `rpi5_stack_index` and generic PCB placeholders for the other levels. `show_rpi5_reference` controls visibility in this mode.
 - `printable_layout`: bottom tray, middle cover, and upper cover placed on separate build areas for direct inspection.
@@ -635,11 +645,13 @@ openscad -o /tmp/pi5_five_stack_enclosure_printable_layout.off -D 'render_mode="
 - The design keeps the bottom tray as the smaller shallow half (`tray_wall_height_mm` default `16.0`) and places the middle and upper cover sections above it.
 - The middle cover owns `cover_pin_*` and bottom tray owns `tray_socket_*` dimensions.
 - The upper cover is a separate printable headroom section above the Pi 5 connector-access zone. It owns short downward `middle_upper_connector_pin_*` male pins that plug into matching top-open `middle_upper_connector_socket_*` holes in the middle cover at the split.
-- Five board Z offsets, highest-board Z, inter-gap centers, and derived enclosure height are computed from `pi5_stack_gap_z_mm` and board thickness.
+- Five board Z offsets, highest-board Z, inter-gap centers, effective fan-aware top clearance, and derived enclosure height are computed from `pi5_stack_gap_z_mm`, board thickness, and the internal fan clearance envelope.
 - All four inter-board gaps receive grate-style airflow openings by default on both opposing side walls and the back face.
 - Front-face grates are automatically skipped for gaps directly adjacent to the configured Pi 5 board so USB-C and micro-HDMI front connector openings stay clear.
-- The tall upper-cover wall area above PCB 5 has additional side/front/back wall grates by default; the roof remains fully closed.
-- Raspberry Pi 5 USB-A/Ethernet, USB-C, and micro-HDMI service cutouts are placed at `rpi5_stack_index` on the side/front walls. The two USB-A ports and Ethernet use one continuous right-side cutout with no separator between connector openings. The top cover roof is fully closed with no service openings.
+- The tall upper-cover wall area above PCB 5 has additional side/front/back wall grates by default; non-fan roof areas remain closed.
+- Two guarded roof fan grilles sit above the internal fan positions by default. They use multiple slots with printed ribs left between openings, so the roof is not one full 40 mm hole per fan.
+- Two internal fan mounting point sets are modeled on the inside face of the upper cover. The default `32.0` mm screw span is a planning assumption for typical 40 mm fans and should be measured before final printing.
+- Raspberry Pi 5 USB-A/Ethernet, USB-C, and micro-HDMI service cutouts are placed at `rpi5_stack_index` on the side/front walls. The two USB-A ports and Ethernet use one continuous right-side cutout with no separator between connector openings. The top cover roof has no service openings; only guarded fan airflow grilles pierce the roof.
 - Base-board Pi 5 USB-A/Ethernet, USB-C, micro-HDMI, and microSD tray-wall openings are only generated when `rpi5_stack_index = 1`.
 - Base-board screw holes open from inside the tray at the mirrored Raspberry Pi 5 mounting-hole centers and do not break through the bottom face.
 - Bottom-tray female socket bosses are built from `tray_socket_receiver_diameter_mm` and provide material support behind each socket hole.
@@ -653,12 +665,15 @@ Manual inspection checklist:
 - Confirm all board positions share the same X/Y footprint and that the Raspberry Pi 5 reference appears at PCB 4 in `assembly`.
 - Confirm `render_mode` variants all generate.
 - Confirm top cover height updates when `pi5_stack_gap_z_mm` or `top_of_fifth_board_to_top_cover_clearance_mm` changes.
-- Confirm the top cover roof is fully closed with no service openings.
+- Confirm the default top-cover clearance preserves PCB 5 headroom while adding the two internal 40 mm fan bodies and mounting bosses.
+- Confirm non-fan roof areas are closed and the roof has no service openings.
 - Confirm middle-cover/bottom-tray pin-socket pairing exists and remains printable.
 - Confirm the middle/upper cover split sits above the Pi 5 connector cutouts and the upper cover is independently printable.
 - Confirm upper-cover/middle-cover pin-socket pairing exists and remains printable.
 - Confirm both opposing side walls and the back face have inter-PCB grate openings for all four gap centers by default, and that front-face grates are omitted only for Pi-adjacent connector zones.
-- Confirm the upper-cover wall vent band exists on vertical walls only and does not pierce the roof.
+- Confirm the upper-cover wall vent band exists on vertical walls and does not replace inter-PCB airflow.
+- Confirm two guarded roof grille patterns exist, align to the two fan centers, and retain printed ribs/material instead of forming full 40 mm holes.
+- Confirm two internal fan mounting point sets exist inside the upper cover and avoid the split-interface pins/sockets and PCB 5 clearance.
 - Confirm base board standoffs and anti-slip recesses do not break through the floor.
 - Confirm `printable_layout` has only three printed parts.
 - Confirm generated OFF files stay under `/tmp` and are not tracked.
