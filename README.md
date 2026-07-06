@@ -539,7 +539,7 @@ The design defaults are planning values and remain fully adjustable:
 - Top-cover clearance (from the top of the highest PCB to the inner top-cover target)
   defaults to `7.0` mm via
   `top_of_highest_board_to_top_cover_clearance_mm`.
-- Bottom tray side-wall height defaults to `9.0` mm via
+- Bottom tray side-wall height defaults to `2.5` mm via
   `bottom_tray_side_wall_height_mm`, keeping the bottom cover shallow while the
   top cover encloses the stack.
 - Generic placeholder PCB defaults: `85.0 mm x 56.0 mm x 1.6 mm` with Pi 5-style
@@ -562,6 +562,8 @@ The design defaults are planning values and remain fully adjustable:
   `hat_pin_lateral_exit_height_mm = 14.0`, and
   `hat_pin_lateral_exit_z_offset_mm = 5.5` for the top GPIO access and the side
   pass-through used by the perpendicular display branch.
+- Pi 5 mounting access defaults use `pi5_mounting_access_diameter_mm = 8.0`
+  through the top cover above the fourth-board mounting holes.
 - PCB mounting insert defaults are `pcb_mount_insert_outer_diameter_mm = 4.2`,
   `pcb_mount_insert_depth_mm = 3.8`, `pcb_mount_screw_pilot_diameter_mm = 2.2`,
   and `pcb_mount_screw_pilot_depth_mm = 5.0` in the bottom-tray standoffs.
@@ -646,6 +648,10 @@ Common edits:
 - Tune `top_of_highest_board_to_top_cover_clearance_mm`, `show_tower_reference`,
   `show_rpi5_reference`, `show_rpi5_active_cooler_reference`,
   and `show_placeholder_board_headers` for stack preview density.
+- `assembly` hides the PCB stack by default (`show_tower_reference = false`) so
+  the cover/tray split and openings can be inspected without electronics
+  occluding the enclosure. Use `electronics` or set `show_tower_reference = true`
+  when checking board fit.
 - Tune `bottom_tray_side_wall_height_mm` to keep the bottom cover as small as
   practical while preserving sockets, standoffs, inserts, and the cover overlap.
 - Tune `pcb_mount_insert_*` and `pcb_mount_screw_pilot_*` values for the
@@ -682,6 +688,7 @@ Common edits:
 Set `render_mode` to one of:
 
 - `assembly`: tray + cover + optional stack references + fan/display/header previews.
+  The stack references are hidden by default.
 - `bottom_tray`: shallow printable tray only, with wall-integrated female socket
   bosses, PCB mounting inserts, anti-slip recesses, and mounting supports.
 - `top_cover`: taller printable top cover only, with male plug pins and
@@ -714,10 +721,10 @@ openscad -o /tmp/raspberry_pi_tower_stack_printable_layout.off -D 'render_mode="
   USB-C power, both micro-HDMI ports, camera/display, PCIe, and microSD.
 - The top cover also has explicit GPIO/HAT-pin access and a side pass-through
   for the perpendicular HAT-pin branch that carries the display.
-- Airflow features include Pi 5-side wall ventilation, Pi 5-top-zone vent holes,
-  bottom tray airflow slots, lower side-wall passages below the Pi 5 board for
-  the NVMe/heatsink and PCI splitter area, and dedicated PCB 1/PCB 3 NVMe
-  airflow openings.
+- Airflow features include Pi 5 side-wall ventilation through the top cover,
+  Pi 5 top-zone vent holes, bottom tray airflow slots, lower side-wall passages
+  through the top cover below the Pi 5 board for the NVMe/heatsink and PCI
+  splitter area, and dedicated PCB 1/PCB 3 NVMe airflow openings.
 - Two fan mounts are always modeled and both are populated by default, with
   direction labels documenting one intake slot and one exhaust slot.
 - The display cover hides the display body and only exposes the configured window on the active
@@ -743,6 +750,7 @@ Manual inspection checklist:
 - Confirm USB-A, Ethernet, USB-C, micro-HDMI, camera/display, PCIe, and microSD openings are included.
 - Confirm Pi 5 GPIO/HAT-pin access and the side pass-through for the
   perpendicular display branch are included.
+- Confirm Pi 5 mounting access holes are present through the top cover.
 - Confirm Pi 5-zone ventilation exists on side walls and top openings.
 - Confirm under-Pi5 bottom and lower-side airflow openings exist below the
   fourth-board Raspberry Pi 5 zone.

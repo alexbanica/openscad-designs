@@ -91,6 +91,8 @@ editing existing sources.
      - PCB mounting insert parameters/modules,
      - Raspberry Pi 5 access/cutout references,
      - Pi 5 USB-A/Ethernet and GPIO/HAT-pin access cutout modules,
+     - Pi 5 mounting access holes,
+     - top-cover-owned side airflow pass-throughs above the shallow tray,
      - Pi 5-zone ventilation modules,
      - under-Pi5 airflow parameters/modules for NVMe heatsinks and PCI splitter,
      - PCB 1 and PCB 3 NVMe airflow parameters/modules,
@@ -183,6 +185,7 @@ editing existing sources.
      - tray socket holes,
      - Raspberry Pi 5 port/service cutout volumes,
      - Pi 5 GPIO/HAT-pin access and perpendicular branch cutout volumes,
+     - Pi 5 mounting access cutout volumes,
      - Raspberry Pi 5-zone ventilation cutout volumes,
      - NVMe board airflow cutout volumes,
      - fan mount bodies, bosses, holes, and airflow openings,
@@ -225,6 +228,9 @@ editing existing sources.
    - Subtract top-cover portions of Raspberry Pi 5 access openings where needed.
    - Subtract explicit Pi 5 GPIO/HAT-pin top access and side pass-through
      openings for the perpendicular header/display branch.
+   - Subtract Pi 5 mounting access holes through the top cover.
+   - Subtract side airflow pass-throughs in the top cover for all airflow zones
+     above the shallow tray.
    - Subtract fan airflow openings and top-cover ventilation.
    - Ensure the display cover geometry is visible in assembly and represented in
      printable layout.
@@ -354,6 +360,8 @@ editing existing sources.
      - bottom tray standoffs include PCB mounting insert holes,
      - all required Raspberry Pi 5 access openings exist,
      - Pi 5 USB-A/Ethernet and GPIO/HAT-pin openings exist,
+     - Pi 5 mounting access holes exist,
+     - side airflow pass-throughs are actually cut through the top cover,
      - extra Pi 5-zone ventilation is real subtractive geometry,
      - under-Pi5 airflow passages exist for the NVMe/heatsink/PCI splitter area,
      - NVMe airflow passages exist for PCB 1 and PCB 3,

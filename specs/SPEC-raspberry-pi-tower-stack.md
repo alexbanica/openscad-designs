@@ -41,9 +41,13 @@ final design contract must make explicit:
   floor, a shallow side-wall lip, PCB mounting supports/inserts, sockets for the
   top cover, and anti-slip recesses; the taller top cover carries the main stack
   height.
+- Side airflow above the shallow tray must be cut through the top cover, not
+  only through the bottom tray.
 - The top cover must keep explicit openings for the Pi 5 USB-A/Ethernet service
   area and the Pi 5 GPIO/HAT pin area. The GPIO/HAT pin access must include a
   path for the perpendicular HAT-pin/header branch that carries the display.
+- The top cover must provide Pi 5 mounting access holes aligned to the
+  fourth-board mounting pattern.
 - The perpendicular screen/display assembly attached through the Pi 5 HAT
   splitter must have an actual cover shown in assembly and available through the
   display-cover/printable-layout render paths. The cover must hide the display
@@ -458,6 +462,8 @@ implementation:
 - Raspberry Pi 5 USB-A/Ethernet and GPIO/HAT-pin access must be explicitly
   present by default, including a side pass-through for the perpendicular HAT
   pin/display branch.
+- Raspberry Pi 5 mounting access holes must be explicitly present through the
+  top cover by default.
 - Extra adjustable ventilation openings must exist near the Raspberry Pi 5 zone.
 - Extra adjustable under-Pi5 airflow openings/passages must exist for NVMe
   heatsinks and the PCI splitter beneath the Pi 5 board.
