@@ -250,8 +250,8 @@ implementation:
   or foot pockets by default.
 - Raspberry Pi 5 access openings must include at minimum:
   - USB-A and Ethernet side access for each board zone where those connectors
-    would otherwise be blocked, using one continuous side cutout without a
-    separator between the USB-A and Ethernet connector openings,
+    would otherwise be blocked, split into connector-sized side cutouts so the
+    side wall keeps material between ports,
   - USB-C and micro-HDMI front access for each board zone where those connectors
     would otherwise be blocked,
   - microSD access for the base PCB when the Pi 5 is in the base position and
@@ -344,9 +344,9 @@ implementation:
   pierce the roof.
 - Raspberry Pi 5 USB-A, Ethernet, USB-C, micro-HDMI, and base-position microSD
   service zones must have side or front openings where they would otherwise be
-  blocked by the enclosure. The USB-A and Ethernet side access must be one
-  continuous opening with no separator between connector openings. The top cover
-  roof must not include service openings.
+  blocked by the enclosure. The USB-A and Ethernet side access must be split
+  into smaller connector openings instead of one oversized lateral opening. The
+  top cover roof must not include service openings.
 - Render modes must include `assembly`, `bottom_tray`, `top_cover`,
   `electronics`, and `printable_layout`.
 - README must document the new design file, assumptions, manually entered

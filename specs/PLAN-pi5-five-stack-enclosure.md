@@ -202,8 +202,8 @@ request plan amendment before editing existing sources.
       - USB-C power,
       - two micro-HDMI ports,
       - base-position microSD access.
-    - Implement USB-A and Ethernet side access as one continuous cutout with no
-      separator between connector openings.
+    - Implement USB-A and Ethernet side access as separate connector-sized
+      cutouts to avoid one oversized lateral opening.
     - Keep the top cover roof fully closed with no roof service openings.
     - Derive from `rpi5.scad` connector origins/sizes when possible.
     - If OpenSCAD `use` visibility requires local mirrors, name them clearly as

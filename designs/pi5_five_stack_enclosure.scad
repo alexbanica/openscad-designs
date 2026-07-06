@@ -527,8 +527,24 @@ module pi5_five_stack_tray_port_cutouts() {
     if (rpi5_stack_index == 1) {
         let (base_board_bottom_z_mm = stack_board_bottom_z_mm[0]) {
             // Base-board side/front cutouts inside tray wall volume.
-            pi5_five_stack_right_side_usb_ethernet_cutout(
+            pi5_five_stack_right_side_port_cutout(
                 base_board_bottom_z_mm,
+                rpi5_usb_port_lower_origin_mirror_mm,
+                rpi5_usb_port_lower_size_mirror_mm,
+                edge_port_clearance_mm,
+                right_side_port_cutout_depth_mm
+            );
+            pi5_five_stack_right_side_port_cutout(
+                base_board_bottom_z_mm,
+                rpi5_usb_port_upper_origin_mirror_mm,
+                rpi5_usb_port_upper_size_mirror_mm,
+                edge_port_clearance_mm,
+                right_side_port_cutout_depth_mm
+            );
+            pi5_five_stack_right_side_port_cutout(
+                base_board_bottom_z_mm,
+                rpi5_ethernet_port_origin_mirror_mm,
+                rpi5_ethernet_port_size_mirror_mm,
                 edge_port_clearance_mm,
                 right_side_port_cutout_depth_mm
             );
@@ -646,8 +662,24 @@ module pi5_five_stack_top_cover_port_cutouts() {
         ) {
             if (board_index_1_based == rpi5_stack_index) {
                 // Right-side USB-A and Ethernet access
-                pi5_five_stack_right_side_usb_ethernet_cutout(
+                pi5_five_stack_right_side_port_cutout(
                     board_bottom_z_mm,
+                    rpi5_usb_port_lower_origin_mirror_mm,
+                    rpi5_usb_port_lower_size_mirror_mm,
+                    edge_port_clearance_mm,
+                    right_side_port_cutout_depth_mm
+                );
+                pi5_five_stack_right_side_port_cutout(
+                    board_bottom_z_mm,
+                    rpi5_usb_port_upper_origin_mirror_mm,
+                    rpi5_usb_port_upper_size_mirror_mm,
+                    edge_port_clearance_mm,
+                    right_side_port_cutout_depth_mm
+                );
+                pi5_five_stack_right_side_port_cutout(
+                    board_bottom_z_mm,
+                    rpi5_ethernet_port_origin_mirror_mm,
+                    rpi5_ethernet_port_size_mirror_mm,
                     edge_port_clearance_mm,
                     right_side_port_cutout_depth_mm
                 );
@@ -795,47 +827,26 @@ module pi5_five_stack_upper_cover_wall_airflow() {
 // Port Cutout Modules
 // ======================================================
 
-module pi5_five_stack_right_side_usb_ethernet_cutout(
+module pi5_five_stack_right_side_port_cutout(
     board_bottom_z_mm,
+    connector_origin_mm,
+    connector_size_mm,
     clearance_mm,
     cutout_depth_mm
 ) {
-    let (
-        min_y_mm = min(
-            rpi5_usb_port_lower_origin_mirror_mm[1],
-            rpi5_usb_port_upper_origin_mirror_mm[1],
-            rpi5_ethernet_port_origin_mirror_mm[1]
-        ),
-        max_y_mm = max(
-            rpi5_usb_port_lower_origin_mirror_mm[1] + rpi5_usb_port_lower_size_mirror_mm[1],
-            rpi5_usb_port_upper_origin_mirror_mm[1] + rpi5_usb_port_upper_size_mirror_mm[1],
-            rpi5_ethernet_port_origin_mirror_mm[1] + rpi5_ethernet_port_size_mirror_mm[1]
-        ),
-        min_z_mm = min(
-            rpi5_usb_port_lower_origin_mirror_mm[2],
-            rpi5_usb_port_upper_origin_mirror_mm[2],
-            rpi5_ethernet_port_origin_mirror_mm[2]
-        ),
-        max_z_mm = max(
-            rpi5_usb_port_lower_origin_mirror_mm[2] + rpi5_usb_port_lower_size_mirror_mm[2],
-            rpi5_usb_port_upper_origin_mirror_mm[2] + rpi5_usb_port_upper_size_mirror_mm[2],
-            rpi5_ethernet_port_origin_mirror_mm[2] + rpi5_ethernet_port_size_mirror_mm[2]
-        )
-    ) {
-        translate([
-            outer_length_mm / 2,
-            rpi5_five_stack_world_y((min_y_mm + max_y_mm) / 2),
-            board_bottom_z_mm + (min_z_mm + max_z_mm) / 2
-        ])
-            cube(
-                [
-                    cutout_depth_mm,
-                    max_y_mm - min_y_mm + 2 * clearance_mm,
-                    max_z_mm - min_z_mm + 2 * clearance_mm
-                ],
-                center = true
-            );
-    }
+    translate([
+        outer_length_mm / 2,
+        rpi5_five_stack_world_y(connector_origin_mm[1] + connector_size_mm[1] / 2),
+        board_bottom_z_mm + connector_origin_mm[2] + connector_size_mm[2] / 2
+    ])
+        cube(
+            [
+                cutout_depth_mm,
+                connector_size_mm[1] + 2 * clearance_mm,
+                connector_size_mm[2] + 2 * clearance_mm
+            ],
+            center = true
+        );
 }
 
 module pi5_five_stack_left_side_port_cutout(
