@@ -82,8 +82,7 @@ solid_merge_overlap_mm = 0.08;
 board_mount_standoff_height_mm = 4.6;
 board_mount_standoff_outer_diameter_mm = 6.5;
 board_mount_screw_hole_diameter_mm = rpi5_board_mounting_hole_diameter_mirror_mm;
-board_mount_screw_through_floor = true;
-board_mount_screw_hole_depth_mm = 5.0;
+board_mount_screw_hole_depth_mm = 4.2;
 enable_board_mount_inserts = false;
 board_mount_insert_diameter_mm = 4.2;
 board_mount_insert_depth_mm = 3.4;
@@ -438,14 +437,10 @@ module pi5_five_stack_mounting_holes() {
             translate([
                 rpi5_five_stack_world_x(hole_position_mm[0]),
                 rpi5_five_stack_world_y(hole_position_mm[1]),
-                board_mount_screw_through_floor
-                    ? -preview_overlap_mm
-                    : floor_thickness_mm + board_mount_standoff_height_mm - board_mount_screw_hole_depth_mm
+                floor_thickness_mm + board_mount_standoff_height_mm - board_mount_screw_hole_depth_mm
             ])
                 cylinder(
-                    h = board_mount_screw_through_floor
-                        ? floor_thickness_mm + board_mount_standoff_height_mm + 2 * preview_overlap_mm
-                        : board_mount_screw_hole_depth_mm + preview_overlap_mm,
+                    h = board_mount_screw_hole_depth_mm + preview_overlap_mm,
                     d = board_mount_screw_hole_diameter_mm
                 );
         }
