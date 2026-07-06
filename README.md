@@ -536,8 +536,9 @@ The enclosure models five same-footprint PCB positions with shared coordinate-fr
   - screw-hole depth is `4.2` mm by default.
 - Top-cover male/female interface defaults:
   - pin count `4` at `cover_pin_offset_x_mm = 45.5`, `cover_pin_offset_y_mm = 31.0`,
-  - pin diameter `3.2` mm, insertion length `5.2` mm,
-  - socket clearance `0.35` mm, socket depth `5.6` mm.
+  - pin diameter `5.0` mm, root diameter `7.6` mm, insertion length `5.2` mm,
+  - socket clearance `0.35` mm, socket depth `5.6` mm,
+  - tray socket receiver boss diameter `9.0` mm.
 - Anti-slip recess defaults:
   - `10.0` mm diameter,
   - up to `1.1` mm effective depth,
@@ -581,7 +582,7 @@ Common edits:
 - Tune standoff and `enable_board_mount_inserts`, screw insert/hole dimensions. By default `board_mount_screw_hole_diameter_mm` is derived from `rpi5_board_mounting_hole_diameter_mirror_mm`, and the holes open from the inside standoff tops.
 - Tune pin/socket dimensions for fit.
 - Tune `inter_pcb_airflow_slot_*` and per-side enable flags to reposition side vents.
-- Tune service clearances for USB-A/Ethernet/USB-C/micro-HDMI/camera-display/PCIe/header/microSD access.
+- Tune service clearances for USB-A/Ethernet/USB-C/micro-HDMI and base-position microSD access.
 - Tune `enable_anti_slip_recesses`, recess diameter/depth, and offsets.
 
 ### Render Modes
@@ -610,7 +611,7 @@ openscad -o /tmp/pi5_five_stack_enclosure_printable_layout.off -D 'render_mode="
 - The top cover owns `cover_pin_*` and bottom tray owns `tray_socket_*` dimensions.
 - Five board Z offsets, highest-board Z, inter-gap centers, and derived enclosure height are computed from `pi5_stack_gap_z_mm` and board thickness.
 - All four inter-board gaps receive grate-style side-wall airflow openings by default on both opposing side walls.
-- Raspberry Pi 5 USB-A/Ethernet, USB-C, micro-HDMI, GPIO, camera/display, PCIe, and microSD service cutouts are placed at `rpi5_stack_index`.
+- Raspberry Pi 5 USB-A/Ethernet, USB-C, and micro-HDMI service cutouts are placed at `rpi5_stack_index` on the side/front walls. The top cover roof is fully closed with no service openings.
 - Base-board Pi 5 USB-A/Ethernet, USB-C, micro-HDMI, and microSD tray-wall openings are only generated when `rpi5_stack_index = 1`.
 - Base-board screw holes open from inside the tray at the mirrored Raspberry Pi 5 mounting-hole centers and do not break through the bottom face.
 - Bottom-tray female socket bosses are built from `tray_socket_receiver_diameter_mm` and provide material support behind each socket hole.
@@ -624,6 +625,7 @@ Manual inspection checklist:
 - Confirm all board positions share the same X/Y footprint and that the Raspberry Pi 5 reference appears at PCB 4 in `assembly`.
 - Confirm `render_mode` variants all generate.
 - Confirm top cover height updates when `pi5_stack_gap_z_mm` or `top_of_fifth_board_to_top_cover_clearance_mm` changes.
+- Confirm the top cover roof is fully closed with no service openings.
 - Confirm top/bottom pin-socket pairing exists and remains printable.
 - Confirm at least two opposing side walls have inter-PCB grate openings for all four gap centers by default.
 - Confirm base board standoffs and anti-slip recesses do not break through the floor.

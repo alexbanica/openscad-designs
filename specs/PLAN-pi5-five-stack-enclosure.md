@@ -188,19 +188,17 @@ request plan amendment before editing existing sources.
      at the configured Raspberry Pi 5 board index.
    - Subtract inter-PCB side airflow openings through the top cover wall for all
      four board gaps.
-   - Ensure default pin/socket positions avoid boards, standoffs, port/service
-     openings, and airflow slots.
+   - Ensure default pin/socket positions avoid boards, standoffs, side/front
+     port openings, and airflow slots.
 
 10. Implement Raspberry Pi 5 access and service openings.
-    - Provide openings or access paths for Raspberry Pi 5 service zones where
-      they would otherwise be blocked:
+    - Provide side/front openings or access paths for Raspberry Pi 5 service
+      zones where they would otherwise be blocked:
       - USB-A and Ethernet,
       - USB-C power,
       - two micro-HDMI ports,
-      - microSD access,
-      - GPIO/header,
-      - camera/display connector areas,
-      - PCIe connector/guidance area.
+      - base-position microSD access.
+    - Keep the top cover roof fully closed with no roof service openings.
     - Derive from `rpi5.scad` connector origins/sizes when possible.
     - If OpenSCAD `use` visibility requires local mirrors, name them clearly as
       Raspberry Pi 5 reference mirrors and document them in code comments and

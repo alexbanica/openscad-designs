@@ -242,11 +242,10 @@ implementation:
     would otherwise be blocked,
   - USB-C and micro-HDMI front access for each board zone where those connectors
     would otherwise be blocked,
-  - microSD access for at least the base PCB and any additional PCB zones where
-    access is practical without weakening the enclosure,
-  - service openings or open relief for GPIO/header, camera/display, and PCIe
-    connector zones when those features would otherwise conflict with the top
-    cover or airflow strategy.
+  - microSD access for the base PCB when the Pi 5 is in the base position and
+    access is practical without weakening the enclosure.
+- The top cover roof must remain fully closed by default, with no roof service
+  openings.
 - Raspberry Pi 5 cutouts must derive from `designs/rpi5.scad` source values or
   clearly documented local mirror values plus adjustable clearance parameters.
 - Existing design files must keep their current behavior.
@@ -324,9 +323,10 @@ implementation:
 - Airflow openings must derive from inter-PCB gap centers and remain adjustable.
 - Default airflow openings must avoid pin/socket, standoff, and major access
   geometry.
-- Raspberry Pi 5 USB-A, Ethernet, USB-C, micro-HDMI, microSD, GPIO/header,
-  camera/display, and PCIe service zones must have openings or documented relief
-  where they would otherwise be blocked by the enclosure.
+- Raspberry Pi 5 USB-A, Ethernet, USB-C, micro-HDMI, and base-position microSD
+  service zones must have side or front openings where they would otherwise be
+  blocked by the enclosure. The top cover roof must not include service
+  openings.
 - Render modes must include `assembly`, `bottom_tray`, `top_cover`,
   `electronics`, and `printable_layout`.
 - README must document the new design file, assumptions, manually entered
