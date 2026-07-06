@@ -92,7 +92,7 @@ cover_pin_offset_x_mm = 45.5;
 cover_pin_offset_y_mm = 31.0;
 tray_socket_clearance_mm = 0.35;
 tray_socket_depth_mm = 5.6;
-tray_socket_receiver_diameter_mm = 9.0;
+tray_socket_receiver_diameter_mm = 8.0;
 
 // Bottom anti-slip recesses
 enable_anti_slip_recesses = true;

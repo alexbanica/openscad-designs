@@ -538,7 +538,7 @@ The enclosure models five same-footprint PCB positions with shared coordinate-fr
   - pin count `4` at `cover_pin_offset_x_mm = 45.5`, `cover_pin_offset_y_mm = 31.0`,
   - pin diameter `5.0` mm, root diameter `7.6` mm, insertion length `5.2` mm,
   - socket clearance `0.35` mm, socket depth `5.6` mm,
-  - tray socket receiver boss diameter `9.0` mm.
+  - tray socket receiver boss diameter `8.0` mm.
 - Anti-slip recess defaults:
   - `10.0` mm diameter,
   - up to `1.1` mm effective depth,
