@@ -9,6 +9,7 @@ This repository contains editable OpenSCAD designs.
 - `designs/rpi5_active_cooler.scad`
 - `designs/rpi5_ai_hat_plus_26t.scad`
 - `designs/rpi5_ai_hat_plus_26t_enclosure.scad`
+- `designs/raspberry_pi_tower_stack.scad`
 - `designs/grove_infrared_emitter.scad`
 - `designs/seeed_grove_base_hat_zero.scad`
 - `designs/waveshare_eth_usb_hub_hat.scad`
@@ -508,6 +509,163 @@ Manual inspection checklist:
 - Confirm the **actual installed shorter-header** stack and connected cables visually fit under the reduced cover height in `assembly`, `top_cover`, and `electronics` without visible intersection at the top cover, side walls, standoffs, or pin/socket interface.
 - Confirm the mirrored default AI HAT+ header/cable clearance assumptions are for reference only and may not match this lower-height 45.0 mm build; validate real hardware stack clearance against measured geometry instead.
 - Confirm generated OFF/STL/STEP/3MF files remain under `/tmp` and are not tracked.
+
+## Raspberry Pi Tower Stack Enclosure
+
+`designs/raspberry_pi_tower_stack.scad` is a printable bottom-tray and
+removable-top-cover enclosure for a five-board Raspberry Pi-size stack with a
+Raspberry Pi 5 as the fourth board.
+
+It includes a top-down stack reference with adjustable per-PCB gap spacing, Pi 5
+service/access openings around the fourth-board zone, two small square fan mount
+positions (one visually populated by default), and a perpendicular display cover
+assembly preview with a clear window.
+
+### Component Assumptions
+
+The design defaults are planning values and remain fully adjustable:
+
+- Five-board stack using Raspberry Pi-size footprints.
+- Fourth board is Raspberry Pi 5 by default (`rpi5_stack_index = 4`).
+- Per-gap stack spacing vector defaults to `[14.0, 12.0, 14.0, 13.0]` mm.
+- Top-cover clearance (from the top of the highest PCB to the inner top-cover target)
+  defaults to `7.0` mm via
+  `top_of_highest_board_to_top_cover_clearance_mm`.
+- Generic placeholder PCB defaults: `85.0 mm x 56.0 mm x 1.6 mm` with Pi 5-style
+  mounting pattern and simplified header geometry.
+- Top cover interface defaults are 4-pin male/female socket geometry:
+  - pin count: `4` with `4` active pins by default at `(-42.0, -28.0)`,
+    `(42.0, -28.0)`, `(-42.0, 28.0)`, `(42.0, 28.0)`
+  - `cover_pin_diameter_mm = 3.2`
+  - `cover_pin_insertion_length_mm = 5.0`
+  - `cover_pin_root_diameter_mm = 5.6`
+  - `tray_socket_clearance_mm = 0.35`
+  - `tray_socket_depth_mm = 5.8`
+  - `tray_socket_receiver_diameter_mm = 7.0`.
+- Fan defaults are configurable square fan mounts with default mount centers at
+  `[[0.0, -22.0], [26.0, -22.0]]`, defaults `fan_mount_enabled_flags = [true, false]`,
+  body size `30.0` mm, thickness `7.0` mm, clearance `0.6` mm,
+  hole spacing `24.0` mm, screw-hole diameter `3.0` mm, boss diameter `6.0` mm,
+  boss height `6.0` mm, wall-hole diameter `4.2` mm, wall-cutout padding `1.6` mm.
+- Display defaults are placeholder display geometry with a covered body and an
+  exposed front window, using
+  `display_body_length_mm = 50.0`, `display_body_width_mm = 32.0`,
+  `display_body_height_mm = 20.0`, `display_body_thickness_mm = 2.2`,
+  `display_window_length_mm = 28.0`, `display_window_height_mm = 12.0`,
+  `display_window_clearance_mm = 0.6`,
+  `display_cover_wall_thickness_mm = 2.0`,
+  `display_cover_front_clearance_mm = 1.2`,
+  `display_cover_z_lift_mm = 6.0`.
+- Display/header splitter defaults are:
+  `display_body_offset_x_from_splitter_mm = 1.0`,
+  `display_body_offset_z_from_header_mm = 0.8`,
+  `display_splitter_vertical_length_mm = 22.0`,
+  `display_splitter_lateral_length_mm = 20.0`,
+  `display_splitter_cross_section_mm = 4.0`,
+  `header_splitter_pin_count_x = 4`, `header_splitter_pin_count_y = 2`,
+  `header_splitter_pin_offset_x_mm = 1.2`, and
+  `header_splitter_pin_offset_y_mm = 1.2`.
+
+### Source and Mirrors
+
+`designs/rpi5.scad` is used directly for the fourth-board preview and port
+service context. Because OpenSCAD `use` limits raw variable visibility, the enclosure
+adds local `rpi5_*_mirror_mm` values for:
+
+- board footprint/edge geometry and mounting points,
+- GPIO/header placement,
+- service connector origins and extents (USB-A, Ethernet, USB-C, micro-HDMI, camera/display, PCIe),
+- microSD position/extent.
+
+### Adjustable Parameters
+
+Top-level parameters are grouped in the source under:
+
+- render controls, visibility toggles, and inspection helpers,
+- stack and spacing controls,
+- Raspberry Pi 5 mirror values,
+- wall/floor/roof and clearances,
+- supports, standoffs, pin/socket parameters,
+- Raspberry Pi 5 port access sizing and clearance,
+- side and top ventilation settings around the Pi 5 zone,
+- square fan mount parameters and mount enable flags,
+- display cover/window placement,
+- vertical/lateral header splitter preview parameters,
+- display cover/window clearances,
+- printable layout spacing and visual styling.
+
+Common edits:
+
+- Set `render_mode = "assembly"`, `"bottom_tray"`, `"top_cover"`, `"display_cover"`, `"electronics"`, or `"printable_layout"`.
+- Tune `pcb_stack_gap_z_mm` to adjust each inter-board gap independently.
+- Tune `top_of_highest_board_to_top_cover_clearance_mm`, `show_tower_reference`,
+  `show_rpi5_reference`, `show_rpi5_active_cooler_reference`,
+  and `show_placeholder_board_headers` for stack preview density.
+- Tune `cover_pin_diameter_mm`, `cover_pin_insertion_length_mm`,
+  `tray_socket_clearance_mm`, `tray_socket_depth_mm`, and socket count/offsets for top cover fit.
+- Tune `rpi5_usb_*`, `rpi5_ethernet_*`, `rpi5_micro_hdmi_*`, and camera/display/PCIe
+  clearance values to match measured connector and cable-head geometry.
+- Tune `enable_pi5_side_ventilation`, `enable_pi5_top_ventilation`, and all related
+  vent counts/sizes/spacing.
+- Tune fan mounting (`fan_mount_centers_mm`, `fan_body_size_mm`,
+  `fan_body_clearance_mm`, `fan_mount_*`) and `fan_mount_enabled_flags` for one or two fan builds.
+  Both mounts remain modeled by default.
+- Tune display cover (`display_body_*`, `display_window_*`, `display_cover_*`,
+  `display_splitter_*`) and `display_cover_z_lift_mm` for branch geometry.
+
+### Render Modes
+
+Set `render_mode` to one of:
+
+- `assembly`: tray + cover + optional stack references + fan/display/header previews.
+- `bottom_tray`: printable tray only, with wall-integrated female socket bosses and
+  mounting supports.
+- `top_cover`: printable top cover only, with male plug pins and top-coverage openings.
+- `display_cover`: display cover/extension geometry only.
+- `electronics`: only the five-board references (placeholder boards + Pi 5 fourth board).
+- `printable_layout`: tray, top cover, and display cover arranged for separate printing inspection.
+
+Optional inspection commands:
+
+```sh
+openscad -o /tmp/raspberry_pi_tower_stack_assembly.off -D 'render_mode="assembly"' designs/raspberry_pi_tower_stack.scad
+openscad -o /tmp/raspberry_pi_tower_stack_bottom_tray.off -D 'render_mode="bottom_tray"' designs/raspberry_pi_tower_stack.scad
+openscad -o /tmp/raspberry_pi_tower_stack_top_cover.off -D 'render_mode="top_cover"' designs/raspberry_pi_tower_stack.scad
+openscad -o /tmp/raspberry_pi_tower_stack_display_cover.off -D 'render_mode="display_cover"' designs/raspberry_pi_tower_stack.scad
+openscad -o /tmp/raspberry_pi_tower_stack_electronics.off -D 'render_mode="electronics"' designs/raspberry_pi_tower_stack.scad
+openscad -o /tmp/raspberry_pi_tower_stack_printable_layout.off -D 'render_mode="printable_layout"' designs/raspberry_pi_tower_stack.scad
+```
+
+### Fit and Validation Notes
+
+- Use this source as a child design with `use <raspberry_pi_tower_stack.scad>` and call
+  `raspberry_pi_tower_stack_assembly()`,
+  `raspberry_pi_tower_stack_printable_bottom_tray()`,
+  `raspberry_pi_tower_stack_printable_top_cover()`,
+  `raspberry_pi_tower_stack_display_cover()`,
+  or `raspberry_pi_tower_stack_electronics_reference()` as needed.
+- The fourth-board Pi 5 access is provided for mounting holes, USB-A, Ethernet,
+  USB-C power, both micro-HDMI ports, camera/display, PCIe, and microSD.
+- Airflow features include both Pi 5-side wall ventilation and Pi 5-top-zone vent holes.
+- Two fan mounts are always modeled; defaults keep one active mount visually populated and
+  the second available for the next stage.
+- The display cover hides the display body and only exposes the configured window on the active
+  display face.
+- Generated OFF/STL/STEP/3MF/3mf outputs must remain under `/tmp` only.
+
+Manual inspection checklist:
+
+- Confirm `assembly`, `bottom_tray`, `top_cover`, `display_cover`, `electronics`, and `printable_layout` all render.
+- Confirm `pcb_stack_gap_z_mm` affects each inter-board interval independently.
+- Confirm the fourth board is Raspberry Pi 5 and others are placeholder Raspberry Pi-size boards.
+- Confirm top-cover clearance is controlled by `top_of_highest_board_to_top_cover_clearance_mm`.
+- Confirm top cover has male pins and tray has matching female socket bosses/holes.
+- Confirm USB-A, Ethernet, USB-C, micro-HDMI, camera/display, PCIe, and microSD openings are included.
+- Confirm Pi 5-zone ventilation exists on side walls and top openings.
+- Confirm two fan mounts are present and non-overlapping by default.
+- Confirm header splitter preview includes a vertical and lateral branch.
+- Confirm display window dimensions and cover offsets are documented defaults and adjustable.
+- Confirm generated mesh files remain untracked.
 
 ## Raspberry Pi Zero USB Ethernet Grove Enclosure
 
