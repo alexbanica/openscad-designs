@@ -298,8 +298,7 @@ implementation:
   dependencies.
 - The source must use `designs/rpi5.scad` for Raspberry Pi 5 reference geometry.
 - The source must model exactly five PCB positions by default.
-- The source must default `rpi5_stack_index_from_top` to `4`, deriving the
-  bottom-up Pi 5 stack index from that top-down position.
+- The source must default `rpi5_stack_index` to `4`.
 - All five PCB positions must share the same footprint and coordinate frame.
 - The four distances between adjacent PCBs must be independently configurable.
 - Changing a board distance must move downstream boards, airflow openings, and
