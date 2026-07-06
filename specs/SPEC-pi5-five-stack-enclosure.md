@@ -33,6 +33,27 @@ cover roof fully closed. This iteration changes that final behavior:
 - The fans are intended to cool PCB 5. Electrical fan routing, fan models,
   thermal simulation, and real airflow testing remain out of scope.
 
+## Iteration: 2026-07-06 Pi 5 Port Cutout Calibration
+
+The printed Raspberry Pi 5 AI HAT+ enclosure established working service-port
+clearances. This direct iteration applies those clearances to the five-stack
+enclosure:
+
+- USB-C and micro-HDMI front openings must use the same cable-head sizing
+  defaults as `designs/rpi5_ai_hat_plus_26t_enclosure.scad`.
+- USB-C front openings must clear at least `12.6 mm x 7.6 mm` by default,
+  derived from a `12.0 mm x 7.0 mm` cable-head requirement plus `0.6 mm` total
+  margin.
+- Each micro-HDMI front opening must clear at least `12.6 mm x 7.26 mm` by
+  default, derived from a `12.0 mm x 6.66 mm` adapter-head requirement plus
+  `0.6 mm` total margin.
+- The front openings must keep the mirrored Raspberry Pi 5 connector centers,
+  but their visible width and height must expand to the printed-good cable-head
+  defaults when those are larger than the connector-derived opening.
+- USB-A and Ethernet side access must continue to use one continuous right-side
+  opening based on the same Raspberry Pi 5 connector extents used by the
+  printed Raspberry Pi 5 AI HAT+ enclosure.
+
 ## Problem Statement
 
 The repository already has a Raspberry Pi 5 reference model and existing
@@ -80,8 +101,9 @@ between boards.
     socket clearance, and socket depth.
 - Provide anti-slip recesses or foot pockets on the bottom cover/tray underside.
 - Provide real subtractive airflow openings between every adjacent PCB by
-  default on both side walls and the back face, with front-face openings where
-  they do not interfere with the Pi 5 front connector cutouts.
+  default on both side walls and the back face, with front/back-face openings
+  removed where they would interfere with Pi 5 connector cutouts or the
+  GPIO/header lateral access opening.
 - Provide additional upper top-cover ventilation through the vertical walls
   above PCB 5 while keeping non-fan roof areas closed.
 - Provide guarded fan airflow openings through the upper cover roof for two
@@ -104,8 +126,10 @@ between boards.
   control.
 - Additional printable enclosure parts beyond the bottom cover/tray, middle
   cover, and upper cover.
-- Display covers, display windows, header splitters, NVMe board placeholders,
-  Cluster HAT placeholders, or other board-specific add-ons.
+- Display covers, display windows, HAT header splitter geometry, NVMe board
+  placeholders, Cluster HAT placeholders, or other board-specific add-ons. The
+  enclosure only provides a lateral pass-through opening for an outward-facing
+  splitter branch.
 - Electrical wiring, connectors, fan control, fan power delivery, thermal
   simulation, airflow simulation, and fan vendor-specific cosmetic modeling.
 - Vendor-certified mechanical reproduction of Raspberry Pi 5 components,
@@ -345,8 +369,15 @@ implementation:
     separator between the USB-A and Ethernet connector openings,
   - USB-C and micro-HDMI front access for each board zone where those connectors
     would otherwise be blocked,
+  - a GPIO/header-edge lateral access opening at the configured Raspberry Pi 5
+    board zone so an installed HAT header splitter can expose outward-facing
+    pins for a direct display connection while its upward-facing branch can
+    continue the stack,
   - microSD access for the base PCB when the Pi 5 is in the base position and
     access is practical without weakening the enclosure.
+- Front/back-face vent rows that touch the configured Raspberry Pi 5 board must
+  be omitted on faces where they would collide with Pi 5 connector cutouts or
+  the GPIO/header lateral splitter opening.
 - The top cover roof must have no service openings. Roof openings are allowed
   only for guarded fan airflow grilles that retain printed ribs/material for
   debris protection.
@@ -365,8 +396,9 @@ implementation:
   external hardware unless a later approved spec expands the printed support
   system.
 - Airflow between PCBs means lateral airflow through the enclosure at every
-  inter-board gap on the side, front, and back faces, supplemented by guarded
-  roof fan airflow for two internal upper-cover fan positions.
+  inter-board gap on the side faces, with front/back face rows omitted where
+  they would collide with Pi 5 service openings, supplemented by guarded roof
+  fan airflow for two internal upper-cover fan positions.
 - The exact installed headers, heatsinks, coolers, cables, and spacers are not
   known, so their clearance must remain tunable through parameters and visual
   OpenSCAD inspection.
@@ -461,6 +493,11 @@ implementation:
   blocked by the enclosure. The USB-A and Ethernet side access must be one
   continuous opening with no separator between connector openings. The top cover
   roof must not include service openings.
+- USB-C and micro-HDMI front service openings must use the printed-good
+  Raspberry Pi 5 AI HAT+ enclosure cable-head values by default: USB-C at least
+  `12.6 mm x 7.6 mm`, and each micro-HDMI at least `12.6 mm x 7.26 mm`.
+- Raspberry Pi 5 GPIO/header lateral access must be generated at the configured
+  Pi 5 board level and must not collide with front/back-face vent rows.
 - Render modes must include `assembly`, `bottom_tray`, `middle_cover`,
   `upper_cover`, `top_cover`, `electronics`, and `printable_layout`.
 - README must document the new design file, assumptions, manually entered

@@ -12,6 +12,12 @@ Implement the approved five-stack enclosure as a new OpenSCAD design and update
 README documentation. The default five-position stack uses PCB 4 as the
 Raspberry Pi 5 reference/access level. The upper cover includes two internal
 40 mm fan mount positions with guarded roof airflow grilles for cooling PCB 5.
+This completed direct iteration also adds an adjustable lateral GPIO/header
+access opening for an outward-facing HAT header splitter/display branch and
+omits front/back-face vent rows where they would collide with Pi 5 service
+openings. This completed direct iteration also calibrates the five-stack
+USB-C, micro-HDMI, USB-A, and Ethernet openings against the printed-good
+Raspberry Pi 5 AI HAT+ enclosure service-port dimensions.
 
 Do not implement behavior outside the approved spec.
 
@@ -236,9 +242,20 @@ request plan amendment before editing existing sources.
       - USB-A and Ethernet,
       - USB-C power,
       - two micro-HDMI ports,
+      - GPIO/header-edge lateral access for an outward-facing HAT header
+        splitter/display branch,
       - base-position microSD access.
     - Implement USB-A and Ethernet side access as one continuous cutout with no
       separator between connector openings.
+    - Keep USB-A and Ethernet side access based on the same mirrored Raspberry
+      Pi 5 connector extents used by the printed Raspberry Pi 5 AI HAT+
+      enclosure.
+    - Size front USB-C and micro-HDMI openings using the printed Raspberry Pi 5
+      AI HAT+ enclosure cable-head requirements:
+      - USB-C: `12.0 mm x 7.0 mm` plus `0.6 mm` total margin, producing at
+        least `12.6 mm x 7.6 mm`,
+      - micro-HDMI: `12.0 mm x 6.66 mm` plus `0.6 mm` total margin, producing
+        at least `12.6 mm x 7.26 mm`.
     - Keep the top cover roof free of service openings. Only guarded fan airflow
       grilles may pierce the roof.
     - Derive from `rpi5.scad` connector origins/sizes when possible.
@@ -256,6 +273,9 @@ request plan amendment before editing existing sources.
       by default.
     - Skip front-face openings for gaps directly adjacent to the configured Pi 5
       board when they would intersect the Pi 5 front connector cutouts.
+    - Skip front/back-face openings for gaps directly adjacent to the configured
+      Pi 5 board when they would intersect the GPIO/header lateral access
+      opening or other Pi 5 service openings.
     - Derive airflow Z centers from the four inter-PCB gap centers.
     - Make airflow count, slot width, slot height, spacing, face enablement, and
       margins adjustable.
@@ -426,6 +446,8 @@ rg -n 'anti_slip|anti_slide|foot_recess|standoff|pilot|insert' designs/pi5_five_
 rg -n 'airflow|vent|ventilation|gap_center|side.*opening' designs/pi5_five_stack_enclosure.scad README.md
 rg -n 'fan|grille|guard|40\\.0|32\\.0|roof.*airflow|fan_mount' designs/pi5_five_stack_enclosure.scad README.md
 rg -n 'usb|ethernet|usb_c|hdmi|camera|display|pcie|micro_sd|gpio' designs/pi5_five_stack_enclosure.scad README.md
+rg -n 'gpio_header_lateral_access|front_back_airflow_conflicts_with_pi5_access' designs/pi5_five_stack_enclosure.scad README.md
+rg -n 'usb_c_cable_head_required_size|micro_hdmi_adapter_head_required_size|front_cable_cutout_error_margin' designs/pi5_five_stack_enclosure.scad README.md
 ```
 
 Required OpenSCAD inspection exports:
