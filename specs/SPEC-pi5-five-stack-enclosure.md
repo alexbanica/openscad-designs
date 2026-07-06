@@ -4,8 +4,8 @@ Status: Approved
 
 ## Purpose
 
-Create an editable OpenSCAD printable enclosure for five stacked Raspberry Pi 5
-PCBs.
+Create an editable OpenSCAD printable enclosure for five stacked PCB positions
+where the fourth PCB from bottom to top is the Raspberry Pi 5 by default.
 
 The enclosure must have exactly two printable enclosure parts by default: a
 bottom cover/tray and a top cover. The distance between every adjacent PCB must
@@ -20,9 +20,10 @@ The repository already has a Raspberry Pi 5 reference model and existing
 enclosure patterns for removable top covers, bottom trays, male cover pins,
 female tray sockets, anti-slide recesses, and adjustable stack spacing.
 
-It does not have a focused enclosure for a simple stack of five Raspberry Pi 5
-boards where all five board positions use the same Pi 5 footprint and the main
-fit variable is the configurable vertical distance between boards.
+It does not have a focused enclosure for a simple five-board stack where every
+board position shares the same footprint, the fourth board is the Raspberry Pi
+5 by default, and the main fit variable is the configurable vertical distance
+between boards.
 
 ## Scope
 
@@ -31,7 +32,8 @@ fit variable is the configurable vertical distance between boards.
 - Use `designs/rpi5.scad` as the fit and clearance reference for Raspberry Pi 5
   board dimensions, mounting-hole positions, connector positions, GPIO/header
   position, microSD position, and optional active-cooler preview geometry.
-- Model five Raspberry Pi 5 PCB positions by default.
+- Model five same-footprint PCB positions by default, with PCB 4 as the
+  Raspberry Pi 5 reference and service-access level.
 - Make each of the four distances between adjacent PCBs independently
   configurable.
 - Make the top clearance above the fifth/highest PCB configurable.
@@ -79,8 +81,9 @@ fit variable is the configurable vertical distance between boards.
 
 ## Definitions
 
-- Five-stack enclosure: a printed enclosure for five Raspberry Pi 5 PCBs stacked
-  vertically in one shared footprint.
+- Five-stack enclosure: a printed enclosure for five PCB positions stacked
+  vertically in one shared footprint, with one configurable Raspberry Pi 5
+  reference/access position.
 - PCB index: a 1-based board number from bottom to top. PCB 1 is the base PCB,
   and PCB 5 is the highest PCB.
 - Inter-PCB distance: the configurable vertical distance from one PCB top face
@@ -123,8 +126,10 @@ implementation:
 - Raspberry Pi 5 mounting-hole positions: copied from `designs/rpi5.scad`.
 - Raspberry Pi 5 mounting-hole diameter: `2.75 mm`.
 - Stack PCB count: `5`.
-- Initial inter-PCB distances: an adjustable four-value vector with conservative
-  defaults rather than a hard-coded single height.
+- Initial inter-PCB distances: an adjustable four-value vector defaulting to
+  `15.0 mm` for every adjacent PCB gap.
+- Raspberry Pi 5 stack index: `4`, meaning the fourth PCB from bottom to top is
+  the Pi 5 by default.
 - Top-of-fifth-PCB-to-top-cover clearance: an adjustable value.
 - Bottom-tray wall/lip height: shallow enough that the bottom cover remains the
   smaller enclosure half and the top cover carries the main stack height.
@@ -153,8 +158,9 @@ implementation:
   `use` visibility prevents direct variable access.
 - Any mirrored Raspberry Pi 5 values must be clearly named and documented as
   local mirrors of `designs/rpi5.scad`.
-- All five PCBs must share one Raspberry Pi 5 board-origin convention and one
-  enclosure footprint.
+- All five PCBs must share one board-origin convention and one enclosure
+  footprint, with Raspberry Pi 5 connector/service geometry applied to the
+  configured Pi 5 PCB index.
 - Changing an inter-PCB distance must update downstream PCB positions, airflow
   gap centers, top-cover height, and related clearance geometry.
 - Printable versions must be Bambu Lab-friendly:
@@ -180,8 +186,9 @@ implementation:
   female cover-pin sockets, and underside anti-slip recesses.
 - `top_cover` must show only the printable top cover with male cover pins and
   stack airflow openings.
-- `electronics` must show the five Raspberry Pi 5 reference PCBs without
-  printable enclosure bodies.
+- `electronics` must show the five PCB positions without printable enclosure
+  bodies, with the Raspberry Pi 5 reference at the configured Pi 5 index and
+  generic PCB placeholders for the other positions.
 - `printable_layout` must place the bottom cover/tray and top cover separated on
   the print plane with no floating printable geometry.
 - Visibility toggles must independently control:
@@ -189,7 +196,8 @@ implementation:
   - optional Raspberry Pi 5 active-cooler previews if used,
   - GPIO/header and microSD reference visibility when exposed by the reference,
   - clearance/cutout guides.
-- The default stack must contain exactly five Raspberry Pi 5 PCB positions.
+- The default stack must contain exactly five PCB positions.
+- PCB 4 must be the Raspberry Pi 5 reference/service-access position by default.
 - PCB 1, the base PCB, must be supported by bottom-tray standoffs aligned to the
   Raspberry Pi 5 mounting-hole pattern.
 - The bottom-tray standoffs must include configurable screw pilot holes or insert
@@ -204,8 +212,8 @@ implementation:
 - The bottom cover/tray must remain the smaller/shallow enclosure half by
   default; the top cover must carry the main stack height.
 - Airflow between PCBs is mandatory:
-  - every inter-board gap must have real subtractive lateral openings on at
-    least two opposing side walls by default,
+  - every inter-board gap must have real subtractive lateral grate openings on
+    at least two opposing side walls by default,
   - airflow openings must be derived from each gap center so spacing changes move
     the openings with the boards,
   - airflow count, slot size, spacing, side enablement, and margins must be
@@ -245,9 +253,10 @@ implementation:
 
 ## Assumptions
 
-- "5 stacked pi5 pcb" means five actual Raspberry Pi 5 board footprints by
-  default, not five generic Raspberry Pi-size placeholders or a mixed HAT/NVMe
-  tower.
+- "5 stacked pi5 pcb" now means five same-footprint PCB positions where the
+  fourth position is the Raspberry Pi 5 by default; the other positions may be
+  represented as generic PCB placeholders until specific board hardware is
+  approved.
 - Only PCB 1 is mechanically fastened directly to the bottom cover/tray by this
   enclosure. Physical board-to-board spacers between PCBs are assumed to be
   external hardware unless a later approved spec expands the printed support
@@ -288,7 +297,8 @@ implementation:
 - The source must use OpenSCAD 2021.01-compatible syntax and no external library
   dependencies.
 - The source must use `designs/rpi5.scad` for Raspberry Pi 5 reference geometry.
-- The source must model exactly five Raspberry Pi 5 PCB positions by default.
+- The source must model exactly five PCB positions by default.
+- The source must default `rpi5_stack_index` to `4`.
 - All five PCB positions must share the same footprint and coordinate frame.
 - The four distances between adjacent PCBs must be independently configurable.
 - Changing a board distance must move downstream boards, airflow openings, and
@@ -347,7 +357,7 @@ implementation:
 - Stop any OpenSCAD render that takes more than 15 seconds, per repository
   guidance.
 - Visually inspect generated OpenSCAD outputs for:
-  - five Raspberry Pi 5 board positions,
+  - five PCB positions with the Raspberry Pi 5 reference at PCB 4 by default,
   - coherent board spacing changes,
   - top-cover height derived from stack height and top clearance,
   - base PCB mounted to bottom-tray standoffs,

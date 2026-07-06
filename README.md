@@ -513,14 +513,15 @@ Manual inspection checklist:
 
 ## Raspberry Pi 5 Five-Stack Enclosure
 
-`designs/pi5_five_stack_enclosure.scad` is a printable bottom tray and removable top cover for a five-board Raspberry Pi 5 stack with explicit per-gap spacing controls and matching port/airflow access.
+`designs/pi5_five_stack_enclosure.scad` is a printable bottom tray and removable top cover for a five-board stack with explicit per-gap spacing controls, Raspberry Pi 5 access at the configured Pi 5 board level, and matching inter-PCB airflow grates.
 
 ### Component Assumptions
 
-The enclosure models five Raspberry Pi 5 boards with shared footprint and coordinate frame defaults:
+The enclosure models five same-footprint PCB positions with shared coordinate-frame defaults:
 
 - `stack_board_count = 5` (default).
-- Default inter-board gap vector (`pi5_stack_gap_z_mm`) is `[14.0, 12.0, 14.0, 13.0]` mm.
+- Default inter-board gap vector (`pi5_stack_gap_z_mm`) is `[15.0, 15.0, 15.0, 15.0]` mm.
+- PCB 4 from bottom to top is the Raspberry Pi 5 by default (`rpi5_stack_index = 4`).
 - Top clearance above board 5 is `top_of_fifth_board_to_top_cover_clearance_mm = 7.0` mm by default.
 - Raspberry Pi 5 base mirror dimensions:
   - `85.0 mm x 56.0 mm x 1.6 mm` board,
@@ -543,10 +544,11 @@ The enclosure models five Raspberry Pi 5 boards with shared footprint and coordi
   - offsets `28.0` mm and `18.0` mm from perimeter edges.
 - Side airflow defaults:
   - active on both side walls by default,
-  - `inter_pcb_airflow_slot_count = 2`,
-  - `inter_pcb_airflow_slot_spacing_mm = 20.0`,
-  - `inter_pcb_airflow_slot_width_mm = 12.0`,
-  - `inter_pcb_airflow_slot_height_mm = 10.0`.
+  - every inter-PCB gap gets grate-style side openings,
+  - `inter_pcb_airflow_slot_count = 4`,
+  - `inter_pcb_airflow_slot_spacing_mm = 11.0`,
+  - `inter_pcb_airflow_slot_width_mm = 6.0`,
+  - `inter_pcb_airflow_slot_height_mm = 8.0`.
 
 ### Source and Mirrors
 
@@ -573,6 +575,7 @@ Common edits:
 
 - Set `render_mode = "assembly"`, `"bottom_tray"`, `"top_cover"`, `"electronics"`, or `"printable_layout"`.
 - Tune `pi5_stack_gap_z_mm` for all four inter-PCB gaps and observe the derived stack Z map.
+- Tune `rpi5_stack_index` if the Raspberry Pi 5 board moves from the default fourth PCB position.
 - Tune `top_of_fifth_board_to_top_cover_clearance_mm` for headroom margin.
 - Keep `stack_board_count` at its default `5` for the default five-board contract.
 - Tune standoff and `enable_board_mount_inserts`, screw insert/hole dimensions. By default `board_mount_screw_hole_diameter_mm` is derived from `rpi5_board_mounting_hole_diameter_mirror_mm`, and the holes open from the inside standoff tops.
@@ -588,7 +591,7 @@ Set `render_mode` to one of:
 - `assembly`: full assembled enclosure with optional bottom tray, top cover, and optional five-board reference stack.
 - `bottom_tray`: printed bottom tray only, including PCB supports, female cover-socket features, and tray anti-slip recesses.
 - `top_cover`: printed top cover only, inverted to the print plane with male pins and wall cutouts.
-- `electronics`: five Raspberry Pi 5 reference boards only (no printed geometry). `show_rpi5_reference` controls visibility in this mode.
+- `electronics`: five PCB positions only (no printed geometry), with the configured Raspberry Pi 5 board shown at `rpi5_stack_index` and generic PCB placeholders for the other levels. `show_rpi5_reference` controls visibility in this mode.
 - `printable_layout`: bottom tray and top cover placed on separate build areas for direct inspection.
 
 Optional inspection commands:
@@ -605,24 +608,24 @@ openscad -o /tmp/pi5_five_stack_enclosure_printable_layout.off -D 'render_mode="
 
 - The design keeps the bottom tray as the smaller shallow half (`tray_wall_height_mm` default `16.0`) and places the top cover above it.
 - The top cover owns `cover_pin_*` and bottom tray owns `tray_socket_*` dimensions.
-- Five board Z offsets, highest-board Z, inter-gap centers, and derived envelope are computed from `pi5_stack_gap_z_mm` and board thickness.
-- All four inter-board gaps receive side-wall airflow slots by default on both opposing side walls.
-- Base-board USB-A/Ethernet, USB-C, micro-HDMI, and microSD ports are opened in the tray wall volume.
+- Five board Z offsets, highest-board Z, inter-gap centers, and derived enclosure height are computed from `pi5_stack_gap_z_mm` and board thickness.
+- All four inter-board gaps receive grate-style side-wall airflow openings by default on both opposing side walls.
+- Raspberry Pi 5 USB-A/Ethernet, USB-C, micro-HDMI, GPIO, camera/display, PCIe, and microSD service cutouts are placed at `rpi5_stack_index`.
+- Base-board Pi 5 USB-A/Ethernet, USB-C, micro-HDMI, and microSD tray-wall openings are only generated when `rpi5_stack_index = 1`.
 - Base-board screw holes open from inside the tray at the mirrored Raspberry Pi 5 mounting-hole centers and do not break through the bottom face.
 - Bottom-tray female socket bosses are built from `tray_socket_receiver_diameter_mm` and provide material support behind each socket hole.
-- All five board stack levels receive service cutouts in the top cover for USB-A/Ethernet, USB-C, both micro-HDMI, top-clearance-side GPIO/display/PCIe, and microSD for configured board indices.
-- MicroSD openings can be kept to board 1 by default with `base_board_micro_sd_access_board_indices`, and expanded with `enable_additional_micro_sd_openings`.
+- Non-Pi PCB positions render as simple generic PCB placeholders in the electronics preview.
 - The bottom tray includes underside anti-slip recesses; keep recess depth below floor thickness to avoid breakthrough.
 - The source uses only local mirrored Pi 5 values where `use <rpi5.scad>` prevents direct variable access.
 
 Manual inspection checklist:
 
-- Confirm default `stack_board_count = 5` and the default gap list has four values.
-- Confirm each board share the same X/Y footprint and mirrored connector coordinate frame in `assembly`.
+- Confirm default `stack_board_count = 5`, `rpi5_stack_index = 4`, and the default gap list has four `15.0` mm values.
+- Confirm all board positions share the same X/Y footprint and that the Raspberry Pi 5 reference appears at PCB 4 in `assembly`.
 - Confirm `render_mode` variants all generate.
 - Confirm top cover height updates when `pi5_stack_gap_z_mm` or `top_of_fifth_board_to_top_cover_clearance_mm` changes.
 - Confirm top/bottom pin-socket pairing exists and remains printable.
-- Confirm at least two opposing side walls have inter-PCB airflow openings for all four gap centers by default.
+- Confirm at least two opposing side walls have inter-PCB grate openings for all four gap centers by default.
 - Confirm base board standoffs and anti-slip recesses do not break through the floor.
 - Confirm `printable_layout` has only two printed parts.
 - Confirm generated OFF files stay under `/tmp` and are not tracked.

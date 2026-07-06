@@ -8,8 +8,9 @@ Status: Approved
 
 ## Scope
 
-Implement the approved Raspberry Pi 5 five-stack enclosure as a new OpenSCAD
-design and update README documentation.
+Implement the approved five-stack enclosure as a new OpenSCAD design and update
+README documentation. The default five-position stack uses PCB 4 as the
+Raspberry Pi 5 reference/access level.
 
 Do not implement behavior outside the approved spec.
 
@@ -73,7 +74,8 @@ request plan amendment before editing existing sources.
    - Before production implementation, the test-focused subagent must define
      source assertions for:
      - required render modes,
-     - five-board Raspberry Pi 5 stack parameters/modules,
+     - five-board stack parameters/modules,
+     - Raspberry Pi 5 stack index controls,
      - per-gap PCB spacing controls,
      - top-cover clearance parameter,
      - spacing-derived board positions,
@@ -97,6 +99,7 @@ request plan amendment before editing existing sources.
      - five-board stack count and per-gap spacing values,
      - top-of-stack clearance value,
      - Raspberry Pi 5 board and port source values or local mirrors,
+     - configured Pi 5 board index defaulting to PCB 4,
      - enclosure wall/floor/roof/clearance values,
      - shallow bottom-tray and taller top-cover split values,
      - base-board mounting/support values,
@@ -115,8 +118,10 @@ request plan amendment before editing existing sources.
 
 5. Implement reference/electronics integration.
    - `use <rpi5.scad>` for Raspberry Pi 5 visual reference modules.
-   - Provide an electronics/reference render that can show all five Raspberry Pi
-     5 board positions using the same footprint and coordinate frame.
+   - Provide an electronics/reference render that can show all five PCB
+     positions using the same footprint and coordinate frame, with the
+     Raspberry Pi 5 reference at PCB 4 by default and generic placeholders for
+     the other PCB positions.
    - Include toggles for showing the five-board reference stack and any
      rpi5-reference options exposed through module parameters.
    - Do not duplicate or alter existing reference modules.
@@ -179,7 +184,8 @@ request plan amendment before editing existing sources.
      and socket depth adjustable.
    - Derive top-cover height from the configured five-board stack height and
      top-of-fifth-PCB-to-cover clearance parameter.
-   - Subtract top-cover portions of Raspberry Pi 5 access openings where needed.
+   - Subtract top-cover portions of Raspberry Pi 5 access openings where needed
+     at the configured Raspberry Pi 5 board index.
    - Subtract inter-PCB side airflow openings through the top cover wall for all
      four board gaps.
    - Ensure default pin/socket positions avoid boards, standoffs, port/service
@@ -205,7 +211,7 @@ request plan amendment before editing existing sources.
       areas in README.
 
 11. Implement mandatory inter-PCB airflow.
-    - Add real subtractive lateral airflow openings for every inter-board gap.
+    - Add real subtractive lateral grate openings for every inter-board gap.
     - Place openings on at least two opposing side walls by default.
     - Derive airflow Z centers from the four inter-PCB gap centers.
     - Make airflow count, slot width, slot height, spacing, side enablement, and
@@ -255,7 +261,8 @@ request plan amendment before editing existing sources.
     - Inspect OpenSCAD outputs if generated successfully.
     - Confirm:
       - all required render modes generate,
-      - exactly five Raspberry Pi 5 PCB positions exist by default,
+      - exactly five PCB positions exist by default,
+      - PCB 4 is the Raspberry Pi 5 reference/access level by default,
       - all five PCB positions share the same footprint and coordinate frame,
       - four independent inter-PCB spacing values exist,
       - changing spacing would move downstream board positions and gap airflow
@@ -267,7 +274,7 @@ request plan amendment before editing existing sources.
       - bottom tray includes anti-slip recesses,
       - top cover has male pins,
       - bottom tray has matching female sockets,
-      - every inter-board gap has real side airflow openings,
+      - every inter-board gap has real side airflow grate openings,
       - default airflow avoids pins, sockets, standoffs, and major access
         openings,
       - required Raspberry Pi 5 service/access openings exist or README
@@ -342,7 +349,7 @@ Required source checks may be implemented as simple shell checks equivalent to:
 
 ```sh
 rg -n 'render_mode = "printable_layout"|bottom_tray|top_cover|electronics|assembly' designs/pi5_five_stack_enclosure.scad
-rg -n 'stack_board_count|pcb_stack_gap|inter.*gap|top.*clearance' designs/pi5_five_stack_enclosure.scad README.md
+rg -n 'stack_board_count|rpi5_stack_index|pcb_stack_gap|inter.*gap|top.*clearance' designs/pi5_five_stack_enclosure.scad README.md
 rg -n 'cover_pin|plug_pin|male|tray_socket|socket|female' designs/pi5_five_stack_enclosure.scad README.md
 rg -n 'anti_slip|anti_slide|foot_recess|standoff|pilot|insert' designs/pi5_five_stack_enclosure.scad README.md
 rg -n 'airflow|vent|ventilation|gap_center|side.*opening' designs/pi5_five_stack_enclosure.scad README.md
