@@ -52,7 +52,10 @@ between boards.
     and pin positions.
 - Provide anti-slip recesses or foot pockets on the bottom cover/tray underside.
 - Provide real subtractive airflow openings between every adjacent PCB by
-  default.
+  default on both side walls and the back face, with front-face openings where
+  they do not interfere with the Pi 5 front connector cutouts.
+- Provide additional upper top-cover ventilation through the vertical walls
+  above PCB 5 while keeping the roof fully closed.
 - Provide Raspberry Pi 5 access openings for the stack where necessary for
   serviceability and cable access.
 - Include render modes for assembly, bottom cover/tray, top cover, electronics,
@@ -130,7 +133,9 @@ implementation:
   `15.0 mm` for every adjacent PCB gap.
 - Raspberry Pi 5 stack index: `4`, meaning the fourth PCB from bottom to top is
   the Pi 5 by default.
-- Top-of-fifth-PCB-to-top-cover clearance: an adjustable value.
+- Top-of-fifth-PCB-to-inside-top-cover-wall clearance: an adjustable value,
+  defaulting to at least `52.0` mm so the design provides the requested
+  `50.0` mm minimum plus margin.
 - Bottom-tray wall/lip height: shallow enough that the bottom cover remains the
   smaller enclosure half and the top cover carries the main stack height.
 - Anti-slip recess diameter, depth, and positions: configurable bottom-open
@@ -140,8 +145,9 @@ implementation:
 - Cover pin diameter, insertion length, root/support diameter, socket clearance,
   socket depth, socket receiver diameter, and pin positions: configurable for
   printer/material fit.
-- Airflow slot count, size, spacing, side enablement, and per-gap vertical
-  placement: configurable so the vents can follow changed board spacing.
+- Airflow slot count, size, spacing, face enablement, per-gap vertical
+  placement, and upper-cover wall vent row placement: configurable so the vents
+  can follow changed board spacing and clearance height.
 
 ## Inputs And Constraints
 
@@ -213,16 +219,21 @@ implementation:
   default; the top cover must carry the main stack height.
 - Airflow between PCBs is mandatory:
   - every inter-board gap must have real subtractive lateral grate openings on
-    at least two opposing side walls by default,
+    both opposing side walls and the back face by default,
+  - front-face grate openings may be skipped for gaps directly adjacent to the
+    configured Pi 5 board where they would interfere with front connector
+    openings,
+  - the upper top-cover wall area above PCB 5 must have additional vertical-wall
+    airflow by default,
   - airflow openings must be derived from each gap center so spacing changes move
     the openings with the boards,
-  - airflow count, slot size, spacing, side enablement, and margins must be
+  - airflow count, slot size, spacing, face enablement, and margins must be
     adjustable,
   - default airflow openings must avoid cover pins, tray sockets, base standoffs,
     and required Raspberry Pi 5 access openings.
 - Additional top or bottom ventilation may be provided only if it remains part
   of the two printable enclosure parts and does not replace the required
-  inter-PCB side airflow.
+  inter-PCB side/front/back airflow.
 - The top cover must own male plug pins by default.
 - The bottom cover/tray must subtract matching female socket holes by default.
 - The male/female interface must expose adjustable defaults comparable to the
@@ -239,13 +250,14 @@ implementation:
   or foot pockets by default.
 - Raspberry Pi 5 access openings must include at minimum:
   - USB-A and Ethernet side access for each board zone where those connectors
-    would otherwise be blocked,
+    would otherwise be blocked, using one continuous side cutout without a
+    separator between the USB-A and Ethernet connector openings,
   - USB-C and micro-HDMI front access for each board zone where those connectors
     would otherwise be blocked,
   - microSD access for the base PCB when the Pi 5 is in the base position and
     access is practical without weakening the enclosure.
 - The top cover roof must remain fully closed by default, with no roof service
-  openings.
+  openings or roof ventilation holes.
 - Raspberry Pi 5 cutouts must derive from `designs/rpi5.scad` source values or
   clearly documented local mirror values plus adjustable clearance parameters.
 - Existing design files must keep their current behavior.
@@ -261,7 +273,8 @@ implementation:
   external hardware unless a later approved spec expands the printed support
   system.
 - Airflow between PCBs means lateral airflow through the enclosure at every
-  inter-board gap; this spec does not require fan mounts.
+  inter-board gap on the side, front, and back faces; this spec does not require
+  fan mounts.
 - The exact installed headers, heatsinks, coolers, cables, and spacers are not
   known, so their clearance must remain tunable through parameters and visual
   OpenSCAD inspection.
@@ -277,7 +290,7 @@ implementation:
   approved later.
 - Mirrored Raspberry Pi 5 source values can drift if `designs/rpi5.scad`
   changes; code and README must make those mirrored values easy to audit.
-- Dense side airflow across four gaps can weaken tall top-cover walls; default
+- Dense airflow across four gaps can weaken tall top-cover walls; default
   placement must preserve material around corners, pins, sockets, standoffs, and
   port openings.
 - A five-board stack can become tall and flexible; physical fit and stability
@@ -304,6 +317,9 @@ implementation:
   top-cover height coherently.
 - The distance from the top of PCB 5 to the top cover must be controlled by an
   obvious adjustable parameter.
+- The default distance from the top of PCB 5 to the inside top wall of the top
+  cover must be at least `52.0` mm, representing `50.0` mm minimum clearance
+  plus a default margin.
 - The default printable enclosure must be exactly two parts: bottom cover/tray
   and top cover.
 - `printable_layout` must contain only the bottom cover/tray and top cover,
@@ -318,15 +334,19 @@ implementation:
   the existing repository cover-pin/tray-socket interface.
 - The bottom cover/tray must include configurable anti-slip recesses or foot
   pockets by default.
-- Every inter-PCB gap must have real subtractive lateral airflow openings on at
-  least two opposing side walls by default.
+- Every inter-PCB gap must have real subtractive lateral airflow openings on
+  both opposing side walls and the back face by default. Front-face openings may
+  be skipped for Pi-adjacent connector zones.
 - Airflow openings must derive from inter-PCB gap centers and remain adjustable.
 - Default airflow openings must avoid pin/socket, standoff, and major access
   geometry.
+- Upper top-cover airflow must be through side/front/back walls only and must not
+  pierce the roof.
 - Raspberry Pi 5 USB-A, Ethernet, USB-C, micro-HDMI, and base-position microSD
   service zones must have side or front openings where they would otherwise be
-  blocked by the enclosure. The top cover roof must not include service
-  openings.
+  blocked by the enclosure. The USB-A and Ethernet side access must be one
+  continuous opening with no separator between connector openings. The top cover
+  roof must not include service openings.
 - Render modes must include `assembly`, `bottom_tray`, `top_cover`,
   `electronics`, and `printable_layout`.
 - README must document the new design file, assumptions, manually entered
@@ -365,7 +385,7 @@ implementation:
   - top cover has male pins,
   - bottom tray has matching female sockets,
   - anti-slip recesses exist on the tray underside,
-  - every inter-PCB gap has real side airflow openings,
+  - every inter-PCB gap has real side, front, and back airflow openings,
   - airflow openings move with changed gap spacing,
   - airflow openings avoid default pin/socket and standoff geometry,
   - required Raspberry Pi 5 service/access openings exist,
@@ -383,7 +403,7 @@ implementation:
 - Document the base-PCB mounting strategy.
 - Document the top-cover-male and bottom-tray-female connection method.
 - Document bottom anti-slip recesses or foot pockets.
-- Document the mandatory inter-PCB side airflow strategy.
+- Document the mandatory inter-PCB side/front/back airflow strategy.
 - Document Raspberry Pi 5 access/opening strategy and any intentionally limited
   access areas.
 - Document Bambu Lab-friendly printability expectations.

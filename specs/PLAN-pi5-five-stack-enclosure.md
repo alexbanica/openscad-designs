@@ -106,7 +106,8 @@ request plan amendment before editing existing sources.
      - screw pilot and optional insert values,
      - bottom anti-slip recess values,
      - top-cover male pin and bottom-tray socket values,
-     - inter-PCB side airflow values,
+     - inter-PCB side/front/back airflow values,
+     - upper top-cover wall airflow values,
      - optional top/bottom ventilation values if implemented,
      - printable layout values,
      - visual settings.
@@ -154,7 +155,8 @@ request plan amendment before editing existing sources.
      - cover plug pins,
      - tray socket holes and receiver bosses,
      - Raspberry Pi 5 port/service cutout volumes,
-     - inter-PCB side airflow cutout volumes,
+     - inter-PCB side/front/back airflow cutout volumes,
+     - upper top-cover wall airflow cutout volumes,
      - optional top/bottom ventilation cutout volumes if implemented,
      - rounded-box or repeated helper geometry.
    - Use difference/union structure similar to existing enclosures where
@@ -186,8 +188,10 @@ request plan amendment before editing existing sources.
      top-of-fifth-PCB-to-cover clearance parameter.
    - Subtract top-cover portions of Raspberry Pi 5 access openings where needed
      at the configured Raspberry Pi 5 board index.
-   - Subtract inter-PCB side airflow openings through the top cover wall for all
-     four board gaps.
+   - Subtract inter-PCB airflow openings through the top cover side, front, and
+     back walls for all four board gaps.
+   - Subtract an additional upper-cover wall vent band above PCB 5 on vertical
+     walls only, preserving the closed roof.
    - Ensure default pin/socket positions avoid boards, standoffs, side/front
      port openings, and airflow slots.
 
@@ -198,6 +202,8 @@ request plan amendment before editing existing sources.
       - USB-C power,
       - two micro-HDMI ports,
       - base-position microSD access.
+    - Implement USB-A and Ethernet side access as one continuous cutout with no
+      separator between connector openings.
     - Keep the top cover roof fully closed with no roof service openings.
     - Derive from `rpi5.scad` connector origins/sizes when possible.
     - If OpenSCAD `use` visibility requires local mirrors, name them clearly as
@@ -210,14 +216,20 @@ request plan amendment before editing existing sources.
 
 11. Implement mandatory inter-PCB airflow.
     - Add real subtractive lateral grate openings for every inter-board gap.
-    - Place openings on at least two opposing side walls by default.
+    - Place openings on both opposing side walls and the back face for every gap
+      by default.
+    - Skip front-face openings for gaps directly adjacent to the configured Pi 5
+      board when they would intersect the Pi 5 front connector cutouts.
     - Derive airflow Z centers from the four inter-PCB gap centers.
-    - Make airflow count, slot width, slot height, spacing, side enablement, and
+    - Make airflow count, slot width, slot height, spacing, face enablement, and
       margins adjustable.
     - Keep default airflow from intersecting the male/female interface, socket
       receiver bosses, base standoffs, and major service openings.
     - Optional top or bottom ventilation may be added only as supplemental
-      airflow and must not replace the required gap-aligned side openings.
+      airflow and must not replace the required gap-aligned side/back openings
+      or non-conflicting front openings.
+    - Add upper top-cover ventilation rows in the wall area above PCB 5 without
+      piercing the roof.
 
 12. Implement render modes.
     - `assembly`: assembled bottom tray/top cover with optional five-board
@@ -272,7 +284,9 @@ request plan amendment before editing existing sources.
       - bottom tray includes anti-slip recesses,
       - top cover has male pins,
       - bottom tray has matching female sockets,
-      - every inter-board gap has real side airflow grate openings,
+      - every inter-board gap has real side and back airflow grate openings,
+      - non-conflicting front-face airflow grate openings exist,
+      - upper top-cover wall airflow exists while the roof remains closed,
       - default airflow avoids pins, sockets, standoffs, and major access
         openings,
       - required Raspberry Pi 5 service/access openings exist or README
