@@ -83,7 +83,7 @@ nvme_board_corner_radius_mm = 3.0;
 nvme_module_size_mm = [62.0, 22.0, 4.0];
 nvme_module_center_y_mm = 25.0;
 nvme_heatsink_size_mm = [54.0, 18.0, 5.0];
-nvme_heatsink_offset_z_mm = 4.0;
+nvme_heatsink_offset_z_mm = 3.9;
 
 // Top Cluster HAT-style PCB reference.
 cluster_hat_board_length_mm = 85.0;
@@ -143,6 +143,7 @@ rpi5_micro_sd_slot_size_mirror_mm = [16, 14, 1.8];
 // Enclosure shell
 wall_thickness_mm = 2.2;
 floor_thickness_mm = 2.4;
+bottom_tray_side_wall_height_mm = 9.0;
 top_roof_thickness_mm = 2.2;
 cover_skirt_drop_depth_mm = 6.0;
 cover_fit_clearance_mm = 0.35;
@@ -157,8 +158,17 @@ preview_overlap_mm = 0.1;
 // Board support stack geometry (bottom board standoffs)
 board_standoff_height_mm = 4.0;
 board_standoff_outer_diameter_mm = 6.5;
-board_standoff_screw_hole_diameter_mm = 2.4;
-board_standoff_pilot_depth_mm = 4.6;
+pcb_mount_insert_outer_diameter_mm = 4.2;
+pcb_mount_insert_depth_mm = 3.8;
+pcb_mount_screw_pilot_diameter_mm = 2.2;
+pcb_mount_screw_pilot_depth_mm = 5.0;
+
+// Anti-slip rubber foot recesses on the bottom tray underside
+enable_anti_slip_recesses = true;
+anti_slip_recess_diameter_mm = 10.0;
+anti_slip_recess_depth_mm = 1.1;
+anti_slip_recess_offset_x_mm = 32.0;
+anti_slip_recess_offset_y_mm = 20.0;
 
 // Top-cover plug pin and bottom-tray socket system
 cover_pin_diameter_mm = 3.2;
@@ -174,6 +184,10 @@ tray_socket_receiver_diameter_mm = 7.0;
 // Port and service cutout sizing
 edge_port_clearance_mm = 1.8;
 service_cutout_clearance_mm = 2.0;
+hat_pin_access_clearance_mm = 2.5;
+hat_pin_lateral_exit_width_mm = 58.0;
+hat_pin_lateral_exit_height_mm = 14.0;
+hat_pin_lateral_exit_z_offset_mm = 5.5;
 micro_sd_access_extension_mm = 8.0;
 front_cable_cutout_error_margin_mm = 0.6;
 usb_c_cable_head_required_size_mm = [12.0, 7.0];
@@ -323,11 +337,10 @@ function tower_stack_clearance_span_mm() =
 stack_top_board_index = stack_board_count - 1;
 stack_top_z_mm = tower_stack_top_z_mm(stack_top_board_index);
 case_internal_top_z_mm = tower_stack_top_cover_clearance_z_mm() + board_height_envelope_margin_mm;
-minimum_top_cover_height_mm = 8.0;
-tray_wall_height_mm = board_bottom_z_mm + tower_stack_clearance_span_mm() + tray_top_margin_mm;
+tray_wall_height_mm = floor_thickness_mm + board_standoff_height_mm + bottom_tray_side_wall_height_mm;
 case_total_height_mm = max(
     case_internal_top_z_mm + top_roof_thickness_mm + board_height_envelope_margin_mm,
-    tray_wall_height_mm + minimum_top_cover_height_mm
+    tray_wall_height_mm + top_roof_thickness_mm + cover_skirt_drop_depth_mm
 );
 
 internal_length_mm = tower_board_length_mm() + 2 * component_clearance_xy_mm;
@@ -347,6 +360,12 @@ active_cover_pin_count = min(cover_pin_count, len(cover_pin_centers_mm));
 cover_pin_start_z_mm = tray_wall_height_mm - cover_pin_insertion_length_mm;
 cover_pin_root_post_height_mm = case_total_height_mm - top_roof_thickness_mm - (tray_wall_height_mm - preview_overlap_mm) + solid_merge_overlap_mm;
 cover_pin_base_z_mm = cover_pin_start_z_mm - solid_merge_overlap_mm;
+anti_slip_recess_centers_mm = [
+    [-anti_slip_recess_offset_x_mm, -anti_slip_recess_offset_y_mm],
+    [anti_slip_recess_offset_x_mm, -anti_slip_recess_offset_y_mm],
+    [-anti_slip_recess_offset_x_mm, anti_slip_recess_offset_y_mm],
+    [anti_slip_recess_offset_x_mm, anti_slip_recess_offset_y_mm]
+];
 
 tray_socket_hole_bottom_z_mm = max(
     floor_thickness_mm,
@@ -563,6 +582,7 @@ module raspberry_pi_tower_stack_printable_bottom_tray() {
 
         raspberry_pi_tower_stack_tray_socket_holes();
         raspberry_pi_tower_stack_mounting_holes();
+        raspberry_pi_tower_stack_anti_slip_recesses();
         raspberry_pi_tower_stack_port_cutout_volumes(include_top_service = false);
         raspberry_pi_tower_stack_pi5_zone_ventilation();
         raspberry_pi_tower_stack_under_pi5_airflow();
@@ -581,6 +601,7 @@ module raspberry_pi_tower_stack_printable_top_cover() {
         }
 
         raspberry_pi_tower_stack_port_cutout_volumes(include_top_service = true);
+        raspberry_pi_tower_stack_hat_pin_access_cutouts();
         raspberry_pi_tower_stack_pi5_zone_ventilation();
         raspberry_pi_tower_stack_fan_cutouts();
     }
@@ -783,12 +804,38 @@ module raspberry_pi_tower_stack_mounting_holes() {
         translate([
             tower_board_world_x(hole_position_mm[0]),
             tower_board_world_y(hole_position_mm[1]),
-            floor_thickness_mm + board_standoff_height_mm - board_standoff_pilot_depth_mm
+            floor_thickness_mm + board_standoff_height_mm - pcb_mount_insert_depth_mm
         ])
             cylinder(
-                h = board_standoff_pilot_depth_mm + preview_overlap_mm,
-                d = board_standoff_screw_hole_diameter_mm
+                h = pcb_mount_insert_depth_mm + preview_overlap_mm,
+                d = pcb_mount_insert_outer_diameter_mm
             );
+
+        translate([
+            tower_board_world_x(hole_position_mm[0]),
+            tower_board_world_y(hole_position_mm[1]),
+            floor_thickness_mm + board_standoff_height_mm - pcb_mount_screw_pilot_depth_mm
+        ])
+            cylinder(
+                h = pcb_mount_screw_pilot_depth_mm + preview_overlap_mm,
+                d = pcb_mount_screw_pilot_diameter_mm
+            );
+    }
+}
+
+module raspberry_pi_tower_stack_anti_slip_recesses() {
+    if (enable_anti_slip_recesses) {
+        for (recess_center_mm = anti_slip_recess_centers_mm) {
+            translate([
+                recess_center_mm[0],
+                recess_center_mm[1],
+                -preview_overlap_mm
+            ])
+                cylinder(
+                    h = anti_slip_recess_depth_mm + preview_overlap_mm,
+                    d = anti_slip_recess_diameter_mm
+                );
+        }
     }
 }
 
@@ -875,6 +922,40 @@ module raspberry_pi_tower_stack_port_cutout_volume(
                 center = true
             );
     }
+}
+
+module raspberry_pi_tower_stack_hat_pin_access_cutouts() {
+    header_center_x_mm = tower_board_world_x(rpi5_gpio_header_origin_mirror_mm[0] + rpi5_gpio_header_size_mirror_mm[0] / 2);
+    header_center_y_mm = tower_board_world_y(rpi5_gpio_header_origin_mirror_mm[1] + rpi5_gpio_header_size_mirror_mm[1] / 2);
+    header_top_z_mm = pi5_board_bottom_z_mm
+        + rpi5_board_thickness_mirror_mm
+        + rpi5_gpio_header_size_mirror_mm[2]
+        + rpi5_gpio_pin_height_mirror_mm;
+    lateral_exit_center_z_mm = header_top_z_mm + hat_pin_lateral_exit_z_offset_mm;
+
+    // Top access above the Pi 5 GPIO/HAT pin region.
+    translate([
+        header_center_x_mm,
+        header_center_y_mm,
+        case_body_z_top_mm
+    ])
+        cube([
+            rpi5_gpio_header_size_mirror_mm[0] + 2 * hat_pin_access_clearance_mm,
+            rpi5_gpio_header_size_mirror_mm[1] + 2 * hat_pin_access_clearance_mm,
+            top_cutout_depth_mm
+        ], center = true);
+
+    // Side pass-through for the perpendicular HAT-pin/display branch.
+    translate([
+        header_center_x_mm,
+        outer_width_mm / 2,
+        lateral_exit_center_z_mm
+    ])
+        cube([
+            hat_pin_lateral_exit_width_mm,
+            2 * wall_thickness_mm + 2.0,
+            hat_pin_lateral_exit_height_mm
+        ], center = true);
 }
 
 module raspberry_pi_tower_stack_pi5_zone_ventilation() {
@@ -1149,7 +1230,7 @@ module raspberry_pi_tower_stack_nvme_board_reference() {
         translate([
             -nvme_module_size_mm[0] / 2,
             tower_board_world_y(nvme_module_center_y_mm) - nvme_module_size_mm[1] / 2,
-            nvme_board_thickness_mm
+            nvme_board_thickness_mm - preview_overlap_mm
         ])
             cube(nvme_module_size_mm);
 
@@ -1157,7 +1238,7 @@ module raspberry_pi_tower_stack_nvme_board_reference() {
         translate([
             -nvme_heatsink_size_mm[0] / 2,
             tower_board_world_y(nvme_module_center_y_mm) - nvme_heatsink_size_mm[1] / 2,
-            nvme_board_thickness_mm + nvme_heatsink_offset_z_mm
+            nvme_board_thickness_mm + nvme_heatsink_offset_z_mm - preview_overlap_mm
         ])
             cube(nvme_heatsink_size_mm);
     }
@@ -1194,7 +1275,7 @@ module raspberry_pi_tower_stack_cluster_hat_reference() {
         translate([
             tower_board_world_x(cluster_hat_header_origin_mm[0]),
             tower_board_world_y(cluster_hat_header_origin_mm[1]),
-            cluster_hat_header_origin_mm[2]
+            cluster_hat_header_origin_mm[2] - preview_overlap_mm
         ])
             cube(cluster_hat_header_size_mm);
 
@@ -1202,7 +1283,7 @@ module raspberry_pi_tower_stack_cluster_hat_reference() {
         translate([
             tower_board_world_x(cluster_hat_gpio_socket_origin_mm[0]),
             tower_board_world_y(cluster_hat_gpio_socket_origin_mm[1]),
-            cluster_hat_gpio_socket_origin_mm[2]
+            cluster_hat_gpio_socket_origin_mm[2] - preview_overlap_mm
         ])
             cube(cluster_hat_gpio_socket_size_mm);
 
@@ -1212,7 +1293,7 @@ module raspberry_pi_tower_stack_cluster_hat_reference() {
                     - cluster_hat_downstream_socket_size_mm[0] / 2,
                 tower_board_world_y(cluster_hat_downstream_socket_center_y_mm)
                     - cluster_hat_downstream_socket_size_mm[1] / 2,
-                cluster_hat_board_thickness_mm
+                cluster_hat_board_thickness_mm - preview_overlap_mm
             ])
                 cube(cluster_hat_downstream_socket_size_mm);
         }
@@ -1252,7 +1333,10 @@ module raspberry_pi_tower_splitter_and_display_preview(stack_index) {
         header_origin_y_mm = tower_board_world_y(rpi5_gpio_pin_origin_y_mirror_mm);
         header_top_z_mm = rpi5_gpio_header_size_mirror_mm[2] + rpi5_board_thickness_mirror_mm;
         header_next_board_bottom_z = tower_stack_bottom_z_mm(stack_index + 1) - tower_stack_bottom_z_mm(stack_index);
-        vertical_height_mm = max(display_splitter_vertical_length_mm, header_next_board_bottom_z - header_top_z_mm + 1.0);
+        vertical_height_mm = max(
+            display_splitter_vertical_length_mm,
+            header_next_board_bottom_z - header_top_z_mm - preview_overlap_mm
+        );
 
         // Vertical header leg supports board above Pi 5.
         color(guide_colour)

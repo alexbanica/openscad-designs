@@ -86,7 +86,11 @@ editing existing sources.
      - top-cover clearance parameter,
      - top-cover male pin parameters/modules,
      - bottom-tray female socket parameters/modules,
+     - shallow bottom-tray/taller top-cover split,
+     - anti-slip bottom recess parameters/modules,
+     - PCB mounting insert parameters/modules,
      - Raspberry Pi 5 access/cutout references,
+     - Pi 5 USB-A/Ethernet and GPIO/HAT-pin access cutout modules,
      - Pi 5-zone ventilation modules,
      - under-Pi5 airflow parameters/modules for NVMe heatsinks and PCI splitter,
      - PCB 1 and PCB 3 NVMe airflow parameters/modules,
@@ -111,7 +115,9 @@ editing existing sources.
      - Raspberry Pi 5 board transform/alignment offsets if needed,
      - Cluster HAT-style top-board values,
      - enclosure wall/floor/roof/clearance values,
-     - board mounting/support values,
+     - shallow bottom-tray and taller top-cover split values,
+     - board mounting/support and PCB insert values,
+     - bottom anti-slip recess values,
      - top-cover male pin and bottom-tray socket values,
      - Raspberry Pi 5-zone ventilation values,
      - under-Pi5 NVMe/heatsink/PCI splitter airflow and clearance values,
@@ -171,9 +177,12 @@ editing existing sources.
      - tray shell,
      - cover shell,
      - board supports/standoffs,
+     - PCB mounting insert holes,
+     - anti-slip bottom recesses,
      - cover plug pins,
      - tray socket holes,
      - Raspberry Pi 5 port/service cutout volumes,
+     - Pi 5 GPIO/HAT-pin access and perpendicular branch cutout volumes,
      - Raspberry Pi 5-zone ventilation cutout volumes,
      - NVMe board airflow cutout volumes,
      - fan mount bodies, bosses, holes, and airflow openings,
@@ -184,10 +193,14 @@ editing existing sources.
      appropriate.
 
 8. Implement the bottom tray.
-   - Include floor, side walls, internal clearance, corner radius, and stack
-     support/mounting geometry.
+   - Include floor, shallow side walls, internal clearance, corner radius, and
+     stack support/mounting geometry.
+   - Keep the bottom tray the small/shallow half and put the main enclosure
+     stack height into the top cover.
    - Align mounting/support geometry to the Raspberry Pi-size mounting-hole
      pattern.
+   - Add PCB mounting insert holes and screw pilot holes in the standoffs.
+   - Add configurable anti-slip recess holes on the tray underside.
    - Subtract female socket holes for the top-cover pins.
    - Subtract tray-side portions of Raspberry Pi 5 port/service openings where
      the fourth-board service envelope intersects the tray.
@@ -202,6 +215,7 @@ editing existing sources.
 9. Implement the top cover.
    - Include roof, skirt/drop depth, fit clearance, internal clearance, and male
      cylindrical plug pins.
+   - Keep the top cover the larger/taller half of the enclosure.
    - Use top-cover-owned male pins and bottom-tray-owned female sockets by
      default.
    - Make pin diameter, insertion length, count, positions, socket clearance,
@@ -209,6 +223,8 @@ editing existing sources.
    - Derive enclosure height from the configured board stack and
      top-of-highest-PCB-to-cover clearance parameter.
    - Subtract top-cover portions of Raspberry Pi 5 access openings where needed.
+   - Subtract explicit Pi 5 GPIO/HAT-pin top access and side pass-through
+     openings for the perpendicular header/display branch.
    - Subtract fan airflow openings and top-cover ventilation.
    - Ensure the display cover geometry is visible in assembly and represented in
      printable layout.
@@ -218,8 +234,9 @@ editing existing sources.
 10. Implement Raspberry Pi 5 access and service openings.
     - Provide openings or access paths for:
       - fourth-board mounting holes,
-      - two USB-A ports,
-      - Ethernet,
+     - two USB-A ports,
+     - Ethernet,
+      - GPIO/HAT pin access for the perpendicular display branch,
       - USB-C power,
       - two micro-HDMI ports,
       - camera/display connector A,
@@ -332,7 +349,11 @@ editing existing sources.
        tower footprint/enclosure envelope,
      - fifth board is the Cluster HAT-style top-board reference,
      - top-cover clearance parameter affects enclosure height,
+     - bottom tray is shallow and top cover carries the larger height,
+     - bottom tray includes anti-slip recesses,
+     - bottom tray standoffs include PCB mounting insert holes,
      - all required Raspberry Pi 5 access openings exist,
+     - Pi 5 USB-A/Ethernet and GPIO/HAT-pin openings exist,
      - extra Pi 5-zone ventilation is real subtractive geometry,
      - under-Pi5 airflow passages exist for the NVMe/heatsink/PCI splitter area,
      - NVMe airflow passages exist for PCB 1 and PCB 3,

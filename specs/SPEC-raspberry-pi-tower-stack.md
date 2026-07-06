@@ -37,6 +37,13 @@ final design contract must make explicit:
   airflow passages. PCB 1 is the bottom NVMe board, so bottom-tray airflow must
   exist for that lower NVMe location.
 - The top PCB is a Cluster HAT-style board, not a generic placeholder.
+- The bottom cover/tray must be the smallest enclosure half. It should hold the
+  floor, a shallow side-wall lip, PCB mounting supports/inserts, sockets for the
+  top cover, and anti-slip recesses; the taller top cover carries the main stack
+  height.
+- The top cover must keep explicit openings for the Pi 5 USB-A/Ethernet service
+  area and the Pi 5 GPIO/HAT pin area. The GPIO/HAT pin access must include a
+  path for the perpendicular HAT-pin/header branch that carries the display.
 - The perpendicular screen/display assembly attached through the Pi 5 HAT
   splitter must have an actual cover shown in assembly and available through the
   display-cover/printable-layout render paths. The cover must hide the display
@@ -79,12 +86,17 @@ splitter that provides both vertical and lateral header paths.
   configurable.
 - Provide a bottom cover/tray and top cover using the same principle as other
   cover designs in this repository:
+  - bottom cover/tray is the shallow/small half,
+  - top cover is the taller/larger half,
   - male cylindrical plug pins owned by the removable top cover,
   - matching female socket holes owned by the bottom tray,
   - adjustable pin diameter, insertion length, socket clearance, socket depth,
     and pin positions.
+- Provide anti-slip recess holes in the bottom cover/tray underside.
+- Provide PCB mounting insert holes in the bottom cover/tray standoffs.
 - Provide accessible Raspberry Pi 5 holes and service openings for the fourth
   PCB.
+- Provide explicit Pi 5 USB-A/Ethernet and GPIO/HAT-pin access openings.
 - Provide extra air holes around the Raspberry Pi 5 board zone, with emphasis on
   side and/or top airflow paths near the Pi 5 active-cooler/SoC area.
 - Provide under-board air passages beneath the Raspberry Pi 5 PCB for NVMe
@@ -134,6 +146,10 @@ splitter that provides both vertical and lateral header paths.
 - First PCB: an NVMe board at the bottom of the stack.
 - Third PCB: an NVMe board below the Raspberry Pi 5.
 - Fifth PCB: a simplified Cluster HAT-style top board above the Raspberry Pi 5.
+- Bottom cover/tray: the shallow printed base with floor, short walls, mounting
+  supports/inserts, cover-pin sockets, and anti-slip recesses.
+- Top cover: the taller removable printed shell that encloses most of the stack
+  height and carries fan/display/top ventilation features.
 - Simplified PCB: a placeholder Raspberry Pi-size board body with mounting holes
   and header preview geometry but no detailed electronics.
 - Top-cover clearance: the configurable vertical distance from the top face of
@@ -185,6 +201,12 @@ implementation:
 - Top-of-PCB-to-top-cover clearance: use an adjustable value with a conservative
   default that can be increased for wiring, fans, display/header splitter
   clearance, and airflow.
+- Bottom-tray wall height: shallow adjustable side wall; default keeps the
+  bottom tray the small half and the top cover the large half.
+- Anti-slip recess diameter/depth/positions: configurable bottom-open recesses
+  for rubber feet, shallow enough not to break through the floor.
+- PCB mounting insert diameter/depth and screw pilot diameter/depth:
+  configurable standoff cutouts for heat-set or press-fit inserts.
 - Fan footprint: a configurable square fan, initially assumed to be a small
   `30.0 mm x 30.0 mm` class fan until measured.
 - Fan thickness/envelope: configurable, initially assumed `7.0 mm`.
@@ -247,10 +269,12 @@ implementation:
   Raspberry Pi 5 reference, fan preview geometry, header splitter preview, and
   display assembly preview.
 - `bottom_tray` must show only the printable lower enclosure body with female
-  cover-pin sockets and stack support/mounting features.
+  cover-pin sockets, anti-slip recesses, and stack support/mounting insert
+  features. The default bottom tray must be shallow/small relative to the top
+  cover.
 - `top_cover` must show only the printable top cover with male cover pins, fan
   mounts, fan airflow openings, and top/side ventilation features owned by the
-  cover.
+  cover. The default top cover must carry the main enclosure height.
 - `display_cover` must show only the printable display cover/extension when it
   is separable; if the approved implementation keeps it integrated with another
   printable part, this render mode must isolate that printable region for visual
@@ -286,6 +310,9 @@ implementation:
   previews.
 - The bottom tray must include support/standoff or clearance features aligned to
   the Raspberry Pi-size mounting-hole pattern.
+- The bottom tray standoffs must include configurable PCB mounting insert holes
+  and screw pilot holes.
+- The bottom tray underside must include configurable anti-slip recess holes.
 - The Raspberry Pi 5 service/access openings must include, at minimum:
   - mounting-hole access or visible/usable hole alignment for the fourth PCB,
   - USB-A access,
@@ -295,6 +322,8 @@ implementation:
   - camera/display connector access or service opening,
   - PCIe connector/cable guidance access or service opening,
   - microSD access.
+- The Pi 5 GPIO/HAT pin area must include an access opening and a lateral
+  pass-through for the perpendicular header/display branch.
 - Raspberry Pi 5 cutouts must derive from `designs/rpi5.scad` source values or
   clearly documented local mirror values plus adjustable clearance parameters.
 - Raspberry Pi 5 airflow must include extra real subtractive air holes near the
@@ -419,8 +448,16 @@ implementation:
 - The bottom tray/top cover must use a top-cover-male and bottom-tray-female
   pin/socket connection method similar in principle to the existing repository
   cover designs.
+- The bottom tray must be shallow/small by default and the top cover must be the
+  larger/taller enclosure half.
+- The bottom tray must include configurable anti-slip recesses.
+- The bottom tray must include configurable PCB mounting insert holes in the
+  board standoffs.
 - Raspberry Pi 5 mounting holes, ports, microSD, camera/display, and PCIe
   service areas must have openings or access paths by default.
+- Raspberry Pi 5 USB-A/Ethernet and GPIO/HAT-pin access must be explicitly
+  present by default, including a side pass-through for the perpendicular HAT
+  pin/display branch.
 - Extra adjustable ventilation openings must exist near the Raspberry Pi 5 zone.
 - Extra adjustable under-Pi5 airflow openings/passages must exist for NVMe
   heatsinks and the PCI splitter beneath the Pi 5 board.
@@ -478,6 +515,7 @@ implementation:
   - configurable board spacing behavior,
   - top-cover clearance behavior,
   - Raspberry Pi 5 service and port openings,
+  - Pi 5 USB-A/Ethernet and GPIO/HAT-pin openings,
   - extra Pi 5-zone ventilation holes,
   - under-Pi5 airflow passages for the NVMe/heatsink/PCI splitter area,
   - NVMe airflow passages for PCB 1 and PCB 3,
@@ -488,6 +526,9 @@ implementation:
   - perpendicular display cover and display window behavior,
   - header splitter vertical/lateral clearance geometry,
   - bottom tray and top cover pin/socket alignment,
+  - shallow bottom tray and taller top-cover split,
+  - anti-slip recesses in the bottom tray underside,
+  - PCB mounting insert holes in the standoffs,
   - all printable parts separated and grounded in printable layout,
   - no generated mesh exports tracked by git.
 
@@ -502,6 +543,8 @@ implementation:
 - Document render modes and common adjustable parameters.
 - Document per-gap PCB spacing and top-cover clearance controls.
 - Document the top-cover-male and bottom-tray-female connection method.
+- Document the shallow-bottom/tall-top enclosure split.
+- Document bottom anti-slip recesses and PCB mounting insert controls.
 - Document Raspberry Pi 5 access/opening strategy.
 - Document Pi 5-zone ventilation and top fan support strategy.
 - Document under-Pi5 airflow support for NVMe heatsinks and the PCI splitter.
