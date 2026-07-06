@@ -202,8 +202,8 @@ request plan amendment before editing existing sources.
       - USB-C power,
       - two micro-HDMI ports,
       - base-position microSD access.
-    - Implement USB-A and Ethernet side access as separate connector-sized
-      cutouts to avoid one oversized lateral opening.
+    - Implement USB-A and Ethernet side access as one continuous cutout with no
+      separator between connector openings.
     - Keep the top cover roof fully closed with no roof service openings.
     - Derive from `rpi5.scad` connector origins/sizes when possible.
     - If OpenSCAD `use` visibility requires local mirrors, name them clearly as
@@ -229,7 +229,8 @@ request plan amendment before editing existing sources.
       airflow and must not replace the required gap-aligned side/back openings
       or non-conflicting front openings.
     - Add upper top-cover ventilation rows in the wall area above PCB 5 without
-      piercing the roof.
+      piercing the roof, using slot dimensions at most half the inter-PCB vent
+      dimensions by default.
 
 12. Implement render modes.
     - `assembly`: assembled bottom tray/top cover with optional five-board
@@ -286,7 +287,8 @@ request plan amendment before editing existing sources.
       - bottom tray has matching female sockets,
       - every inter-board gap has real side and back airflow grate openings,
       - non-conflicting front-face airflow grate openings exist,
-      - upper top-cover wall airflow exists while the roof remains closed,
+      - upper top-cover wall airflow exists with half-size slots while the roof
+        remains closed,
       - default airflow avoids pins, sockets, standoffs, and major access
         openings,
       - required Raspberry Pi 5 service/access openings exist or README
