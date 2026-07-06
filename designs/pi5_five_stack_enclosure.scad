@@ -81,7 +81,7 @@ solid_merge_overlap_mm = 0.08;
 // Bottom-board mounting standoffs
 board_mount_standoff_height_mm = 4.6;
 board_mount_standoff_outer_diameter_mm = 6.5;
-board_mount_screw_pilot_diameter_mm = 2.65;
+board_mount_screw_pilot_diameter_mm = rpi5_board_mounting_hole_diameter_mirror_mm;
 board_mount_screw_pilot_depth_mm = 5.0;
 enable_board_mount_inserts = false;
 board_mount_insert_diameter_mm = 4.2;

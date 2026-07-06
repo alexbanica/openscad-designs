@@ -530,7 +530,7 @@ The enclosure models five Raspberry Pi 5 boards with shared footprint and coordi
 - Bottom tray base standoff defaults:
   - standoff height `4.6` mm,
   - standoff outer diameter `6.5` mm,
-  - screw pilot `2.65` mm by `5.0` mm deep by default.
+  - screw pilot diameter follows the mirrored Raspberry Pi 5 PCB mounting-hole diameter, `2.75` mm by default, and is `5.0` mm deep.
 - Top-cover male/female interface defaults:
   - pin count `4` at `cover_pin_offset_x_mm = 45.5`, `cover_pin_offset_y_mm = 31.0`,
   - pin diameter `3.2` mm, insertion length `5.2` mm,
@@ -573,7 +573,7 @@ Common edits:
 - Tune `pi5_stack_gap_z_mm` for all four inter-PCB gaps and observe the derived stack Z map.
 - Tune `top_of_fifth_board_to_top_cover_clearance_mm` for headroom margin.
 - Keep `stack_board_count` at its default `5` for the default five-board contract.
-- Tune standoff and `enable_board_mount_inserts`, screw insert/pilot dimensions.
+- Tune standoff and `enable_board_mount_inserts`, screw insert/pilot dimensions. By default the screw pilot diameter is derived from `rpi5_board_mounting_hole_diameter_mirror_mm`.
 - Tune pin/socket dimensions for fit.
 - Tune `inter_pcb_airflow_slot_*` and per-side enable flags to reposition side vents.
 - Tune service clearances for USB-A/Ethernet/USB-C/micro-HDMI/camera-display/PCIe/header/microSD access.
