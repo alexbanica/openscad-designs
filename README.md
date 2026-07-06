@@ -540,6 +540,12 @@ The enclosure models five same-footprint PCB positions with shared coordinate-fr
   - pin diameter `5.0` mm, root diameter `7.6` mm, insertion length `5.2` mm,
   - socket clearance `0.35` mm, socket depth `5.6` mm,
   - tray socket receiver boss diameter `8.0` mm.
+- Upper-cover to middle-cover interface defaults:
+  - uses the same four default XY pin centers as the middle-cover/tray
+    interface,
+  - upper-cover male pin diameter `5.0` mm, root diameter `7.6` mm, root height
+    `6.0` mm, and insertion length `5.2` mm,
+  - middle-cover top-open socket clearance `0.35` mm and socket depth `5.6` mm.
 - Anti-slip recess defaults:
   - `10.0` mm diameter,
   - up to `1.1` mm effective depth,
@@ -574,7 +580,8 @@ Parameters are grouped in `Adjustable Parameters` and `Derived Values`:
 - Raspberry Pi 5 mirror geometry and connector parameters
 - wall/floor/roof clearances
 - bottom-tray standoff, inside screw-hole, and insert toggles
-- male/female top-cover interface parameters
+- middle-cover/tray male/female interface parameters
+- upper-cover/middle-cover male/female interface parameters
 - anti-slip recess controls
 - inter-PCB and upper top-cover wall airflow controls and slot geometry
 - microSD/port-access defaults and clearances
@@ -591,6 +598,9 @@ Common edits:
 - Keep `stack_board_count` at its default `5` for the default five-board contract.
 - Tune standoff and `enable_board_mount_inserts`, screw insert/hole dimensions. By default `board_mount_screw_hole_diameter_mm` is derived from `rpi5_board_mounting_hole_diameter_mirror_mm`, and the holes open from the inside standoff tops.
 - Tune pin/socket dimensions for fit.
+- Tune `middle_upper_connector_pin_*` and `middle_upper_connector_socket_*` if
+  the upper-cover to middle-cover fit needs different clearance or engagement
+  than the middle-cover to tray fit.
 - Tune `inter_pcb_airflow_slot_*` and per-face enable flags to reposition vents.
 - Tune `enable_upper_cover_wall_airflow`, `upper_cover_airflow_row_count`, `upper_cover_airflow_gap_above_highest_board_mm`, and `upper_cover_airflow_roof_keepout_mm` for the upper-cover vent band.
 - Tune service clearances for USB-A/Ethernet/USB-C/micro-HDMI and base-position microSD access.
@@ -624,7 +634,7 @@ openscad -o /tmp/pi5_five_stack_enclosure_printable_layout.off -D 'render_mode="
 
 - The design keeps the bottom tray as the smaller shallow half (`tray_wall_height_mm` default `16.0`) and places the middle and upper cover sections above it.
 - The middle cover owns `cover_pin_*` and bottom tray owns `tray_socket_*` dimensions.
-- The upper cover is a separate printable headroom section above the Pi 5 connector-access zone. The middle/upper split is a flat split with no additional latch between those two cover sections by default.
+- The upper cover is a separate printable headroom section above the Pi 5 connector-access zone. It owns short downward `middle_upper_connector_pin_*` male pins that plug into matching top-open `middle_upper_connector_socket_*` holes in the middle cover at the split.
 - Five board Z offsets, highest-board Z, inter-gap centers, and derived enclosure height are computed from `pi5_stack_gap_z_mm` and board thickness.
 - All four inter-board gaps receive grate-style airflow openings by default on both opposing side walls and the back face.
 - Front-face grates are automatically skipped for gaps directly adjacent to the configured Pi 5 board so USB-C and micro-HDMI front connector openings stay clear.
@@ -646,6 +656,7 @@ Manual inspection checklist:
 - Confirm the top cover roof is fully closed with no service openings.
 - Confirm middle-cover/bottom-tray pin-socket pairing exists and remains printable.
 - Confirm the middle/upper cover split sits above the Pi 5 connector cutouts and the upper cover is independently printable.
+- Confirm upper-cover/middle-cover pin-socket pairing exists and remains printable.
 - Confirm both opposing side walls and the back face have inter-PCB grate openings for all four gap centers by default, and that front-face grates are omitted only for Pi-adjacent connector zones.
 - Confirm the upper-cover wall vent band exists on vertical walls only and does not pierce the roof.
 - Confirm base board standoffs and anti-slip recesses do not break through the floor.

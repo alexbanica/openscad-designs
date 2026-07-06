@@ -84,6 +84,8 @@ request plan amendment before editing existing sources.
      - bottom-tray screw pilot or insert parameters/modules,
      - middle-cover male pin parameters/modules,
      - bottom-tray female socket parameters/modules,
+     - upper-cover male pin parameters/modules,
+     - middle-cover split-socket parameters/modules,
      - bottom anti-slip recess parameters/modules,
      - Raspberry Pi 5 port/service access terms,
      - inter-PCB airflow parameters/modules,
@@ -106,6 +108,7 @@ request plan amendment before editing existing sources.
      - screw pilot and optional insert values,
      - bottom anti-slip recess values,
      - middle-cover male pin and bottom-tray socket values,
+     - upper-cover male pin and middle-cover socket values,
      - inter-PCB side/front/back airflow values,
      - upper top-cover wall airflow values,
      - optional top/bottom ventilation values if implemented,
@@ -156,6 +159,8 @@ request plan amendment before editing existing sources.
      - anti-slip bottom recesses,
      - cover plug pins,
      - tray socket holes and receiver bosses,
+     - upper-cover split plug pins,
+     - middle-cover split socket holes,
      - Raspberry Pi 5 port/service cutout volumes,
      - inter-PCB side/front/back airflow cutout volumes,
      - upper top-cover wall airflow cutout volumes,
@@ -188,6 +193,9 @@ request plan amendment before editing existing sources.
      section.
    - Use middle-cover-owned male pins and bottom-tray-owned female sockets by
      default.
+   - Add a second split interface with upper-cover-owned short downward male
+     pins and matching top-open sockets subtracted from the middle cover at the
+     middle/upper split.
    - Make pin diameter, insertion length, count, positions, socket clearance,
      and socket depth adjustable.
    - Derive top-cover height from the configured five-board stack height and
@@ -298,6 +306,8 @@ request plan amendment before editing existing sources.
       - middle cover has male pins,
       - middle/upper split sits above the Pi 5 connector cutouts,
       - upper cover is independently printable above the Pi 5 connector zone,
+      - upper cover has split-interface male pins,
+      - middle cover has matching top-open split-interface female sockets,
       - bottom tray has matching female sockets,
       - every inter-board gap has real side and back airflow grate openings,
       - non-conflicting front-face airflow grate openings exist,
@@ -378,7 +388,7 @@ Required source checks may be implemented as simple shell checks equivalent to:
 ```sh
 rg -n 'render_mode = "printable_layout"|bottom_tray|middle_cover|upper_cover|top_cover|electronics|assembly' designs/pi5_five_stack_enclosure.scad
 rg -n 'stack_board_count|rpi5_stack_index|pcb_stack_gap|inter.*gap|top.*clearance' designs/pi5_five_stack_enclosure.scad README.md
-rg -n 'cover_pin|plug_pin|male|tray_socket|socket|female' designs/pi5_five_stack_enclosure.scad README.md
+rg -n 'cover_pin|plug_pin|male|tray_socket|socket|female|middle_upper_connector' designs/pi5_five_stack_enclosure.scad README.md
 rg -n 'anti_slip|anti_slide|foot_recess|standoff|pilot|insert' designs/pi5_five_stack_enclosure.scad README.md
 rg -n 'airflow|vent|ventilation|gap_center|side.*opening' designs/pi5_five_stack_enclosure.scad README.md
 rg -n 'usb|ethernet|usb_c|hdmi|camera|display|pcie|micro_sd|gpio' designs/pi5_five_stack_enclosure.scad README.md

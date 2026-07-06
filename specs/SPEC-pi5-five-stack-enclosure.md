@@ -12,7 +12,9 @@ bottom cover/tray, a middle cover, and an upper cover. The distance between
 every adjacent PCB must be easy to configure, airflow between every PCB is
 mandatory, the base PCB must mount to the bottom cover, the middle cover must
 connect to the bottom cover using the repository's existing male/female
-pin-and-socket principle, and the bottom cover must provide anti-slip support.
+pin-and-socket principle, the upper cover must connect to the middle cover with
+a second male/female pin-and-socket interface, and the bottom cover must provide
+anti-slip support.
 
 ## Problem Statement
 
@@ -52,6 +54,12 @@ between boards.
   - matching female socket holes owned by the bottom cover/tray,
   - adjustable pin diameter, insertion length, socket clearance, socket depth,
     and pin positions.
+- Connect the middle cover and upper cover using a second male/female interface:
+  - short downward male cylindrical plug pins owned by the upper cover,
+  - matching top-open female socket holes owned by the middle cover at the
+    middle/upper split,
+  - adjustable pin diameter, insertion length, root diameter, root height,
+    socket clearance, and socket depth.
 - Provide anti-slip recesses or foot pockets on the bottom cover/tray underside.
 - Provide real subtractive airflow openings between every adjacent PCB by
   default on both side walls and the back face, with front-face openings where
@@ -98,9 +106,10 @@ between boards.
   sockets, and underside anti-slip features.
 - Middle cover: the lower removable printable cover body that connects to the
   tray, owns the male cover pins, and carries the Pi 5 connector-access
-  openings.
+  openings and upper-cover female sockets.
 - Upper cover: the upper removable printable cover body above the middle/upper
-  split, carrying the closed roof and upper headroom/ventilation section.
+  split, carrying the closed roof, upper headroom/ventilation section, and
+  short downward male pins that plug into the middle cover.
 - Top cover: the combined removable cover body made from the middle cover and
   upper cover.
 - Male/female connection method: cylindrical male pins extending from the middle
@@ -153,6 +162,9 @@ implementation:
 - Cover pin diameter, insertion length, root/support diameter, socket clearance,
   socket depth, socket receiver diameter, and pin positions: configurable for
   printer/material fit.
+- Middle/upper connector pin diameter, insertion length, root diameter, root
+  height, socket clearance, and socket depth: configurable for printer/material
+  fit.
 - Airflow slot count, size, spacing, face enablement, per-gap vertical
   placement, and upper-cover wall vent row placement: configurable so the vents
   can follow changed board spacing and clearance height.
@@ -255,6 +267,9 @@ implementation:
   inter-PCB side/front/back airflow.
 - The middle cover must own male plug pins by default.
 - The bottom cover/tray must subtract matching female socket holes by default.
+- The upper cover must own short downward male plug pins by default.
+- The middle cover must subtract matching top-open female socket holes for the
+  upper-cover pins by default.
 - The male/female interface must expose adjustable defaults comparable to the
   existing enclosures:
   - cover pin diameter,
@@ -352,6 +367,9 @@ implementation:
   holes.
 - The middle cover must own male plug pins by default.
 - The bottom cover/tray must own matching female socket holes by default.
+- The upper cover must own short downward male pins by default.
+- The middle cover must own matching top-open female sockets at the split by
+  default.
 - The pin/socket interface must be adjustable and visibly similar in concept to
   the existing repository cover-pin/tray-socket interface.
 - The bottom cover/tray must include configurable anti-slip recesses or foot
@@ -408,6 +426,8 @@ implementation:
     height,
   - middle cover has male pins,
   - upper cover is independently printable above the Pi 5 connector cutouts,
+  - upper cover has male pins and middle cover has matching top-open sockets at
+    the split,
   - bottom tray has matching female sockets,
   - anti-slip recesses exist on the tray underside,
   - every inter-PCB gap has real side, front, and back airflow openings,
@@ -428,6 +448,7 @@ implementation:
 - Document the per-gap PCB spacing controls and top-cover clearance control.
 - Document the base-PCB mounting strategy.
 - Document the middle-cover-male and bottom-tray-female connection method.
+- Document the upper-cover-male and middle-cover-female connection method.
 - Document bottom anti-slip recesses or foot pockets.
 - Document the mandatory inter-PCB side/front/back airflow strategy.
 - Document Raspberry Pi 5 access/opening strategy and any intentionally limited

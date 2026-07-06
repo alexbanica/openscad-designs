@@ -84,7 +84,7 @@ enable_board_mount_inserts = false;
 board_mount_insert_diameter_mm = 4.2;
 board_mount_insert_depth_mm = 3.4;
 
-// Top cover pins and tray sockets
+// Middle cover pins and tray sockets
 cover_pin_diameter_mm = 5.0;
 cover_pin_insertion_length_mm = 5.2;
 cover_pin_root_diameter_mm = 7.6;
@@ -94,6 +94,14 @@ cover_pin_offset_y_mm = 31.0;
 tray_socket_clearance_mm = 0.35;
 tray_socket_depth_mm = 5.6;
 tray_socket_receiver_diameter_mm = 8.0;
+
+// Upper cover pins and middle cover sockets
+middle_upper_connector_pin_diameter_mm = 5.0;
+middle_upper_connector_pin_insertion_length_mm = 5.2;
+middle_upper_connector_pin_root_diameter_mm = 7.6;
+middle_upper_connector_pin_root_height_mm = 6.0;
+middle_upper_connector_socket_clearance_mm = 0.35;
+middle_upper_connector_socket_depth_mm = 5.6;
 
 // Bottom anti-slip recesses
 enable_anti_slip_recesses = true;
@@ -249,6 +257,18 @@ tray_socket_hole_bottom_z_mm = min(
 tray_socket_hole_depth_mm = tray_wall_height_mm - tray_socket_hole_bottom_z_mm + 2 * preview_overlap_mm;
 tray_socket_hole_center_z_mm = tray_socket_hole_bottom_z_mm + tray_socket_hole_depth_mm / 2;
 tray_socket_hole_diameter_mm = cover_pin_diameter_mm + 2 * tray_socket_clearance_mm;
+
+middle_upper_connector_pin_start_z_mm =
+    middle_upper_cover_split_z_mm - middle_upper_connector_pin_insertion_length_mm;
+middle_upper_connector_pin_hole_bottom_z_mm =
+    middle_upper_cover_split_z_mm - middle_upper_connector_socket_depth_mm;
+middle_upper_connector_socket_hole_depth_mm =
+    middle_upper_cover_split_z_mm - middle_upper_connector_pin_hole_bottom_z_mm + 2 * preview_overlap_mm;
+middle_upper_connector_socket_hole_center_z_mm =
+    middle_upper_connector_pin_hole_bottom_z_mm + middle_upper_connector_socket_hole_depth_mm / 2;
+middle_upper_connector_socket_hole_diameter_mm =
+    middle_upper_connector_pin_diameter_mm + 2 * middle_upper_connector_socket_clearance_mm;
+middle_upper_connector_pin_root_base_z_mm = middle_upper_cover_split_z_mm - solid_merge_overlap_mm;
 
 anti_slip_recess_centers_mm = [
     [-internal_length_mm / 2 + anti_slip_recess_offset_x_mm, -internal_width_mm / 2 + anti_slip_recess_offset_y_mm],
@@ -424,22 +444,31 @@ module pi5_five_stack_top_cover() {
 }
 
 module pi5_five_stack_middle_cover() {
-    intersection() {
-        pi5_five_stack_top_cover_full();
-        pi5_five_stack_z_clip(
-            cover_pin_start_z_mm - solid_merge_overlap_mm,
-            middle_upper_cover_split_z_mm
-        );
+    difference() {
+        intersection() {
+            pi5_five_stack_top_cover_full();
+            pi5_five_stack_z_clip(
+                cover_pin_start_z_mm - solid_merge_overlap_mm,
+                middle_upper_cover_split_z_mm
+            );
+        }
+
+        pi5_five_stack_middle_upper_connector_socket_holes();
     }
 }
 
 module pi5_five_stack_upper_cover() {
-    intersection() {
-        pi5_five_stack_top_cover_full();
-        pi5_five_stack_z_clip(
-            middle_upper_cover_split_z_mm,
-            case_total_height_mm + solid_merge_overlap_mm
-        );
+    union() {
+        intersection() {
+            pi5_five_stack_top_cover_full();
+            pi5_five_stack_z_clip(
+                middle_upper_cover_split_z_mm,
+                case_total_height_mm + solid_merge_overlap_mm
+            );
+        }
+
+        pi5_five_stack_middle_upper_connector_pin_roots();
+        pi5_five_stack_middle_upper_connector_pins();
     }
 }
 
@@ -691,6 +720,51 @@ module pi5_five_stack_cover_pin(pin_center_mm) {
             h = cover_pin_insertion_length_mm + 2 * solid_merge_overlap_mm,
             d = cover_pin_diameter_mm
         );
+}
+
+module pi5_five_stack_middle_upper_connector_pins() {
+    color(standoff_colour)
+    for (pin_index = [0:active_cover_pin_count - 1]) {
+        translate([
+            cover_pin_centers_mm[pin_index][0],
+            cover_pin_centers_mm[pin_index][1],
+            middle_upper_connector_pin_start_z_mm
+        ])
+            cylinder(
+                h = middle_upper_connector_pin_insertion_length_mm + 2 * solid_merge_overlap_mm,
+                d = middle_upper_connector_pin_diameter_mm
+            );
+    }
+}
+
+module pi5_five_stack_middle_upper_connector_pin_roots() {
+    color(standoff_colour)
+    for (pin_index = [0:active_cover_pin_count - 1]) {
+        translate([
+            cover_pin_centers_mm[pin_index][0],
+            cover_pin_centers_mm[pin_index][1],
+            middle_upper_connector_pin_root_base_z_mm
+        ])
+            cylinder(
+                h = middle_upper_connector_pin_root_height_mm + solid_merge_overlap_mm,
+                d = middle_upper_connector_pin_root_diameter_mm
+            );
+    }
+}
+
+module pi5_five_stack_middle_upper_connector_socket_holes() {
+    for (pin_index = [0:active_cover_pin_count - 1]) {
+        translate([
+            cover_pin_centers_mm[pin_index][0],
+            cover_pin_centers_mm[pin_index][1],
+            middle_upper_connector_socket_hole_center_z_mm
+        ])
+            cylinder(
+                h = middle_upper_connector_socket_hole_depth_mm,
+                d = middle_upper_connector_socket_hole_diameter_mm,
+                center = true
+            );
+    }
 }
 
 module pi5_five_stack_top_cover_cutouts() {
