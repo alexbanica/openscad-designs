@@ -1,10 +1,10 @@
 // Raspberry Pi 5 five-board stack enclosure
 //
 // - one printable bottom tray, one printable middle cover, one printable upper cover
-// - adjustable per-gap spacing for five PCB positions, with PCB 4 as Pi 5 by default
+// - adjustable measured per-gap spacing for five PCB positions, with PCB 4 as Pi 5 by default
 // - male/female removable top-cover connection
 // - air-gap aligned ventilation for every inter-board gap
-// - two internal 40 mm fan mounts with guarded roof grilles
+// - two internal 30 mm fan mounts with guarded roof grilles
 // - anti-slip recesses on tray underside
 //
 // Units: mm
@@ -28,10 +28,18 @@ show_clearance_guides = false;
 // Stack geometry
 stack_board_count = 5;
 pi5_five_stack_gap_count = 4;
-pi5_stack_gap_z_mm = [15.0, 15.0, 15.0, 15.0];
+stack_measurement_error_margin_mm = 0.5;
+measured_pi5_stack_gap_z_mm = [9.80, 17.05, 19.39, 41.20];
+pi5_stack_gap_z_mm = [
+    for (gap_mm = measured_pi5_stack_gap_z_mm)
+        gap_mm + stack_measurement_error_margin_mm
+];
 rpi5_stack_index = 4;
-top_of_fifth_board_to_top_cover_clearance_mm = 66.0;
-minimum_pcb5_usable_headroom_without_internal_fans_mm = 52.0;
+measured_pcb5_to_top_cover_clearance_excluding_vents_mm = 35.82;
+top_of_fifth_board_to_top_cover_clearance_mm =
+    measured_pcb5_to_top_cover_clearance_excluding_vents_mm
+    + stack_measurement_error_margin_mm;
+minimum_pcb5_usable_headroom_without_internal_fans_mm = 25.32;
 electronics_preview_lift_mm = 0.0;
 
 // Raspberry Pi 5 mirrored reference (from designs/rpi5.scad)
@@ -64,10 +72,22 @@ rpi5_gpio_header_pin_size_mirror_mm = 0.64;
 rpi5_micro_sd_slot_origin_mirror_mm = [5.0, 20.0, -1.8];
 rpi5_micro_sd_slot_size_mirror_mm = [16.0, 14.0, 1.8];
 
+// PCB 5 micro-USB cable access, measured from the board left margin while
+// looking at the same front side as the Raspberry Pi 5 USB-C connector.
+pcb5_micro_usb_stack_index = 5;
+pcb5_micro_usb_left_margin_to_connector_left_mm = 8.85;
+pcb5_micro_usb_connector_size_mm = [7.5, 4.0, 3.0];
+pcb5_micro_usb_connector_origin_mm = [
+    pcb5_micro_usb_left_margin_to_connector_left_mm,
+    -2.0,
+    rpi5_board_thickness_mirror_mm
+];
+
 // Enclosure dimensions
 wall_thickness_mm = 2.8;
 floor_thickness_mm = 2.2;
 top_roof_thickness_mm = 2.2;
+left_right_pci_cable_clearance_margin_mm = 3.0;
 tray_wall_height_mm = 16.0;
 cover_skirt_drop_depth_mm = 4.0;
 cover_fit_clearance_mm = 0.35;
@@ -134,20 +154,20 @@ upper_cover_airflow_roof_keepout_mm = 8.0;
 // Internal upper-cover fan mounts and guarded roof grilles
 enable_internal_fan_mounts = true;
 enable_guarded_fan_roof_grilles = true;
-internal_fan_body_size_mm = [40.0, 40.0, 10.0];
+internal_fan_body_size_mm = [30.0, 30.0, 7.0];
 internal_fan_body_clearance_mm = 1.0;
 internal_fan_center_positions_mm = [
     [-22.5, 0.0],
     [ 22.5, 0.0]
 ];
-internal_fan_screw_hole_spacing_mm = 32.0;
+internal_fan_screw_hole_spacing_mm = 24.0;
 internal_fan_mount_boss_diameter_mm = 6.2;
 internal_fan_mount_boss_height_mm = 4.0;
 internal_fan_mount_screw_pilot_diameter_mm = 2.4;
 internal_fan_mount_screw_pilot_depth_mm = 3.4;
 guarded_fan_grille_slot_count = 5;
 guarded_fan_grille_slot_width_mm = 3.2;
-guarded_fan_grille_slot_length_mm = 22.0;
+guarded_fan_grille_slot_length_mm = 18.0;
 guarded_fan_grille_slot_spacing_mm = 5.0;
 guarded_fan_grille_roof_overtravel_mm = 0.8;
 
@@ -160,6 +180,7 @@ service_cutout_clearance_mm = 1.0;
 front_cable_cutout_error_margin_mm = 0.6;
 usb_c_cable_head_required_size_mm = [12.0, 7.0];
 micro_hdmi_adapter_head_required_size_mm = [12.0, 6.66];
+pcb5_micro_usb_cable_head_required_size_mm = [10.30, 11.30];
 show_tray_port_access = true;
 show_top_cover_port_access = true;
 enable_rpi5_gpio_header_lateral_access = true;
@@ -245,7 +266,9 @@ inter_pcb_gap_centers_z_mm = [
         (stack_board_top_z_mm[gap_index] + stack_board_bottom_z_mm[gap_index + 1]) / 2
 ];
 
-internal_length_mm = rpi5_board_length_mirror_mm + 2 * (wall_thickness_mm + 2.0);
+internal_length_mm =
+    rpi5_board_length_mirror_mm
+    + 2 * (wall_thickness_mm + 2.0 + left_right_pci_cable_clearance_margin_mm);
 internal_width_mm = rpi5_board_width_mirror_mm + 2 * (wall_thickness_mm + 2.0);
 outer_length_mm = internal_length_mm + 2 * wall_thickness_mm;
 outer_width_mm = internal_width_mm + 2 * wall_thickness_mm;
@@ -360,6 +383,10 @@ usb_c_cable_cutout_size_mm = [
 micro_hdmi_adapter_cutout_size_mm = [
     micro_hdmi_adapter_head_required_size_mm[0] + front_cable_cutout_error_margin_mm,
     micro_hdmi_adapter_head_required_size_mm[1] + front_cable_cutout_error_margin_mm
+];
+pcb5_micro_usb_cable_cutout_size_mm = [
+    pcb5_micro_usb_cable_head_required_size_mm[0] + front_cable_cutout_error_margin_mm,
+    pcb5_micro_usb_cable_head_required_size_mm[1] + front_cable_cutout_error_margin_mm
 ];
 
 upper_cover_airflow_low_z_mm =
@@ -913,6 +940,15 @@ module pi5_five_stack_top_cover_port_cutouts() {
                     pi5_five_stack_gpio_header_lateral_access_cutout(board_bottom_z_mm);
                 }
 
+            }
+            if (board_index_1_based == pcb5_micro_usb_stack_index) {
+                pi5_five_stack_front_side_port_cutout(
+                    board_bottom_z_mm,
+                    pcb5_micro_usb_connector_origin_mm,
+                    pcb5_micro_usb_connector_size_mm,
+                    pcb5_micro_usb_cable_cutout_size_mm,
+                    front_side_port_cutout_depth_mm
+                );
             }
         }
     }

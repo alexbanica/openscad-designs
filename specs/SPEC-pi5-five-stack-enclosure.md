@@ -10,7 +10,7 @@ where the fourth PCB from bottom to top is the Raspberry Pi 5 by default.
 The enclosure must have exactly three printable enclosure parts by default: a
 bottom cover/tray, a middle cover, and an upper cover. The distance between
 every adjacent PCB must be easy to configure, airflow between every PCB is
-mandatory, the upper cover must support two internal 40 mm fan positions to cool
+mandatory, the upper cover must support two internal 30 mm fan positions to cool
 PCB 5, the base PCB must mount to the bottom cover, the middle cover must
 connect to the bottom cover using the repository's existing male/female
 pin-and-socket principle, the upper cover must connect to the middle cover with
@@ -22,16 +22,58 @@ anti-slip support.
 The previous approved behavior intentionally excluded fans and kept the upper
 cover roof fully closed. This iteration changes that final behavior:
 
-- The upper cover must provide mounting points for two internal 40 mm square
+- The upper cover must provide mounting points for two internal square
   fans mounted on the inside face of the upper cover.
-- Each fan default is `40.0 mm x 40.0 mm x 10.0 mm`.
+- Each fan default is superseded by the 2026-07-07 measured-fan iteration.
 - The upper cover height must increase so the internal fans, fan mounting
   bosses, and fan screw/pilot geometry do not reduce the previously approved
   PCB 5 headroom.
-- Fan airflow openings must be guarded rather than one full 40 mm open hole, so
+- Fan airflow openings must be guarded rather than one full fan-size open hole, so
   the roof remains debris-resistant while still allowing strong circulation.
 - The fans are intended to cool PCB 5. Electrical fan routing, fan models,
   thermal simulation, and real airflow testing remain out of scope.
+
+## Iteration: 2026-07-07 Measured Stack Gaps And 30 mm Top Fans
+
+This completed direct iteration replaces the prior placeholder spacing and fan
+assumptions with measured defaults:
+
+- The four measured inter-PCB gaps are `9.80 mm`, `17.05 mm`, `19.39 mm`, and
+  `41.20 mm`.
+- A small configurable error margin is applied to the measured gaps. The
+  delivered default margin is `0.50 mm`, producing default generated inter-PCB
+  gaps of `10.30 mm`, `17.55 mm`, `19.89 mm`, and `41.70 mm`.
+- The measured PCB 5 top-to-top-cover clearance excluding vents is `35.82 mm`.
+  The same `0.50 mm` error margin is applied, producing a default top clearance
+  of `36.32 mm`.
+- The top/upper-cover fans default to `30.0 mm x 30.0 mm x 7.0 mm`, with a
+  `24.0 mm` screw-hole spacing assumption and smaller guarded roof grille slot
+  length.
+
+## Iteration: 2026-07-07 PCB 5 Micro-USB Front Access
+
+This completed direct iteration adds a PCB 5 micro-USB cable opening:
+
+- The opening is on the same front side as the Raspberry Pi 5 USB-C opening.
+- The measured distance from the PCB 5 left margin to the micro-USB connector
+  left margin is `8.85 mm`, measured while viewing the stack from the Pi 5
+  USB-C side.
+- The opening uses the same `front_cable_cutout_error_margin_mm = 0.60` margin
+  pattern as the Pi 5 front connector openings.
+- The default micro-USB cable-head requirement is `10.30 mm x 11.30 mm`,
+  producing a default visible opening of at least `10.90 mm x 11.90 mm`.
+
+## Iteration: 2026-07-07 Left/Right PCI Cable Margin
+
+This completed direct iteration adds left/right internal margin for PCI or
+ribbon cable clearance:
+
+- The margin applies only along the left/right PCB edges.
+- Front/back clearance is not increased because there are no cables there by
+  default.
+- The delivered default is `left_right_pci_cable_clearance_margin_mm = 3.0`,
+  increasing nominal left/right inside-wall-to-PCB clearance from `4.8 mm` to
+  `7.8 mm`.
 
 ## Iteration: 2026-07-06 Pi 5 Port Cutout Calibration
 
@@ -109,7 +151,7 @@ between boards.
 - Provide guarded fan airflow openings through the upper cover roof for two
   internal fan positions, while preserving debris protection with ribs, grille
   bars, or a comparable non-full-hole pattern.
-- Provide upper-cover inside fan mounting bosses or posts for two 40 mm square
+- Provide upper-cover inside fan mounting bosses or posts for two 30 mm square
   fans.
 - Provide Raspberry Pi 5 access openings for the stack where necessary for
   serviceability and cable access.
@@ -162,12 +204,12 @@ between boards.
   short downward male pins that plug into the middle cover.
 - Top cover: the combined removable cover body made from the middle cover and
   upper cover.
-- Internal fan mount: upper-cover inside mounting geometry for one 40 mm square
+- Internal fan mount: upper-cover inside mounting geometry for one 30 mm square
   fan body, including fan clearance, screw bosses or pilot holes, and a guarded
   roof airflow grille aligned to the fan area.
 - Guarded fan airflow opening: a roof opening pattern made from multiple smaller
   holes, slots, or grille gaps with remaining printed ribs/material, explicitly
-  not a single full-size 40 mm cutout.
+  not a single full-size 30 mm cutout.
 - Male/female connection method: cylindrical male pins extending from the middle
   cover into matching female cylindrical socket holes in the bottom cover/tray,
   following the existing Pi Zero USB Grove IR enclosure and Raspberry Pi 5 AI
@@ -184,7 +226,7 @@ between boards.
 - Existing top-cover/bottom-tray male/female connection reference:
   `designs/pi_zero_usb_grove_ir_enclosure.scad`.
 - Existing repository documentation: `README.md`.
-- User-provided fan size: `40.0 mm x 40.0 mm x 10.0 mm`.
+- User-provided fan size: `30.0 mm x 30.0 mm x 7.0 mm`.
 - Existing deleted-in-worktree tower-stack artifacts were reviewed only as prior
   context; this spec intentionally excludes their display cover, NVMe boards,
   and Cluster HAT behavior.
@@ -202,21 +244,28 @@ implementation:
 - Raspberry Pi 5 mounting-hole positions: copied from `designs/rpi5.scad`.
 - Raspberry Pi 5 mounting-hole diameter: `2.75 mm`.
 - Stack PCB count: `5`.
-- Initial inter-PCB distances: an adjustable four-value vector defaulting to
-  `15.0 mm` for every adjacent PCB gap.
+- Measured inter-PCB distances: an adjustable four-value vector defaulting to
+  `[9.80, 17.05, 19.39, 41.20]` mm before the configured margin is applied.
+- Stack measurement error margin: `0.50 mm` by default, producing the generated
+  `pi5_stack_gap_z_mm` values `[10.30, 17.55, 19.89, 41.70]` mm.
 - Raspberry Pi 5 stack index: `4`, meaning the fourth PCB from bottom to top is
   the Pi 5 by default.
-- Top-of-fifth-PCB-to-inside-top-cover-wall clearance: an adjustable value,
-  defaulting to at least `66.0` mm so the design preserves the prior `52.0` mm
-  default headroom while adding `10.0` mm fan thickness and `4.0` mm default
-  fan/boss margin.
-- Internal fan body size: `40.0 mm x 40.0 mm x 10.0 mm`, user-adjustable.
+- Top-of-fifth-PCB-to-inside-top-cover-wall clearance excluding vents: measured
+  at `35.82 mm`, with the same `0.50 mm` margin applied for a default
+  `36.32 mm` top clearance.
+- Internal fan body size: `30.0 mm x 30.0 mm x 7.0 mm`, user-adjustable.
 - Internal fan count: `2` maximum/default positions in the upper cover.
-- Fan mount screw-hole spacing: adjustable, defaulting to `32.0 mm` center span
-  for a typical 40 mm fan until the actual fan is measured.
+- Fan mount screw-hole spacing: adjustable, defaulting to `24.0 mm` center span
+  for a typical 30 mm fan until the actual fan is measured.
 - Fan screw pilot diameter/depth, boss diameter, boss height, body clearance,
   roof grille diameter/slot dimensions, grille rib width, and fan center
   positions: configurable planning defaults until real fans are measured.
+- PCB 5 micro-USB connector left edge from PCB left margin: `8.85 mm`.
+- PCB 5 micro-USB cable-head requirement: `10.30 mm x 11.30 mm`, plus the same
+  `0.60 mm` front cable cutout error margin used by the Pi 5 front connector
+  openings.
+- Left/right PCI cable clearance margin: `3.0 mm`, applied only to the
+  left/right internal footprint margins and not to front/back clearance.
 - Bottom-tray wall/lip height: shallow enough that the bottom cover remains the
   smaller enclosure half and the middle/upper cover pair carries the main stack
   height.
@@ -255,6 +304,9 @@ implementation:
 - All five PCBs must share one board-origin convention and one enclosure
   footprint, with Raspberry Pi 5 connector/service geometry applied to the
   configured Pi 5 PCB index.
+- The enclosure footprint may add extra internal margin on the left/right PCB
+  sides for PCI/ribbon cable clearance, but that margin must not enlarge the
+  front/back clearance by default.
 - Changing an inter-PCB distance must update downstream PCB positions, airflow
   gap centers, top-cover height, and related clearance geometry.
 - Printable versions must be Bambu Lab-friendly:
@@ -338,7 +390,7 @@ implementation:
   of the three printable enclosure parts and does not replace the required
   inter-PCB side/front/back airflow.
 - The upper cover must support two internal fan mounts by default:
-  - fan body size defaults to `40.0 mm x 40.0 mm x 10.0 mm`,
+  - fan body size defaults to `30.0 mm x 30.0 mm x 7.0 mm`,
   - each fan mount must include adjustable screw/pilot mounting points or
     bosses,
   - fan positions must be adjustable,
@@ -375,6 +427,10 @@ implementation:
     continue the stack,
   - microSD access for the base PCB when the Pi 5 is in the base position and
     access is practical without weakening the enclosure.
+- PCB 5 must include a front-side micro-USB cable opening on the same side as
+  the Pi 5 USB-C opening, positioned from the measured `8.85 mm` left-margin
+  offset and using the same front cable margin behavior as the Pi 5 front
+  connector openings.
 - Front/back-face vent rows that touch the configured Raspberry Pi 5 board must
   be omitted on faces where they would collide with Pi 5 connector cutouts or
   the GPIO/header lateral splitter opening.
@@ -448,8 +504,8 @@ implementation:
 - The distance from the top of PCB 5 to the top cover must be controlled by an
   obvious adjustable parameter.
 - The default distance from the top of PCB 5 to the inside top wall of the top
-  cover must be at least `66.0` mm, representing the previous `52.0` mm default
-  clearance plus `10.0` mm fan thickness and `4.0` mm default fan/boss margin.
+  cover must be `36.32` mm, representing the `35.82` mm measured clearance
+  excluding vents plus the `0.50` mm configured margin.
 - The default printable enclosure must be exactly three parts: bottom cover/tray,
   middle cover, and upper cover.
 - The middle/upper cover split must sit above the configured Pi 5 connector
@@ -480,10 +536,10 @@ implementation:
   replace inter-PCB airflow. Upper top-cover wall airflow holes must default to
   at most half the size of the inter-PCB airflow holes.
 - The upper cover roof must include two guarded fan airflow grille patterns by
-  default, aligned to two internal 40 mm fan positions. Each grille must retain
-  printed ribs/material and must not be implemented as one full 40 mm hole.
+  default, aligned to two internal 30 mm fan positions. Each grille must retain
+  printed ribs/material and must not be implemented as one full 30 mm hole.
 - The upper cover must include inside mounting points for two internal
-  `40.0 mm x 40.0 mm x 10.0 mm` fans by default, with adjustable fan centers,
+  `30.0 mm x 30.0 mm x 7.0 mm` fans by default, with adjustable fan centers,
   body clearance, screw/pilot spacing, boss dimensions, and screw/pilot
   dimensions.
 - Fan mount defaults must avoid the split-interface pins/sockets and must not
@@ -496,6 +552,8 @@ implementation:
 - USB-C and micro-HDMI front service openings must use the printed-good
   Raspberry Pi 5 AI HAT+ enclosure cable-head values by default: USB-C at least
   `12.6 mm x 7.6 mm`, and each micro-HDMI at least `12.6 mm x 7.26 mm`.
+- PCB 5 front micro-USB access must clear at least `10.90 mm x 11.90 mm` by
+  default.
 - Raspberry Pi 5 GPIO/header lateral access must be generated at the configured
   Pi 5 board level and must not collide with front/back-face vent rows.
 - Render modes must include `assembly`, `bottom_tray`, `middle_cover`,
@@ -532,7 +590,7 @@ implementation:
   - coherent board spacing changes,
   - top-cover height derived from stack height and top clearance,
   - top-cover height increased enough to preserve PCB 5 clearance while adding
-    internal 40 mm fan thickness and mounting bosses,
+    internal 30 mm fan thickness and mounting bosses,
   - base PCB mounted to bottom-tray standoffs,
   - bottom tray remains shallow and the middle/upper cover pair carries the main
     height,

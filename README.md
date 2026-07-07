@@ -513,16 +513,19 @@ Manual inspection checklist:
 
 ## Raspberry Pi 5 Five-Stack Enclosure
 
-`designs/pi5_five_stack_enclosure.scad` is a printable bottom tray, middle cover, and upper cover for a five-board stack with explicit per-gap spacing controls, Raspberry Pi 5 access at the configured Pi 5 board level, a lateral GPIO/header access opening for an outward-facing HAT header splitter branch, matching inter-PCB airflow grates, and two internal 40 mm fan mount positions in the upper cover.
+`designs/pi5_five_stack_enclosure.scad` is a printable bottom tray, middle cover, and upper cover for a five-board stack with explicit per-gap spacing controls, Raspberry Pi 5 access at the configured Pi 5 board level, a PCB 5 micro-USB front access opening, a lateral GPIO/header access opening for an outward-facing HAT header splitter branch, matching inter-PCB airflow grates, and two internal 30 mm fan mount positions in the upper cover.
 
 ### Component Assumptions
 
 The enclosure models five same-footprint PCB positions with shared coordinate-frame defaults:
 
 - `stack_board_count = 5` (default).
-- Default inter-board gap vector (`pi5_stack_gap_z_mm`) is `[15.0, 15.0, 15.0, 15.0]` mm.
+- Measured inter-board gaps are `measured_pi5_stack_gap_z_mm = [9.80, 17.05, 19.39, 41.20]` mm from PCB 1 to PCB 2, PCB 2 to PCB 3, PCB 3 to PCB 4, and PCB 4 to PCB 5.
+- `stack_measurement_error_margin_mm = 0.5` is added to each measured gap, so the default generated `pi5_stack_gap_z_mm` is `[10.30, 17.55, 19.89, 41.70]` mm.
 - PCB 4 from bottom to top is the Raspberry Pi 5 by default (`rpi5_stack_index = 4`).
-- Top clearance above board 5 is `top_of_fifth_board_to_top_cover_clearance_mm = 66.0` mm by default. The derived effective clearance also preserves `minimum_pcb5_usable_headroom_without_internal_fans_mm = 52.0` mm plus the current internal fan thickness and boss height, so increasing fan thickness can increase the cover height without reducing PCB 5 usable headroom.
+- The measured PCB 5 top-to-top-cover clearance excluding vents is `35.82` mm via `measured_pcb5_to_top_cover_clearance_excluding_vents_mm`; the same `0.5` mm margin makes `top_of_fifth_board_to_top_cover_clearance_mm = 36.32` mm by default. The derived effective clearance also accounts for `minimum_pcb5_usable_headroom_without_internal_fans_mm = 25.32` mm plus the current internal fan thickness and boss height, so increasing fan thickness can increase the cover height without reducing the default fan-aware PCB 5 usable headroom.
+- Left/right internal board clearance includes `left_right_pci_cable_clearance_margin_mm = 3.0`, giving `7.8` mm nominal clearance from each left/right inside wall to the PCB edge. Front/back clearance is unchanged at `4.8` mm because there are no cables there by default.
+- PCB 5 micro-USB access is on the same front side as the Raspberry Pi 5 USB-C opening. `pcb5_micro_usb_left_margin_to_connector_left_mm = 8.85` places the connector left edge from the PCB left margin, with `front_cable_cutout_error_margin_mm = 0.6` applied to the cable-head opening. The default cable-head requirement is `pcb5_micro_usb_cable_head_required_size_mm = [10.30, 11.30]`, producing a minimum visible opening of `10.90 mm x 11.90 mm`.
 - The middle/upper cover split is derived above the configured Pi 5 connector cutouts, with `middle_cover_split_clearance_above_pi5_connector_mm = 4.0` mm by default. With the default PCB 4 Pi 5 placement, the split is approximately `79.0` mm above the tray-floor exterior.
 - Raspberry Pi 5 base mirror dimensions:
   - `85.0 mm x 56.0 mm x 1.6 mm` board,
@@ -568,12 +571,12 @@ The enclosure models five same-footprint PCB positions with shared coordinate-fr
   - keeps `8.0` mm below the inside top wall clear of vent rows.
 - Internal fan and guarded roof grille defaults:
   - two internal fan positions are enabled by default,
-  - `internal_fan_body_size_mm = [40.0, 40.0, 10.0]`,
+  - `internal_fan_body_size_mm = [30.0, 30.0, 7.0]`,
   - `internal_fan_center_positions_mm = [[-22.5, 0.0], [22.5, 0.0]]`,
-  - `internal_fan_screw_hole_spacing_mm = 32.0`,
+  - `internal_fan_screw_hole_spacing_mm = 24.0`,
   - four inside screw/pilot bosses per fan use `internal_fan_mount_boss_diameter_mm = 6.2`, `internal_fan_mount_boss_height_mm = 4.0`, `internal_fan_mount_screw_pilot_diameter_mm = 2.4`, and `internal_fan_mount_screw_pilot_depth_mm = 3.4`,
-  - each roof grille is a guarded five-slot pattern using `guarded_fan_grille_slot_count = 5`, `guarded_fan_grille_slot_width_mm = 3.2`, `guarded_fan_grille_slot_length_mm = 22.0`, and `guarded_fan_grille_slot_spacing_mm = 5.0`,
-  - the guarded grilles are the only default roof openings and are not full 40 mm fan holes.
+  - each roof grille is a guarded five-slot pattern using `guarded_fan_grille_slot_count = 5`, `guarded_fan_grille_slot_width_mm = 3.2`, `guarded_fan_grille_slot_length_mm = 18.0`, and `guarded_fan_grille_slot_spacing_mm = 5.0`,
+  - the guarded grilles are the only default roof openings and are not full 30 mm fan holes.
 - Raspberry Pi 5 GPIO/header lateral access defaults:
   - enabled by default with `enable_rpi5_gpio_header_lateral_access = true`,
   - placed on the Pi 5 GPIO/header edge of the enclosure with `rpi5_gpio_header_lateral_access_face_sign = 1`,
@@ -600,7 +603,7 @@ Parameters are grouped in `Adjustable Parameters` and `Derived Values`:
 - upper-cover/middle-cover male/female interface parameters
 - anti-slip recess controls
 - inter-PCB and upper top-cover wall airflow controls and slot geometry
-- internal 40 mm fan body, center, boss, screw/pilot, and guarded roof grille controls
+- internal 30 mm fan body, center, boss, screw/pilot, and guarded roof grille controls
 - microSD/port-access defaults and clearances, including GPIO/header lateral access controls
 - printable layout spacing
 - visual styling
@@ -608,9 +611,10 @@ Parameters are grouped in `Adjustable Parameters` and `Derived Values`:
 Common edits:
 
 - Set `render_mode = "assembly"`, `"bottom_tray"`, `"middle_cover"`, `"upper_cover"`, `"top_cover"`, `"electronics"`, or `"printable_layout"`.
-- Tune `pi5_stack_gap_z_mm` for all four inter-PCB gaps and observe the derived stack Z map.
+- Tune `measured_pi5_stack_gap_z_mm` or `stack_measurement_error_margin_mm` for all four inter-PCB gaps and observe the derived `pi5_stack_gap_z_mm` stack Z map.
 - Tune `rpi5_stack_index` if the Raspberry Pi 5 board moves from the default fourth PCB position.
 - Tune `top_of_fifth_board_to_top_cover_clearance_mm` for headroom margin. The derived `effective_top_of_fifth_board_to_top_cover_clearance_mm` also accounts for `minimum_pcb5_usable_headroom_without_internal_fans_mm` and the internal fan clearance envelope, so PCB 5 headroom is not reduced by the two fans.
+- Tune `left_right_pci_cable_clearance_margin_mm` if PCI/ribbon cable clearance is needed along the left/right inside walls. This does not enlarge the front/back margin.
 - Tune `middle_cover_split_clearance_above_pi5_connector_mm` if the middle/upper split needs more material above the Pi 5 connector cutouts.
 - Keep `stack_board_count` at its default `5` for the default five-board contract.
 - Tune standoff and `enable_board_mount_inserts`, screw insert/hole dimensions. By default `board_mount_screw_hole_diameter_mm` is derived from `rpi5_board_mounting_hole_diameter_mirror_mm`, and the holes open from the inside standoff tops.
@@ -620,8 +624,9 @@ Common edits:
   than the middle-cover to tray fit.
 - Tune `inter_pcb_airflow_slot_*` and per-face enable flags to reposition vents. The front/back airflow helper automatically omits Pi 5-adjacent vent rows on faces where Pi 5 service openings or the GPIO/header splitter opening would collide.
 - Tune `enable_upper_cover_wall_airflow`, `upper_cover_airflow_row_count`, `upper_cover_airflow_gap_above_highest_board_mm`, and `upper_cover_airflow_roof_keepout_mm` for the upper-cover vent band.
-- Tune `enable_internal_fan_mounts`, `enable_guarded_fan_roof_grilles`, `internal_fan_body_size_mm`, `internal_fan_center_positions_mm`, `internal_fan_screw_hole_spacing_mm`, `internal_fan_mount_*`, and `guarded_fan_grille_*` after measuring the actual 40 mm fans.
+- Tune `enable_internal_fan_mounts`, `enable_guarded_fan_roof_grilles`, `internal_fan_body_size_mm`, `internal_fan_center_positions_mm`, `internal_fan_screw_hole_spacing_mm`, `internal_fan_mount_*`, and `guarded_fan_grille_*` after measuring the actual 30 mm fans.
 - Tune service clearances for USB-A/Ethernet/USB-C/micro-HDMI, base-position microSD access, and GPIO/header lateral access. USB-C and micro-HDMI front openings use the same cable-head sizing defaults as the printed Raspberry Pi 5 AI HAT+ enclosure: `usb_c_cable_head_required_size_mm = [12.0, 7.0]`, `micro_hdmi_adapter_head_required_size_mm = [12.0, 6.66]`, and `front_cable_cutout_error_margin_mm = 0.6`, producing minimum visible front openings of `12.6 mm x 7.6 mm` and `12.6 mm x 7.26 mm`. Use `rpi5_gpio_header_lateral_access_*` when the installed HAT header splitter or display connector needs more lateral width, wall depth, or vertical clearance.
+- Tune `pcb5_micro_usb_*` values if the PCB 5 micro-USB connector body, cable head, or left-margin measurement needs calibration after fitting.
 - Tune `enable_anti_slip_recesses`, recess diameter/depth, and offsets.
 
 ### Render Modes
@@ -657,9 +662,10 @@ openscad -o /tmp/pi5_five_stack_enclosure_printable_layout.off -D 'render_mode="
 - All four inter-board gaps receive grate-style airflow openings by default on both opposing side walls and the back face.
 - Front-face grates are automatically skipped for gaps directly adjacent to the configured Pi 5 board so USB-C and micro-HDMI front connector openings stay clear. Back-face grates are also skipped for Pi 5-adjacent gaps when the GPIO/header lateral access opening is on the back/GPIO-header face, so the HAT splitter/display opening does not collide with vent slots.
 - The tall upper-cover wall area above PCB 5 has additional side/front/back wall grates by default; non-fan roof areas remain closed.
-- Two guarded roof fan grilles sit above the internal fan positions by default. They use multiple slots with printed ribs left between openings, so the roof is not one full 40 mm hole per fan.
-- Two internal fan mounting point sets are modeled on the inside face of the upper cover. The default `32.0` mm screw span is a planning assumption for typical 40 mm fans and should be measured before final printing.
+- Two guarded roof fan grilles sit above the internal fan positions by default. They use multiple slots with printed ribs left between openings, so the roof is not one full 30 mm hole per fan.
+- Two internal fan mounting point sets are modeled on the inside face of the upper cover. The default `24.0` mm screw span is a planning assumption for typical 30 mm fans and should be measured before final printing.
 - Raspberry Pi 5 USB-A/Ethernet, USB-C, and micro-HDMI service cutouts are placed at `rpi5_stack_index` on the side/front walls. The two USB-A ports and Ethernet use one continuous right-side cutout with no separator between connector openings and keep the same Raspberry Pi 5 connector extents used by the printed Raspberry Pi 5 AI HAT+ enclosure. The front USB-C and micro-HDMI openings keep the mirrored connector centers but enlarge the visible width/height to the Raspberry Pi 5 AI HAT+ enclosure cable-head defaults when those are larger than the connector-derived openings. The top cover roof has no service openings; only guarded fan airflow grilles pierce the roof.
+- PCB 5 has a dedicated front-side micro-USB cable opening on the same side as the Pi 5 USB-C connector. It is placed from the measured connector-left margin and uses the same front cable cutout error margin as the Pi 5 front connector openings.
 - The Raspberry Pi 5 GPIO/header lateral access cutout is placed on the GPIO/header edge at `rpi5_stack_index`. It is intended for a HAT header splitter with one branch facing outward through the enclosure and another branch facing upward to continue the stack; the splitter and display connector are not modeled.
 - Base-board Pi 5 USB-A/Ethernet, USB-C, micro-HDMI, and microSD tray-wall openings are only generated when `rpi5_stack_index = 1`.
 - Base-board Pi 5 GPIO/header lateral access is generated in the tray wall when `rpi5_stack_index = 1`.
@@ -671,20 +677,22 @@ openscad -o /tmp/pi5_five_stack_enclosure_printable_layout.off -D 'render_mode="
 
 Manual inspection checklist:
 
-- Confirm default `stack_board_count = 5`, `rpi5_stack_index = 4`, and the default gap list has four `15.0` mm values.
+- Confirm default `stack_board_count = 5`, `rpi5_stack_index = 4`, the measured gap list is `[9.80, 17.05, 19.39, 41.20]` mm, and the default margin-adjusted gap list is `[10.30, 17.55, 19.89, 41.70]` mm.
 - Confirm all board positions share the same X/Y footprint and that the Raspberry Pi 5 reference appears at PCB 4 in `assembly`.
 - Confirm `render_mode` variants all generate.
 - Confirm top cover height updates when `pi5_stack_gap_z_mm` or `top_of_fifth_board_to_top_cover_clearance_mm` changes.
-- Confirm the default top-cover clearance preserves PCB 5 headroom while adding the two internal 40 mm fan bodies and mounting bosses.
+- Confirm the left/right inside-wall-to-PCB clearance includes the PCI cable margin and that front/back clearance is not enlarged by that setting.
+- Confirm the default top-cover clearance preserves PCB 5 headroom while adding the two internal 30 mm fan bodies and mounting bosses.
 - Confirm non-fan roof areas are closed and the roof has no service openings.
 - Confirm middle-cover/bottom-tray pin-socket pairing exists and remains printable.
 - Confirm the middle/upper cover split sits above the Pi 5 connector cutouts and the upper cover is independently printable.
 - Confirm upper-cover/middle-cover pin-socket pairing exists and remains printable.
 - Confirm both opposing side walls keep inter-PCB grate openings for all four gap centers by default, and that front/back-face grates are omitted only for Pi-adjacent connector or GPIO/header splitter access zones.
 - Confirm the upper-cover wall vent band exists on vertical walls and does not replace inter-PCB airflow.
-- Confirm two guarded roof grille patterns exist, align to the two fan centers, and retain printed ribs/material instead of forming full 40 mm holes.
+- Confirm two guarded roof grille patterns exist, align to the two fan centers, and retain printed ribs/material instead of forming full 30 mm holes.
 - Confirm the GPIO/header lateral access opening is centered on the Pi 5 GPIO/header edge, passes through the case wall, and gives enough clearance for the measured outward-facing HAT header splitter/display connector.
 - Confirm the front USB-C opening clears at least `12.6 mm x 7.6 mm` and each micro-HDMI opening clears at least `12.6 mm x 7.26 mm`, matching the printed Raspberry Pi 5 AI HAT+ enclosure defaults.
+- Confirm the PCB 5 front micro-USB opening is on the Pi 5 USB-C side, starts from the measured `8.85` mm left-margin placement, and clears at least `10.90 mm x 11.90 mm` by default.
 - Confirm two internal fan mounting point sets exist inside the upper cover and avoid the split-interface pins/sockets and PCB 5 clearance.
 - Confirm base board standoffs and anti-slip recesses do not break through the floor.
 - Confirm `printable_layout` has only three printed parts.
