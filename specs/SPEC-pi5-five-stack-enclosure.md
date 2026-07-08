@@ -50,6 +50,14 @@ assumptions with measured defaults:
   `24.0 mm` screw-hole spacing assumption and smaller guarded roof grille slot
   length.
 
+## Iteration: 2026-07-08 PCB 5 Fan Clearance Correction
+
+Physical PCB 5 components were reported to hit the internal fan above them. This
+completed direct iteration adds `5.0 mm` of extra PCB 5 component-to-fan
+clearance. The measured roof clearance control remains `36.32 mm`, while the
+fan-aware effective top clearance defaults to `41.32 mm` when internal fan mounts
+are enabled.
+
 ## Iteration: 2026-07-07 PCB 5 Micro-USB Front Access
 
 This completed direct iteration adds a PCB 5 micro-USB cable opening:
@@ -253,6 +261,8 @@ implementation:
 - Top-of-fifth-PCB-to-inside-top-cover-wall clearance excluding vents: measured
   at `35.82 mm`, with the same `0.50 mm` margin applied for a default
   `36.32 mm` top clearance.
+- Extra PCB 5 component-to-fan clearance: `5.0 mm`, producing a default
+  fan-aware effective top clearance of `41.32 mm`.
 - Internal fan body size: `30.0 mm x 30.0 mm x 7.0 mm`, user-adjustable.
 - Internal fan count: `2` maximum/default positions in the upper cover.
 - Fan mount screw-hole spacing: adjustable, defaulting to `24.0 mm` center span
@@ -506,6 +516,10 @@ implementation:
 - The default distance from the top of PCB 5 to the inside top wall of the top
   cover must be `36.32` mm, representing the `35.82` mm measured clearance
   excluding vents plus the `0.50` mm configured margin.
+- The default fan-aware effective distance from the top of PCB 5 to the inside
+  top wall of the top cover must be `41.32` mm when internal fan mounts are
+  enabled, preserving the `36.32` mm measured clearance target plus an extra
+  `5.0` mm of PCB 5 component-to-fan clearance.
 - The default printable enclosure must be exactly three parts: bottom cover/tray,
   middle cover, and upper cover.
 - The middle/upper cover split must sit above the configured Pi 5 connector
@@ -542,6 +556,9 @@ implementation:
   `30.0 mm x 30.0 mm x 7.0 mm` fans by default, with adjustable fan centers,
   body clearance, screw/pilot spacing, boss dimensions, and screw/pilot
   dimensions.
+- The default fan mount clearance must leave `5.0 mm` more room above PCB 5
+  components than the previous measured-stack default, because physical PCB 5
+  components hit the upper fan.
 - Fan mount defaults must avoid the split-interface pins/sockets and must not
   visibly collide with PCB 5 in `assembly` or `upper_cover` inspection.
 - Raspberry Pi 5 USB-A, Ethernet, USB-C, micro-HDMI, and base-position microSD

@@ -523,7 +523,7 @@ The enclosure models five same-footprint PCB positions with shared coordinate-fr
 - Measured inter-board gaps are `measured_pi5_stack_gap_z_mm = [9.80, 17.05, 19.39, 41.20]` mm from PCB 1 to PCB 2, PCB 2 to PCB 3, PCB 3 to PCB 4, and PCB 4 to PCB 5.
 - `stack_measurement_error_margin_mm = 0.5` is added to each measured gap, so the default generated `pi5_stack_gap_z_mm` is `[10.30, 17.55, 19.89, 41.70]` mm.
 - PCB 4 from bottom to top is the Raspberry Pi 5 by default (`rpi5_stack_index = 4`).
-- The measured PCB 5 top-to-top-cover clearance excluding vents is `35.82` mm via `measured_pcb5_to_top_cover_clearance_excluding_vents_mm`; the same `0.5` mm margin makes `top_of_fifth_board_to_top_cover_clearance_mm = 36.32` mm by default. The derived effective clearance also accounts for `minimum_pcb5_usable_headroom_without_internal_fans_mm = 25.32` mm plus the current internal fan thickness and boss height, so increasing fan thickness can increase the cover height without reducing the default fan-aware PCB 5 usable headroom.
+- The measured PCB 5 top-to-top-cover clearance excluding vents is `35.82` mm via `measured_pcb5_to_top_cover_clearance_excluding_vents_mm`; the same `0.5` mm margin makes `top_of_fifth_board_to_top_cover_clearance_mm = 36.32` mm by default. The derived effective clearance also accounts for `minimum_pcb5_usable_headroom_without_internal_fans_mm = 30.32` mm plus the current internal fan thickness and boss height, so the default fan-aware PCB 5-to-roof clearance becomes `41.32` mm and leaves `5.0` mm more room below the fan/boss envelope.
 - Left/right internal board clearance includes `left_right_pci_cable_clearance_margin_mm = 3.0`, giving `7.8` mm nominal clearance from each left/right inside wall to the PCB edge. Front/back clearance is unchanged at `4.8` mm because there are no cables there by default.
 - PCB 5 micro-USB access is on the same front side as the Raspberry Pi 5 USB-C opening. `pcb5_micro_usb_left_margin_to_connector_left_mm = 8.85` places the connector left edge from the PCB left margin, with `front_cable_cutout_error_margin_mm = 0.6` applied to the cable-head opening. The default cable-head requirement is `pcb5_micro_usb_cable_head_required_size_mm = [10.30, 11.30]`, producing a minimum visible opening of `10.90 mm x 11.90 mm`.
 - The middle/upper cover split is derived above the configured Pi 5 connector cutouts, with `middle_cover_split_clearance_above_pi5_connector_mm = 4.0` mm by default. With the default PCB 4 Pi 5 placement, the split is approximately `79.0` mm above the tray-floor exterior.
@@ -613,7 +613,7 @@ Common edits:
 - Set `render_mode = "assembly"`, `"bottom_tray"`, `"middle_cover"`, `"upper_cover"`, `"top_cover"`, `"electronics"`, or `"printable_layout"`.
 - Tune `measured_pi5_stack_gap_z_mm` or `stack_measurement_error_margin_mm` for all four inter-PCB gaps and observe the derived `pi5_stack_gap_z_mm` stack Z map.
 - Tune `rpi5_stack_index` if the Raspberry Pi 5 board moves from the default fourth PCB position.
-- Tune `top_of_fifth_board_to_top_cover_clearance_mm` for headroom margin. The derived `effective_top_of_fifth_board_to_top_cover_clearance_mm` also accounts for `minimum_pcb5_usable_headroom_without_internal_fans_mm` and the internal fan clearance envelope, so PCB 5 headroom is not reduced by the two fans.
+- Tune `top_of_fifth_board_to_top_cover_clearance_mm` for roof headroom margin. Tune `pcb5_component_to_fan_extra_clearance_mm` when PCB 5 components need more room below the internal fans. The derived `effective_top_of_fifth_board_to_top_cover_clearance_mm` also accounts for `minimum_pcb5_usable_headroom_without_internal_fans_mm` and the internal fan clearance envelope, so the default effective PCB 5-to-roof clearance is `41.32 mm` while preserving an extra `5.0 mm` below the fan/boss envelope.
 - Tune `left_right_pci_cable_clearance_margin_mm` if PCI/ribbon cable clearance is needed along the left/right inside walls. This does not enlarge the front/back margin.
 - Tune `middle_cover_split_clearance_above_pi5_connector_mm` if the middle/upper split needs more material above the Pi 5 connector cutouts.
 - Keep `stack_board_count` at its default `5` for the default five-board contract.
@@ -683,7 +683,7 @@ Manual inspection checklist:
 - Confirm `render_mode` variants all generate.
 - Confirm top cover height updates when `pi5_stack_gap_z_mm` or `top_of_fifth_board_to_top_cover_clearance_mm` changes.
 - Confirm the left/right inside-wall-to-PCB clearance includes the PCI cable margin and that front/back clearance is not enlarged by that setting.
-- Confirm the default top-cover clearance preserves PCB 5 headroom while adding the two internal 30 mm fan bodies and mounting bosses.
+- Confirm the default top-cover clearance preserves PCB 5 headroom while adding the two internal 30 mm fan bodies, mounting bosses, and the extra `5.0 mm` PCB 5 component-to-fan clearance.
 - Confirm non-fan roof areas are closed and the roof has no service openings.
 - Confirm middle-cover/bottom-tray pin-socket pairing exists and remains printable.
 - Confirm the middle/upper cover split sits above the Pi 5 connector cutouts and the upper cover is independently printable.

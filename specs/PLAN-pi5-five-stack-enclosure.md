@@ -27,7 +27,9 @@ the same front side as the Pi 5 USB-C opening, using the measured `8.85` mm
 left-margin placement and the same front cable cutout margin behavior as the
 Pi 5 front connector openings. This completed direct iteration also adds
 `3.0` mm of extra left/right internal PCB-edge clearance for PCI/ribbon cables
-without increasing the front/back clearance.
+without increasing the front/back clearance. This completed direct iteration
+also adds `5.0` mm of extra PCB 5 component-to-fan clearance, raising the
+fan-aware effective top clearance from `36.32` mm to `41.32` mm by default.
 
 Do not implement behavior outside the approved spec.
 
@@ -48,13 +50,37 @@ Do not implement behavior outside the approved spec.
 Generated OpenSCAD outputs must be written only under `/tmp` and must not be
 committed.
 
+## Completed Direct Iteration: 2026-07-08 PCB 5 Fan Clearance
+
+- Requested outcome: add `5.0` mm more clearance because physical PCB 5
+  components hit the upper internal fan.
+- Implementation performed:
+  - added adjustable `pcb5_component_to_fan_extra_clearance_mm = 5.0`;
+  - increased the derived default
+    `minimum_pcb5_usable_headroom_without_internal_fans_mm` from `25.32` mm to
+    `30.32` mm;
+  - raised the default fan-aware effective PCB 5-to-roof clearance to
+    `41.32` mm without changing the measured `36.32` mm roof-clearance input,
+    stack gaps, fan size, or fan positions;
+  - updated README and spec documentation for the new clearance behavior.
+- Validation run: `git diff --check`.
+- Validation skipped: OpenSCAD render/export inspection, because super-agent
+  execution only runs short validation expected to complete within 10 seconds.
+- QA skipped: super-agent execution intentionally skips the QA phase.
+- Code review skipped: super-agent execution intentionally skips code-review
+  subagents and review phase.
+- Commit status: not committed.
+- Push status: not pushed.
+- Residual risk: no physical test print or OpenSCAD visual inspection was
+  performed in this direct pass.
+
 ## Ownership Boundaries
 
 - `designs/pi5_five_stack_enclosure.scad`: new printable enclosure source only.
 - `README.md`: document the new design source, assumptions, manually entered
   dimensions, render modes, adjustable parameters, base-board mounting,
   inter-board spacing, airflow, anti-slip behavior, male/female connection,
-  printability, and validation commands.
+  printability, fan clearance, and validation commands.
 - Spec and plan files: status and planning artifacts only.
 
 Do not change existing Pi Zero, Grove, Waveshare, Raspberry Pi 5 reference,
