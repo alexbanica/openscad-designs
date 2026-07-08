@@ -36,7 +36,7 @@ electronics_preview_lift_mm = 0.0;
 grove_hat_rotation_deg = 90.0;
 
 // Enclosure wall/floor/cover dimensions
-wall_thickness_mm = 6.0;
+wall_thickness_mm = 8.0;
 floor_thickness_mm = 2.4;
 top_roof_thickness_mm = 2.4;
 tray_wall_height_mm = 16.0;
@@ -52,13 +52,13 @@ pi_standoff_screw_hole_diameter_mm = 2.7;
 pi_standoff_pilot_depth_mm = 5.5;
 
 // Plug-in top cover pin/socket features
-cover_pin_diameter_mm = 3.0;
+cover_pin_diameter_mm = 5.0;
 cover_pin_insertion_length_mm = 5.2;
-cover_pin_offset_x_mm = 40.5;
-cover_pin_offset_y_mm = 29.9;
+cover_pin_offset_x_mm = 41.5;
+cover_pin_offset_y_mm = 30.9;
 cover_pin_count = 4;
 tray_socket_clearance_mm = 0.35;
-tray_socket_depth_mm = 5.8;
+tray_socket_depth_mm = 5.6;
 
 // IR PCB top-cover screw mount
 enable_top_cover_ir_pcb_mount = true;
@@ -250,7 +250,7 @@ tray_socket_hole_center_z_mm =
     tray_wall_height_mm
     - tray_socket_depth_mm / 2
     + preview_overlap_mm / 2;
-tray_socket_hole_diameter_mm = cover_pin_diameter_mm + tray_socket_clearance_mm;
+tray_socket_hole_diameter_mm = cover_pin_diameter_mm + 2 * tray_socket_clearance_mm;
 
 top_cover_roof_inner_z_mm = case_total_height_mm - top_roof_thickness_mm;
 ir_top_cover_mount_usable_screw_depth_mm =

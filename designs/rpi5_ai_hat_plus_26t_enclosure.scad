@@ -91,15 +91,15 @@ board_standoff_screw_hole_diameter_mm = 2.4;
 board_standoff_pilot_depth_mm = 4.2;
 
 // Top-cover male pins and bottom-tray female sockets
-cover_pin_diameter_mm = 3.2;
-cover_pin_insertion_length_mm = 5.0;
+cover_pin_diameter_mm = 5.0;
+cover_pin_insertion_length_mm = 5.2;
 cover_pin_count = 4;
 cover_pin_offset_x_mm = 42.0;
 cover_pin_offset_y_mm = 32.0;
-cover_pin_root_diameter_mm = 5.6;
+cover_pin_root_diameter_mm = 7.6;
 tray_socket_clearance_mm = 0.35;
 tray_socket_depth_mm = 5.6;
-tray_socket_receiver_diameter_mm = 7.0;
+tray_socket_receiver_diameter_mm = 8.0;
 
 // Bottom anti-slide rubber foot recesses
 enable_anti_slide_foot_recesses = true;
