@@ -635,3 +635,82 @@ implementation:
 - Document Bambu Lab-friendly printability expectations.
 - Document that OpenSCAD render inspection is visual validation only and
   physical fit requires measurement, slicer inspection, and test printing.
+
+## Super-Agent Update: Lower Port Access Openings
+
+Status: Approved
+
+### Purpose
+
+Correct the five-stack enclosure port openings after physical fit inspection
+showed the Raspberry Pi 5 USB-C, micro-HDMI, USB-A, Ethernet, and PCB 5
+micro-USB openings were too high to access reliably.
+
+### Requested Behavior
+
+- Lower the Raspberry Pi 5 USB-C and both micro-HDMI front openings by `5.0` mm.
+- Lower the Raspberry Pi 5 right-side USB-A and Ethernet continuous side opening
+  by `5.0` mm.
+- Lower the PCB 5 top micro-USB front opening by `7.0` mm.
+
+### Scope
+
+- Update `designs/pi5_five_stack_enclosure.scad` port cutout Z placement only.
+- Keep existing USB-C, micro-HDMI, USB-A, Ethernet, and micro-USB cutout widths,
+  heights, cable-head sizing, and wall-through depths unchanged.
+- Preserve the continuous USB-A/Ethernet side cutout behavior.
+- Preserve GPIO/header access, ventilation, mounting, cover split, fan, pin,
+  socket, enclosure envelope, stack spacing, and electronics/reference behavior.
+- Update README documentation for the new tunable lowering parameters.
+
+### Out Of Scope
+
+- Changing connector source dimensions or cable-head minimum opening sizes.
+- Moving electronics/reference models or PCB stack positions.
+- Changing generated mesh exports.
+
+### Inputs And Constraints
+
+- User-provided physical fit correction: the Pi 5 USB-C, micro-HDMI, Ethernet,
+  and other USB ports need to move `5.0` mm down; the top micro-USB hole needs
+  to move `7.0` mm lower.
+- OpenSCAD 2021.01-compatible syntax is required.
+- New behavior must remain user-adjustable near the top of the SCAD source.
+
+### Deterministic Behavior Delivered
+
+- `pi5_service_port_cutout_lowering_mm = 5.0` lowers the Raspberry Pi 5
+  USB-A/Ethernet/USB-C/micro-HDMI cutout centers by `5.0` mm.
+- `pcb5_micro_usb_cutout_lowering_mm = 7.0` lowers the PCB 5 micro-USB cutout
+  center by `7.0` mm.
+- The lowering values apply to the top-cover port access and also to tray-wall
+  Pi 5 access if `rpi5_stack_index = 1`.
+
+### Assumptions
+
+- "Down" means lower in enclosure Z, toward the tray floor.
+- The requested correction moves the cutout subtraction volumes only, not the
+  electronics reference geometry.
+
+### Impact
+
+- The port openings are physically lower while retaining their previous visible
+  opening sizes.
+- The openings may remove more wall material below the modeled connector bodies;
+  physical print inspection remains required.
+
+### Validation Performed
+
+- `git diff --check`
+- `timeout 10s openscad -o /tmp/pi5_five_stack_enclosure_electronics.off -D 'render_mode="electronics"' designs/pi5_five_stack_enclosure.scad`
+
+### Validation Skipped
+
+- Full OpenSCAD printable-part renders were skipped because the super-agent
+  workflow only runs short validation expected to complete within 10 seconds.
+- Physical fit, slicer inspection, QA, and code review were skipped.
+
+### Documentation Changes
+
+- README now documents `pi5_service_port_cutout_lowering_mm` and
+  `pcb5_micro_usb_cutout_lowering_mm`.

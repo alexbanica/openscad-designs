@@ -506,3 +506,71 @@ Expected result:
   printability guidance, validation commands, and manual inspection checklist.
 - README must document local mirrored Raspberry Pi 5 connector values if
   implementation cannot directly derive them from `rpi5.scad`.
+
+## Super-Agent Completed Plan: Lower Port Access Openings
+
+Status: Approved
+
+Approved Spec: `specs/SPEC-pi5-five-stack-enclosure.md`
+
+### Affected Files
+
+- `designs/pi5_five_stack_enclosure.scad`
+- `README.md`
+- `specs/SPEC-pi5-five-stack-enclosure.md`
+- `specs/PLAN-pi5-five-stack-enclosure.md`
+
+### Implementation Steps Performed
+
+1. Added `pi5_service_port_cutout_lowering_mm = 5.0` in the service access
+   adjustable parameters.
+2. Added `pcb5_micro_usb_cutout_lowering_mm = 7.0` in the service access
+   adjustable parameters.
+3. Extended the right-side USB-A/Ethernet cutout helper with an optional
+   `cutout_lowering_mm` argument and subtracted it from the cutout Z center.
+4. Extended the front-side port cutout helper with an optional
+   `cutout_lowering_mm` argument and subtracted it from the cutout Z center.
+5. Passed the `5.0` mm Pi 5 lowering value to the USB-A/Ethernet, USB-C, and
+   micro-HDMI cutouts in both top-cover access and base-tray access paths.
+6. Passed the `7.0` mm PCB 5 lowering value to the PCB 5 micro-USB front
+   cutout.
+7. Updated README documentation for the new lowering controls and default
+   physical-fit behavior.
+8. Appended completed-work spec and plan entries for this direct super-agent
+   change.
+
+### Validation Run
+
+```sh
+git diff --check
+timeout 10s openscad -o /tmp/pi5_five_stack_enclosure_electronics.off -D 'render_mode="electronics"' designs/pi5_five_stack_enclosure.scad
+```
+
+### Validation Skipped
+
+- Full OpenSCAD printable-part render/export validation was skipped because it
+  is not expected to complete within the super-agent 10-second validation limit.
+- QA was skipped by super-agent workflow.
+- Code review was skipped by super-agent workflow.
+- Physical fit and slicer inspection were not performed.
+
+### Documentation Updates
+
+- README now states that Pi 5 service openings are lowered by
+  `pi5_service_port_cutout_lowering_mm = 5.0`.
+- README now states that the PCB 5 micro-USB opening is lowered by
+  `pcb5_micro_usb_cutout_lowering_mm = 7.0`.
+
+### Commit Status
+
+- Not committed.
+
+### Push Status
+
+- Not pushed.
+
+### Residual Risk
+
+- The lower cutouts should improve physical access but still need slicer
+  inspection and a physical fit check before treating the geometry as
+  print-validated.
