@@ -25,8 +25,8 @@ All files target OpenSCAD 2021.01 and have no external library dependencies.
 
 The rotating mechanism is modeled as a printed giro/lazy-susan thrust bearing:
 
-- a printed base ring with a lower race,
-- loose printed cylindrical rollers,
+- a printed base ring with individual lower roller cradles,
+- loose printed cylindrical rollers retained in separate cradle positions,
 - an underside race integrated into the tray,
 - a printed center post and retaining cap.
 
@@ -48,7 +48,7 @@ Common edits:
 
 - Change `tray_outer_diameter_mm` to resize the tray footprint.
 - Change `tray_wall_height_mm` to alter the exterior tray wall height.
-- Tune `roller_count`, `roller_diameter_mm`, `roller_length_mm`, and `roller_running_clearance_mm` for smoother rotation after a test print.
+- Tune `roller_count`, `roller_diameter_mm`, `roller_length_mm`, `roller_running_clearance_mm`, and `base_roller_pocket_clearance_mm` for smoother rotation after a test print.
 - Tune `retaining_cap_socket_diameter_mm` for filament-specific cap fit.
 - Set `show_rollers = false` or `show_retaining_cap = false` to inspect the tray and base fit without loose bearing parts.
 
@@ -75,7 +75,7 @@ openscad -o /tmp/rotating_kitchen_jar_tray_printable_layout.off -D 'render_mode=
 ### Fit Notes
 
 - The 240.0 mm tray diameter is close to the usable footprint of many desktop printers; verify slicer placement and skirt/brim settings before printing.
-- Print the rollers separately and deburr the raceways before assembly.
+- Print the rollers separately, deburr each base cradle, and place one roller in each cradle before installing the top tray.
 - Printed-on-printed rotation depends heavily on filament, layer height, cooling, surface finish, and lubricant choice. A dry PTFE-compatible lubricant can improve motion, but the default geometry remains fully printable.
 - The wall height requirement applies to the tray's exterior bowl wall. The underside bearing race adds height below the tray floor.
 - The model is intended for kitchen jar storage loads, not for standing, heavy appliances, or high-speed rotation.
@@ -86,7 +86,8 @@ Manual inspection checklist:
 - Confirm `tray_wall_height_mm` defaults to 30.0 mm.
 - Confirm `printable_layout` separates the tray, base, retaining cap, and rollers as distinct printable objects.
 - Confirm the top tray, base ring, retaining cap, and rollers are oriented with stable print-plane contact.
-- Confirm the base race, rollers, tray underside race, center post, and retaining cap are all printed geometry.
+- Confirm the base roller cradles keep the rollers in separate positions and the full-height center post is joined to the base floor.
+- Confirm the base, rollers, tray underside race, center post, and retaining cap are all printed geometry.
 - Confirm no generated mesh or export artifacts are added.
 
 ## Reusable Raspberry Pi Reference Models
