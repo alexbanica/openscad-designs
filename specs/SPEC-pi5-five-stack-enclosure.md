@@ -53,10 +53,10 @@ assumptions with measured defaults:
 ## Iteration: 2026-07-08 PCB 5 Fan Clearance Correction
 
 Physical PCB 5 components were reported to hit the internal fan above them. This
-completed direct iteration adds `5.0 mm` of extra PCB 5 component-to-fan
-clearance. The measured roof clearance control remains `36.32 mm`, while the
-fan-aware effective top clearance defaults to `41.32 mm` when internal fan mounts
-are enabled.
+completed direct iteration first added `5.0 mm` of extra PCB 5 component-to-fan
+clearance, then the user requested `3.0 mm` more. The measured roof clearance
+control remains `36.32 mm`, while the fan-aware effective top clearance defaults
+to `44.32 mm` when internal fan mounts are enabled.
 
 ## Iteration: 2026-07-07 PCB 5 Micro-USB Front Access
 
@@ -261,8 +261,8 @@ implementation:
 - Top-of-fifth-PCB-to-inside-top-cover-wall clearance excluding vents: measured
   at `35.82 mm`, with the same `0.50 mm` margin applied for a default
   `36.32 mm` top clearance.
-- Extra PCB 5 component-to-fan clearance: `5.0 mm`, producing a default
-  fan-aware effective top clearance of `41.32 mm`.
+- Extra PCB 5 component-to-fan clearance: `8.0 mm`, producing a default
+  fan-aware effective top clearance of `44.32 mm`.
 - Internal fan body size: `30.0 mm x 30.0 mm x 7.0 mm`, user-adjustable.
 - Internal fan count: `2` maximum/default positions in the upper cover.
 - Fan mount screw-hole spacing: adjustable, defaulting to `24.0 mm` center span
@@ -517,9 +517,9 @@ implementation:
   cover must be `36.32` mm, representing the `35.82` mm measured clearance
   excluding vents plus the `0.50` mm configured margin.
 - The default fan-aware effective distance from the top of PCB 5 to the inside
-  top wall of the top cover must be `41.32` mm when internal fan mounts are
+  top wall of the top cover must be `44.32` mm when internal fan mounts are
   enabled, preserving the `36.32` mm measured clearance target plus an extra
-  `5.0` mm of PCB 5 component-to-fan clearance.
+  `8.0` mm of PCB 5 component-to-fan clearance.
 - The default printable enclosure must be exactly three parts: bottom cover/tray,
   middle cover, and upper cover.
 - The middle/upper cover split must sit above the configured Pi 5 connector
@@ -720,11 +720,12 @@ micro-USB openings were too high to access reliably.
 
 - `git diff --check`
 - `timeout 10s openscad -o /tmp/pi5_five_stack_enclosure_electronics.off -D 'render_mode="electronics"' designs/pi5_five_stack_enclosure.scad`
+- `timeout 10 openscad -o /tmp/pi5_five_stack_extra_pcb5_clearance_printable_layout.off -D 'render_mode="printable_layout"' designs/pi5_five_stack_enclosure.scad`
 
 ### Validation Skipped
 
-- Full OpenSCAD printable-part renders were skipped because the super-agent
-  workflow only runs short validation expected to complete within 10 seconds.
+- Full multi-mode OpenSCAD render/export validation was skipped because the
+  super-agent workflow only runs short focused validation.
 - Physical fit, slicer inspection, QA, and code review were skipped.
 
 ### Documentation Changes

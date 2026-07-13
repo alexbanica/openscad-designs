@@ -15,8 +15,79 @@ This repository contains editable OpenSCAD designs.
 - `designs/seeed_grove_base_hat_zero.scad`
 - `designs/waveshare_eth_usb_hub_hat.scad`
 - `designs/pi_zero_usb_grove_ir_enclosure.scad`
+- `designs/rotating_kitchen_jar_tray.scad`
 
 All files target OpenSCAD 2021.01 and have no external library dependencies.
+
+## Rotating Kitchen Jar Tray
+
+`designs/rotating_kitchen_jar_tray.scad` provides a fully 3D-printed rotating kitchen tray for jars. The default tray has a 240.0 mm outside diameter and a 30.0 mm exterior wall height.
+
+The rotating mechanism is modeled as a printed giro/lazy-susan thrust bearing:
+
+- a printed base ring with a lower race,
+- loose printed cylindrical rollers,
+- an underside race integrated into the tray,
+- a printed center post and retaining cap.
+
+No metal bearing, screw, washer, axle, or purchased rotating hardware is part of the default design. The retaining cap is a printed friction-fit/service cap assumption and may need tuning for the selected filament and printer calibration.
+
+### Adjustable Parameters
+
+The OpenSCAD source starts with an `Adjustable Parameters` section grouped by:
+
+- render controls,
+- tray dimensions,
+- jar floor grip and drainage grooves,
+- giro / printed roller mechanism,
+- center pivot and retaining cap,
+- printable layout,
+- visual settings.
+
+Common edits:
+
+- Change `tray_outer_diameter_mm` to resize the tray footprint.
+- Change `tray_wall_height_mm` to alter the exterior tray wall height.
+- Tune `roller_count`, `roller_diameter_mm`, `roller_length_mm`, and `roller_running_clearance_mm` for smoother rotation after a test print.
+- Tune `retaining_cap_socket_diameter_mm` for filament-specific cap fit.
+- Set `show_rollers = false` or `show_retaining_cap = false` to inspect the tray and base fit without loose bearing parts.
+
+### Render Modes
+
+Set `render_mode` to one of:
+
+- `assembly`: base, rollers, top tray, and retaining cap in assembled positions.
+- `top_tray`: the printable tray body oriented with its broad bottom/race face on the print plane.
+- `base_ring`: the printable base ring oriented flat on the print plane.
+- `roller`: one printable roller oriented flat on the print plane.
+- `retaining_cap`: the printable center cap oriented flat on the print plane.
+- `printable_layout`: all printable parts separated on the print plane, with rollers arranged in a grid.
+
+Optional inspection commands for users with OpenSCAD installed:
+
+```sh
+openscad -o /tmp/rotating_kitchen_jar_tray_assembly.off -D 'render_mode="assembly"' designs/rotating_kitchen_jar_tray.scad
+openscad -o /tmp/rotating_kitchen_jar_tray_top_tray.off -D 'render_mode="top_tray"' designs/rotating_kitchen_jar_tray.scad
+openscad -o /tmp/rotating_kitchen_jar_tray_base_ring.off -D 'render_mode="base_ring"' designs/rotating_kitchen_jar_tray.scad
+openscad -o /tmp/rotating_kitchen_jar_tray_printable_layout.off -D 'render_mode="printable_layout"' designs/rotating_kitchen_jar_tray.scad
+```
+
+### Fit Notes
+
+- The 240.0 mm tray diameter is close to the usable footprint of many desktop printers; verify slicer placement and skirt/brim settings before printing.
+- Print the rollers separately and deburr the raceways before assembly.
+- Printed-on-printed rotation depends heavily on filament, layer height, cooling, surface finish, and lubricant choice. A dry PTFE-compatible lubricant can improve motion, but the default geometry remains fully printable.
+- The wall height requirement applies to the tray's exterior bowl wall. The underside bearing race adds height below the tray floor.
+- The model is intended for kitchen jar storage loads, not for standing, heavy appliances, or high-speed rotation.
+
+Manual inspection checklist:
+
+- Confirm `tray_outer_diameter_mm` defaults to 240.0 mm.
+- Confirm `tray_wall_height_mm` defaults to 30.0 mm.
+- Confirm `printable_layout` separates the tray, base, retaining cap, and rollers as distinct printable objects.
+- Confirm the top tray, base ring, retaining cap, and rollers are oriented with stable print-plane contact.
+- Confirm the base race, rollers, tray underside race, center post, and retaining cap are all printed geometry.
+- Confirm no generated mesh or export artifacts are added.
 
 ## Reusable Raspberry Pi Reference Models
 
@@ -523,7 +594,7 @@ The enclosure models five same-footprint PCB positions with shared coordinate-fr
 - Measured inter-board gaps are `measured_pi5_stack_gap_z_mm = [9.80, 17.05, 19.39, 41.20]` mm from PCB 1 to PCB 2, PCB 2 to PCB 3, PCB 3 to PCB 4, and PCB 4 to PCB 5.
 - `stack_measurement_error_margin_mm = 0.5` is added to each measured gap, so the default generated `pi5_stack_gap_z_mm` is `[10.30, 17.55, 19.89, 41.70]` mm.
 - PCB 4 from bottom to top is the Raspberry Pi 5 by default (`rpi5_stack_index = 4`).
-- The measured PCB 5 top-to-top-cover clearance excluding vents is `35.82` mm via `measured_pcb5_to_top_cover_clearance_excluding_vents_mm`; the same `0.5` mm margin makes `top_of_fifth_board_to_top_cover_clearance_mm = 36.32` mm by default. The derived effective clearance also accounts for `minimum_pcb5_usable_headroom_without_internal_fans_mm = 30.32` mm plus the current internal fan thickness and boss height, so the default fan-aware PCB 5-to-roof clearance becomes `41.32` mm and leaves `5.0` mm more room below the fan/boss envelope.
+- The measured PCB 5 top-to-top-cover clearance excluding vents is `35.82` mm via `measured_pcb5_to_top_cover_clearance_excluding_vents_mm`; the same `0.5` mm margin makes `top_of_fifth_board_to_top_cover_clearance_mm = 36.32` mm by default. The derived effective clearance also accounts for `minimum_pcb5_usable_headroom_without_internal_fans_mm = 33.32` mm plus the current internal fan thickness and boss height, so the default fan-aware PCB 5-to-roof clearance becomes `44.32` mm and leaves `8.0` mm more room below the fan/boss envelope.
 - Left/right internal board clearance includes `left_right_pci_cable_clearance_margin_mm = 3.0`, giving `7.8` mm nominal clearance from each left/right inside wall to the PCB edge. Front/back clearance is unchanged at `4.8` mm because there are no cables there by default.
 - PCB 5 micro-USB access is on the same front side as the Raspberry Pi 5 USB-C opening. `pcb5_micro_usb_left_margin_to_connector_left_mm = 8.85` places the connector left edge from the PCB left margin, with `front_cable_cutout_error_margin_mm = 0.6` applied to the cable-head opening. The default cable-head requirement is `pcb5_micro_usb_cable_head_required_size_mm = [10.30, 11.30]`, producing a minimum visible opening of `10.90 mm x 11.90 mm`.
 - The middle/upper cover split is derived above the configured Pi 5 connector cutouts, with `middle_cover_split_clearance_above_pi5_connector_mm = 4.0` mm by default. With the default PCB 4 Pi 5 placement, the split is approximately `79.0` mm above the tray-floor exterior.
@@ -613,7 +684,7 @@ Common edits:
 - Set `render_mode = "assembly"`, `"bottom_tray"`, `"middle_cover"`, `"upper_cover"`, `"top_cover"`, `"electronics"`, or `"printable_layout"`.
 - Tune `measured_pi5_stack_gap_z_mm` or `stack_measurement_error_margin_mm` for all four inter-PCB gaps and observe the derived `pi5_stack_gap_z_mm` stack Z map.
 - Tune `rpi5_stack_index` if the Raspberry Pi 5 board moves from the default fourth PCB position.
-- Tune `top_of_fifth_board_to_top_cover_clearance_mm` for roof headroom margin. Tune `pcb5_component_to_fan_extra_clearance_mm` when PCB 5 components need more room below the internal fans. The derived `effective_top_of_fifth_board_to_top_cover_clearance_mm` also accounts for `minimum_pcb5_usable_headroom_without_internal_fans_mm` and the internal fan clearance envelope, so the default effective PCB 5-to-roof clearance is `41.32 mm` while preserving an extra `5.0 mm` below the fan/boss envelope.
+- Tune `top_of_fifth_board_to_top_cover_clearance_mm` for roof headroom margin. Tune `pcb5_component_to_fan_extra_clearance_mm` when PCB 5 components need more room below the internal fans. The derived `effective_top_of_fifth_board_to_top_cover_clearance_mm` also accounts for `minimum_pcb5_usable_headroom_without_internal_fans_mm` and the internal fan clearance envelope, so the default effective PCB 5-to-roof clearance is `44.32 mm` while preserving an extra `8.0 mm` below the fan/boss envelope.
 - Tune `left_right_pci_cable_clearance_margin_mm` if PCI/ribbon cable clearance is needed along the left/right inside walls. This does not enlarge the front/back margin.
 - Tune `middle_cover_split_clearance_above_pi5_connector_mm` if the middle/upper split needs more material above the Pi 5 connector cutouts.
 - Keep `stack_board_count` at its default `5` for the default five-board contract.
@@ -683,7 +754,7 @@ Manual inspection checklist:
 - Confirm `render_mode` variants all generate.
 - Confirm top cover height updates when `pi5_stack_gap_z_mm` or `top_of_fifth_board_to_top_cover_clearance_mm` changes.
 - Confirm the left/right inside-wall-to-PCB clearance includes the PCI cable margin and that front/back clearance is not enlarged by that setting.
-- Confirm the default top-cover clearance preserves PCB 5 headroom while adding the two internal 30 mm fan bodies, mounting bosses, and the extra `5.0 mm` PCB 5 component-to-fan clearance.
+- Confirm the default top-cover clearance preserves PCB 5 headroom while adding the two internal 30 mm fan bodies, mounting bosses, and the extra `8.0 mm` PCB 5 component-to-fan clearance.
 - Confirm non-fan roof areas are closed and the roof has no service openings.
 - Confirm middle-cover/bottom-tray pin-socket pairing exists and remains printable.
 - Confirm the middle/upper cover split sits above the Pi 5 connector cutouts and the upper cover is independently printable.

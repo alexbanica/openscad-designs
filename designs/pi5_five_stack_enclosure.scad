@@ -39,7 +39,7 @@ measured_pcb5_to_top_cover_clearance_excluding_vents_mm = 35.82;
 top_of_fifth_board_to_top_cover_clearance_mm =
     measured_pcb5_to_top_cover_clearance_excluding_vents_mm
     + stack_measurement_error_margin_mm;
-pcb5_component_to_fan_extra_clearance_mm = 5.0;
+pcb5_component_to_fan_extra_clearance_mm = 8.0;
 minimum_pcb5_usable_headroom_without_internal_fans_mm =
     25.32 + pcb5_component_to_fan_extra_clearance_mm;
 electronics_preview_lift_mm = 0.0;
