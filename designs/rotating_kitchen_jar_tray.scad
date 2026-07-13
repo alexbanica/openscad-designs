@@ -53,12 +53,13 @@ upper_race_inner_diameter_mm = 124.0;
 
 // Center pivot and retaining cap
 center_post_diameter_mm = 18.0;
-center_post_height_mm = 16.0;
+center_post_extra_height_mm = 4.0;
 center_running_clearance_mm = 0.8;
 retaining_cap_outer_diameter_mm = 30.0;
 retaining_cap_height_mm = 6.0;
-retaining_cap_socket_diameter_mm = 17.6;
+retaining_cap_socket_diameter_mm = 17.8;
 retaining_cap_socket_depth_mm = 4.4;
+retaining_cap_socket_end_clearance_mm = 0.2;
 retaining_cap_lift_clearance_mm = 0.9;
 
 // Printable layout
@@ -98,8 +99,14 @@ tray_bottom_z_mm =
     roller_center_z_mm + roller_diameter_mm / 2 + roller_running_clearance_mm;
 tray_top_z_mm = tray_bottom_z_mm + tray_wall_height_mm;
 upper_race_bottom_z_mm = tray_bottom_z_mm - upper_race_height_mm;
+tray_center_boss_top_z_mm = tray_bottom_z_mm + tray_floor_thickness_mm;
 retaining_cap_bottom_z_mm =
-    tray_bottom_z_mm + retaining_cap_lift_clearance_mm;
+    tray_center_boss_top_z_mm + retaining_cap_lift_clearance_mm;
+center_post_height_mm =
+    retaining_cap_bottom_z_mm
+        + retaining_cap_socket_depth_mm
+        - retaining_cap_socket_end_clearance_mm
+        + center_post_extra_height_mm;
 roller_print_columns =
     ceil(roller_count / printable_roller_rows);
 roller_print_pitch_x_mm =

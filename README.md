@@ -49,7 +49,8 @@ Common edits:
 - Change `tray_outer_diameter_mm` to resize the tray footprint.
 - Change `tray_wall_height_mm` to alter the exterior tray wall height.
 - Tune `roller_count`, `roller_diameter_mm`, `roller_length_mm`, `roller_running_clearance_mm`, and `base_roller_pocket_clearance_mm` for smoother rotation after a test print.
-- Tune `retaining_cap_socket_diameter_mm` for filament-specific cap fit.
+- Tune `retaining_cap_socket_diameter_mm` for filament-specific cap fit. The default 17.8 mm socket is 0.2 mm undersized against the 18.0 mm center post.
+- The center-post height is derived from the assembled tray elevation, center-boss thickness, cap lift clearance, cap socket depth, socket end clearance, and `center_post_extra_height_mm`. With the defaults it is 25.9 mm, including the additional 4.0 mm requested after physical fit testing left too little exposed pole for reliable retaining-cap attachment.
 - Set `show_rollers = false` or `show_retaining_cap = false` to inspect the tray and base fit without loose bearing parts.
 
 ### Render Modes
@@ -87,6 +88,7 @@ Manual inspection checklist:
 - Confirm `printable_layout` separates the tray, base, retaining cap, and rollers as distinct printable objects.
 - Confirm the top tray, base ring, retaining cap, and rollers are oriented with stable print-plane contact.
 - Confirm the base roller cradles keep the rollers in separate positions and the full-height center post is joined to the base floor.
+- Confirm the 25.9 mm center post leaves enough exposed height above the physically assembled tray for the retaining cap to grip securely.
 - Confirm the base, rollers, tray underside race, center post, and retaining cap are all printed geometry.
 - Confirm no generated mesh or export artifacts are added.
 

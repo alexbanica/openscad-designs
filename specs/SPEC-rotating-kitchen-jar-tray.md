@@ -59,6 +59,9 @@ The user requested a new design for a rotating kitchen tray for jars with:
   - printed retaining cap.
 - The base roller cradles prevent the rollers from drifting circumferentially around the base while allowing them to rotate about their radial axes.
 - The base inner recess does not subtract the center post; the post and base floor form one printable part.
+- The center-post height is derived from the assembled center-boss top elevation, retaining-cap lift clearance, cap socket depth, socket end clearance, and an additional physical-fit allowance instead of using the original fixed height.
+- With the default dimensions, the center post is 25.9 mm tall: the calculated 21.9 mm nominal reach plus `center_post_extra_height_mm = 4.0` after physical assembly showed too little exposed pole for reliable cap attachment.
+- The retaining-cap socket is 17.8 mm in diameter, giving 0.2 mm nominal interference against the 18.0 mm center post.
 - The top tray, rollers, and retaining cap geometry remain unchanged by the base-ring correction.
 - No non-printed hardware is modeled or required by the default design.
 - `render_mode = "assembly"` shows the assembled stack.
@@ -91,12 +94,20 @@ The user requested a new design for a rotating kitchen tray for jars with:
 - bounded OpenSCAD renders for `base_ring`, `top_tray`, `roller`, `retaining_cap`, `assembly`, and `printable_layout`, each reporting `Simple: yes`
 - Corrected `base_ring` STL render completed in 1.079 seconds and reported `Simple: yes`
 - `git diff --check` after the base-ring correction
+- `git diff --check` after deriving the corrected center-post height
+- Final bounded corrected `base_ring` render completed in 1.023 seconds and reported `Simple: yes`.
+- Bounded corrected `assembly` render completed in 7.080 seconds; the combined moving-part assembly reported its non-manifold warning.
+- Final 25.9 mm-post `base_ring` STL render completed in 0.988 seconds and reported `Simple: yes`.
+- Final 17.8 mm-socket `retaining_cap` STL render completed in 0.177 seconds and reported `Simple: yes`.
 
 ## Validation Skipped
 
 - Slicer inspection and physical test printing were not performed.
+- The complete render-mode set was not rerun for the center-post correction under the requested `super-agent` time limit.
 - QA and code review phases were skipped by the requested `super-agent` workflow.
 
 ## Documentation Changes
 
 - `README.md` now lists and documents `designs/rotating_kitchen_jar_tray.scad`.
+- `README.md` documents the center-post height calculation and retaining-cap engagement check.
+- `README.md` documents the final 4.0 mm physical-fit height allowance and 0.2 mm cap interference.
