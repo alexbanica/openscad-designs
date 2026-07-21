@@ -16,6 +16,7 @@ This repository contains editable OpenSCAD designs.
 - `designs/waveshare_eth_usb_hub_hat.scad`
 - `designs/pi_zero_usb_grove_ir_enclosure.scad`
 - `designs/rotating_kitchen_jar_tray.scad`
+- `designs/linksys_lgs105_cable_management_enclosure.scad`
 
 All files target OpenSCAD 2021.01 and have no external library dependencies.
 
@@ -91,6 +92,194 @@ Manual inspection checklist:
 - Confirm the 25.9 mm center post leaves enough exposed height above the physically assembled tray for the retaining cap to grip securely.
 - Confirm the base, rollers, tray underside race, center post, and retaining cap are all printed geometry.
 - Confirm no generated mesh or export artifacts are added.
+
+## Linksys LGS105 Cable-Management Enclosure
+
+`designs/linksys_lgs105_cable_management_enclosure.scad` provides a two-part
+tabletop enclosure with a fixed switch bay and an adjacent covered cable-storage
+bay. The switch and cable identifiers are distinct:
+
+- switch EAN `4260184663453` is used for the original-size Linksys LGS105 body
+  assumption of `121.0 mm x 75.5 mm x 26.0 mm`; product listings for this EAN
+  are not consistent about hardware revision, dimensions, or power input;
+- device-cable EAN `7432022397395` is associated by a retailer listing with a
+  flat CAT6 cable reported as `6.0 mm x 1.4 mm`. This is retailer-derived data,
+  not a measured sample or manufacturer mechanical drawing.
+
+Measure the actual switch, round uplink jacket, flat device jackets, RJ45 heads
+and molded boots, and DC lead before printing; measured values override all
+source defaults.
+
+The manually entered connected-cable inputs are exactly five Ethernet cables:
+one conventional round `500 mm` CAT6 uplink and four flat `250 mm` CAT6 device
+cables, for a combined connected length of `1500 mm`. The default round uplink
+diameter is `4.0 mm`. Each flat device cable defaults to `6.0 mm x 1.4 mm`, so
+the four-cable stack is `6.0 mm x 5.6 mm`. These cable profiles, stacking
+behavior, bend behavior, and available storage are planning assumptions, not
+certified measurements or a guarantee that all slack will fit.
+
+### Coordinates, Assembly, And Service
+
+The source origin is the Ethernet-side, left, bottom exterior corner. X runs
+left-to-right across the switch width, Y runs from the Ethernet-side wall toward
+the opposite power-side wall, and Z runs upward from the print plane. The RJ45
+ports face the internal cable-storage bay; the DC input faces the opposite wall.
+
+The bottom tray constrains the switch horizontally with side rails and paired
+end stops. Four underside cover pads provide positive-clearance vertical
+retention. The removable cover uses four printable pins and tray-mounted sockets,
+plus a locating skirt; these features retain the cover independently of the
+switch and cables. The default switch clearances are `0.6 mm` on each horizontal
+side, `0.6 mm` at each end, and `0.8 mm` above the body; the downward pads retain
+an additional `0.4 mm` clearance. Cover-pin/socket retention clearance defaults
+to `0.25 mm`, and locating-skirt fit clearance defaults to `0.30 mm`. Tune these
+clearances before expecting tool-free removal from a particular printer and
+material.
+
+To connect or service the enclosure, remove the complete cover, install the
+switch, place each RJ45 head inside the enclosure and connect it, then lower the
+attached cable jackets into the open-topped slots. Connect and lay in the DC lead
+the same way, arrange the slack, and reinstall the cover. The switch, connectors,
+storage bay, and all three slots remain accessible while the cover is off; no
+RJ45 head has to pass through a cable-sized opening.
+
+The assembled enclosure has exactly three intentional cable-service apertures:
+
+- one uplink aperture in the Ethernet-side wall;
+- one adjacent shared aperture for the four device cables in that same wall;
+- one DC power-lead aperture in the opposite power-side wall.
+
+All three are open-topped tray-wall lay-in slots. Their default usable sizes are
+`6.0 mm x 6.0 mm` for the round uplink, `8.0 mm x 7.0 mm` for the single shared
+device-bundle slot, and `6.0 mm x 6.0 mm` for the power lead. The four flat device
+cables share that one device slot as the default `6.0 mm x 5.6 mm` stack; they do
+not use four separate exits. Aperture side clearance defaults to `0.4 mm`.
+Installing the cover bounds the open side of each slot, while aligned locating-
+skirt reliefs preserve its cable envelope. Do not attempt to pass RJ45 plugs, the
+barrel connector, or the external AC adapter through the slots. Ventilation
+openings and the closed LED sightline are separate from these three cable-service
+apertures.
+
+Two rounded routing guides support separate uplink and device-bundle paths, and
+a short divider keeps the two Ethernet exits identifiable. The default guide
+radius follows `minimum_cable_bend_radius_mm = 15.0`; guide wall, height, edge
+clearance, and cable-contact rounding remain adjustable. Leave each cable's
+necessary external length outside, wind only its remaining slack around the
+guides, keep the round uplink separate from the four-flat-cable bundle near the
+exits, and avoid forcing a cable into the preview route. Increase the bend radius
+or storage dimensions if the real cable manufacturer's limit, jacket stiffness,
+or boot geometry requires it. A default `30.0 mm` power-side connector/service
+cavity is derived from twice the minimum bend radius; it is not a measured DC
+connector envelope.
+
+A separate Ethernet-side wall sightline exposes the modeled status-LED region
+without opening the cover. Floor slots and elevated side-wall slots occupy a
+derived clear aisle in the cable-storage region, while top-cover slots above the
+switch region provide the high outlet. The open internal volume provides the
+passive path between those regions without adding a fourth service aperture.
+Default vent keepouts avoid the switch, retention features, routing guides,
+service apertures, normal cable-contact paths, and corners. Do not route cable
+through vents, and recheck all keepouts after changing switch, storage,
+retention, aperture, guide, or vent parameters.
+
+### Adjustable Parameters
+
+The source groups its public controls near the top by:
+
+- render controls and `show_switch_reference`, `show_cable_references`, and
+  `show_minimum_bend_reference` toggles;
+- switch-body dimensions and horizontal/top fit clearances;
+- tray, wall, floor, cover, skirt, and corner dimensions;
+- horizontal switch rails/stops and cover-mounted vertical pads;
+- cable counts, `ethernet_cable_lengths_mm`, total storage allowance, cable
+  profiles (`uplink_cable_diameter_mm`, `device_cable_width_mm`, and
+  `device_cable_thickness_mm`), contact rounding, and minimum bend radius;
+- cable-storage depth, switch gap, guide geometry, and uplink/device divider;
+- uplink, device-bundle, and power aperture dimensions and X positions;
+- LED sightline dimensions and position;
+- bottom, side, and top vent dimensions, counts, spacing, and offsets;
+- cover-pin, socket, retention, and fit geometry;
+- printable-layout bed size/spacing and preview colours.
+
+Common fit changes start with `switch_width_mm`, `switch_depth_mm`,
+`switch_height_mm`, `switch_side_clearance_mm`, `switch_end_clearance_mm`, and
+`switch_top_clearance_mm`. For real cables, tune
+`uplink_cable_diameter_mm`, `device_cable_width_mm`,
+`device_cable_thickness_mm`, `minimum_cable_bend_radius_mm`,
+`cable_storage_depth_mm`, `routing_guide_*`, and the uplink, device, and power
+`*_aperture_*` groups. Recheck `switch_vertical_pad_clearance_mm`,
+`cover_retention_clearance_mm`, and `cover_fit_clearance_mm` for printed fit.
+Any dimensional change can affect vent, sightline, retention, and printable-bed
+clearances, so inspect the complete result rather than tuning one feature in
+isolation.
+
+### Render Modes
+
+Set `render_mode` to one of:
+
+- `assembly`: assembled tray and cover, with simplified switch, cable-route, and
+  minimum-bend references controlled by the visibility toggles;
+- `bottom_tray`: printable tray only, resting on its floor;
+- `top_cover`: printable cover only, inside-up with its broad exterior roof face
+  on the print plane;
+- `cable_routing_preview`: open tray with the switch envelope, representative
+  cable paths, and optional minimum-bend reference;
+- `printable_layout`: only the tray and cover, separated side-by-side on the
+  print plane with no electronic reference geometry.
+
+Repository render validation permits only `assembly` and `printable_layout`,
+with electronic/cable references hidden and a 15-second limit. Run these commands
+from the repository root; inspect the dispatch wiring for the other modes without
+rendering them as part of repository validation:
+
+```sh
+timeout 15 openscad -o /tmp/linksys_lgs105_enclosure_assembly.off \
+  -D 'render_mode="assembly"' \
+  -D 'show_switch_reference=false' \
+  -D 'show_cable_references=false' \
+  designs/linksys_lgs105_cable_management_enclosure.scad
+
+timeout 15 openscad -o /tmp/linksys_lgs105_enclosure_printable_layout.off \
+  -D 'render_mode="printable_layout"' \
+  -D 'show_switch_reference=false' \
+  -D 'show_cable_references=false' \
+  designs/linksys_lgs105_cable_management_enclosure.scad
+```
+
+Keep generated OFF, STL, STEP, 3MF, and other mesh files out of source control;
+temporary inspection output belongs under `/tmp`.
+
+### Printing And Validation Limits
+
+The default printable layout targets the configured `256.0 mm x 256.0 mm`
+Bambu Lab P2S bed. It places the bottom tray and inside-up cover side-by-side with
+`0.5 mm` spacing and a `0.5 mm` bed margin, and asserts that their derived layout
+fits those configured bed dimensions with positive separation and margins. Both
+objects have broad, stable print-plane contact and are separate printable parts.
+The geometry does not require multi-material printing, so an AMS 2 Pro is
+optional; select filament, process settings, adhesion strategy, and supports in
+Bambu Studio for the actual print.
+
+OpenSCAD rendering can expose syntax errors and support visual inspection of
+separation, orientation, openings, clearances, and route references. It does not
+prove hardware identity or dimensional fit, cable capacity, connector access,
+bend safety, pin/socket fit, wall continuity after slicing, support requirements,
+warping behavior, airflow, or operating temperature. Before final use:
+
+- measure the actual switch, cables, boots, and DC lead;
+- inspect both parts in Bambu Studio for bed fit, wall continuity, bridges,
+  supports, and print orientation;
+- make a test print and physically verify switch retention, cover removal,
+  aperture clearance, cable routing, LED visibility, and vent clearance;
+- observe the switch at low operating load and temperature before treating the
+  passive ventilation design as thermally validated.
+
+Only the `assembly` and `printable_layout` repository validation render commands
+are documented and permitted by this workflow; this README does not by itself
+assert that either render completed. No physical measurement, Bambu Studio/slicer
+validation, thermal validation, physical fit check, or test print has been
+performed or should be inferred from this documentation. Actual switch and cable
+measurement remains required before printing.
 
 ## Reusable Raspberry Pi Reference Models
 
