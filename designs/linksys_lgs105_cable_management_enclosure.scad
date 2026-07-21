@@ -123,18 +123,20 @@ top_vent_y_offset_mm = 0.0;
 // Cover retention and fit
 cover_pin_diameter_mm = 4.0;
 cover_pin_height_mm = 4.0;
+cover_pin_tip_diameter_mm = 3.2;
+cover_pin_tip_taper_height_mm = 0.8;
 cover_pin_inset_mm = 8.0;
 cover_socket_wall_mm = 1.8;
 cover_retention_clearance_mm = 0.25;
 cover_fit_clearance_mm = 0.30;
-cover_latch_interference_mm = 0.20;
-cover_latch_flexure_length_mm = 8.0;
-cover_latch_flexure_thickness_mm = 1.2;
-cover_latch_flexure_side_gap_mm = 1.0;
+cover_latch_interference_mm = 0.15;
+cover_latch_flexure_length_mm = 12.0;
+cover_latch_flexure_thickness_mm = 2.0;
+cover_latch_flexure_side_gap_mm = 1.5;
 cover_latch_engagement_depth_mm = 0.8;
-cover_latch_engagement_height_mm = 1.2;
-cover_latch_release_access_width_mm = 14.0;
-cover_latch_release_access_height_mm = 5.0;
+cover_latch_engagement_height_mm = 1.6;
+cover_latch_release_access_width_mm = 16.0;
+cover_latch_release_access_height_mm = 6.0;
 
 // Detachable vertical-support feet
 vertical_support_foot_count = 2;
@@ -256,9 +258,8 @@ cover_skirt_inner_depth_mm = cover_skirt_outer_depth_mm
     - 2 * wall_thickness_mm;
 cover_socket_outer_diameter_mm = cover_pin_socket_diameter_mm
     + 2 * cover_socket_wall_mm;
-cover_pin_detent_diameter_mm = cover_pin_socket_diameter_mm
-    + cover_retention_clearance_mm;
-cover_pin_detent_height_mm = min(1.2, cover_pin_height_mm / 3);
+cover_pin_body_height_mm = cover_pin_height_mm
+    - cover_pin_tip_taper_height_mm;
 cover_pin_center_inset_mm = max(
     cover_pin_inset_mm,
     wall_thickness_mm
@@ -775,6 +776,12 @@ assert(cover_positive_catch_count >= 2
                 - cover_latch_interference_mm
         && cover_latch_interference_mm > 0,
     "Opposed catches must retain exact positive interference and shoulder capture");
+assert(cover_pin_tip_diameter_mm > 0
+        && cover_pin_tip_diameter_mm < cover_pin_diameter_mm
+        && cover_pin_tip_taper_height_mm > 0
+        && cover_pin_tip_taper_height_mm < cover_pin_height_mm
+        && cover_pin_socket_diameter_mm > cover_pin_diameter_mm,
+    "Alignment pins require a smaller tapered lead-in and positive socket clearance");
 assert(printable_layout_cover_x_mm
         > printable_layout_tray_x_mm + enclosure_outer_width_mm,
     "Printable tray and cover require positive separation");
@@ -1730,33 +1737,18 @@ module cover_retention_pins() {
                 union() {
                     cylinder(
                         d = cover_pin_diameter_mm,
-                        h = cover_pin_height_mm
-                            - cover_pin_detent_height_mm
-                            + geometry_overlap_mm
+                        h = cover_pin_body_height_mm + geometry_overlap_mm
                     );
                     translate([
                         0,
                         0,
-                        cover_pin_height_mm
-                            - cover_pin_detent_height_mm
-                            + geometry_overlap_mm
+                        cover_pin_body_height_mm
                     ])
                         cylinder(
                             d1 = cover_pin_diameter_mm,
-                            d2 = cover_pin_detent_diameter_mm,
-                            h = cover_pin_detent_height_mm / 2
-                        );
-                    translate([
-                        0,
-                        0,
-                        cover_pin_height_mm
-                            - cover_pin_detent_height_mm / 2
-                            + geometry_overlap_mm
-                    ])
-                        cylinder(
-                            d1 = cover_pin_detent_diameter_mm,
-                            d2 = cover_pin_diameter_mm,
-                            h = cover_pin_detent_height_mm / 2
+                            d2 = cover_pin_tip_diameter_mm,
+                            h = cover_pin_tip_taper_height_mm
+                                + geometry_overlap_mm
                         );
                 }
         }

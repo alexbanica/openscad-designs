@@ -2,6 +2,49 @@
 
 Status: Approved
 
+## Super-Agent Iteration: PLA-Friendly Cover Pins And Catches (2026-07-21)
+
+### Purpose And Requested Behavior
+
+Correct the printed-cover retention geometry after the user identified that the
+alignment pins ended in expansions larger than their rigid receiver holes and
+that the positive snap catches were too slender for confident PLA handling.
+
+### Scope And Deterministic Behavior Delivered
+
+- Preserve the skirt and four pin/socket locations as cover-alignment features.
+- Remove the enlarged pin detents completely; cover retention remains the job of
+  the two opposed positive catches.
+- Keep each alignment pin at `4.0 mm` diameter, add a `3.2 mm` tip diameter and
+  `0.8 mm` taper, and retain the `4.5 mm` socket diameter derived from the
+  existing `0.25 mm` radial clearance.
+- Strengthen each PLA-oriented positive catch by changing the flexure defaults
+  from `8.0 mm x 1.2 mm` to `12.0 mm x 2.0 mm`.
+- Increase the engagement height from `1.2 mm` to `1.6 mm`, the release width
+  from `14.0 mm` to `16.0 mm`, and the release height from `5.0 mm` to `6.0 mm`.
+- Reduce insertion interference from `0.20 mm` to `0.15 mm` to lower the force
+  required to seat and release brittle PLA while preserving geometric capture.
+- Preserve switch fit, feet, three cable-service apertures, ventilation,
+  horizontal/vertical placement, render modes, and printable layout.
+
+### Constraints, Assumptions, And Impact
+
+- The change targets PLA but does not certify a filament, layer orientation,
+  slicer profile, insertion force, or fatigue life.
+- The tapered pins are alignment-only and must never be treated as retention
+  barbs; the catches provide positive cover capture.
+- The larger catch section trades some flexibility for impact resistance, while
+  the longer flexure and reduced interference limit local bending strain.
+
+### Validation And Documentation
+
+- Short validation is limited to `git diff --check` and a lightweight OpenSCAD
+  syntax/CSG export under the super-agent workflow.
+- Full OFF rendering, visual QA, slicer inspection, test printing, insertion-force
+  checks, and the ten-cycle latch test are skipped for this direct iteration.
+- `README.md` documents the tapered alignment pins and revised PLA-oriented catch
+  defaults.
+
 ## Iteration: Vertical Placement And Positive Cover Retention (2026-07-21)
 
 This iteration preserves the approved switch fit, cable-storage behavior,
@@ -207,7 +250,7 @@ assumptions are:
 - Stabilizer-foot fit clearance:
   `vertical_support_fit_clearance_mm = 0.30`.
 - Positive cover-catch interference:
-  `cover_latch_interference_mm = 0.20`.
+  `cover_latch_interference_mm = 0.15`.
 
 These support and latch values are printable starting assumptions, not measured
 retention-force or stability guarantees. They must remain adjustable and require

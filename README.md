@@ -128,18 +128,24 @@ ports face the internal cable-storage bay; the DC input faces the opposite wall.
 The bottom tray constrains the switch horizontally with side rails and paired
 end stops. Four underside cover pads provide positive-clearance vertical
 retention. Four printable pins and tray-mounted sockets independently align the
-removable cover; the locating skirt controls its fit. Two opposed positive snap
-catches then retain the cover against gravity, stored-cable pressure, and normal
-cable handling without depending on the alignment pins, feet, switch, or cables.
-The catches engage matching tray shoulders with
-`cover_latch_interference_mm = 0.20`. Their exact default tuning controls are
-`cover_latch_flexure_length_mm = 8.0`,
-`cover_latch_flexure_thickness_mm = 1.2`,
-`cover_latch_flexure_side_gap_mm = 1.0`,
+removable cover; the locating skirt controls its fit. The alignment pins are
+straight `4.0 mm` shafts with a tapered `3.2 mm` lead-in over the final `0.8 mm`.
+They have no enlarged detent and fit the `4.5 mm` sockets with `0.25 mm` radial
+clearance; the pins locate the cover but do not retain it. Two opposed positive
+snap catches then retain the cover against gravity, stored-cable pressure, and
+normal cable handling without depending on the alignment pins, feet, switch, or
+cables. The catches engage matching tray shoulders with
+`cover_latch_interference_mm = 0.15`. Their PLA-oriented default tuning controls
+are
+`cover_latch_flexure_length_mm = 12.0`,
+`cover_latch_flexure_thickness_mm = 2.0`,
+`cover_latch_flexure_side_gap_mm = 1.5`,
 `cover_latch_engagement_depth_mm = 0.8`,
-`cover_latch_engagement_height_mm = 1.2`,
-`cover_latch_release_access_width_mm = 14.0`, and
-`cover_latch_release_access_height_mm = 5.0`.
+`cover_latch_engagement_height_mm = 1.6`,
+`cover_latch_release_access_width_mm = 16.0`, and
+`cover_latch_release_access_height_mm = 6.0`. The longer, thicker arms reduce
+local bending strain and provide more material at the hook, but PLA layer
+adhesion and repeated flexing still require a test print.
 
 The default switch clearances are `0.6 mm` on each horizontal side, `0.6 mm`
 at each end, and `0.8 mm` above the body; the downward pads retain an additional
@@ -231,7 +237,8 @@ The source groups its public controls near the top by:
 - uplink, device-bundle, and power aperture dimensions and X positions;
 - LED sightline dimensions and position;
 - bottom, side, and top vent dimensions, counts, spacing, and offsets;
-- cover-pin, socket, retention, and fit geometry, plus
+- cover-pin, tapered-tip, socket, retention, and fit geometry, including
+  `cover_pin_tip_diameter_mm` and `cover_pin_tip_taper_height_mm`, plus
   `cover_latch_interference_mm`, `cover_latch_flexure_length_mm`,
   `cover_latch_flexure_thickness_mm`, `cover_latch_flexure_side_gap_mm`,
   `cover_latch_engagement_depth_mm`, `cover_latch_engagement_height_mm`,

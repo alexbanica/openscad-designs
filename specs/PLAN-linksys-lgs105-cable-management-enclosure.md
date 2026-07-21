@@ -4,6 +4,45 @@ Status: Approved
 
 Approved Spec: `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
 
+## Completed Super-Agent Iteration: PLA-Friendly Cover Retention
+
+Status: Approved
+
+This direct, single-agent follow-up was performed after the original plan was
+implemented and pushed in commit `09aee33`. It overrides the original plan only
+for the cover pin and positive-catch geometry described in the matching spec
+iteration.
+
+### Affected Files And Implementation Performed
+
+- Updated `designs/linksys_lgs105_cable_management_enclosure.scad` to replace
+  oversized alignment-pin detents with smaller tapered lead-ins and strengthen
+  the two PLA-oriented positive catches.
+- Updated `README.md` with the alignment-only pin contract, exact revised catch
+  defaults, PLA limitations, and test-print warning.
+- Updated the approved spec and this completed-work plan.
+
+### Validation And Assurance
+
+- `git diff --check`: passed.
+- Lightweight OpenSCAD horizontal-assembly syntax/CSG export with references
+  hidden: passed in less than one second.
+- Skip full renders, visual QA, Bambu Studio inspection, test printing, physical
+  fit, insertion-force measurement, and the ten-cycle latch test.
+- QA phase: skipped by the explicitly requested super-agent workflow.
+- Independent code review: skipped by the explicitly requested super-agent
+  workflow.
+
+### Delivery State And Residual Risk
+
+- Staging status: the SCAD source, README, approved spec, and approved plan are
+  staged as the complete accepted super-agent change set.
+- Commit status: intentionally uncommitted unless the user separately requests a
+  commit.
+- Push status: intentionally unpushed unless the user separately requests a push.
+- Residual risk remains for PLA layer adhesion, catch stiffness, insertion and
+  release force, dimensional tolerance, fatigue, and printed socket strength.
+
 ## Objective
 
 Deliver the final approved Linksys LGS105 enclosure with its existing switch fit,
@@ -125,7 +164,7 @@ integrated by the main agent.
 - Behavior and component boundary:
   - preserve the skirt and pin geometry as cover alignment features;
   - add at least two opposed positive snap catches with matching shoulders or
-    undercuts and the approved default `0.20 mm` interference;
+    undercuts and the revised PLA-oriented default `0.15 mm` interference;
   - expose adjustable catch interference, flexure, engagement, and release
     geometry near the existing cover-retention parameters;
   - keep retention independent of the feet, switch body, and stored cables;
