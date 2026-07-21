@@ -14,7 +14,9 @@
 
 // Render controls and reference visibility
 $fn = 48;
-render_mode = "assembly"; // [assembly/bottom_tray/top_cover/cable_routing_preview/printable_layout]
+render_mode = "assembly"; // [assembly/bottom_tray/top_cover/vertical_support_foot/cable_routing_preview/printable_layout]
+assembly_orientation = "horizontal"; // [horizontal/vertical]
+vertical_standing_side = "left"; // [left/right]
 show_switch_reference = true;
 show_cable_references = true;
 show_minimum_bend_reference = true;
@@ -125,6 +127,21 @@ cover_pin_inset_mm = 8.0;
 cover_socket_wall_mm = 1.8;
 cover_retention_clearance_mm = 0.25;
 cover_fit_clearance_mm = 0.30;
+cover_latch_interference_mm = 0.20;
+cover_latch_flexure_length_mm = 8.0;
+cover_latch_flexure_thickness_mm = 1.2;
+cover_latch_flexure_side_gap_mm = 1.0;
+cover_latch_engagement_depth_mm = 0.8;
+cover_latch_engagement_height_mm = 1.2;
+cover_latch_release_access_width_mm = 14.0;
+cover_latch_release_access_height_mm = 5.0;
+
+// Detachable vertical-support feet
+vertical_support_foot_count = 2;
+vertical_support_base_width_mm = 60.0;
+vertical_support_foot_length_mm = 18.0;
+vertical_vent_gap_mm = 3.0;
+vertical_support_fit_clearance_mm = 0.30;
 
 // Printable layout and preview colours
 print_bed_width_mm = 256.0;
@@ -258,6 +275,85 @@ cover_retention_y_positions_mm = [
     cover_pin_center_inset_mm,
     enclosure_outer_depth_mm - cover_pin_center_inset_mm
 ];
+// Opposed catches occupy the clear power-service cavity beyond the switch.
+// Their through-wall windows are also the deliberate finger-release access.
+cover_latch_center_y_mm = switch_origin_y_mm
+    + switch_depth_mm
+    + switch_end_clearance_mm
+    + cover_latch_release_access_width_mm / 2;
+cover_latch_arm_outer_x_positions_mm = [
+    wall_thickness_mm + cover_fit_clearance_mm,
+    enclosure_outer_width_mm
+        - wall_thickness_mm
+        - cover_fit_clearance_mm
+        - cover_latch_flexure_thickness_mm
+];
+cover_latch_hook_projection_mm = cover_fit_clearance_mm
+    + cover_latch_engagement_depth_mm
+    + cover_latch_interference_mm;
+cover_latch_hook_bottom_z_mm = cover_installed_z_mm
+    - cover_latch_flexure_length_mm;
+cover_latch_shoulder_z_mm = cover_latch_hook_bottom_z_mm
+    + cover_latch_engagement_height_mm
+    - cover_latch_interference_mm;
+cover_latch_release_bottom_z_mm = cover_latch_shoulder_z_mm
+    - cover_latch_release_access_height_mm;
+cover_latch_arm_width_mm = cover_latch_release_access_width_mm
+    - 2 * cover_latch_flexure_side_gap_mm;
+cover_latch_release_near_y_mm = cover_latch_center_y_mm
+    - cover_latch_release_access_width_mm / 2;
+cover_latch_release_far_y_mm = cover_latch_center_y_mm
+    + cover_latch_release_access_width_mm / 2;
+
+// Each long tray side carries the same two recessed snap sockets.  Their
+// complete depth remains inside the side wall, so the tray retains its nominal
+// X bounds and its bare underside remains available for horizontal placement.
+// The split, tapered T-head on either identical foot presses directly into a
+// socket and springs behind its internal shoulder for tool-free retention.
+vertical_support_base_thickness_mm = wall_thickness_mm;
+vertical_support_engagement_stem_width_mm = wall_thickness_mm;
+vertical_support_engagement_head_width_mm = 4.0;
+vertical_support_engagement_center_z_mm = tray_floor_thickness_mm
+    + vertical_support_fit_clearance_mm
+    + (vertical_support_engagement_head_width_mm
+        + 2 * vertical_support_fit_clearance_mm) / 2;
+vertical_support_engagement_length_mm = vertical_support_foot_length_mm
+    - 2 * vertical_support_fit_clearance_mm;
+vertical_support_end_keepout_mm = outer_corner_radius_mm
+    + wall_thickness_mm;
+vertical_support_release_keepout_clearance_mm = wall_thickness_mm;
+vertical_support_depth_positions_mm = [
+    vertical_support_end_keepout_mm + vertical_support_foot_length_mm / 2,
+    cover_latch_release_near_y_mm
+        - vertical_support_release_keepout_clearance_mm
+        - vertical_support_foot_length_mm / 2
+];
+vertical_support_head_channel_width_mm =
+    vertical_support_engagement_head_width_mm
+        + 2 * vertical_support_fit_clearance_mm;
+vertical_support_stem_channel_width_mm =
+    vertical_support_engagement_stem_width_mm
+        + 2 * vertical_support_fit_clearance_mm;
+vertical_support_fit_assertion_epsilon_mm =
+    vertical_support_fit_clearance_mm / 1000000;
+vertical_support_socket_entry_depth_mm = 0.6;
+vertical_support_socket_head_depth_mm = 1.2;
+vertical_support_socket_total_depth_mm =
+    vertical_support_socket_entry_depth_mm
+        + vertical_support_socket_head_depth_mm;
+vertical_support_foot_stem_height_mm = vertical_vent_gap_mm
+    + vertical_support_socket_entry_depth_mm
+    + vertical_support_fit_clearance_mm
+    - vertical_support_base_thickness_mm;
+vertical_support_foot_head_depth_mm =
+    vertical_support_socket_head_depth_mm
+        - 2 * vertical_support_fit_clearance_mm;
+vertical_support_foot_total_height_mm =
+    vertical_support_base_thickness_mm
+        + vertical_support_foot_stem_height_mm
+        + vertical_support_foot_head_depth_mm;
+vertical_support_flexure_slot_width_mm = 1.2;
+vertical_support_flexure_slot_depth_mm = 1.2;
 // Cable slots stay in the straight wall span between the rounded corners and
 // the corner retention/socket zones.  These bounds apply equally to the front
 // Ethernet wall and rear power wall.
@@ -278,17 +374,40 @@ ethernet_aperture_separation_mm = abs(
     ) - (device_aperture_width_mm + uplink_aperture_width_mm) / 2;
 cable_service_aperture_count = 3;
 
+horizontal_tabletop_footprint_area_mm2 = enclosure_outer_width_mm
+    * enclosure_outer_depth_mm;
+vertical_tabletop_footprint_area_mm2 = vertical_support_base_width_mm
+    * enclosure_outer_depth_mm;
+vertical_support_tray_min_x_mm = 0;
+vertical_support_tray_max_x_mm = enclosure_outer_width_mm;
+vertical_support_near_foot_far_y_mm = vertical_support_depth_positions_mm[0]
+    + vertical_support_foot_length_mm / 2;
+vertical_support_far_foot_near_y_mm = vertical_support_depth_positions_mm[1]
+    - vertical_support_foot_length_mm / 2;
+vertical_support_far_foot_far_y_mm = vertical_support_depth_positions_mm[1]
+    + vertical_support_foot_length_mm / 2;
+cover_positive_catch_count = 2;
+
 printable_layout_tray_x_mm = printable_layout_bed_margin_mm;
 printable_layout_tray_y_mm = printable_layout_bed_margin_mm;
 printable_layout_cover_x_mm = printable_layout_tray_x_mm
     + enclosure_outer_width_mm
     + printable_layout_spacing_mm;
 printable_layout_cover_y_mm = printable_layout_bed_margin_mm;
+printable_layout_foot_1_x_mm = printable_layout_bed_margin_mm;
+printable_layout_foot_1_y_mm = printable_layout_tray_y_mm
+    + enclosure_outer_depth_mm
+    + printable_layout_spacing_mm;
+printable_layout_foot_2_x_mm = printable_layout_foot_1_x_mm
+    + vertical_support_base_width_mm
+    + printable_layout_spacing_mm;
+printable_layout_foot_2_y_mm = printable_layout_foot_1_y_mm;
 printable_layout_width_mm = printable_layout_cover_x_mm
     + enclosure_outer_width_mm
     + printable_layout_bed_margin_mm;
-printable_layout_depth_mm = enclosure_outer_depth_mm
-    + 2 * printable_layout_bed_margin_mm;
+printable_layout_depth_mm = printable_layout_foot_1_y_mm
+    + vertical_support_foot_length_mm
+    + printable_layout_bed_margin_mm;
 printable_layout_fits_bed = printable_layout_width_mm <= print_bed_width_mm
     && printable_layout_depth_mm <= print_bed_depth_mm
     && printable_layout_bed_margin_mm > 0;
@@ -594,12 +713,93 @@ assert(top_vent_near_y_mm
             <= cover_retention_y_positions_mm[1]
                 - cover_socket_outer_diameter_mm / 2 - wall_thickness_mm,
     "Top vents cross the cover-pin retention clearance");
+assert(vertical_support_foot_count == 2
+        && len(vertical_support_depth_positions_mm) == 2,
+    "Vertical placement requires exactly two identical support feet");
+assert(assembly_orientation == "horizontal"
+        || assembly_orientation == "vertical",
+    "assembly_orientation must be horizontal or vertical");
+assert(vertical_standing_side == "left"
+        || vertical_standing_side == "right",
+    "vertical_standing_side must be left or right");
+assert(vertical_tabletop_footprint_area_mm2
+        < horizontal_tabletop_footprint_area_mm2,
+    "Vertical placement must reduce the tabletop bounding footprint");
+assert(vertical_support_base_width_mm < enclosure_outer_width_mm,
+    "Vertical support width must remain narrower than the enclosure");
+assert(vertical_vent_gap_mm >= 3.0
+        && vertical_support_base_thickness_mm < vertical_vent_gap_mm,
+    "Support geometry must preserve the approved side-wall tabletop gap");
+assert(vertical_support_socket_total_depth_mm < wall_thickness_mm
+        && vertical_support_foot_head_depth_mm > 0
+        && vertical_support_foot_stem_height_mm > 0,
+    "Recessed support sockets must retain an interior wall skin and a usable snap head");
+assert(abs((vertical_support_head_channel_width_mm
+                - vertical_support_engagement_head_width_mm) / 2
+            - vertical_support_fit_clearance_mm)
+            <= vertical_support_fit_assertion_epsilon_mm
+        && abs((vertical_support_stem_channel_width_mm
+                - vertical_support_engagement_stem_width_mm) / 2
+            - vertical_support_fit_clearance_mm)
+            <= vertical_support_fit_assertion_epsilon_mm
+        && abs((vertical_support_foot_length_mm
+                - vertical_support_engagement_length_mm) / 2
+            - vertical_support_fit_clearance_mm)
+            <= vertical_support_fit_assertion_epsilon_mm
+        && abs((vertical_support_socket_head_depth_mm
+                - vertical_support_foot_head_depth_mm) / 2
+            - vertical_support_fit_clearance_mm)
+            <= vertical_support_fit_assertion_epsilon_mm,
+    "Support-foot socket clearance must match the approved fit clearance");
+assert(vertical_support_tray_min_x_mm == 0
+        && vertical_support_tray_max_x_mm == enclosure_outer_width_mm,
+    "Vertical support engagement must remain inside the nominal tray X bounds");
+assert(vertical_support_near_foot_far_y_mm < side_vent_near_y_mm
+        && vertical_support_far_foot_near_y_mm > side_vent_far_y_mm
+        && vertical_support_engagement_center_z_mm
+            + vertical_support_head_channel_width_mm / 2
+            < side_vent_bottom_z_mm,
+    "Support feet or recessed sockets enter a side-vent keepout");
+assert(vertical_support_far_foot_far_y_mm
+            <= cover_latch_release_near_y_mm
+                - vertical_support_release_keepout_clearance_mm,
+    "Support foot or recessed socket enters the cover-release keepout");
+assert(cover_positive_catch_count >= 2
+        && cover_latch_hook_projection_mm
+            == cover_fit_clearance_mm
+                + cover_latch_engagement_depth_mm
+                + cover_latch_interference_mm
+        && cover_latch_shoulder_z_mm
+            == cover_latch_hook_bottom_z_mm
+                + cover_latch_engagement_height_mm
+                - cover_latch_interference_mm
+        && cover_latch_interference_mm > 0,
+    "Opposed catches must retain exact positive interference and shoulder capture");
 assert(printable_layout_cover_x_mm
         > printable_layout_tray_x_mm + enclosure_outer_width_mm,
     "Printable tray and cover require positive separation");
 assert(printable_layout_width_mm < print_bed_width_mm
         && printable_layout_depth_mm < print_bed_depth_mm,
     "Printable layout requires positive bed margins");
+assert(printable_layout_foot_1_y_mm
+            > printable_layout_tray_y_mm + enclosure_outer_depth_mm
+        && printable_layout_foot_2_x_mm
+            > printable_layout_foot_1_x_mm
+                + vertical_support_base_width_mm,
+    "All four printable objects require positive separation");
+assert(printable_layout_tray_x_mm > 0
+        && printable_layout_tray_y_mm > 0
+        && printable_layout_cover_x_mm > 0
+        && printable_layout_cover_y_mm > 0
+        && printable_layout_foot_1_x_mm > 0
+        && printable_layout_foot_1_y_mm > 0
+        && printable_layout_foot_2_x_mm > 0
+        && printable_layout_foot_2_y_mm > 0
+        && printable_layout_foot_2_x_mm + vertical_support_base_width_mm
+            < print_bed_width_mm
+        && printable_layout_foot_2_y_mm + vertical_support_foot_length_mm
+            < print_bed_depth_mm,
+    "Every printable object requires positive P2S bed margins");
 
 // ======================================================
 // Reference Envelopes And Helpers
@@ -982,6 +1182,28 @@ module tray_service_and_sightline_openings() {
     );
 }
 
+module tray_cover_latch_release_openings() {
+    // The top edge of each opposed window is a positive capture shoulder.
+    // Pinching both exposed hook faces inward clears those shoulders and
+    // releases the cover without tools or permanent deformation.
+    for (opening_x_mm = [
+        -geometry_overlap_mm,
+        enclosure_outer_width_mm - wall_thickness_mm - geometry_overlap_mm
+    ]) {
+        translate([
+            opening_x_mm,
+            cover_latch_center_y_mm
+                - cover_latch_release_access_width_mm / 2,
+            cover_latch_release_bottom_z_mm
+        ])
+            cube([
+                wall_thickness_mm + 2 * geometry_overlap_mm,
+                cover_latch_release_access_width_mm,
+                cover_latch_release_access_height_mm
+            ]);
+    }
+}
+
 module rounded_z_vent(center_x_mm, center_y_mm, slot_width_mm, slot_length_mm,
         start_z_mm, depth_mm) {
     end_offset_mm = max(0, (slot_length_mm - slot_width_mm) / 2);
@@ -1197,12 +1419,126 @@ module tray_cover_retention_sockets() {
     }
 }
 
+module vertical_support_engagement_recess(center_y_mm, left_side) {
+    socket_y_mm = center_y_mm - vertical_support_foot_length_mm / 2;
+    entry_x_mm = left_side
+        ? -geometry_overlap_mm
+        : enclosure_outer_width_mm - vertical_support_socket_entry_depth_mm;
+    head_x_mm = left_side
+        ? vertical_support_socket_entry_depth_mm - geometry_overlap_mm
+        : enclosure_outer_width_mm - vertical_support_socket_total_depth_mm;
+
+    translate([
+        entry_x_mm,
+        socket_y_mm,
+        vertical_support_engagement_center_z_mm
+            - vertical_support_stem_channel_width_mm / 2
+    ])
+        cube([
+            vertical_support_socket_entry_depth_mm + geometry_overlap_mm,
+            vertical_support_foot_length_mm,
+            vertical_support_stem_channel_width_mm
+        ]);
+
+    translate([
+        head_x_mm,
+        socket_y_mm,
+        vertical_support_engagement_center_z_mm
+            - vertical_support_head_channel_width_mm / 2
+    ])
+        cube([
+            vertical_support_socket_head_depth_mm + geometry_overlap_mm,
+            vertical_support_foot_length_mm,
+            vertical_support_head_channel_width_mm
+        ]);
+}
+
+module tray_vertical_support_engagement_recesses() {
+    for (center_y_mm = vertical_support_depth_positions_mm) {
+        vertical_support_engagement_recess(center_y_mm, true);
+        vertical_support_engagement_recess(center_y_mm, false);
+    }
+}
+
+// Print broad-base-down.  The central relief lets both halves of the tapered
+// T-head flex inward during insertion, then spring into a recessed tray socket.
+// The uninterrupted lower base keeps each foot connected and table-stable.
+module vertical_support_foot() {
+    difference() {
+        union() {
+            rounded_rect_prism(
+                vertical_support_base_width_mm,
+                vertical_support_foot_length_mm,
+                vertical_support_base_thickness_mm,
+                min(outer_corner_radius_mm,
+                    vertical_support_foot_length_mm / 2)
+            );
+
+            translate([
+                (vertical_support_base_width_mm
+                        - vertical_support_engagement_stem_width_mm) / 2,
+                vertical_support_fit_clearance_mm,
+                vertical_support_base_thickness_mm - geometry_overlap_mm
+            ])
+                cube([
+                    vertical_support_engagement_stem_width_mm,
+                    vertical_support_engagement_length_mm,
+                    vertical_support_foot_stem_height_mm + geometry_overlap_mm
+                ]);
+
+            hull() {
+                translate([
+                    (vertical_support_base_width_mm
+                            - vertical_support_engagement_head_width_mm) / 2,
+                    vertical_support_fit_clearance_mm,
+                    vertical_support_base_thickness_mm
+                        + vertical_support_foot_stem_height_mm
+                        - geometry_overlap_mm
+                ])
+                    cube([
+                        vertical_support_engagement_head_width_mm,
+                        vertical_support_engagement_length_mm,
+                        geometry_overlap_mm
+                    ]);
+                translate([
+                    (vertical_support_base_width_mm
+                            - vertical_support_engagement_stem_width_mm) / 2,
+                    vertical_support_fit_clearance_mm,
+                    vertical_support_foot_total_height_mm
+                        - geometry_overlap_mm
+                ])
+                    cube([
+                        vertical_support_engagement_stem_width_mm,
+                        vertical_support_engagement_length_mm,
+                        geometry_overlap_mm
+                    ]);
+            }
+        }
+
+        translate([
+            (vertical_support_base_width_mm
+                    - vertical_support_flexure_slot_width_mm) / 2,
+            vertical_support_fit_clearance_mm - geometry_overlap_mm,
+            vertical_support_base_thickness_mm
+                - vertical_support_flexure_slot_depth_mm
+        ])
+            cube([
+                vertical_support_flexure_slot_width_mm,
+                vertical_support_engagement_length_mm
+                    + 2 * geometry_overlap_mm,
+                vertical_support_foot_total_height_mm
+            ]);
+    }
+}
+
 module bottom_tray() {
     union() {
         difference() {
             tray_shell();
             tray_service_and_sightline_openings();
             tray_ventilation_openings();
+            tray_cover_latch_release_openings();
+            tray_vertical_support_engagement_recesses();
         }
         switch_side_retention_rails();
         switch_end_retention_stops();
@@ -1273,6 +1609,27 @@ module cover_skirt() {
             }
         }
 
+        // Free the two cantilever tongues from the otherwise continuous skirt.
+        for (relief_x_mm = [
+            skirt_x_mm - geometry_overlap_mm,
+            enclosure_outer_width_mm
+                - skirt_x_mm
+                - wall_thickness_mm
+                - geometry_overlap_mm
+        ]) {
+            translate([
+                relief_x_mm,
+                cover_latch_center_y_mm
+                    - cover_latch_release_access_width_mm / 2,
+                cover_thickness_mm - 2 * geometry_overlap_mm
+            ])
+                cube([
+                    wall_thickness_mm + 2 * geometry_overlap_mm,
+                    cover_latch_release_access_width_mm,
+                    cover_skirt_depth_mm + 4 * geometry_overlap_mm
+                ]);
+        }
+
         // Installed, these cuts align with the three tray lay-in slots and
         // clear the locating skirt only. The uncut roof closes every slot.
         translate([
@@ -1309,6 +1666,57 @@ module cover_skirt() {
                 cover_skirt_depth_mm + 4 * geometry_overlap_mm
             ]);
     }
+}
+
+module cover_positive_snap_catch(left_side) {
+    arm_x_mm = left_side
+        ? cover_latch_arm_outer_x_positions_mm[0]
+        : cover_latch_arm_outer_x_positions_mm[1];
+    arm_y_mm = cover_latch_center_y_mm
+        - cover_latch_arm_width_mm / 2;
+    hook_x_mm = left_side
+        ? arm_x_mm - cover_latch_hook_projection_mm
+        : arm_x_mm + cover_latch_flexure_thickness_mm;
+
+    // Roof-rooted cantilever remains separate from the relieved skirt.  The
+    // tapered hook leads into the tray and then captures the window shoulder.
+    translate([arm_x_mm, arm_y_mm, cover_thickness_mm - geometry_overlap_mm])
+        cube([
+            cover_latch_flexure_thickness_mm,
+            cover_latch_arm_width_mm,
+            cover_latch_flexure_length_mm + geometry_overlap_mm
+        ]);
+
+    hull() {
+        translate([
+            hook_x_mm,
+            arm_y_mm,
+            cover_thickness_mm
+                + cover_latch_flexure_length_mm
+                - cover_latch_engagement_height_mm
+        ])
+            cube([
+                cover_latch_hook_projection_mm,
+                cover_latch_arm_width_mm,
+                geometry_overlap_mm
+            ]);
+        translate([
+            arm_x_mm,
+            arm_y_mm,
+            cover_thickness_mm + cover_latch_flexure_length_mm
+                - geometry_overlap_mm
+        ])
+            cube([
+                cover_latch_flexure_thickness_mm,
+                cover_latch_arm_width_mm,
+                geometry_overlap_mm
+            ]);
+    }
+}
+
+module cover_positive_snap_catches() {
+    cover_positive_snap_catch(true);
+    cover_positive_snap_catch(false);
 }
 
 module cover_retention_pins() {
@@ -1426,18 +1834,61 @@ module top_cover() {
         }
         cover_skirt();
         cover_retention_pins();
+        cover_positive_snap_catches();
         cover_switch_vertical_retention();
     }
 }
 
-// D4 composes the completed enclosure and printable parts in these modules.
-module assembly_preview() {
+module assembled_enclosure() {
     color(tray_preview_colour) bottom_tray();
     color(cover_preview_colour)
         translate([0, 0, cover_installed_z_mm + cover_thickness_mm])
             mirror([0, 0, 1])
                 top_cover();
     reference_geometry();
+}
+
+module installed_vertical_support_feet() {
+    for (center_y_mm = vertical_support_depth_positions_mm) {
+        translate([
+            0,
+            center_y_mm - vertical_support_foot_length_mm / 2,
+            0
+        ])
+            color(tray_preview_colour)
+                vertical_support_foot();
+    }
+}
+
+module vertical_assembly_preview() {
+    installed_vertical_support_feet();
+    if (vertical_standing_side == "left") {
+        translate([
+            vertical_support_base_width_mm / 2
+                + vertical_support_engagement_center_z_mm,
+            0,
+            vertical_vent_gap_mm
+        ])
+            rotate([0, -90, 0])
+                assembled_enclosure();
+    } else {
+        translate([
+            vertical_support_base_width_mm / 2
+                - vertical_support_engagement_center_z_mm,
+            0,
+            vertical_vent_gap_mm + enclosure_outer_width_mm
+        ])
+            rotate([0, 90, 0])
+                assembled_enclosure();
+    }
+}
+
+module assembly_preview() {
+    if (assembly_orientation == "horizontal") {
+        assembled_enclosure();
+    } else {
+        vertical_assembly_preview();
+    }
 }
 
 module cable_routing_preview() {
@@ -1460,6 +1911,10 @@ module printable_layout() {
         bottom_tray();
     translate([printable_layout_cover_x_mm, printable_layout_cover_y_mm, 0])
         top_cover();
+    translate([printable_layout_foot_1_x_mm, printable_layout_foot_1_y_mm, 0])
+        vertical_support_foot();
+    translate([printable_layout_foot_2_x_mm, printable_layout_foot_2_y_mm, 0])
+        vertical_support_foot();
 }
 
 // ======================================================
@@ -1472,6 +1927,8 @@ if (render_mode == "assembly") {
     bottom_tray();
 } else if (render_mode == "top_cover") {
     top_cover();
+} else if (render_mode == "vertical_support_foot") {
+    vertical_support_foot();
 } else if (render_mode == "cable_routing_preview") {
     cable_routing_preview();
 } else if (render_mode == "printable_layout") {

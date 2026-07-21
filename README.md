@@ -127,14 +127,47 @@ ports face the internal cable-storage bay; the DC input faces the opposite wall.
 
 The bottom tray constrains the switch horizontally with side rails and paired
 end stops. Four underside cover pads provide positive-clearance vertical
-retention. The removable cover uses four printable pins and tray-mounted sockets,
-plus a locating skirt; these features retain the cover independently of the
-switch and cables. The default switch clearances are `0.6 mm` on each horizontal
-side, `0.6 mm` at each end, and `0.8 mm` above the body; the downward pads retain
-an additional `0.4 mm` clearance. Cover-pin/socket retention clearance defaults
-to `0.25 mm`, and locating-skirt fit clearance defaults to `0.30 mm`. Tune these
-clearances before expecting tool-free removal from a particular printer and
-material.
+retention. Four printable pins and tray-mounted sockets independently align the
+removable cover; the locating skirt controls its fit. Two opposed positive snap
+catches then retain the cover against gravity, stored-cable pressure, and normal
+cable handling without depending on the alignment pins, feet, switch, or cables.
+The catches engage matching tray shoulders with
+`cover_latch_interference_mm = 0.20`. Their exact default tuning controls are
+`cover_latch_flexure_length_mm = 8.0`,
+`cover_latch_flexure_thickness_mm = 1.2`,
+`cover_latch_flexure_side_gap_mm = 1.0`,
+`cover_latch_engagement_depth_mm = 0.8`,
+`cover_latch_engagement_height_mm = 1.2`,
+`cover_latch_release_access_width_mm = 14.0`, and
+`cover_latch_release_access_height_mm = 5.0`.
+
+The default switch clearances are `0.6 mm` on each horizontal side, `0.6 mm`
+at each end, and `0.8 mm` above the body; the downward pads retain an additional
+`0.4 mm` clearance. Cover-pin/socket retention clearance defaults to `0.25 mm`,
+and locating-skirt fit clearance defaults to `0.30 mm`. Tune these clearances,
+catch interference, flexure, engagement, and release access before expecting
+repeatable tool-free operation from a particular printer and material. To
+remove the cover, deliberately pinch both opposed catch tongues inward through
+their release openings, keep them released, and lift the cover evenly off its
+independent alignment pins. Do not pry or force one caught side upward. To
+reinstall it, align the skirt and pins, press the cover down evenly, and confirm
+that both catches have snapped behind their shoulders.
+
+Use the enclosure horizontally with both detachable feet removed. For the
+smaller-footprint vertical configuration, fit the same two identical snap-in feet to
+the recessed sockets on whichever long tray side will face down. Press each
+split, tapered foot head into its socket until it springs behind the recessed
+shoulder; removal is tool-free by pinching the split head inward while pulling
+the foot straight out. Space the feet at the two provided positions. The public
+defaults are `vertical_support_foot_count = 2`,
+`vertical_support_base_width_mm = 60.0`,
+`vertical_support_foot_length_mm = 18.0`, `vertical_vent_gap_mm = 3.0`, and
+`vertical_support_fit_clearance_mm = 0.30`. The `60.0 mm` support width is
+smaller than the default `127.0 mm` horizontal enclosure width, while the
+`3.0 mm` gap keeps the downward-facing side vents off the tabletop. The same
+feet and sockets support either long tray side; never stand the enclosure on
+the Ethernet wall or power wall, where its weight could obstruct or load the
+cable apertures.
 
 To connect or service the enclosure, remove the complete cover, install the
 switch, place each RJ45 head inside the enclosure and connect it, then lower the
@@ -198,7 +231,16 @@ The source groups its public controls near the top by:
 - uplink, device-bundle, and power aperture dimensions and X positions;
 - LED sightline dimensions and position;
 - bottom, side, and top vent dimensions, counts, spacing, and offsets;
-- cover-pin, socket, retention, and fit geometry;
+- cover-pin, socket, retention, and fit geometry, plus
+  `cover_latch_interference_mm`, `cover_latch_flexure_length_mm`,
+  `cover_latch_flexure_thickness_mm`, `cover_latch_flexure_side_gap_mm`,
+  `cover_latch_engagement_depth_mm`, `cover_latch_engagement_height_mm`,
+  `cover_latch_release_access_width_mm`, and
+  `cover_latch_release_access_height_mm`;
+- `assembly_orientation`, `vertical_standing_side`, and the detachable-foot
+  controls `vertical_support_foot_count`, `vertical_support_base_width_mm`,
+  `vertical_support_foot_length_mm`, `vertical_vent_gap_mm`, and
+  `vertical_support_fit_clearance_mm`;
 - printable-layout bed size/spacing and preview colours.
 
 Common fit changes start with `switch_width_mm`, `switch_depth_mm`,
@@ -209,7 +251,9 @@ Common fit changes start with `switch_width_mm`, `switch_depth_mm`,
 `cable_storage_depth_mm`, `routing_guide_*`, and the uplink, device, and power
 `*_aperture_*` groups. Recheck `switch_vertical_pad_clearance_mm`,
 `cover_retention_clearance_mm`, and `cover_fit_clearance_mm` for printed fit.
-Any dimensional change can affect vent, sightline, retention, and printable-bed
+Tune the `cover_latch_*` controls and `vertical_support_*` controls for the
+actual material and printer only after a test print. Any dimensional change can
+affect vent, sightline, retention, support engagement, and printable-bed
 clearances, so inspect the complete result rather than tuning one feature in
 isolation.
 
@@ -217,15 +261,22 @@ isolation.
 
 Set `render_mode` to one of:
 
+`assembly_orientation` defaults to `"horizontal"`; `vertical_standing_side`
+defaults to `"left"` and is consulted only for a vertical assembly.
+
 - `assembly`: assembled tray and cover, with simplified switch, cable-route, and
-  minimum-bend references controlled by the visibility toggles;
+  minimum-bend references controlled by the visibility toggles; use
+  `assembly_orientation = "horizontal"` or `"vertical"`, and for vertical
+  assembly select `vertical_standing_side = "left"` or `"right"`;
 - `bottom_tray`: printable tray only, resting on its floor;
 - `top_cover`: printable cover only, inside-up with its broad exterior roof face
   on the print plane;
+- `vertical_support_foot`: one of the two identical detachable feet, oriented
+  broad-base-down for printing;
 - `cable_routing_preview`: open tray with the switch envelope, representative
   cable paths, and optional minimum-bend reference;
-- `printable_layout`: only the tray and cover, separated side-by-side on the
-  print plane with no electronic reference geometry.
+- `printable_layout`: one tray, one cover, and two identical feet as four
+  separated objects on the print plane with no electronic reference geometry.
 
 Repository render validation permits only `assembly` and `printable_layout`,
 with electronic/cable references hidden and a 15-second limit. Run these commands
@@ -233,8 +284,25 @@ from the repository root; inspect the dispatch wiring for the other modes withou
 rendering them as part of repository validation:
 
 ```sh
-timeout 15 openscad -o /tmp/linksys_lgs105_enclosure_assembly.off \
+timeout 15 openscad -o /tmp/linksys_lgs105_enclosure_horizontal.off \
   -D 'render_mode="assembly"' \
+  -D 'assembly_orientation="horizontal"' \
+  -D 'show_switch_reference=false' \
+  -D 'show_cable_references=false' \
+  designs/linksys_lgs105_cable_management_enclosure.scad
+
+timeout 15 openscad -o /tmp/linksys_lgs105_enclosure_vertical_left.off \
+  -D 'render_mode="assembly"' \
+  -D 'assembly_orientation="vertical"' \
+  -D 'vertical_standing_side="left"' \
+  -D 'show_switch_reference=false' \
+  -D 'show_cable_references=false' \
+  designs/linksys_lgs105_cable_management_enclosure.scad
+
+timeout 15 openscad -o /tmp/linksys_lgs105_enclosure_vertical_right.off \
+  -D 'render_mode="assembly"' \
+  -D 'assembly_orientation="vertical"' \
+  -D 'vertical_standing_side="right"' \
   -D 'show_switch_reference=false' \
   -D 'show_cable_references=false' \
   designs/linksys_lgs105_cable_management_enclosure.scad
@@ -252,13 +320,13 @@ temporary inspection output belongs under `/tmp`.
 ### Printing And Validation Limits
 
 The default printable layout targets the configured `256.0 mm x 256.0 mm`
-Bambu Lab P2S bed. It places the bottom tray and inside-up cover side-by-side with
-`0.5 mm` spacing and a `0.5 mm` bed margin, and asserts that their derived layout
-fits those configured bed dimensions with positive separation and margins. Both
-objects have broad, stable print-plane contact and are separate printable parts.
-The geometry does not require multi-material printing, so an AMS 2 Pro is
-optional; select filament, process settings, adhesion strategy, and supports in
-Bambu Studio for the actual print.
+Bambu Lab P2S bed. It places the bottom tray, inside-up cover, and two identical
+broad-base-down feet as four separate printable objects with `0.5 mm` spacing
+and a `0.5 mm` bed margin. The current default derived nominal layout bounds are
+`255.5 mm x 203.0 mm`; source assertions require positive separation and bed
+margins. The geometry does not require multi-material printing, so an AMS 2 Pro
+is optional; select filament, process settings, adhesion strategy, and supports
+in Bambu Studio for the actual print.
 
 OpenSCAD rendering can expose syntax errors and support visual inspection of
 separation, orientation, openings, clearances, and route references. It does not
@@ -267,19 +335,32 @@ bend safety, pin/socket fit, wall continuity after slicing, support requirements
 warping behavior, airflow, or operating temperature. Before final use:
 
 - measure the actual switch, cables, boots, and DC lead;
-- inspect both parts in Bambu Studio for bed fit, wall continuity, bridges,
+- inspect all four parts in Bambu Studio for bed fit, wall continuity, bridges,
   supports, and print orientation;
 - make a test print and physically verify switch retention, cover removal,
-  aperture clearance, cable routing, LED visibility, and vent clearance;
+  aperture clearance, cable routing, LED visibility, vent clearance, both foot
+  fits, and both opposed cover catches;
+- on a padded surface, install both feet and hold the populated enclosure for at
+  least `60 seconds` on each long side; while each side is down, reposition the
+  connected cables normally and confirm that the feet stay engaged, the
+  enclosure does not rock or tip, no cable bears on the tabletop, and the cover
+  remains fully caught;
+- deliberately release and reinstall the cover for `10 cycles`, confirming
+  after every cycle that both catches remain intact, tool-free, and positively
+  engaged;
 - observe the switch at low operating load and temperature before treating the
   passive ventilation design as thermally validated.
 
 Only the `assembly` and `printable_layout` repository validation render commands
 are documented and permitted by this workflow; this README does not by itself
 assert that either render completed. No physical measurement, Bambu Studio/slicer
-validation, thermal validation, physical fit check, or test print has been
-performed or should be inferred from this documentation. Actual switch and cable
-measurement remains required before printing.
+validation, dimensional fit check, support-foot or cover retention test, latch
+wear test, airflow validation, thermal validation, or test print has been
+performed or should be inferred from this documentation. In particular, neither
+the padded `60 seconds` per-side cable-handling check nor the `10-cycle` latch
+test is render-validated. Delivery remains draft until those physical tests pass;
+actual switch and cable measurement and the other physical and slicer checks
+remain required before final use.
 
 ## Reusable Raspberry Pi Reference Models
 

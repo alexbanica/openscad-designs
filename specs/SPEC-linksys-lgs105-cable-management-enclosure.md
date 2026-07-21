@@ -2,6 +2,29 @@
 
 Status: Approved
 
+## Iteration: Vertical Placement And Positive Cover Retention (2026-07-21)
+
+This iteration preserves the approved switch fit, cable-storage behavior,
+exactly-three-aperture contract, round-uplink and flat-device cable geometry,
+ventilation intent, horizontal use, serviceability, and Bambu Lab printing
+constraints while adding a reduced-footprint tabletop orientation:
+
+- the assembled enclosure may stand on either long tray side, never on the
+  Ethernet-side or power-side cable wall;
+- two identical, detachable, tool-free stabilizer feet support the tray in the
+  vertical orientation without becoming permanent enclosure parts;
+- the feet keep the downward-facing side ventilation clear of the tabletop and
+  leave all three cable-service apertures unobstructed;
+- the default vertical bounding footprint is narrower than the default
+  horizontal bounding footprint;
+- the cover uses positive, releasable snap capture rather than depending only on
+  friction, so gravity, stored cable pressure, and ordinary cable handling do not
+  dislodge it when the enclosure is vertical;
+- horizontal tabletop use remains available with the stabilizer feet removed;
+- rendered geometry can establish alignment and plausible engagement, but a
+  printed retention and stability check is required before vertical use is
+  treated as physically validated.
+
 ## Iteration: Flat Device Cables And Lay-In Connector Access (2026-07-21)
 
 This iteration preserves the approved two-part enclosure, switch arrangement,
@@ -24,7 +47,8 @@ constraints while refining the Ethernet cable geometry:
 
 Create a printable enclosure for a Linksys LGS105 five-port unmanaged Ethernet
 switch that hides excess Ethernet cable, keeps the switch fixed in position,
-provides exactly three cable-service apertures, and maintains passive airflow.
+provides exactly three cable-service apertures, maintains passive airflow, and
+supports stable horizontal or reduced-footprint vertical tabletop placement.
 
 ## Problem
 
@@ -44,6 +68,9 @@ block the switch's passive ventilation.
 
 - Add one editable OpenSCAD 2021.01-compatible source for the complete enclosure.
 - Model a two-part enclosure consisting of a bottom tray and removable top cover.
+- Add two identical detachable stabilizer feet for optional vertical tabletop
+  placement while keeping the serviceable enclosure itself a bottom tray and top
+  cover.
 - Provide a dedicated switch compartment and an adjacent cable-storage
   compartment on the Ethernet-port side.
 - Fix the switch horizontally and vertically without modifying the metal switch
@@ -69,6 +96,8 @@ block the switch's passive ventilation.
 - Supporting PoE switches or Linksys models other than the LGS105.
 - Storing the external AC power adapter inside the enclosure.
 - Wall-mounting hardware in the initial design.
+- Standing the enclosure on the Ethernet-side or power-side wall, where it could
+  obstruct or load the cable-service apertures.
 - Generated STL, STEP, 3MF, OFF, or other mesh exports in source control.
 - Guaranteeing physical fit without checking the actual switch and cables.
 
@@ -96,6 +125,18 @@ block the switch's passive ventilation.
   ports where excess cable is routed around bend guides.
 - **Necessary exposed length:** the cable length the user leaves outside the
   enclosure to reach the connected device. The remainder stays inside.
+- **Horizontal placement:** normal use with the tray floor parallel to the
+  tabletop and the top cover facing upward.
+- **Vertical placement:** reduced-footprint tabletop use with either long tray
+  side facing downward, the Ethernet and power walls remaining upright, and the
+  top cover perpendicular to the tabletop.
+- **Stabilizer foot:** one of two identical detachable printed supports that
+  engages the bottom tray, broadens the vertical support base, and creates an
+  airflow gap below the downward-facing side wall without retaining the cover.
+- **Positive cover retention:** a releasable geometric catch with a matching
+  shoulder or undercut that must elastically disengage before the cover can be
+  removed; plain surface friction or an uncaptured interference pin alone does
+  not satisfy this definition.
 
 ## Research Sources And Hardware Identification
 
@@ -152,6 +193,26 @@ planning assumptions are:
 - Switch fit clearance on each horizontal side: `0.6 mm`.
 - Switch fit clearance above the body: `0.8 mm`.
 
+The user requested vertical tabletop placement and secure cover retention but
+did not provide stand or latch dimensions. Initial adjustable planning
+assumptions are:
+
+- Stabilizer-foot count: exactly two identical feet.
+- Default vertical support-base width:
+  `vertical_support_base_width_mm = 60.0`.
+- Each stabilizer foot's along-enclosure contact length:
+  `vertical_support_foot_length_mm = 18.0`.
+- Minimum tabletop airflow gap below the downward-facing side wall:
+  `vertical_vent_gap_mm = 3.0`.
+- Stabilizer-foot fit clearance:
+  `vertical_support_fit_clearance_mm = 0.30`.
+- Positive cover-catch interference:
+  `cover_latch_interference_mm = 0.20`.
+
+These support and latch values are printable starting assumptions, not measured
+retention-force or stability guarantees. They must remain adjustable and require
+a test print with the intended material and slicer settings.
+
 These assumptions are not vendor-certified measurements. The actual switch
 width, depth, height, both cable profiles, cable behavior, and RJ45 head and boot
 clearances must be checked before relying on the default fit. All manually
@@ -174,6 +235,14 @@ source.
   broadest stable face on the print plane.
 - The top cover must be removable for switch installation, cable connection,
   cable winding, and later service.
+- Vertical placement must use two detachable support feet engaging the bottom
+  tray. It must not rely on balancing the bare enclosure on a cable wall or on an
+  unsupported narrow side edge.
+- The same two support feet must fit either long tray side without blocking a
+  service aperture, vent opening, LED sightline, cover release point, or cover
+  removal path.
+- Cover retention must include positive, tool-free snap engagement independent
+  of the stabilizer feet, switch body, and cables.
 - Ethernet connectors and the power connector must be installed with the top
   removed; the design must not require a connector body to pass through a
   cable-size aperture.
@@ -258,8 +327,16 @@ source.
 
 ### Cover And Serviceability
 
-- The enclosure has a removable, tool-free top cover retained by printable
-  friction pins, clips, or another adjustable non-permanent interface.
+- The enclosure has a removable, tool-free top cover aligned by the existing
+  skirt/pin interface and retained by at least two opposed printable positive
+  snap catches with adjustable fit and interference.
+- Each positive catch engages a matching shoulder or undercut; cover retention
+  must not depend solely on smooth-pin friction.
+- The catches keep the cover fully seated when the enclosure is horizontal or
+  standing vertically on either long side, including under gravity, stored cable
+  pressure, and ordinary cable handling.
+- Cover removal requires a deliberate tool-free release action but must not
+  require destructive flexing or permanent deformation.
 - The cover retention is independent of the switch body and cables.
 - With the cover removed, the switch, all RJ45 plugs, the power connector, the
   complete cable-storage area, and all three lay-in apertures are accessible.
@@ -271,6 +348,27 @@ source.
 - The design includes a visible status-light window or sightline aligned with
   the Ethernet-side LED region so link/activity state can be checked without
   removing the cover.
+
+### Vertical Tabletop Placement
+
+- Two identical detachable stabilizer feet engage only the bottom tray and are
+  positioned apart along the enclosure depth to resist rocking and tipping.
+- The same feet support either long tray side as the downward-facing side; the
+  user does not need separate left-side and right-side variants.
+- The default stabilizer-foot geometry provides a `60.0 mm` support-base width,
+  which is less than the default enclosure width and therefore reduces the
+  vertical orientation's bounding tabletop footprint relative to horizontal
+  placement.
+- The feet provide at least `3.0 mm` clear airflow space below the downward-facing
+  side wall and do not overlap any side ventilation opening.
+- The feet, tray, and cover have no tabletop collision in the vertical assembly,
+  and the enclosure cannot rest on or transfer its weight through an Ethernet or
+  power cable.
+- The Ethernet and power walls remain upright and fully accessible, and their
+  three cable-service apertures retain their approved usable envelopes.
+- The stabilizer feet remain attached during ordinary repositioning but are
+  removable without tools so the unmodified horizontal placement remains
+  available.
 
 ### Ventilation
 
@@ -286,18 +384,25 @@ source.
   forced through them during normal assembly.
 - Default vent placement preserves cover strength and continuous material around
   retention features and corners.
+- In vertical placement, the downward-facing side vents retain the configured
+  tabletop airflow gap, the upward-facing side vents remain unobstructed, and
+  neither the support interfaces nor positive cover catches interrupt the
+  passive airflow path.
 
 ### Render Modes
 
 - `assembly`: assembled enclosure with simplified switch and cable-route
-  references available through visibility toggles.
+  references available through visibility toggles and an adjustable horizontal
+  or vertical placement orientation.
 - `bottom_tray`: printable bottom tray only, stable face on the print plane.
 - `top_cover`: printable top cover only, oriented with its broadest stable face
   on the print plane.
 - `cable_routing_preview`: enclosure reference showing the three aperture paths,
   switch keepout, minimum bend guides, and representative cable loops.
-- `printable_layout`: bottom tray and top cover separated with no overlap,
-  floating objects, or electronic reference geometry.
+- `vertical_support_foot`: one printable detachable stabilizer foot, oriented on
+  its broadest stable face.
+- `printable_layout`: bottom tray, top cover, and two stabilizer-foot instances
+  separated with no overlap, floating objects, or electronic reference geometry.
 
 ## Adjustable Parameter Groups
 
@@ -314,6 +419,9 @@ The source must expose at least these groups near the top:
 - LED sightline dimensions and position.
 - Bottom, side, and top ventilation dimensions, counts, spacing, and offsets.
 - Cover-retention geometry and fit clearance.
+- Positive cover-latch interference, flexure, engagement, and release geometry.
+- Vertical-support base width, foot length, vent gap, fit clearance, and assembly
+  orientation.
 - Printable-layout spacing and preview colors.
 
 ## Assumptions
@@ -329,7 +437,10 @@ The source must expose at least these groups near the top:
   device bundle.
 - The cables are flexible enough to follow a `15.0 mm` default minimum bend
   radius, subject to measurement and physical validation.
-- A tabletop enclosure is acceptable; wall mounting is not required initially.
+- Horizontal and vertical tabletop placement are required; wall mounting is not
+  required.
+- Two small detachable support feet are acceptable additions to the existing
+  two-part serviceable enclosure.
 - The AC adapter remains outside the enclosure.
 - The user will arrange cables with the cover removed rather than pulling RJ45
   connector bodies through finished apertures.
@@ -359,6 +470,18 @@ The source must expose at least these groups near the top:
   rendered inspection of every service aperture and vent is required.
 - A single large printable tray may approach practical print-time and warping
   limits even if it fits the Bambu Lab P2S plate.
+- A support base that is too narrow can allow tipping, while an unnecessarily
+  wide base defeats the requested space saving. The default `60.0 mm` base is an
+  adjustable starting point and requires a populated physical stability check.
+- Printed snap retention varies by material, layer orientation, dimensional
+  accuracy, and wear. Adjustable catch interference and deliberate flexure
+  geometry reduce but do not eliminate the need for a repeated-use test print.
+- A vertical support interface or foot placed over a side vent can invalidate
+  passive-airflow assumptions; source assertions and vertical assembly inspection
+  must preserve the full vent openings and the configured tabletop gap.
+- Adding two feet to `printable_layout` can cause overlap or exceed the build
+  plate even when the tray and cover still fit; final layout bounds must include
+  all four printable objects.
 
 ## Acceptance Criteria
 
@@ -389,19 +512,34 @@ The source must expose at least these groups near the top:
 - Bottom and top or side ventilation openings visibly pass through their walls,
   do not collide with retention features, and provide an airflow path around the
   switch.
-- `bottom_tray`, `top_cover`, and `printable_layout` contain only independently
-  printable, non-floating geometry with stable print-plane contact.
+- The assembled enclosure can stand on either long side using the same two
+  stabilizer feet while both cable walls and all three service apertures remain
+  clear of the tabletop.
+- The default vertical bounding footprint is strictly smaller than the default
+  horizontal bounding footprint, and the support-base width is less than the
+  enclosure's horizontal width.
+- Both downward-facing side-vent configurations retain at least the configured
+  `3.0 mm` tabletop airflow gap, and neither foot covers a vent opening.
+- At least two opposed positive snap catches geometrically capture the installed
+  cover; gravity alone cannot disengage the cover in horizontal or either
+  permitted vertical orientation.
+- `bottom_tray`, `top_cover`, `vertical_support_foot`, and `printable_layout`
+  contain only independently printable, non-floating geometry with stable
+  print-plane contact; `printable_layout` contains one tray, one cover, and two
+  separated foot instances.
 - No generated mesh artifact is added to source control.
 
 ## Validation Plan
 
 - Run `git diff --check`.
 - Run OpenSCAD syntax/render checks with a maximum of 15 seconds per render for:
-  - `assembly` with electronic references hidden,
+  - horizontal `assembly` with electronic references hidden,
+  - vertical `assembly` with electronic references hidden,
   - `printable_layout` with electronic references hidden.
-- Inspect the `bottom_tray`, `top_cover`, and `cable_routing_preview` mode
-  selection and module wiring in source without rendering those modes, in
-  accordance with the repository's render restrictions.
+- Inspect the `bottom_tray`, `top_cover`, `vertical_support_foot`, and
+  `cable_routing_preview` mode selection and module wiring in source without
+  rendering those modes, in accordance with the repository's render
+  restrictions.
 - Export temporary inspection artifacts only under `/tmp`.
 - Visually inspect that:
   - the switch envelope does not intersect tray, cover, or retention geometry;
@@ -415,13 +553,32 @@ The source must expose at least these groups near the top:
   - representative flat and round cables follow the configured minimum bend
     radius;
   - ventilation openings are real, unobstructed, and structurally separated;
+  - each positive cover catch visibly engages a matching capture shoulder and
+    exposes a deliberate release path;
+  - both vertical-side configurations keep feet, cover, tray, vents, and cable
+    apertures free of collisions;
+  - the feet provide the configured vent gap and are spaced along the enclosure
+    depth to resist rocking;
   - printable parts are separated, stable, and contain no reference electronics.
+- Confirm through derived values or assertions that the default vertical
+  bounding footprint is smaller than the default horizontal footprint, the feet
+  do not intersect side-vent keepouts, and all four printable objects fit the
+  configured Bambu Lab P2S plate.
 - Measure the actual switch, round cable diameter, flat cable width/thickness,
   and RJ45 head/boot envelope before final printing.
 - Inspect the sliced parts in Bambu Studio for build-plate fit, unsupported
   bridges, wall continuity, and practical print orientation.
 - Perform a physical test fit and low-temperature operational observation before
   treating airflow and retention as validated.
+- On a padded surface, test the populated printed enclosure for at least 60
+  seconds on each long side with both feet installed, then perform ordinary
+  cable repositioning. The feet must remain engaged, the enclosure must not rock
+  or tip, cables must remain unloaded by the tabletop, and the cover must remain
+  fully caught.
+- Release and reinstall the cover at least ten times; the catches must remain
+  tool-free, intact, and positively engaged. Until these physical checks pass,
+  vertical stability and anti-drop cover retention remain unvalidated and the
+  implementation delivery is draft.
 
 ## Documentation Needs
 
@@ -436,6 +593,11 @@ Update `README.md` to document:
 - round-uplink and flat-device cable parameters, the single shared device exit,
   and removable-cover connector insertion procedure;
 - ventilation strategy and keepouts;
+- horizontal and vertical placement, support-foot installation on either long
+  side, reduced-footprint limits, and the prohibition on standing on a cable
+  wall;
+- positive cover-catch engagement, tool-free release, tuning parameters, and
+  the physical anti-drop/repeated-use validation procedure;
 - render modes and relevant OpenSCAD commands;
 - Bambu Lab P2S/AMS 2 Pro printing and slicer guidance;
 - the limitation that rendered inspection cannot replace physical measurement,
