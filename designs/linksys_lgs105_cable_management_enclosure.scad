@@ -194,56 +194,40 @@ cover_pin_center_inset_mm = max(
         + cover_socket_outer_diameter_mm / 2
         + cover_fit_clearance_mm
 );
-cover_latch_center_y_mm = switch_origin_y_mm
-    + switch_depth_mm
-    + switch_end_clearance_mm
-    + cover_latch_release_access_width_mm / 2;
+// The switch-side pair sits immediately ahead of the switch.  Its complete
+// boss remains outside the switch's straight-up removal sweep, with the same
+// end clearance used by the switch bay.  The catch release span is derived
+// forward from that boss so neither retention feature controls case depth.
+rear_cover_socket_center_y_mm = switch_origin_y_mm
+    - switch_end_clearance_mm
+    - cover_socket_outer_diameter_mm / 2;
+rear_cover_socket_near_y_mm = rear_cover_socket_center_y_mm
+    - cover_socket_outer_diameter_mm / 2;
+rear_cover_socket_far_y_mm = rear_cover_socket_center_y_mm
+    + cover_socket_outer_diameter_mm / 2;
+cover_latch_release_far_y_mm = rear_cover_socket_near_y_mm
+    - wall_thickness_mm;
+cover_latch_center_y_mm = cover_latch_release_far_y_mm
+    - cover_latch_release_access_width_mm / 2;
 cover_latch_release_near_y_mm = cover_latch_center_y_mm
     - cover_latch_release_access_width_mm / 2;
-cover_latch_release_far_y_mm = cover_latch_center_y_mm
-    + cover_latch_release_access_width_mm / 2;
-rear_cover_socket_center_y_mm = cover_latch_release_far_y_mm
-    + wall_thickness_mm
-    + cover_socket_outer_diameter_mm / 2;
 rear_cover_socket_hole_far_y_mm = rear_cover_socket_center_y_mm
     + cover_pin_socket_diameter_mm / 2;
-power_side_switch_clearance_depth_mm = switch_origin_y_mm
+enclosure_outer_depth_mm = switch_origin_y_mm
     + switch_depth_mm
     + switch_end_clearance_mm
     + wall_thickness_mm;
-power_side_release_clearance_depth_mm = switch_origin_y_mm
-    + switch_depth_mm
-    + switch_end_clearance_mm
-    + cover_latch_release_access_width_mm
-    + wall_thickness_mm;
-power_side_top_vent_clearance_depth_mm = switch_center_y_mm
-    + top_vent_length_mm / 2
-    + wall_thickness_mm;
-power_side_support_clearance_depth_mm = switch_origin_y_mm
-    + switch_depth_mm
-    + switch_end_clearance_mm;
-power_side_rear_socket_clearance_depth_mm =
-    rear_cover_socket_hole_far_y_mm + wall_thickness_mm;
-enclosure_outer_depth_mm = max([
-    power_side_switch_clearance_depth_mm,
-    power_side_release_clearance_depth_mm,
-    power_side_top_vent_clearance_depth_mm,
-    power_side_support_clearance_depth_mm,
-    power_side_rear_socket_clearance_depth_mm
-]);
 enclosure_inner_depth_mm = enclosure_outer_depth_mm - 2 * wall_thickness_mm;
-switch_bay_depth_mm = enclosure_inner_depth_mm
-    - cable_storage_depth_mm
-    - cable_storage_switch_gap_mm;
-power_side_clearance_mm = switch_bay_depth_mm
-    - switch_depth_mm
-    - 2 * switch_end_clearance_mm;
 enclosure_outer_height_mm = tray_floor_thickness_mm
     + tray_wall_height_mm
     + cover_thickness_mm;
 
 ethernet_wall_y_mm = 0;
 power_wall_y_mm = enclosure_outer_depth_mm - wall_thickness_mm;
+switch_power_face_y_mm = switch_origin_y_mm + switch_depth_mm;
+power_side_clearance_mm = power_wall_y_mm - switch_power_face_y_mm;
+power_side_rear_extension_mm = enclosure_outer_depth_mm
+    - switch_power_face_y_mm;
 cable_storage_center_y_mm = wall_thickness_mm + cable_storage_depth_mm / 2;
 uplink_aperture_bottom_z_mm = tray_floor_thickness_mm
     + tray_wall_height_mm
@@ -336,8 +320,14 @@ cover_retention_y_positions_mm = [
     cover_pin_center_inset_mm,
     rear_cover_socket_center_y_mm
 ];
-// Opposed catches occupy the clear power-service cavity beyond the switch.
-// Their through-wall windows are also the deliberate finger-release access.
+// Each catch arm roots beside the inner wall with locating-skirt fit clearance.
+// Its hook points outward across the wall, away from the switch and its 0.6 mm
+// side clearance; the through-wall window remains the deliberate finger-release
+// access.  Moving the tongue inward by only the engagement plus interference
+// clears the hook from the wall shoulder.
+cover_latch_hook_projection_mm = cover_fit_clearance_mm
+    + cover_latch_engagement_depth_mm
+    + cover_latch_interference_mm;
 cover_latch_arm_outer_x_positions_mm = [
     wall_thickness_mm + cover_fit_clearance_mm,
     enclosure_outer_width_mm
@@ -345,9 +335,8 @@ cover_latch_arm_outer_x_positions_mm = [
         - cover_fit_clearance_mm
         - cover_latch_flexure_thickness_mm
 ];
-cover_latch_hook_projection_mm = cover_fit_clearance_mm
-    + cover_latch_engagement_depth_mm
-    + cover_latch_interference_mm;
+cover_latch_release_travel_mm = cover_latch_hook_projection_mm
+    - cover_fit_clearance_mm;
 cover_latch_hook_bottom_z_mm = cover_installed_z_mm
     - cover_latch_flexure_length_mm;
 cover_latch_shoulder_z_mm = cover_latch_hook_bottom_z_mm
@@ -357,10 +346,25 @@ cover_latch_release_bottom_z_mm = cover_latch_shoulder_z_mm
     - cover_latch_release_access_height_mm;
 cover_latch_arm_width_mm = cover_latch_release_access_width_mm
     - 2 * cover_latch_flexure_side_gap_mm;
-rear_cover_socket_near_y_mm = cover_retention_y_positions_mm[1]
-    - cover_socket_outer_diameter_mm / 2;
-rear_cover_socket_far_y_mm = cover_retention_y_positions_mm[1]
-    + cover_socket_outer_diameter_mm / 2;
+cover_socket_bottom_z_mm = cover_installed_z_mm - cover_pin_height_mm;
+cover_socket_top_z_mm = cover_installed_z_mm;
+cover_retention_assertion_epsilon_mm = max(
+    geometry_overlap_mm / 1000000,
+    cover_retention_clearance_mm / 1000000
+);
+cover_latch_arm_inner_x_positions_mm = [
+    cover_latch_arm_outer_x_positions_mm[0]
+        + cover_latch_flexure_thickness_mm,
+    cover_latch_arm_outer_x_positions_mm[1]
+];
+cover_latch_hook_outer_x_positions_mm = [
+    cover_latch_arm_outer_x_positions_mm[0] - cover_latch_hook_projection_mm,
+    cover_latch_arm_outer_x_positions_mm[1]
+        + cover_latch_flexure_thickness_mm
+        + cover_latch_hook_projection_mm
+];
+cover_latch_side_envelope_depth_mm = 2 * wall_thickness_mm
+    + cover_fit_clearance_mm;
 
 // Each long tray side carries the same two recessed snap sockets.  Their
 // complete depth remains inside the side wall, so the tray retains its nominal
@@ -381,8 +385,8 @@ vertical_support_end_keepout_mm = outer_corner_radius_mm
 vertical_support_release_keepout_clearance_mm = wall_thickness_mm;
 vertical_support_depth_positions_mm = [
     vertical_support_end_keepout_mm + vertical_support_foot_length_mm / 2,
-    cover_latch_release_near_y_mm
-        - vertical_support_release_keepout_clearance_mm
+    enclosure_outer_depth_mm
+        - vertical_support_end_keepout_mm
         - vertical_support_foot_length_mm / 2
 ];
 vertical_support_head_channel_width_mm =
@@ -475,11 +479,38 @@ uplink_reference_z_mm = uplink_aperture_bottom_z_mm
 device_bundle_height_mm = device_cable_count * device_cable_thickness_mm;
 device_bundle_bottom_z_mm = device_aperture_bottom_z_mm
     + (device_aperture_height_mm - device_bundle_height_mm) / 2;
-power_head_reference_inner_y_mm = switch_origin_y_mm + switch_depth_mm;
+power_head_reference_inner_y_mm = switch_power_face_y_mm;
 power_head_reference_outer_y_mm = power_head_reference_inner_y_mm
     + power_head_rigid_length_mm;
 power_head_external_protrusion_mm = power_head_reference_outer_y_mm
     - enclosure_outer_depth_mm;
+default_minimal_depth_inputs = abs(cable_storage_depth_mm - 68.0) < 0.000001
+    && abs(cable_storage_switch_gap_mm - 4.0) < 0.000001
+    && abs(switch_depth_mm - 75.5) < 0.000001
+    && abs(switch_end_clearance_mm - 0.6) < 0.000001
+    && abs(wall_thickness_mm - 2.4) < 0.000001;
+default_power_reference_inputs = default_minimal_depth_inputs
+    && abs(power_head_rigid_length_mm - 28.20) < 0.000001
+    && abs(geometry_overlap_mm - 0.1) < 0.000001;
+default_top_vent_inputs = default_minimal_depth_inputs
+    && abs(top_vent_length_mm - 48.0) < 0.000001
+    && abs(top_vent_y_offset_mm) < 0.000001;
+default_layout_inputs = default_minimal_depth_inputs
+    && abs(switch_width_mm - 121.0) < 0.000001
+    && abs(switch_side_clearance_mm - 0.6) < 0.000001
+    && abs(vertical_support_foot_length_mm - 18.0) < 0.000001
+    && abs(printable_layout_spacing_mm - 0.5) < 0.000001
+    && abs(printable_layout_bed_margin_mm - 0.5) < 0.000001;
+default_cover_latch_inputs = default_layout_inputs
+    && abs(cover_fit_clearance_mm - 0.30) < 0.000001
+    && abs(cover_latch_interference_mm - 0.15) < 0.000001
+    && abs(cover_latch_flexure_length_mm - 12.0) < 0.000001
+    && abs(cover_latch_flexure_thickness_mm - 2.0) < 0.000001
+    && abs(cover_latch_flexure_side_gap_mm - 1.5) < 0.000001
+    && abs(cover_latch_engagement_depth_mm - 0.8) < 0.000001
+    && abs(cover_latch_engagement_height_mm - 1.6) < 0.000001
+    && abs(cover_latch_release_access_width_mm - 16.0) < 0.000001
+    && abs(cover_latch_release_access_height_mm - 6.0) < 0.000001;
 // Keep the complete representative routes on their aperture Z profiles. The
 // maximum shoulder envelope protects these paths without a vertical chord/drop.
 reference_cable_z_mm = uplink_reference_z_mm;
@@ -586,6 +617,33 @@ representative_route_socket_surface_gaps_mm = [
                 - cover_socket_radius_mm
 ];
 
+// Bound every Ethernet storage/service reference, including the complete round
+// loops and flat-cable transition arcs.  The catches remain wholly outside this
+// shared X envelope; the separate power-head route is separated from them in Y.
+ethernet_service_route_min_x_mm = min([
+    uplink_aperture_x_mm - uplink_cable_diameter_mm / 2,
+    uplink_guide_center_mm[0] - uplink_route_outer_envelope_radius_mm,
+    device_transition_first_center_mm[0]
+        - device_transition_radius_mm - device_cable_width_mm / 2,
+    device_transition_second_center_mm[0]
+        - device_transition_radius_mm - device_cable_width_mm / 2,
+    device_guide_center_mm[0] - device_route_outer_envelope_radius_mm
+]);
+ethernet_service_route_max_x_mm = max([
+    uplink_aperture_x_mm + uplink_cable_diameter_mm / 2,
+    uplink_guide_center_mm[0] + uplink_route_outer_envelope_radius_mm,
+    device_transition_first_center_mm[0]
+        + device_transition_radius_mm + device_cable_width_mm / 2,
+    device_transition_second_center_mm[0]
+        + device_transition_radius_mm + device_cable_width_mm / 2,
+    device_guide_center_mm[0] + device_route_outer_envelope_radius_mm
+]);
+cover_latch_complete_left_max_x_mm = cover_latch_arm_inner_x_positions_mm[0];
+cover_latch_complete_right_min_x_mm = cover_latch_arm_inner_x_positions_mm[1];
+cover_latch_complete_far_y_mm = cover_latch_release_far_y_mm;
+power_service_route_near_y_mm = power_head_reference_inner_y_mm
+    - power_head_reference_diameter_mm / 2;
+
 // The switch body is an intentional floor-vent keepout. Place the low inlet
 // bank in the clear aisle between the two complete representative loop
 // envelopes, including cable thickness and contact clearance.
@@ -608,7 +666,10 @@ bottom_vent_center_x_mm = (bottom_vent_left_keepout_x_mm
 bottom_vent_center_y_mm = (bottom_vent_near_keepout_y_mm
         + bottom_vent_far_keepout_y_mm) / 2
     + bottom_vent_y_offset_mm;
-side_vent_center_y_mm = bottom_vent_center_y_mm + side_vent_y_offset_mm;
+// Place the side outlets in the switch-bay long walls behind the relocated
+// retention band.  Their Z-only relationship to the switch remains unchanged,
+// while both support sockets retain clear wall spans at the enclosure ends.
+side_vent_center_y_mm = switch_center_y_mm + side_vent_y_offset_mm;
 side_vent_bottom_z_mm = tray_floor_thickness_mm + side_vent_z_offset_mm;
 top_vent_center_x_mm = switch_center_x_mm + top_vent_x_offset_mm;
 top_vent_center_y_mm = switch_center_y_mm + top_vent_y_offset_mm;
@@ -798,26 +859,49 @@ assert(power_pass_through_cut_start_y_mm
         && power_pass_through_cut_end_y_mm >= enclosure_outer_depth_mm,
     "Power pass-through cut must cross the complete rear wall thickness");
 assert(power_head_reference_inner_y_mm
-            == switch_origin_y_mm + switch_depth_mm
+            == switch_power_face_y_mm
         && power_head_reference_outer_y_mm
             == power_head_reference_inner_y_mm + power_head_rigid_length_mm
         && power_head_external_protrusion_mm > 0,
     "Installed rigid head must connect at the switch face and protrude outside");
 assert(enclosure_outer_depth_mm
-            == max([
-                power_side_switch_clearance_depth_mm,
-                power_side_release_clearance_depth_mm,
-                power_side_top_vent_clearance_depth_mm,
-                power_side_support_clearance_depth_mm,
-                power_side_rear_socket_clearance_depth_mm
-            ]),
-    "Enclosure depth must equal the maximum preserved-feature clearance");
+            == switch_origin_y_mm + switch_depth_mm
+                + switch_end_clearance_mm + wall_thickness_mm
+        && abs(power_side_clearance_mm - switch_end_clearance_mm) < 0.000001
+        && abs(power_side_rear_extension_mm
+                - (switch_end_clearance_mm + wall_thickness_mm)) < 0.000001,
+    "Power-side depth must follow direct switch fit and preserve inner clearance");
+assert(!default_minimal_depth_inputs
+        || (abs(switch_power_face_y_mm - 150.5) < 0.000001
+            && abs(enclosure_outer_depth_mm - 153.5) < 0.000001
+            && abs(power_wall_y_mm - 151.1) < 0.000001
+            && abs(power_side_clearance_mm - 0.6) < 0.000001
+            && abs(power_side_rear_extension_mm - 3.0) < 0.000001),
+    "Default power wall must end at 153.5 with 0.6 inner and 3.0 rear clearance");
+assert(!default_power_reference_inputs
+        || (abs(power_pass_through_cut_start_y_mm - 151.0) < 0.000001
+            && abs(power_pass_through_cut_end_y_mm - 153.6) < 0.000001
+            && abs(power_head_reference_inner_y_mm - 150.5) < 0.000001
+            && abs(power_head_reference_outer_y_mm - 178.7) < 0.000001
+            && abs(power_head_external_protrusion_mm - 25.2) < 0.000001),
+    "Default power cut and rigid head reference must match the shortened wall");
 assert(rear_cover_socket_near_y_mm - cover_latch_release_far_y_mm
-            >= wall_thickness_mm
-        && rear_cover_socket_hole_far_y_mm + wall_thickness_mm
-            <= enclosure_outer_depth_mm
-        && rear_cover_socket_far_y_mm <= enclosure_outer_depth_mm,
-    "Rear socket requires a latch web and full wall beyond its female hole");
+            >= wall_thickness_mm - cover_retention_assertion_epsilon_mm
+        && rear_cover_socket_far_y_mm
+            <= switch_origin_y_mm - switch_end_clearance_mm
+                + cover_retention_assertion_epsilon_mm
+        && rear_cover_socket_far_y_mm
+            <= power_wall_y_mm + cover_retention_assertion_epsilon_mm,
+    "Switch-side sockets require a full latch web and switch-removal clearance");
+assert(cover_socket_bottom_z_mm >= switch_top_z_mm
+            + switch_top_clearance_mm
+        && cover_socket_top_z_mm <= cover_installed_z_mm,
+    "Switch-side socket and installed-pin Z envelopes must stay above the switch");
+assert(cover_latch_release_near_y_mm >= wall_thickness_mm
+        && cover_latch_release_far_y_mm
+            + wall_thickness_mm <= rear_cover_socket_near_y_mm
+                + cover_retention_assertion_epsilon_mm,
+    "Catch release span must remain in bounds ahead of the switch-side sockets");
 assert(led_sightline_safe_center_z_mm + led_sightline_height_mm / 2
             + wall_thickness_mm
         <= aperture_bottom_z_mm,
@@ -859,10 +943,13 @@ assert(bottom_vent_center_y_mm
                 + bottom_vent_width_mm) / 2
         <= bottom_vent_far_keepout_y_mm,
     "Floor vent bank crosses a guide, cable loop, or switch-bay keepout");
-assert(side_vent_near_y_mm >= bottom_vent_near_keepout_y_mm
-        && side_vent_far_y_mm <= bottom_vent_far_keepout_y_mm
-        && side_vent_far_y_mm < switch_origin_y_mm - switch_end_clearance_mm,
-    "Side vent bank enters the switch or retention keepout");
+assert(side_vent_near_y_mm
+            >= rear_cover_socket_far_y_mm + wall_thickness_mm
+        && side_vent_far_y_mm
+            <= vertical_support_far_foot_near_y_mm - wall_thickness_mm
+        && side_vent_near_y_mm >= wall_thickness_mm
+        && side_vent_far_y_mm <= power_wall_y_mm,
+    "Side vent bank enters a retention, support, or wall-end keepout");
 assert(side_vent_bottom_z_mm >= tray_floor_thickness_mm
         && side_vent_bottom_z_mm + side_vent_height_mm
             <= cover_installed_z_mm,
@@ -884,13 +971,17 @@ assert(top_vent_left_x_mm
         && top_vent_far_y_mm
             <= switch_origin_y_mm + switch_depth_mm - wall_thickness_mm,
     "Top vents cross a retention feature or switch-bay strength clearance");
-assert(top_vent_near_y_mm
-            >= cover_retention_y_positions_mm[0]
+assert(top_vent_left_x_mm
+            >= cover_retention_x_positions_mm[0]
                 + cover_socket_outer_diameter_mm / 2 + wall_thickness_mm
-        && top_vent_far_y_mm
-            <= cover_retention_y_positions_mm[1]
+        && top_vent_right_x_mm
+            <= cover_retention_x_positions_mm[1]
                 - cover_socket_outer_diameter_mm / 2 - wall_thickness_mm,
     "Top vents cross the cover-pin retention clearance");
+assert(!default_top_vent_inputs
+        || (abs(top_vent_near_y_mm - 88.75) < 0.000001
+            && abs(top_vent_far_y_mm - 136.75) < 0.000001),
+    "Default top vents must retain their shortened-outline Y bounds");
 assert(vertical_support_foot_count == 2
         && len(vertical_support_depth_positions_mm) == 2,
     "Vertical placement requires exactly two identical support feet");
@@ -932,27 +1023,69 @@ assert(abs((vertical_support_head_channel_width_mm
 assert(vertical_support_tray_min_x_mm == 0
         && vertical_support_tray_max_x_mm == enclosure_outer_width_mm,
     "Vertical support engagement must remain inside the nominal tray X bounds");
-assert(vertical_support_near_foot_far_y_mm < side_vent_near_y_mm
+assert(vertical_support_near_foot_far_y_mm
+            <= cover_latch_release_near_y_mm
+                - vertical_support_release_keepout_clearance_mm
         && vertical_support_far_foot_near_y_mm > side_vent_far_y_mm
         && vertical_support_engagement_center_z_mm
             + vertical_support_head_channel_width_mm / 2
             < side_vent_bottom_z_mm,
     "Support feet or recessed sockets enter a side-vent keepout");
-assert(vertical_support_far_foot_far_y_mm
+assert(vertical_support_near_foot_far_y_mm
             <= cover_latch_release_near_y_mm
-                - vertical_support_release_keepout_clearance_mm,
+                - vertical_support_release_keepout_clearance_mm
+        && vertical_support_far_foot_near_y_mm
+            >= side_vent_far_y_mm
+                + vertical_support_release_keepout_clearance_mm,
     "Support foot or recessed socket enters the cover-release keepout");
-assert(cover_positive_catch_count >= 2
+assert(cover_positive_catch_count == 2
         && cover_latch_hook_projection_mm
             == cover_fit_clearance_mm
                 + cover_latch_engagement_depth_mm
                 + cover_latch_interference_mm
+        && abs(cover_latch_release_travel_mm
+                - (cover_latch_engagement_depth_mm
+                    + cover_latch_interference_mm))
+            <= cover_retention_assertion_epsilon_mm
+        && cover_latch_release_travel_mm > 0
+        && cover_latch_release_travel_mm < cover_latch_flexure_length_mm
         && cover_latch_shoulder_z_mm
             == cover_latch_hook_bottom_z_mm
                 + cover_latch_engagement_height_mm
                 - cover_latch_interference_mm
         && cover_latch_interference_mm > 0,
     "Opposed catches must retain exact positive interference and shoulder capture");
+assert(!default_cover_latch_inputs
+        || (abs(cover_latch_hook_projection_mm - 1.25) < 0.000001
+            && abs(cover_latch_release_travel_mm - 0.95) < 0.000001
+            && abs(cover_latch_arm_outer_x_positions_mm[0] - 2.7)
+                < 0.000001
+            && abs(cover_latch_arm_outer_x_positions_mm[1] - 122.3)
+                < 0.000001),
+    "Default positive catches must retain the approved placement and release travel");
+assert(cover_latch_arm_outer_x_positions_mm[0] >= 0
+        && cover_latch_arm_inner_x_positions_mm[0]
+            <= cover_latch_side_envelope_depth_mm
+        && cover_latch_arm_inner_x_positions_mm[1]
+            >= enclosure_outer_width_mm - cover_latch_side_envelope_depth_mm
+        && cover_latch_arm_outer_x_positions_mm[1]
+                + cover_latch_flexure_thickness_mm
+            <= enclosure_outer_width_mm
+        && cover_latch_hook_outer_x_positions_mm[0] >= 0
+        && cover_latch_hook_outer_x_positions_mm[1]
+            <= enclosure_outer_width_mm,
+    "Catch arms and outward hooks must stay in the long-side envelopes");
+assert(cover_latch_release_far_y_mm
+            <= switch_origin_y_mm - switch_end_clearance_mm
+        && cover_latch_hook_bottom_z_mm < cover_installed_z_mm,
+    "Catch arms and hooks enter the switch or cover-removal keepout");
+assert(cover_latch_complete_left_max_x_mm
+            + cover_fit_clearance_mm <= ethernet_service_route_min_x_mm
+        && cover_latch_complete_right_min_x_mm
+            >= ethernet_service_route_max_x_mm + cover_fit_clearance_mm
+        && cover_latch_complete_far_y_mm + cover_fit_clearance_mm
+            <= power_service_route_near_y_mm,
+    "Complete catches enter an Ethernet or power cable service-route envelope");
 assert(cover_pin_tip_diameter_mm > 0
         && cover_pin_tip_diameter_mm < cover_pin_diameter_mm
         && cover_pin_tip_taper_height_mm > 0
@@ -965,6 +1098,10 @@ assert(printable_layout_cover_x_mm
 assert(printable_layout_width_mm < print_bed_width_mm
         && printable_layout_depth_mm < print_bed_depth_mm,
     "Printable layout requires positive bed margins");
+assert(!default_layout_inputs
+        || (abs(printable_layout_width_mm - 255.5) < 0.000001
+            && abs(printable_layout_depth_mm - 173.0) < 0.000001),
+    "Default printable layout must be 255.5 by 173.0");
 assert(printable_layout_foot_1_y_mm
             > printable_layout_tray_y_mm + enclosure_outer_depth_mm
         && printable_layout_foot_2_x_mm
@@ -1430,9 +1567,9 @@ module tray_ventilation_openings() {
         );
     }
 
-    // Elevated side slots share the cable-storage inlet region.  The open
-    // internal volume communicates with the switch bay without adding another
-    // cable-service aperture or assuming locations of vents in the hardware.
+    // Elevated side slots occupy the switch-bay long walls.  The open internal
+    // volume communicates with the cable-storage floor inlet without adding
+    // another cable-service aperture or assuming vent locations in the switch.
     for (vent_index = [0 : side_vent_count - 1]) {
         vent_y_mm = side_vent_center_y_mm
             + (vent_index - (side_vent_count - 1) / 2)

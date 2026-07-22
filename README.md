@@ -131,10 +131,17 @@ retention. Four printable pins and tray-mounted sockets independently align the
 removable cover; the locating skirt controls its fit. The alignment pins are
 straight `4.0 mm` shafts with a tapered `3.2 mm` lead-in over the final `0.8 mm`.
 They have no enlarged detent and fit the `4.5 mm` sockets with `0.25 mm` radial
-clearance; the pins locate the cover but do not retain it. Two opposed positive
-snap catches then retain the cover against gravity, stored-cable pressure, and
-normal cable handling without depending on the alignment pins, feet, switch, or
-cables. The catches engage matching tray shoulders with
+clearance; the pins locate the cover but do not retain it. The four alignment
+pin/socket pairs have been relocated to fit wholly inside the shortened cover
+outline, remain above and clear of the switch, and do not control enclosure
+depth. These internal cover-alignment sockets are distinct from the switch's
+external hardware connectors and from the three cable-service apertures. Two
+opposed positive snap catches then retain the cover against gravity,
+stored-cable pressure, and normal cable handling without depending on the
+alignment pins, feet, switch, or cables. Each catch arm remains inside its long
+side-wall envelope, with its hook and capture directed outward away from the
+switch and its `0.6 mm` side clearance. The catches engage matching tray
+shoulders with
 `cover_latch_interference_mm = 0.15`. Their PLA-oriented default tuning controls
 are
 `cover_latch_flexure_length_mm = 12.0`,
@@ -143,9 +150,11 @@ are
 `cover_latch_engagement_depth_mm = 0.8`,
 `cover_latch_engagement_height_mm = 1.6`,
 `cover_latch_release_access_width_mm = 16.0`, and
-`cover_latch_release_access_height_mm = 6.0`. The longer, thicker arms reduce
-local bending strain and provide more material at the hook, but PLA layer
-adhesion and repeated flexing still require a test print.
+`cover_latch_release_access_height_mm = 6.0`. The derived default inward release
+travel is `0.95 mm`: `0.8 mm` engagement plus `0.15 mm` interference. The
+longer, thicker arms reduce local bending strain and provide more material at
+the hook, but PLA layer adhesion and repeated flexing still require a test
+print.
 
 The default switch clearances are `0.6 mm` on each horizontal side, `0.6 mm`
 at each end, and `0.8 mm` above the body; the downward pads retain an additional
@@ -153,11 +162,12 @@ at each end, and `0.8 mm` above the body; the downward pads retain an additional
 and locating-skirt fit clearance defaults to `0.30 mm`. Tune these clearances,
 catch interference, flexure, engagement, and release access before expecting
 repeatable tool-free operation from a particular printer and material. To
-remove the cover, deliberately pinch both opposed catch tongues inward through
-their release openings, keep them released, and lift the cover evenly off its
-independent alignment pins. Do not pry or force one caught side upward. To
-reinstall it, align the skirt and pins, press the cover down evenly, and confirm
-that both catches have snapped behind their shoulders.
+remove the cover without tools, deliberately pinch both opposed catch tongues
+inward through their outward-facing release openings, keep them released, and
+lift the cover evenly off its independent alignment pins. Do not pry or force
+one caught side upward. To reinstall it, align the skirt and pins, press the
+cover down evenly, and confirm that both outward-capturing hooks have snapped
+behind their shoulders.
 
 Use the enclosure horizontally with both detachable feet removed. For the
 smaller-footprint vertical configuration, fit the same two identical snap-in feet to
@@ -180,11 +190,12 @@ switch, place each RJ45 head inside the enclosure and connect it, then lower the
 attached cable jackets into the two open-topped Ethernet slots. From outside the
 power face, pass the approximately `9.0 mm` DC head through the bounded round
 hole, keep the external AC adapter outside, and connect the head to the switch.
-The measured `28.20 mm` rigid section may remain partly outside the enclosure;
-keep it straight rather than forcing it to bend. Arrange the Ethernet slack and
-reinstall the cover. The switch, connectors, storage bay, and both Ethernet
-slots remain accessible while the cover is off; no RJ45 head has to pass through
-a cable-sized opening.
+The measured `28.20 mm` rigid section starts at the switch power face, passes
+through the power wall, and leaves `25.2 mm` outside the enclosure at the
+default depth; keep it straight rather than forcing it to bend. Arrange the
+Ethernet slack and reinstall the cover. The switch, connectors, storage bay,
+and both Ethernet slots remain accessible while the cover is off; no RJ45 head
+has to pass through a cable-sized opening.
 
 The assembled enclosure has exactly three intentional cable-service apertures:
 
@@ -237,22 +248,26 @@ bend radius or storage dimensions if the real
 cable manufacturer's limit, jacket stiffness, or boot geometry requires it.
 
 The enclosure no longer reserves the old adapter-derived `30.0 mm` rear service
-cavity. Rear depth is instead the maximum clearance required by the switch,
-positive-catch release geometry, top vents, support interfaces, and rear
-cover-pin sockets. These constraints derive the default outer depth to
-`178.2 mm`, below the prior `183.5 mm`. The installed rigid-head reference starts
-at the switch power face and ends at `178.7 mm`, so the default `28.20 mm` head
-remains connected to the switch while protruding `0.5 mm` beyond the enclosure.
+cavity. The default tray and matching cover outer depth is exactly `153.5 mm`,
+derived directly from switch placement and depth, `0.6 mm` internal power-side
+clearance, and the `2.4 mm` power wall. The exterior power face is therefore
+exactly `3.0 mm` beyond the switch power face. The shortened cover skirt, rear
+wall, vents, stabilizer-foot placement, and retention geometry all remain
+inside that matching outline; neither the four relocated alignment pairs nor
+the two catches increase its depth. The installed `28.20 mm` rigid-head
+reference remains connected to the switch and extends `25.2 mm` beyond the
+exterior power face.
 
 A separate Ethernet-side wall sightline exposes the modeled status-LED region
-without opening the cover. Floor slots and elevated side-wall slots occupy a
-derived clear aisle in the cable-storage region, while top-cover slots above the
-switch region provide the high outlet. The open internal volume provides the
-passive path between those regions without adding a fourth service aperture.
-Default vent keepouts avoid the switch, retention features, routing guides,
-service apertures, normal cable-contact paths, and corners. Do not route cable
-through vents, and recheck all keepouts after changing switch, storage,
-retention, aperture, guide, or vent parameters.
+without opening the cover. Floor slots occupy a derived clear aisle in the
+cable-storage region. Elevated side-wall slots occupy the switch-bay long side
+walls, spanning default Y positions `104.75 mm` through `120.75 mm`, while
+top-cover slots above the switch region provide the high outlet. The open
+internal volume provides the passive path between those regions without adding
+a fourth service aperture. Default vent keepouts avoid the switch, retention
+features, routing guides, service apertures, normal cable-contact paths, and
+corners. Do not route cable through vents, and recheck all keepouts after
+changing switch, storage, retention, aperture, guide, or vent parameters.
 
 ### Adjustable Parameters
 
@@ -369,7 +384,7 @@ The default printable layout targets the configured `256.0 mm x 256.0 mm`
 Bambu Lab P2S bed. It places the bottom tray, inside-up cover, and two identical
 broad-base-down feet as four separate printable objects with `0.5 mm` spacing
 and a `0.5 mm` bed margin. The current default derived nominal layout bounds are
-`255.5 mm x 202.5 mm`; source assertions require positive separation and bed
+`255.5 mm x 173.0 mm`; source assertions require positive separation and bed
 margins. The geometry does not require multi-material printing, so an AMS 2 Pro
 is optional; select filament, process settings, adhesion strategy, and supports
 in Bambu Studio for the actual print.

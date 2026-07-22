@@ -2,6 +2,107 @@
 
 Status: Approved
 
+## Iteration: Minimal Power-Side Cover Depth (2026-07-22)
+
+### Purpose And Requested Delta
+
+Remove the remaining unused enclosure and cover length behind the switch. The
+power side has no hardware connector other than the DC lead, and the approved
+`10.0 mm` round pass-through now allows the approximately `9.0 mm` power head and
+its rigid `28.20 mm` section to pass through the wall instead of occupying an
+internal rear service space.
+
+The current default power-side cover edge is `27.7 mm` behind the switch power
+face (`178.2 mm - 150.5 mm`). That distance is controlled by cover-retention
+geometry rather than by the switch or power connector and must no longer set the
+enclosure depth.
+
+### Final Behavior Added By This Iteration
+
+- Move the complete power-side tray wall and the matching top-cover edge to the
+  smallest direct switch-fit depth:
+  `switch_origin_y_mm + switch_depth_mm + switch_end_clearance_mm +
+  wall_thickness_mm`.
+- With the approved defaults, set the outer enclosure and cover depth to
+  `153.5 mm`, leaving exactly `3.0 mm` beyond the switch power face: `0.6 mm`
+  internal switch-end clearance plus the `2.4 mm` power wall.
+- Keep the power wall continuous except for the approved bounded round power
+  aperture. Preserve its `10.0 mm` default diameter, approximately `9.0 mm`
+  reference head, `21.0 mm` visual-right offset, body-center Z alignment, and
+  printed-hole calibration controls.
+- Model the installed `28.20 mm` rigid head from the switch power face through
+  the power wall. At the new default depth, `25.2 mm` of that rigid reference
+  extends beyond the exterior wall and remains straight.
+- Remove every depth dependency on a rear service cavity, rear catch-release
+  aisle, or rear cover-pin boss. Cover-retention geometry must fit within the
+  new `153.5 mm` outline and must not increase the power-side depth.
+- Preserve four tapered alignment pins and matching female sockets, but allow
+  the power-side pair to move from their previous Y positions. They are cover
+  alignment features, not external switch sockets, and may overlap the switch
+  footprint in XY only when their complete Z envelopes remain clear of the
+  switch and its removal path.
+- Preserve two positive, tool-free PLA-oriented cover catches. Relocate or
+  reorient them as needed so their complete flexure, engagement, and release
+  geometry remains inside the shortened outline, clears the switch, power hole,
+  cables, vents, alignment sockets, and vertical-support interfaces, and does
+  not depend on pin friction for retention.
+- Shorten the bottom tray, top cover, cover skirt, rear wall, top vents,
+  stabilizer-foot placement, and printable-layout bounds together. Do not crop
+  only the top cover or leave a mismatched tray extension.
+
+### Preserved Behavior And Overrides
+
+- Preserve switch fit and removal, exactly three cable-service apertures, the
+  two Ethernet lay-in slots, the round power-head pass-through, cable storage,
+  hourglass guides, `15.0 mm` minimum cable centerline bend radius, ventilation,
+  horizontal and both vertical orientations, detachable feet, render modes, and
+  Bambu Lab-friendly printable orientation.
+- Preserve the existing pin diameters, tapered tips, socket clearance, catch
+  flexure section, engagement, interference, and release-access defaults unless
+  a later approved iteration explicitly changes those retention values.
+- This iteration overrides the earlier requirement to keep the rear alignment
+  pin/socket pair and opposed catches at their existing Y locations. Their count
+  and retention roles remain unchanged, but their placement must follow the
+  shortened outline.
+- No additional rear hardware socket, connector cavity, or cable-bend allowance
+  may be introduced. The external AC adapter remains outside the enclosure.
+
+### Constraints, Assumptions, And Impact
+
+- The `153.5 mm` default depth assumes the approved `75.5 mm` switch depth,
+  `0.6 mm` power-side clearance, and `2.4 mm` wall. Adjusting those inputs may
+  change the derived enclosure depth.
+- The shortened rear region makes cover retention more tightly coupled to the
+  switch-height and removal-path keepouts. Retention geometry must be derived
+  and asserted rather than placed using stale absolute Y positions.
+- Relocated alignment sockets may sit above the switch footprint only if they do
+  not touch the switch, obstruct insertion/removal, weaken the power wall, or
+  create unsupported printable geometry.
+- Rendered geometry can establish nominal clearance and engagement, but physical
+  latch force, printed-hole fit, switch insertion, fatigue, and thermal behavior
+  still require a test print and hardware validation.
+
+### Acceptance And Validation Delta
+
+- The default outer tray and cover depth is exactly `153.5 mm`, and the exterior
+  power wall is exactly `3.0 mm` behind the switch power face.
+- The tray and top cover share the same shortened power-side outline with no
+  unused rear cover shelf or tray extension.
+- The `28.20 mm` rigid power-head reference starts at the switch input, passes
+  through the `10.0 mm` round hole, protrudes `25.2 mm` beyond the exterior wall,
+  and does not bend.
+- All four alignment pins/sockets and both positive catches remain connected,
+  accessible, non-intersecting, and within the shortened enclosure bounds.
+- The switch reference does not intersect relocated retention geometry and has a
+  clear installation and removal path with the cover removed.
+- Horizontal assembly, both vertical assemblies, and printable layout render
+  within the repository's `15`-second limit. Geometry inspection confirms intact
+  power-wall material, unobstructed apertures and vents, stable feet, connected
+  printable parts, and the expected reduced layout depth.
+- `README.md` documents the `153.5 mm` outer depth, `3.0 mm` rear extension,
+  `25.2 mm` external rigid-head length, relocated cover retention, and the
+  remaining slicer, test-print, and physical-fit limitations.
+
 ## Iteration: Compact Power-Head Pass-Through And Hourglass Guides (2026-07-22)
 
 ### Purpose And Requested Delta
