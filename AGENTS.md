@@ -30,7 +30,14 @@ These instructions apply to this OpenSCAD design repository.
 
 ## Validation
 
-This project does not require QA or unit tests unless a spec or user request explicitly asks for them.
+Unit tests are not allowed in this repository. Do not create or run unit tests,
+even when a generic workflow would normally require them. Automatically mark
+the unit-test and conventional test-first phases as not applicable and skip
+them for all work in this repository.
+
+This does not waive repository validation requirements. OpenSCAD assertions,
+bounded renders, geometry inspection, and `git diff --check` remain applicable
+when required by the changed scope, an approved spec or plan, or a user request.
 
 OpenSCAD is installed in the local environment and may be used for implementation support, fit inspection, and QA.
 
