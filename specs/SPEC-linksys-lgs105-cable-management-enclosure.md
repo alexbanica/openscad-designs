@@ -2,6 +2,85 @@
 
 Status: Approved
 
+## Iteration: Compact Power-Head Pass-Through And Hourglass Guides (2026-07-22)
+
+### Purpose And Requested Delta
+
+Correct two physical-fit problems reported from the current enclosure:
+
+- the rigid part of the installed DC adapter extends `28.20 mm` beyond the part
+  inserted into the switch, so keeping the complete rigid head inside the rear
+  service cavity wastes enclosure depth and still leaves poor routing clearance;
+- the straight cylindrical cable-routing guides are too large near the tray's
+  female cover-pin sockets, preventing the cables and their connected ends from
+  fitting comfortably around the guides.
+
+### Final Behavior Added By This Iteration
+
+- Replace the power-side open-topped lay-in slot with one round, bounded
+  pass-through hole through the power wall.
+- Size the default power hole to `10.0 mm` diameter for the user-measured
+  approximately `9.0 mm` power head, providing `0.5 mm` nominal radial clearance
+  while keeping the diameter adjustable for printed-hole calibration.
+- Align the hole with the switch's DC input: its center is `21.0 mm` inward from
+  the switch's visual right margin when looking directly at the exterior power
+  face, and its vertical center follows the switch power-input/body centerline.
+  Because source X is defined from the Ethernet-side view, exterior power-face
+  visual right maps toward lower X: the default center is derived as
+  `switch_origin_x_mm + 21.0 mm`, not from the switch's maximum-X edge. The
+  default vertical center is `switch_origin_z_mm + switch_height_mm / 2`.
+- Allow the rigid `28.20 mm` power head and cable to pass partly through the
+  power wall and remain outside the enclosure. The external AC adapter remains
+  outside and the design does not require the rigid head to bend.
+- Remove the adapter-length-derived `30.0 mm` rear service cavity. Reduce the
+  default enclosure depth to the smallest derived power-side clearance that
+  preserves switch fit, the complete positive-catch release geometry, rear
+  cover-pin sockets, wall continuity, ventilation, and printable support-foot
+  interfaces. The new default outer depth must be strictly less than the current
+  `183.5 mm` outer depth.
+- Replace each approximately `34.8 mm` diameter straight cylindrical routing
+  guide with a mild hourglass guide. The default maximum diameter at the lower
+  and upper retaining shoulders is `28.0 mm`, and the deliberately fat waist is
+  `26.0 mm` diameter rather than a sharply narrowed hourglass stem.
+- Use smooth, support-free transitions between each `26.0 mm` waist and
+  `28.0 mm` shoulder. The complete guide remains joined to the tray floor,
+  printable upright, and free of sharp cable-contact edges.
+- Preserve at least the existing `15.0 mm` cable centerline bend radius for both
+  the round uplink and flat device bundle. Guide-solid radius and cable
+  centerline bend radius must therefore be modeled as distinct derived values.
+- Keep the four existing alignment pin/socket locations and the two positive
+  cover catches. The reduced guide envelope must visibly clear the female tray
+  sockets and leave usable cable space around them.
+
+### Preserved Behavior And Impact
+
+- Preserve exactly three cable-service apertures: two Ethernet lay-in slots and
+  one round DC power-head pass-through hole.
+- Preserve switch fit and retention, Ethernet cable counts and profiles, cable
+  storage, the uplink/device divider, ventilation, cover retention, stabilizer
+  feet, horizontal and vertical placement, render modes, printable layout, and
+  Bambu Lab P2S/AMS 2 Pro compatibility except where the reduced depth requires
+  derived repositioning.
+- Recalculate rear cover-retention, stabilizer-foot, vent, route-preview, and
+  printable-layout positions from the reduced enclosure depth; do not retain
+  stale absolute Y positions.
+- Treat `10.0 mm` as a printable starting diameter. A test coupon or physical
+  fit check may require adjustment for the actual printer and power head.
+
+### Validation And Documentation Delta
+
+- Render and visually inspect the permitted horizontal assembly, both vertical
+  assemblies, and printable layout within the repository's `15`-second limits.
+- Confirm the power hole is a real round through-hole, is on the visual right at
+  the measured `21.0 mm` center offset, aligns vertically with the switch power
+  input, and accepts the `9.0 mm` reference envelope without requiring the
+  `28.20 mm` rigid length to remain inside.
+- Confirm both hourglass guides clear all female tray sockets, remain connected
+  and support-free, and preserve the `15.0 mm` minimum cable centerline radius.
+- Update `README.md` with the measured power-head dimensions and offset, power
+  insertion procedure, reduced-depth behavior, hourglass defaults, calibration
+  warning, and revised three-aperture contract.
+
 ## Super-Agent Iteration: PLA-Friendly Cover Pins And Catches (2026-07-21)
 
 ### Purpose And Requested Behavior
@@ -119,7 +198,7 @@ block the switch's passive ventilation.
 - Fix the switch horizontally and vertically without modifying the metal switch
   body.
 - Provide exactly three cable-service apertures:
-  - one power-cable aperture on the power-input side,
+  - one round power-head pass-through aperture on the power-input side,
   - one uplink Ethernet cable aperture on the Ethernet side,
   - one shared device-cable aperture for four Ethernet cables beside the uplink
     aperture on the same side.
@@ -161,9 +240,12 @@ block the switch's passive ventilation.
 - **Lay-in aperture:** an open-topped tray-wall slot that accepts a cable without
   passing its connector through the wall; the installed top cover closes the
   open side and turns it into a bounded pass-through opening.
+- **Power-head pass-through aperture:** the bounded round opening in the power
+  wall through which the approximately `9.0 mm` DC head can be inserted, allowing
+  part of its rigid length and cable to remain outside the enclosure.
 - **Connector access mechanism:** removal of the complete top cover, which opens
-  every lay-in slot and exposes the switch ports so RJ45 heads can be placed
-  inside the enclosure without fitting through a cable-size wall opening.
+  both Ethernet lay-in slots and exposes the switch ports so RJ45 heads can be
+  placed inside the enclosure without fitting through a cable-size wall opening.
 - **Cable-storage compartment:** the enclosed volume adjacent to the Ethernet
   ports where excess cable is routed around bend guides.
 - **Necessary exposed length:** the cable length the user leaves outside the
@@ -220,6 +302,10 @@ as design inputs:
 - Total connected Ethernet cable length: `1500 mm`.
 - Uplink and device cables leave from the same enclosure side.
 - Power leaves from the opposite enclosure side.
+- Rigid DC adapter length beyond the inserted portion: `28.20 mm`.
+- Maximum measured DC power-head diameter: approximately `9.0 mm`.
+- DC input center: `21.0 mm` inward from the switch's visual right margin when
+  looking directly at the exterior power face.
 
 The user identified the device cables as flat and the uplink as round but did
 not provide measured RJ45 head or molded-boot dimensions. Initial adjustable
@@ -233,6 +319,10 @@ planning assumptions are:
   `8.0 mm x 7.0 mm`, supporting a default four-cable stack of
   `6.0 mm x 5.6 mm` with clearance.
 - Minimum routing-guide bend radius: `15.0 mm`.
+- Power-head pass-through diameter: `10.0 mm`, an adjustable starting value
+  providing `0.5 mm` nominal radial clearance around the measured head.
+- Hourglass routing-guide shoulder diameter: `28.0 mm`.
+- Hourglass routing-guide waist diameter: `26.0 mm`.
 - Switch fit clearance on each horizontal side: `0.6 mm`.
 - Switch fit clearance above the body: `0.8 mm`.
 
@@ -286,10 +376,10 @@ source.
   removal path.
 - Cover retention must include positive, tool-free snap engagement independent
   of the stabilizer feet, switch body, and cables.
-- Ethernet connectors and the power connector must be installed with the top
-  removed; the design must not require a connector body to pass through a
-  cable-size aperture.
-- With the cover removed, all three cable slots must be open from above so an
+- Ethernet connectors must be installed with the top removed and must not pass
+  through a cable-size opening. The DC head is intentionally inserted through
+  its separate `10.0 mm` round power aperture.
+- With the cover removed, both Ethernet cable slots must be open from above so an
   RJ45 head can be placed inside the enclosure and the attached jacket can then
   be lowered into its slot.
 - No default cable route may require a bend tighter than the adjustable minimum
@@ -307,8 +397,9 @@ source.
   enclosure wall.
 - The uplink and shared device-bundle apertures are adjacent openings in that
   Ethernet-side enclosure wall.
-- The power aperture is centered from an adjustable position on the opposite
-  enclosure wall and routes only the low-voltage DC lead.
+- The round power aperture is aligned with the DC input on the opposite enclosure
+  wall, `21.0 mm` inward from the switch's visual right margin and vertically on
+  the switch power-input/body centerline.
 - The default exterior is functional and simplified rather than a cosmetic copy
   of the Linksys metal housing.
 
@@ -318,18 +409,19 @@ source.
   assembled configuration.
 - Each aperture is a real pass-through opening through its wall, not a recess or
   a subtraction that terminates inside wall material.
-- All three apertures use lay-in tray-wall slots closed by the installed top
-  cover.
+- The two Ethernet apertures use lay-in tray-wall slots closed by the installed
+  top cover. The power aperture is a permanently bounded round through-hole.
 - The uplink aperture retains the one round uplink cable without sharing its
   opening with device cables.
 - The device aperture accommodates all four flat device cables as one stacked or
   controlled compact bundle without crushing them; it does not create four
   separate enclosure exits.
-- The installed cover and its locating skirt provide relief above all three
+- The installed cover and its locating skirt provide relief above both Ethernet
   slots so they close the open side without reducing the approved usable cable
   envelopes.
-- The power aperture accommodates the DC cable without requiring the barrel
-  connector or adapter body to pass through it.
+- The `10.0 mm` power aperture passes the approximately `9.0 mm` DC head and
+  allows some or all of its `28.20 mm` rigid external length to remain beyond the
+  enclosure wall.
 - Vent holes are permitted in addition to these three service apertures and are
   visually and functionally distinct from them.
 
@@ -352,6 +444,9 @@ source.
   positioned to support loops rather than sharp folds.
 - Routing guides use the adjustable minimum bend radius and have no cable-contact
   edge sharper than the modeled rounding allowance.
+- Both routing guides use a mild `28.0 mm` shoulder / `26.0 mm` waist hourglass
+  profile, clear the female cover-pin sockets, and retain cables without reducing
+  either cable route below its `15.0 mm` centerline bend radius.
 - Representative routing distinguishes one round uplink from four flat device
   cables and does not render all five cables as round cylinders.
 - The storage area supports routing the stated five connected cables with a
@@ -382,7 +477,8 @@ source.
   require destructive flexing or permanent deformation.
 - The cover retention is independent of the switch body and cables.
 - With the cover removed, the switch, all RJ45 plugs, the power connector, the
-  complete cable-storage area, and all three lay-in apertures are accessible.
+  complete cable-storage area, both Ethernet lay-in apertures, and the round power
+  pass-through are accessible.
 - The open cover state is the connector access mechanism: RJ45 heads are placed
   inside and connected before the cable jackets are lowered into the uplink and
   shared-device slots.
@@ -458,7 +554,10 @@ The source must expose at least these groups near the top:
 - Cable count, round-uplink diameter, flat-device width and thickness, total
   storage allowance, and minimum bend radius.
 - Cable-storage compartment depth and routing-guide geometry.
-- Uplink, device-bundle, and power aperture dimensions and positions.
+- Routing-guide shoulder diameter, waist diameter, height profile, and derived
+  cable centerline radii.
+- Uplink and device-bundle aperture dimensions and positions, plus power-head
+  diameter, clearance, visual-right offset, and vertical position.
 - LED sightline dimensions and position.
 - Bottom, side, and top ventilation dimensions, counts, spacing, and offsets.
 - Cover-retention geometry and fit clearance.
@@ -485,6 +584,9 @@ The source must expose at least these groups near the top:
 - Two small detachable support feet are acceptable additions to the existing
   two-part serviceable enclosure.
 - The AC adapter remains outside the enclosure.
+- The approximately `9.0 mm` DC head can be passed through a default `10.0 mm`
+  printed hole; printer calibration and the actual maximum head diameter may
+  require adjustment.
 - The user will arrange cables with the cover removed rather than pulling RJ45
   connector bodies through finished apertures.
 
@@ -503,6 +605,14 @@ The source must expose at least these groups near the top:
   stiffness, and necessary exposed run lengths.
 - Tight cable routing can damage performance or cable life; minimum bend radius
   and rounded guide surfaces are hard acceptance criteria.
+- Shrinking the rear cavity can collide with positive catches, cover-pin sockets,
+  support feet, vents, or the switch. The reduced depth must be derived from all
+  of those keepouts rather than from the power-head length alone.
+- A printed `10.0 mm` hole may be undersized, and the measured power head may not
+  be perfectly circular; a physical insertion test remains required.
+- Confusing visual right on the exterior power face with source-coordinate right
+  when viewed from the Ethernet face can mirror the power hole away from the DC
+  input; the coordinate conversion and preview must be checked explicitly.
 - Excessively open ventilation can weaken the cover, while insufficient airflow
   can retain heat. Default patterns must balance open area and continuous
   structure.
@@ -540,6 +650,15 @@ The source must expose at least these groups near the top:
   on the opposite side.
 - All three service apertures visibly pass completely through their enclosure
   walls and remain bounded when the cover is installed.
+- The power aperture is a round `10.0 mm` default hole centered `21.0 mm` inward
+  from the switch's visual right margin and vertically aligned with the switch
+  power-input/body centerline.
+- The approximately `9.0 mm` power head can pass through the power hole, the
+  rigid `28.20 mm` section may remain partly outside, and no bend of that rigid
+  section is required.
+- The default outer enclosure depth is strictly less than the current
+  `183.5 mm` while preserving all rear retention, wall, vent, and support
+  keepouts.
 - The five Ethernet cables can be connected and laid into their apertures without
   passing RJ45 plug bodies through the openings.
 - The four flat device cables share one lay-in aperture and are not represented
@@ -549,6 +668,9 @@ The source must expose at least these groups near the top:
 - Representative routing models four flat `250 mm` device cables and one round
   `500 mm` uplink cable, uses smooth guides, and has no bend tighter than the
   configured minimum radius.
+- Both guides have smooth, printable mild-hourglass profiles with default
+  `28.0 mm` shoulders and a `26.0 mm` waist, clear the female tray cover-pin
+  sockets, and preserve the configured cable centerline bend radius.
 - Stored cable is covered in the assembled mode, while individually adjustable
   external cable lengths can remain outside.
 - Status LEDs remain observable without opening the enclosure.
@@ -588,13 +710,17 @@ The source must expose at least these groups near the top:
   - the switch envelope does not intersect tray, cover, or retention geometry;
   - retention exists in all three axes and does not block service areas;
   - all three cable-service apertures fully pierce their walls;
-  - the cover closes the open side of every lay-in aperture without pinching its
-    cable envelope;
+  - the cover closes the open side of both Ethernet lay-in apertures without
+    pinching their cable envelope;
+  - the round power aperture is mirrored correctly from the exterior power-face
+    measurement, passes the power-head reference, and remains clear of the cover;
   - the shared device aperture fits a four-flat-cable bundle and remains open
     from above with the cover removed;
   - the cover and skirt do not pinch the round uplink or flat device bundle;
   - representative flat and round cables follow the configured minimum bend
     radius;
+  - the hourglass guide shoulders and waist clear all cover-pin sockets and have
+    no unsupported or floating geometry;
   - ventilation openings are real, unobstructed, and structurally separated;
   - each positive cover catch visibly engages a matching capture shoulder and
     exposes a deliberate release path;
@@ -608,7 +734,8 @@ The source must expose at least these groups near the top:
   do not intersect side-vent keepouts, and all four printable objects fit the
   configured Bambu Lab P2S plate.
 - Measure the actual switch, round cable diameter, flat cable width/thickness,
-  and RJ45 head/boot envelope before final printing.
+  RJ45 head/boot envelope, power-head maximum diameter, and printed power-hole
+  diameter before final printing.
 - Inspect the sliced parts in Bambu Studio for build-plate fit, unsupported
   bridges, wall continuity, and practical print orientation.
 - Perform a physical test fit and low-temperature operational observation before
@@ -630,9 +757,12 @@ Update `README.md` to document:
 - the new design file and supported LGS105 default body assumption;
 - the EAN/version ambiguity and required physical measurement check;
 - the three cable-service apertures and their side assignment;
+- the round power-head pass-through, `28.20 mm` rigid length, approximately
+  `9.0 mm` head diameter, `21.0 mm` visual-right offset, and calibration warning;
 - switch retention and service procedure;
 - cable-storage capacity, cable-length inputs, bend-radius controls, and routing
   procedure;
+- the smaller mild-hourglass guide geometry and its cover-socket clearance;
 - round-uplink and flat-device cable parameters, the single shared device exit,
   and removable-cover connector insertion procedure;
 - ventilation strategy and keepouts;

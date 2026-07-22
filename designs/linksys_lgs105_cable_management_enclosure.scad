@@ -67,25 +67,29 @@ cable_contact_rounding_mm = 0.5;
 // Cable-storage compartment and routing-guide geometry
 cable_storage_depth_mm = 68.0;
 cable_storage_switch_gap_mm = 4.0;
-routing_guide_radius_mm = minimum_cable_bend_radius_mm;
-routing_guide_wall_mm = 2.4;
+routing_guide_shoulder_diameter_mm = 28.0;
+routing_guide_waist_diameter_mm = 26.0;
 routing_guide_height_mm = 30.9;
 routing_guide_floor_clearance_mm = 0.0;
 routing_guide_edge_clearance_mm = 5.0;
+routing_guide_shoulder_height_mm = 1.5;
+routing_guide_transition_height_mm = 2.0;
+routing_guide_profile_steps = 8;
 uplink_device_divider_thickness_mm = 2.0;
 uplink_device_divider_length_mm = 20.0;
 uplink_device_divider_height_mm = 12.0;
 
-// Uplink, device-bundle, and power lay-in apertures
+// Ethernet lay-in apertures and measured power-head pass-through
 uplink_aperture_width_mm = 6.0;
 uplink_aperture_height_mm = 6.0;
 uplink_aperture_x_mm = 45.0;
 device_aperture_width_mm = 8.0;
 device_aperture_height_mm = 7.0;
 device_aperture_x_mm = 75.0;
-power_aperture_width_mm = 6.0;
-power_aperture_height_mm = 6.0;
-power_aperture_x_mm = 60.5;
+power_head_reference_diameter_mm = 9.0;
+power_head_rigid_length_mm = 28.20;
+power_pass_through_diameter_mm = 10.0;
+power_input_visual_right_offset_mm = 21.0;
 aperture_side_clearance_mm = 0.4;
 aperture_edge_rounding_mm = 2.0;
 
@@ -164,23 +168,10 @@ reference_transparency = 0.45;
 // ======================================================
 
 switch_bay_width_mm = switch_width_mm + 2 * switch_side_clearance_mm;
-// The DC connector envelope is not known. Reserve a conservative service
-// cavity from the approved cable-bend geometry instead of inventing a connector
-// dimension, while retaining the normal fit clearance at both switch ends.
-power_connector_service_depth_mm = 2 * minimum_cable_bend_radius_mm;
-switch_bay_depth_mm = switch_depth_mm
-    + 2 * switch_end_clearance_mm
-    + power_connector_service_depth_mm;
+geometry_overlap_mm = 0.1;
 switch_bay_height_mm = switch_height_mm + switch_top_clearance_mm;
 enclosure_inner_width_mm = switch_bay_width_mm;
-enclosure_inner_depth_mm = cable_storage_depth_mm
-    + cable_storage_switch_gap_mm
-    + switch_bay_depth_mm;
 enclosure_outer_width_mm = enclosure_inner_width_mm + 2 * wall_thickness_mm;
-enclosure_outer_depth_mm = enclosure_inner_depth_mm + 2 * wall_thickness_mm;
-enclosure_outer_height_mm = tray_floor_thickness_mm
-    + tray_wall_height_mm
-    + cover_thickness_mm;
 
 switch_origin_x_mm = wall_thickness_mm + switch_side_clearance_mm;
 switch_origin_y_mm = wall_thickness_mm
@@ -191,6 +182,65 @@ switch_origin_z_mm = tray_floor_thickness_mm;
 switch_center_x_mm = switch_origin_x_mm + switch_width_mm / 2;
 switch_center_y_mm = switch_origin_y_mm + switch_depth_mm / 2;
 switch_top_z_mm = switch_origin_z_mm + switch_height_mm;
+
+cover_pin_socket_diameter_mm = cover_pin_diameter_mm + 2 * cover_retention_clearance_mm;
+cover_socket_outer_diameter_mm = cover_pin_socket_diameter_mm
+    + 2 * cover_socket_wall_mm;
+cover_pin_center_inset_mm = max(
+    cover_pin_inset_mm,
+    wall_thickness_mm
+        + cover_fit_clearance_mm
+        + wall_thickness_mm
+        + cover_socket_outer_diameter_mm / 2
+        + cover_fit_clearance_mm
+);
+cover_latch_center_y_mm = switch_origin_y_mm
+    + switch_depth_mm
+    + switch_end_clearance_mm
+    + cover_latch_release_access_width_mm / 2;
+cover_latch_release_near_y_mm = cover_latch_center_y_mm
+    - cover_latch_release_access_width_mm / 2;
+cover_latch_release_far_y_mm = cover_latch_center_y_mm
+    + cover_latch_release_access_width_mm / 2;
+rear_cover_socket_center_y_mm = cover_latch_release_far_y_mm
+    + wall_thickness_mm
+    + cover_socket_outer_diameter_mm / 2;
+rear_cover_socket_hole_far_y_mm = rear_cover_socket_center_y_mm
+    + cover_pin_socket_diameter_mm / 2;
+power_side_switch_clearance_depth_mm = switch_origin_y_mm
+    + switch_depth_mm
+    + switch_end_clearance_mm
+    + wall_thickness_mm;
+power_side_release_clearance_depth_mm = switch_origin_y_mm
+    + switch_depth_mm
+    + switch_end_clearance_mm
+    + cover_latch_release_access_width_mm
+    + wall_thickness_mm;
+power_side_top_vent_clearance_depth_mm = switch_center_y_mm
+    + top_vent_length_mm / 2
+    + wall_thickness_mm;
+power_side_support_clearance_depth_mm = switch_origin_y_mm
+    + switch_depth_mm
+    + switch_end_clearance_mm;
+power_side_rear_socket_clearance_depth_mm =
+    rear_cover_socket_hole_far_y_mm + wall_thickness_mm;
+enclosure_outer_depth_mm = max([
+    power_side_switch_clearance_depth_mm,
+    power_side_release_clearance_depth_mm,
+    power_side_top_vent_clearance_depth_mm,
+    power_side_support_clearance_depth_mm,
+    power_side_rear_socket_clearance_depth_mm
+]);
+enclosure_inner_depth_mm = enclosure_outer_depth_mm - 2 * wall_thickness_mm;
+switch_bay_depth_mm = enclosure_inner_depth_mm
+    - cable_storage_depth_mm
+    - cable_storage_switch_gap_mm;
+power_side_clearance_mm = switch_bay_depth_mm
+    - switch_depth_mm
+    - 2 * switch_end_clearance_mm;
+enclosure_outer_height_mm = tray_floor_thickness_mm
+    + tray_wall_height_mm
+    + cover_thickness_mm;
 
 ethernet_wall_y_mm = 0;
 power_wall_y_mm = enclosure_outer_depth_mm - wall_thickness_mm;
@@ -205,9 +255,16 @@ aperture_bottom_z_mm = min(
     uplink_aperture_bottom_z_mm,
     device_aperture_bottom_z_mm
 );
-power_aperture_bottom_z_mm = tray_floor_thickness_mm
-    + tray_wall_height_mm
-    - power_aperture_height_mm;
+power_pass_through_center_x_mm = switch_origin_x_mm
+    + power_input_visual_right_offset_mm;
+power_pass_through_center_z_mm = switch_origin_z_mm + switch_height_mm / 2;
+power_pass_through_radius_mm = power_pass_through_diameter_mm / 2;
+power_pass_through_cut_start_y_mm = enclosure_outer_depth_mm
+    - wall_thickness_mm
+    - geometry_overlap_mm;
+power_pass_through_cut_depth_mm = wall_thickness_mm + 2 * geometry_overlap_mm;
+power_pass_through_cut_end_y_mm = power_pass_through_cut_start_y_mm
+    + power_pass_through_cut_depth_mm;
 // Keep a full wall-thickness web below the lay-in slots wherever the LED
 // sightline overlaps them in X.
 led_sightline_safe_center_z_mm = min(
@@ -217,23 +274,36 @@ led_sightline_safe_center_z_mm = min(
         - led_sightline_height_mm / 2
 );
 
-routing_guide_outer_radius_mm = routing_guide_radius_mm + routing_guide_wall_mm;
+routing_guide_shoulder_radius_mm = routing_guide_shoulder_diameter_mm / 2;
+routing_guide_waist_radius_mm = routing_guide_waist_diameter_mm / 2;
 routing_guide_z_mm = tray_floor_thickness_mm + routing_guide_floor_clearance_mm;
-geometry_overlap_mm = 0.1;
-routing_guide_actual_rounding_mm = min(
+routing_guide_top_rounding_mm = min(
     cable_contact_rounding_mm,
-    routing_guide_height_mm / 2
+    routing_guide_shoulder_height_mm
 );
 routing_guide_geometry_base_z_mm = routing_guide_z_mm - geometry_overlap_mm;
-routing_guide_full_face_bottom_z_mm = routing_guide_geometry_base_z_mm;
-routing_guide_full_face_top_z_mm = routing_guide_geometry_base_z_mm
-    + routing_guide_height_mm
-    - routing_guide_actual_rounding_mm;
+routing_guide_lower_transition_start_z_mm = routing_guide_shoulder_height_mm;
+routing_guide_lower_transition_end_z_mm =
+    routing_guide_lower_transition_start_z_mm
+        + routing_guide_transition_height_mm;
+routing_guide_upper_transition_end_z_mm = routing_guide_height_mm
+    - routing_guide_shoulder_height_mm;
+routing_guide_upper_transition_start_z_mm =
+    routing_guide_upper_transition_end_z_mm
+        - routing_guide_transition_height_mm;
+routing_guide_waist_center_z_mm = routing_guide_geometry_base_z_mm
+    + (routing_guide_lower_transition_end_z_mm
+        + routing_guide_upper_transition_start_z_mm) / 2;
+routing_guide_profile_max_slope =
+    (routing_guide_shoulder_radius_mm - routing_guide_waist_radius_mm)
+        * PI / (2 * routing_guide_transition_height_mm);
+routing_guide_profile_support_angle_deg = atan(
+    routing_guide_profile_max_slope
+);
 routing_guide_cap_top_z_mm = routing_guide_geometry_base_z_mm
     + routing_guide_height_mm;
 cover_installed_z_mm = tray_floor_thickness_mm + tray_wall_height_mm;
 cover_total_height_mm = cover_thickness_mm + cover_skirt_depth_mm;
-cover_pin_socket_diameter_mm = cover_pin_diameter_mm + 2 * cover_retention_clearance_mm;
 
 retention_rail_intrusion_mm = min(
     switch_rail_width_mm,
@@ -256,32 +326,18 @@ cover_skirt_inner_width_mm = cover_skirt_outer_width_mm
     - 2 * wall_thickness_mm;
 cover_skirt_inner_depth_mm = cover_skirt_outer_depth_mm
     - 2 * wall_thickness_mm;
-cover_socket_outer_diameter_mm = cover_pin_socket_diameter_mm
-    + 2 * cover_socket_wall_mm;
 cover_pin_body_height_mm = cover_pin_height_mm
     - cover_pin_tip_taper_height_mm;
-cover_pin_center_inset_mm = max(
-    cover_pin_inset_mm,
-    wall_thickness_mm
-        + cover_fit_clearance_mm
-        + wall_thickness_mm
-        + cover_socket_outer_diameter_mm / 2
-        + cover_fit_clearance_mm
-);
 cover_retention_x_positions_mm = [
     cover_pin_center_inset_mm,
     enclosure_outer_width_mm - cover_pin_center_inset_mm
 ];
 cover_retention_y_positions_mm = [
     cover_pin_center_inset_mm,
-    enclosure_outer_depth_mm - cover_pin_center_inset_mm
+    rear_cover_socket_center_y_mm
 ];
 // Opposed catches occupy the clear power-service cavity beyond the switch.
 // Their through-wall windows are also the deliberate finger-release access.
-cover_latch_center_y_mm = switch_origin_y_mm
-    + switch_depth_mm
-    + switch_end_clearance_mm
-    + cover_latch_release_access_width_mm / 2;
 cover_latch_arm_outer_x_positions_mm = [
     wall_thickness_mm + cover_fit_clearance_mm,
     enclosure_outer_width_mm
@@ -301,10 +357,10 @@ cover_latch_release_bottom_z_mm = cover_latch_shoulder_z_mm
     - cover_latch_release_access_height_mm;
 cover_latch_arm_width_mm = cover_latch_release_access_width_mm
     - 2 * cover_latch_flexure_side_gap_mm;
-cover_latch_release_near_y_mm = cover_latch_center_y_mm
-    - cover_latch_release_access_width_mm / 2;
-cover_latch_release_far_y_mm = cover_latch_center_y_mm
-    + cover_latch_release_access_width_mm / 2;
+rear_cover_socket_near_y_mm = cover_retention_y_positions_mm[1]
+    - cover_socket_outer_diameter_mm / 2;
+rear_cover_socket_far_y_mm = cover_retention_y_positions_mm[1]
+    + cover_socket_outer_diameter_mm / 2;
 
 // Each long tray side carries the same two recessed snap sockets.  Their
 // complete depth remains inside the side wall, so the tray retains its nominal
@@ -374,6 +430,7 @@ ethernet_aperture_separation_mm = abs(
         device_aperture_x_mm - uplink_aperture_x_mm
     ) - (device_aperture_width_mm + uplink_aperture_width_mm) / 2;
 cable_service_aperture_count = 3;
+ethernet_lay_in_aperture_count = 2;
 
 horizontal_tabletop_footprint_area_mm2 = enclosure_outer_width_mm
     * enclosure_outer_depth_mm;
@@ -413,40 +470,135 @@ printable_layout_fits_bed = printable_layout_width_mm <= print_bed_width_mm
     && printable_layout_depth_mm <= print_bed_depth_mm
     && printable_layout_bed_margin_mm > 0;
 
-// The switch body is an intentional floor-vent keepout.  Place the low inlet
-// bank in the clear cable-storage aisle between the two default cable routes,
-// beyond the guide/loop envelopes.  These clearances are derived only from
-// approved cable and guide geometry rather than an assumed switch vent pattern.
+uplink_reference_z_mm = uplink_aperture_bottom_z_mm
+    + uplink_aperture_height_mm / 2;
+device_bundle_height_mm = device_cable_count * device_cable_thickness_mm;
+device_bundle_bottom_z_mm = device_aperture_bottom_z_mm
+    + (device_aperture_height_mm - device_bundle_height_mm) / 2;
+power_head_reference_inner_y_mm = switch_origin_y_mm + switch_depth_mm;
+power_head_reference_outer_y_mm = power_head_reference_inner_y_mm
+    + power_head_rigid_length_mm;
+power_head_external_protrusion_mm = power_head_reference_outer_y_mm
+    - enclosure_outer_depth_mm;
+// Keep the complete representative routes on their aperture Z profiles. The
+// maximum shoulder envelope protects these paths without a vertical chord/drop.
+reference_cable_z_mm = uplink_reference_z_mm;
+device_route_bundle_bottom_z_mm = device_bundle_bottom_z_mm;
+
+function planar_distance_mm(point_a_mm, point_b_mm) = sqrt(
+    pow(point_a_mm[0] - point_b_mm[0], 2)
+        + pow(point_a_mm[1] - point_b_mm[1], 2)
+);
+function required_axis_offset_mm(hypotenuse_mm, fixed_offset_mm) = sqrt(max(
+    0,
+    pow(hypotenuse_mm, 2) - pow(fixed_offset_mm, 2)
+));
+function smooth_profile_radius_mm(start_radius_mm, end_radius_mm, step_index,
+    step_count) = start_radius_mm
+        + (end_radius_mm - start_radius_mm)
+            * (1 - cos(180 * step_index / step_count)) / 2;
+
+// Solid radii describe the printed guide. Cable-centerline radii separately
+// protect the complete cable profiles from the maximum shoulder envelope.
+uplink_route_radius_mm = routing_guide_shoulder_radius_mm
+    + uplink_cable_diameter_mm / 2;
+device_route_radius_mm = routing_guide_shoulder_radius_mm
+    + device_cable_width_mm / 2;
+uplink_route_outer_envelope_radius_mm = uplink_route_radius_mm
+    + uplink_cable_diameter_mm / 2;
+device_route_outer_envelope_radius_mm = device_route_radius_mm
+    + device_cable_width_mm / 2;
+uplink_guide_center_x_mm = uplink_aperture_x_mm - uplink_route_radius_mm;
+device_guide_center_x_mm = enclosure_outer_width_mm
+    - wall_thickness_mm
+    - routing_guide_edge_clearance_mm
+    - device_route_outer_envelope_radius_mm;
+uplink_route_entry_x_mm = uplink_aperture_x_mm;
+device_route_entry_x_mm = device_guide_center_x_mm - device_route_radius_mm;
+device_transition_shift_x_mm = device_route_entry_x_mm - device_aperture_x_mm;
+device_transition_radius_mm = minimum_cable_bend_radius_mm;
+device_transition_angle_deg = acos(
+    1 - device_transition_shift_x_mm / (2 * device_transition_radius_mm)
+);
+device_transition_end_y_mm = 2 * device_transition_radius_mm
+    * sin(device_transition_angle_deg);
+device_transition_first_center_mm = [
+    device_aperture_x_mm + device_transition_radius_mm,
+    ethernet_wall_y_mm
+];
+device_transition_second_center_mm = [
+    device_route_entry_x_mm - device_transition_radius_mm,
+    device_transition_end_y_mm
+];
+
+cover_socket_radius_mm = cover_socket_outer_diameter_mm / 2;
+route_socket_clearance_mm = cable_contact_rounding_mm;
+route_socket_clearance_assertion_epsilon_mm = max(
+    geometry_overlap_mm / 1000000,
+    route_socket_clearance_mm / 1000000
+);
+device_near_socket_required_y_mm = cover_retention_y_positions_mm[0]
+    + required_axis_offset_mm(
+        device_route_outer_envelope_radius_mm
+            + cover_socket_radius_mm
+            + route_socket_clearance_mm,
+        cover_retention_x_positions_mm[1] - device_guide_center_x_mm
+    );
+reference_route_near_y_mm = max([
+    wall_thickness_mm
+        + routing_guide_edge_clearance_mm
+        + routing_guide_shoulder_radius_mm,
+    device_transition_end_y_mm,
+    device_near_socket_required_y_mm
+]);
+reference_route_far_y_mm = wall_thickness_mm
+    + cable_storage_depth_mm
+    - routing_guide_edge_clearance_mm
+    - routing_guide_shoulder_radius_mm;
+reference_route_left_x_mm = uplink_guide_center_x_mm;
+reference_route_right_x_mm = device_guide_center_x_mm;
+uplink_guide_center_mm = [uplink_guide_center_x_mm, reference_route_near_y_mm];
+device_guide_center_mm = [device_guide_center_x_mm, reference_route_near_y_mm];
+cover_socket_centers_mm = [
+    for (socket_x_mm = cover_retention_x_positions_mm)
+        for (socket_y_mm = cover_retention_y_positions_mm)
+            [socket_x_mm, socket_y_mm]
+];
+routing_guide_centers_mm = [uplink_guide_center_mm, device_guide_center_mm];
+routing_guide_socket_surface_gaps_mm = [
+    for (guide_center_mm = routing_guide_centers_mm)
+        for (socket_center_mm = cover_socket_centers_mm)
+            planar_distance_mm(guide_center_mm, socket_center_mm)
+                - routing_guide_shoulder_radius_mm
+                - cover_socket_radius_mm
+];
+representative_route_outer_radii_mm = [
+    uplink_route_outer_envelope_radius_mm,
+    device_route_outer_envelope_radius_mm
+];
+representative_route_socket_surface_gaps_mm = [
+    for (guide_index = [0 : len(routing_guide_centers_mm) - 1])
+        for (socket_center_mm = cover_socket_centers_mm)
+            planar_distance_mm(
+                routing_guide_centers_mm[guide_index],
+                socket_center_mm
+            ) - representative_route_outer_radii_mm[guide_index]
+                - cover_socket_radius_mm
+];
+
+// The switch body is an intentional floor-vent keepout. Place the low inlet
+// bank in the clear aisle between the two complete representative loop
+// envelopes, including cable thickness and contact clearance.
 ventilation_keepout_clearance_mm = cable_contact_rounding_mm;
 bottom_vent_left_keepout_x_mm = uplink_aperture_x_mm
     + uplink_cable_diameter_mm / 2
     + ventilation_keepout_clearance_mm;
-bottom_vent_right_keepout_x_mm = enclosure_outer_width_mm
-    - wall_thickness_mm
-    - routing_guide_edge_clearance_mm
-    - routing_guide_outer_radius_mm
-    - (routing_guide_outer_radius_mm + device_cable_width_mm / 2)
-    - device_cable_width_mm / 2
+bottom_vent_right_keepout_x_mm = device_guide_center_mm[0]
+    - device_route_outer_envelope_radius_mm
     - ventilation_keepout_clearance_mm;
-bottom_vent_near_keepout_y_mm = max([
-    wall_thickness_mm
-        + routing_guide_edge_clearance_mm
-        + routing_guide_outer_radius_mm
-        + (uplink_aperture_x_mm
-            - (wall_thickness_mm
-                + routing_guide_edge_clearance_mm
-                + routing_guide_outer_radius_mm))
-        + uplink_cable_diameter_mm / 2,
-    wall_thickness_mm
-        + routing_guide_edge_clearance_mm
-        + routing_guide_outer_radius_mm
-        + routing_guide_outer_radius_mm
-        + device_cable_thickness_mm / 2
-        + device_cable_width_mm / 2,
-    wall_thickness_mm
-        + routing_guide_edge_clearance_mm
-        + 2 * routing_guide_outer_radius_mm
-]) + ventilation_keepout_clearance_mm;
+bottom_vent_near_keepout_y_mm = reference_route_near_y_mm
+    + max(representative_route_outer_radii_mm)
+    + ventilation_keepout_clearance_mm;
 bottom_vent_far_keepout_y_mm = wall_thickness_mm
     + cable_storage_depth_mm
     - ventilation_keepout_clearance_mm;
@@ -473,34 +625,6 @@ top_vent_right_x_mm = top_vent_center_x_mm + top_vent_bank_half_width_mm;
 top_vent_near_y_mm = top_vent_center_y_mm - top_vent_length_mm / 2;
 top_vent_far_y_mm = top_vent_center_y_mm + top_vent_length_mm / 2;
 
-uplink_reference_z_mm = uplink_aperture_bottom_z_mm
-    + uplink_aperture_height_mm / 2;
-device_bundle_height_mm = device_cable_count * device_cable_thickness_mm;
-device_bundle_bottom_z_mm = device_aperture_bottom_z_mm
-    + (device_aperture_height_mm - device_bundle_height_mm) / 2;
-power_reference_diameter_mm = min(
-    power_aperture_width_mm,
-    power_aperture_height_mm
-) - 2 * aperture_side_clearance_mm;
-power_reference_z_mm = power_aperture_bottom_z_mm
-    + power_aperture_height_mm / 2;
-reference_cable_z_mm = uplink_reference_z_mm;
-device_route_bundle_bottom_z_mm = device_bundle_bottom_z_mm;
-reference_route_left_x_mm = wall_thickness_mm
-    + routing_guide_edge_clearance_mm
-    + routing_guide_outer_radius_mm;
-reference_route_right_x_mm = enclosure_outer_width_mm
-    - wall_thickness_mm
-    - routing_guide_edge_clearance_mm
-    - (routing_guide_outer_radius_mm + device_cable_width_mm / 2)
-    - device_cable_width_mm / 2;
-reference_route_near_y_mm = wall_thickness_mm
-    + routing_guide_edge_clearance_mm
-    + routing_guide_outer_radius_mm;
-reference_route_far_y_mm = wall_thickness_mm
-    + cable_storage_depth_mm
-    - routing_guide_edge_clearance_mm
-    - routing_guide_outer_radius_mm;
 // The approved input order is four device cables followed by one uplink cable.
 // Keep that association explicit so count or length edits fail deterministically
 // instead of silently changing which profile receives which length.
@@ -524,35 +648,6 @@ switch_side_service_y_mm = switch_origin_y_mm;
 // loop about its assigned guide, then continues to the switch-side service
 // region. Cable not consumed by this representative internal route remains
 // available as individually selectable exposed length outside the enclosure.
-uplink_route_radius_mm = routing_guide_outer_radius_mm
-    + uplink_cable_diameter_mm / 2;
-device_route_radius_mm = routing_guide_outer_radius_mm
-    + device_cable_width_mm / 2;
-// Place the uplink guide from the slot, rather than independently from the
-// enclosure edge.  The slot-to-loop leg, full loop, and switch-side leg then
-// all meet the guide's rightmost point with the same +Y tangent.
-uplink_guide_center_mm = [
-    uplink_aperture_x_mm - uplink_route_radius_mm,
-    reference_route_near_y_mm
-];
-device_guide_center_mm = [reference_route_right_x_mm, reference_route_near_y_mm];
-uplink_route_entry_x_mm = uplink_aperture_x_mm;
-device_route_entry_x_mm = device_guide_center_mm[0] - device_route_radius_mm;
-device_transition_shift_x_mm = device_route_entry_x_mm - device_aperture_x_mm;
-device_transition_radius_mm = minimum_cable_bend_radius_mm;
-device_transition_angle_deg = acos(
-    1 - device_transition_shift_x_mm / (2 * device_transition_radius_mm)
-);
-device_transition_end_y_mm = 2 * device_transition_radius_mm
-    * sin(device_transition_angle_deg);
-device_transition_first_center_mm = [
-    device_aperture_x_mm + device_transition_radius_mm,
-    ethernet_wall_y_mm
-];
-device_transition_second_center_mm = [
-    device_route_entry_x_mm - device_transition_radius_mm,
-    device_transition_end_y_mm
-];
 uplink_stored_route_length_mm = reference_route_near_y_mm
     + circular_route_length_mm(uplink_route_radius_mm, 360)
     + switch_side_service_y_mm - reference_route_near_y_mm;
@@ -591,17 +686,48 @@ assert(len(device_cable_lengths_mm) == 4
         && min(device_cable_lengths_mm) == 250
         && max(device_cable_lengths_mm) == 250,
     "Each flat device cable must consume an approved 250 mm length");
-assert(routing_guide_radius_mm >= minimum_cable_bend_radius_mm,
-    "Routing guides violate the configured minimum bend radius");
+assert(routing_guide_shoulder_radius_mm > routing_guide_waist_radius_mm
+        && routing_guide_waist_radius_mm > 0,
+    "Hourglass guide requires a positive waist smaller than its shoulder");
+assert(routing_guide_shoulder_height_mm > 0
+        && routing_guide_transition_height_mm > 0
+        && routing_guide_profile_steps >= 1
+        && floor(routing_guide_profile_steps) == routing_guide_profile_steps,
+    "Hourglass profile dimensions and integer step count must be positive");
+assert(2 * (routing_guide_shoulder_height_mm
+            + routing_guide_transition_height_mm)
+        < routing_guide_height_mm
+        && routing_guide_upper_transition_start_z_mm
+            > routing_guide_lower_transition_end_z_mm,
+    "Two shoulders, two transitions, and a positive waist must fit the guide height");
+assert(routing_guide_top_rounding_mm >= 0
+        && routing_guide_top_rounding_mm <= routing_guide_shoulder_height_mm
+        && routing_guide_top_rounding_mm < routing_guide_shoulder_radius_mm,
+    "Hourglass top rounding must fit its shoulder and radius");
+assert(routing_guide_profile_support_angle_deg >= 0
+        && routing_guide_profile_support_angle_deg <= 45,
+    "Hourglass transition must remain within the support-free 0 to 45 degree profile");
+assert(routing_guide_geometry_base_z_mm < tray_floor_thickness_mm
+        && routing_guide_z_mm <= tray_floor_thickness_mm,
+    "Routing guides must overlap and remain joined to the tray floor");
 assert(uplink_route_radius_mm >= minimum_cable_bend_radius_mm,
     "Round uplink reference violates the minimum bend radius");
 assert(device_route_radius_mm >= minimum_cable_bend_radius_mm,
     "Flat device references violate the minimum bend radius");
 assert(uplink_route_radius_mm
-            == routing_guide_outer_radius_mm + uplink_cable_diameter_mm / 2
+            == routing_guide_shoulder_radius_mm + uplink_cable_diameter_mm / 2
         && device_route_radius_mm
-            == routing_guide_outer_radius_mm + device_cable_width_mm / 2,
-    "Representative loops must engage their routing-guide outer faces");
+            == routing_guide_shoulder_radius_mm + device_cable_width_mm / 2,
+    "Representative cable centerlines must clear the maximum guide envelope");
+assert(len(routing_guide_socket_surface_gaps_mm) == 8
+        && min(routing_guide_socket_surface_gaps_mm)
+            >= cable_contact_rounding_mm,
+    "Both maximum guide shoulders must clear all four female cover sockets");
+assert(len(representative_route_socket_surface_gaps_mm) == 8
+        && min(representative_route_socket_surface_gaps_mm)
+            >= route_socket_clearance_mm
+                - route_socket_clearance_assertion_epsilon_mm,
+    "Representative cable loops must leave usable clearance at every socket");
 assert(uplink_route_entry_x_mm == uplink_aperture_x_mm
         && uplink_guide_center_mm[0] + uplink_route_radius_mm
             == uplink_aperture_x_mm,
@@ -617,6 +743,12 @@ assert(device_guide_center_mm[0] + device_route_radius_mm
             + device_cable_width_mm / 2
         <= enclosure_outer_width_mm - wall_thickness_mm,
     "Flat-device storage loop crosses the right enclosure wall");
+assert(uplink_guide_center_mm[0] - routing_guide_shoulder_radius_mm
+            >= wall_thickness_mm
+        && uplink_guide_center_mm[0]
+            - uplink_route_outer_envelope_radius_mm
+            >= wall_thickness_mm,
+    "Uplink guide or complete storage loop crosses the left enclosure wall");
 assert(uplink_exposed_reference_length_mm >= 0,
     "Round uplink storage route exceeds its approved cable length");
 assert(min(device_exposed_reference_lengths_mm) >= 0,
@@ -628,7 +760,9 @@ assert(uplink_cable_diameter_mm <= uplink_aperture_width_mm
         && uplink_cable_diameter_mm <= uplink_aperture_height_mm,
     "Round uplink does not fit both dimensions of its lay-in slot");
 assert(cable_service_aperture_count == 3,
-    "The enclosure contract requires exactly three cable-service slots");
+    "The enclosure contract requires exactly three cable-service apertures");
+assert(ethernet_lay_in_aperture_count == 2,
+    "Only the two Ethernet cable-service apertures may be lay-in slots");
 assert(uplink_aperture_x_mm - uplink_aperture_width_mm / 2
             >= aperture_safe_left_x_mm
         && uplink_aperture_x_mm + uplink_aperture_width_mm / 2
@@ -640,25 +774,68 @@ assert(uplink_aperture_x_mm - uplink_aperture_width_mm / 2
     "Ethernet slot enters a corner, retention, or perimeter keepout");
 assert(ethernet_aperture_separation_mm >= wall_thickness_mm,
     "Adjacent Ethernet slots require at least one wall-thickness web");
-assert(power_aperture_x_mm - power_aperture_width_mm / 2
+assert(power_pass_through_center_x_mm
+            == switch_origin_x_mm + power_input_visual_right_offset_mm
+        && power_pass_through_center_z_mm
+            == switch_origin_z_mm + switch_height_mm / 2,
+    "Power pass-through center must follow the approved switch-input formulas");
+assert(power_pass_through_diameter_mm >= power_head_reference_diameter_mm
+        && (power_pass_through_diameter_mm
+            - power_head_reference_diameter_mm) / 2 >= 0,
+    "Power pass-through must provide nonnegative radial head clearance");
+assert(power_pass_through_center_x_mm - power_pass_through_radius_mm
             >= aperture_safe_left_x_mm
-        && power_aperture_x_mm + power_aperture_width_mm / 2
+        && power_pass_through_center_x_mm + power_pass_through_radius_mm
             <= aperture_safe_right_x_mm,
-    "Power slot enters a corner, retention, or perimeter keepout");
+    "Power pass-through enters a corner, retention, or perimeter keepout");
+assert(power_pass_through_center_z_mm - power_pass_through_radius_mm
+            >= tray_floor_thickness_mm
+        && power_pass_through_center_z_mm + power_pass_through_radius_mm
+            <= tray_floor_thickness_mm + tray_wall_height_mm,
+    "Power pass-through must remain vertically bounded by the tray wall");
+assert(power_pass_through_cut_start_y_mm
+            <= enclosure_outer_depth_mm - wall_thickness_mm
+        && power_pass_through_cut_end_y_mm >= enclosure_outer_depth_mm,
+    "Power pass-through cut must cross the complete rear wall thickness");
+assert(power_head_reference_inner_y_mm
+            == switch_origin_y_mm + switch_depth_mm
+        && power_head_reference_outer_y_mm
+            == power_head_reference_inner_y_mm + power_head_rigid_length_mm
+        && power_head_external_protrusion_mm > 0,
+    "Installed rigid head must connect at the switch face and protrude outside");
+assert(enclosure_outer_depth_mm
+            == max([
+                power_side_switch_clearance_depth_mm,
+                power_side_release_clearance_depth_mm,
+                power_side_top_vent_clearance_depth_mm,
+                power_side_support_clearance_depth_mm,
+                power_side_rear_socket_clearance_depth_mm
+            ]),
+    "Enclosure depth must equal the maximum preserved-feature clearance");
+assert(rear_cover_socket_near_y_mm - cover_latch_release_far_y_mm
+            >= wall_thickness_mm
+        && rear_cover_socket_hole_far_y_mm + wall_thickness_mm
+            <= enclosure_outer_depth_mm
+        && rear_cover_socket_far_y_mm <= enclosure_outer_depth_mm,
+    "Rear socket requires a latch web and full wall beyond its female hole");
 assert(led_sightline_safe_center_z_mm + led_sightline_height_mm / 2
             + wall_thickness_mm
         <= aperture_bottom_z_mm,
     "LED sightline does not retain a full vertical web below the cable slots");
+assert(reference_cable_z_mm == uplink_reference_z_mm
+        && device_route_bundle_bottom_z_mm == device_bundle_bottom_z_mm,
+    "Representative cable routes must remain at their aperture Z profiles");
 assert(reference_cable_z_mm + uplink_cable_diameter_mm / 2
-            <= routing_guide_full_face_top_z_mm
+            <= routing_guide_geometry_base_z_mm
+                + routing_guide_height_mm - routing_guide_top_rounding_mm
+        && reference_cable_z_mm - uplink_cable_diameter_mm / 2
+            >= routing_guide_geometry_base_z_mm
         && device_route_bundle_bottom_z_mm + device_bundle_height_mm
-            <= routing_guide_full_face_top_z_mm,
-    "Routing-guide full-radius face does not reach both complete cable profiles");
-assert(reference_cable_z_mm - uplink_cable_diameter_mm / 2
-            >= routing_guide_full_face_bottom_z_mm
+            <= routing_guide_geometry_base_z_mm
+                + routing_guide_height_mm - routing_guide_top_rounding_mm
         && device_route_bundle_bottom_z_mm
-            >= routing_guide_full_face_bottom_z_mm,
-    "A complete cable profile falls below the routing-guide full-radius face");
+            >= routing_guide_geometry_base_z_mm,
+    "Maximum guide envelope must protect both complete cable profiles");
 assert(routing_guide_cap_top_z_mm < cover_installed_z_mm,
     "Routing-guide rounded cap enters the installed-cover keepout");
 assert(uplink_reference_z_mm + uplink_cable_diameter_mm / 2
@@ -1024,7 +1201,7 @@ module representative_cable_references() {
         flat_cable_reference_path(
             [
                 [device_route_entry_x_mm, device_transition_end_y_mm,
-                    device_route_z_mm],
+                    device_aperture_z_mm],
                 [device_route_entry_x_mm, device_guide_center_mm[1],
                     device_route_z_mm]
             ],
@@ -1057,11 +1234,12 @@ module representative_cable_references() {
 
     cable_reference_path(
         [
-            [power_aperture_x_mm, power_wall_y_mm, power_reference_z_mm],
-            [power_aperture_x_mm, switch_origin_y_mm + switch_depth_mm,
-                power_reference_z_mm]
+            [power_pass_through_center_x_mm, power_head_reference_inner_y_mm,
+                power_pass_through_center_z_mm],
+            [power_pass_through_center_x_mm, power_head_reference_outer_y_mm,
+                power_pass_through_center_z_mm]
         ],
-        power_reference_diameter_mm,
+        power_head_reference_diameter_mm,
         power_cable_preview_colour
     );
 }
@@ -1167,15 +1345,16 @@ module tray_service_and_sightline_openings() {
         device_aperture_height_mm + aperture_side_clearance_mm,
         aperture_edge_rounding_mm
     );
-    rounded_y_wall_passage(
-        power_aperture_x_mm,
-        enclosure_outer_depth_mm - wall_thickness_mm - aperture_side_clearance_mm,
-        ethernet_passage_depth_mm,
-        power_aperture_bottom_z_mm,
-        power_aperture_width_mm,
-        power_aperture_height_mm + aperture_side_clearance_mm,
-        aperture_edge_rounding_mm
-    );
+    translate([
+        power_pass_through_center_x_mm,
+        power_pass_through_cut_start_y_mm,
+        power_pass_through_center_z_mm
+    ])
+        rotate([-90, 0, 0])
+            cylinder(
+                d = power_pass_through_diameter_mm,
+                h = power_pass_through_cut_depth_mm
+            );
 
     // This closed wall window is a sightline, not a top-open cable aperture.
     rounded_y_wall_passage(
@@ -1272,32 +1451,55 @@ module tray_ventilation_openings() {
     }
 }
 
-module rounded_routing_guide(center_mm) {
-    rounding_mm = routing_guide_actual_rounding_mm;
+module hourglass_routing_guide(center_mm) {
+    profile_points = concat(
+        [[0, 0], [routing_guide_shoulder_radius_mm, 0],
+            [routing_guide_shoulder_radius_mm,
+                routing_guide_lower_transition_start_z_mm]],
+        [for (profile_step = [1 : routing_guide_profile_steps])
+            [smooth_profile_radius_mm(
+                routing_guide_shoulder_radius_mm,
+                routing_guide_waist_radius_mm,
+                profile_step,
+                routing_guide_profile_steps
+            ), routing_guide_lower_transition_start_z_mm
+                + routing_guide_transition_height_mm
+                    * profile_step / routing_guide_profile_steps]],
+        [[routing_guide_waist_radius_mm,
+            routing_guide_upper_transition_start_z_mm]],
+        [for (profile_step = [1 : routing_guide_profile_steps])
+            [smooth_profile_radius_mm(
+                routing_guide_waist_radius_mm,
+                routing_guide_shoulder_radius_mm,
+                profile_step,
+                routing_guide_profile_steps
+            ), routing_guide_upper_transition_start_z_mm
+                + routing_guide_transition_height_mm
+                    * profile_step / routing_guide_profile_steps]],
+        [[routing_guide_shoulder_radius_mm,
+            routing_guide_height_mm - routing_guide_top_rounding_mm]],
+        [for (profile_step = [1 : routing_guide_profile_steps])
+            [routing_guide_shoulder_radius_mm
+                    - routing_guide_top_rounding_mm
+                    + routing_guide_top_rounding_mm
+                        * cos(90 * profile_step / routing_guide_profile_steps),
+                routing_guide_height_mm - routing_guide_top_rounding_mm
+                    + routing_guide_top_rounding_mm
+                        * sin(90 * profile_step / routing_guide_profile_steps)]],
+        [[0, routing_guide_height_mm]]
+    );
     translate([
         center_mm[0],
         center_mm[1],
-        routing_guide_z_mm - geometry_overlap_mm
+        routing_guide_geometry_base_z_mm
     ])
-        union() {
-            cylinder(
-                r = routing_guide_outer_radius_mm,
-                h = routing_guide_height_mm - rounding_mm
-            );
-            cylinder(
-                r = routing_guide_outer_radius_mm - rounding_mm,
-                h = routing_guide_height_mm
-            );
-            translate([0, 0, routing_guide_height_mm - rounding_mm])
-                rotate_extrude()
-                    translate([routing_guide_outer_radius_mm - rounding_mm, 0])
-                        circle(r = rounding_mm);
-        }
+        rotate_extrude(convexity = 10)
+            polygon(profile_points);
 }
 
 module cable_routing_guides() {
-    rounded_routing_guide(uplink_guide_center_mm);
-    rounded_routing_guide(device_guide_center_mm);
+    hourglass_routing_guide(uplink_guide_center_mm);
+    hourglass_routing_guide(device_guide_center_mm);
 }
 
 module uplink_device_exit_divider() {
@@ -1637,8 +1839,8 @@ module cover_skirt() {
                 ]);
         }
 
-        // Installed, these cuts align with the three tray lay-in slots and
-        // clear the locating skirt only. The uncut roof closes every slot.
+        // Installed, these cuts align with the two Ethernet lay-in slots and
+        // clear the locating skirt only. The uncut roof closes both slots.
         translate([
             uplink_aperture_x_mm - uplink_aperture_width_mm / 2,
             skirt_y_mm - aperture_side_clearance_mm,
@@ -1656,19 +1858,6 @@ module cover_skirt() {
         ])
             cube([
                 device_aperture_width_mm,
-                wall_thickness_mm + 2 * aperture_side_clearance_mm,
-                cover_skirt_depth_mm + 4 * geometry_overlap_mm
-            ]);
-        translate([
-            power_aperture_x_mm - power_aperture_width_mm / 2,
-            enclosure_outer_depth_mm
-                - skirt_y_mm
-                - wall_thickness_mm
-                - aperture_side_clearance_mm,
-            cover_thickness_mm - 2 * geometry_overlap_mm
-        ])
-            cube([
-                power_aperture_width_mm,
                 wall_thickness_mm + 2 * aperture_side_clearance_mm,
                 cover_skirt_depth_mm + 4 * geometry_overlap_mm
             ]);

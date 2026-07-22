@@ -4,397 +4,263 @@ Status: Approved
 
 Approved Spec: `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
 
-## Completed Super-Agent Iteration: PLA-Friendly Cover Retention
-
-Status: Approved
-
-This direct, single-agent follow-up was performed after the original plan was
-implemented and pushed in commit `09aee33`. It overrides the original plan only
-for the cover pin and positive-catch geometry described in the matching spec
-iteration.
-
-### Affected Files And Implementation Performed
-
-- Updated `designs/linksys_lgs105_cable_management_enclosure.scad` to replace
-  oversized alignment-pin detents with smaller tapered lead-ins and strengthen
-  the two PLA-oriented positive catches.
-- Updated `README.md` with the alignment-only pin contract, exact revised catch
-  defaults, PLA limitations, and test-print warning.
-- Updated the approved spec and this completed-work plan.
-
-### Validation And Assurance
-
-- `git diff --check`: passed.
-- Lightweight OpenSCAD horizontal-assembly syntax/CSG export with references
-  hidden: passed in less than one second.
-- Skip full renders, visual QA, Bambu Studio inspection, test printing, physical
-  fit, insertion-force measurement, and the ten-cycle latch test.
-- QA phase: skipped by the explicitly requested super-agent workflow.
-- Independent code review: skipped by the explicitly requested super-agent
-  workflow.
-
-### Delivery State And Residual Risk
-
-- Staging status: the SCAD source, README, approved spec, and approved plan are
-  staged as the complete accepted super-agent change set.
-- Commit status: intentionally uncommitted unless the user separately requests a
-  commit.
-- Push status: intentionally unpushed unless the user separately requests a push.
-- Residual risk remains for PLA layer adhesion, catch stiffness, insertion and
-  release force, dimensional tolerance, fatigue, and printed socket strength.
-
 ## Objective
 
-Deliver the final approved Linksys LGS105 enclosure with its existing switch fit,
-cable storage, exactly three lay-in cable-service apertures, round-uplink and
-flat-device routing, ventilation, horizontal use, and serviceability preserved,
-plus:
+Deliver the approved final Linksys LGS105 enclosure behavior while preserving
+the existing switch fit, exactly-three-aperture contract, Ethernet cable
+storage, ventilation, positive cover retention, stabilizer feet, horizontal and
+vertical use, render modes, and Bambu Lab-friendly printable layout.
 
-- reduced-footprint vertical tabletop placement on either long tray side;
-- two identical detachable stabilizer feet that keep cable walls and side vents
-  clear of the tabletop;
-- positive, tool-free cover capture that does not depend only on friction;
-- horizontal and both vertical assembly previews and a four-object printable
-  layout;
-- matching documentation and explicit physical-validation limitations.
+The implementation adds the approved compact power and guide behavior:
 
-Implementation is complete only when the final source, documentation, approved
-spec, and approved plan are reconciled, committed, and pushed. If the required
-printed stability and latch-cycle checks cannot be performed, delivery and the
-commit must remain `DRAFT`.
+- replace the power-side lay-in slot with a `10.0 mm` round pass-through for the
+  approximately `9.0 mm` DC head;
+- place its center `21.0 mm` inward from visual right on the exterior power face,
+  converting that measurement to `switch_origin_x_mm + 21.0 mm` in source X and
+  centering it vertically on the switch body/power input;
+- allow the rigid `28.20 mm` head length to protrude outside and shrink the
+  default outer enclosure depth below `183.5 mm` without compromising rear
+  catches, sockets, walls, vents, or support interfaces;
+- replace both `34.8 mm` straight cylindrical guides with support-free mild
+  hourglass guides having `28.0 mm` shoulders and a `26.0 mm` waist;
+- preserve at least a `15.0 mm` cable centerline bend radius and visibly clear
+  every female tray cover-pin socket.
 
 ## No-Research Boundary
 
-Implementation must use only:
-
-- the approved spec and this approved plan;
-- applicable repository and workspace instructions;
-- current branch and worktree state;
-- the named affected files;
-- the existing Linksys enclosure geometry and local OpenSCAD patterns.
-
-Do not reopen hardware, product, cable, architecture, scope, or planning
-research. Do not invent new measured switch, cable, retention-force, or thermal
-claims. If implementation requires behavior or dimensions outside the approved
-spec, stop for a spec or plan amendment.
+Implementation may use only the approved spec, this approved plan, applicable
+repository/workspace instructions, current branch and worktree state, the named
+files, and minimal existing OpenSCAD/README patterns. Do not reopen product,
+hardware, cable, architecture, scope, or planning research. Do not invent new
+measurements. Stop for a spec or plan amendment if the approved geometry cannot
+be implemented without materially different behavior.
 
 ## Affected Files
 
-- Update `designs/linksys_lgs105_cable_management_enclosure.scad`.
-- Update `README.md`.
-- Include the approved iteration in
-  `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`.
-- Include this approved final-state plan.
+- `designs/linksys_lgs105_cable_management_enclosure.scad`
+- `README.md`
+- `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
+- `specs/PLAN-linksys-lgs105-cable-management-enclosure.md`
 
-No STL, STEP, 3MF, OFF, PNG, or other generated artifact may be added to source
-control. Temporary inspection artifacts belong only under `/tmp`.
+Do not add generated OFF, STL, STEP, 3MF, PNG, or other render/export artifacts
+to source control. Temporary inspection artifacts belong under `/tmp`.
 
 ## Branch And Worktree Policy
 
 - Expected base and delivery branch: current `main`.
 - Direct work on `main` is allowed by repository instructions.
-- Verify `main` and inspect the complete worktree before implementation.
-- Preserve unrelated user changes and stop before touching any overlapping
-  unrelated edit.
-- Workers must not create or switch branches, commit, push, or revert unrelated
-  changes.
+- Inspect `git status --short --branch` before edits and preserve every unrelated
+  user change.
+- Workers must not create or switch branches, commit, push, or edit outside their
+  stated ownership boundary.
+- Shared-file integration is serialized through the main agent.
 
 ## Test-First Applicability
 
-Test-first development is not applicable. This is printable OpenSCAD geometry
-with no business/domain logic or configured automated test harness, and the
-repository explicitly does not require unit tests. Deterministic geometry
-assertions, bounded permitted renders, visual inspection, independent review,
-and `git diff --check` provide the applicable non-physical validation.
+Repository instructions state that QA and unit tests are not required unless a
+spec or user request explicitly asks for them. This is printable-geometry and
+documentation work, not business/domain logic, and the repository has no unit
+test harness for OpenSCAD geometry. Conventional test-first file creation is
+therefore not applicable.
+
+Before production edits, a test-focused worker will prepare a read-only static
+acceptance oracle from the approved spec. Production work depends on that oracle,
+and executable protection will be implemented as OpenSCAD assertions and derived
+invariants in the design source.
 
 ## Dependency-Aware Execution Graph
 
-```text
-D1 universal vertical-support feet
-  -> D2 positive cover capture
-    -> D3 orientation, assertions, and printable-layout integration
-      -> D4 final README documentation
-        -> R1 geometry/spec review ---------+
-        -> R2 docs/parameter review --------+-> scoped fixes -> main-agent QA
-```
+Maximum planned concurrency is one test-focused subagent, one implementation
+subagent, and two code-review subagents. Development units are serialized because
+they share one `.scad` file. Review units may run concurrently after development.
+Every assignment is limited to no more than five minutes of active subagent work.
 
-D1-D3 are serialized because they own the same `.scad` file. D4 begins only
-after the source contract is final. R1 and R2 are independent read-only reviews
-and may run concurrently. Shared-file fixes are assigned one at a time and
-integrated by the main agent.
+### T1 — Static Geometry Acceptance Oracle
 
-## Planned Work Units
+- **Type:** Test-focused, read-only; conventional unit-test files not applicable.
+- **Boundary:** Translate the approved compact-power and hourglass-guide behavior
+  into an exact checklist of formulas, inequalities, collision keepouts, and
+  render observations before production edits.
+- **Owned files:** None; report only.
+- **Dependencies:** None.
+- **Acceptance criteria:** The report covers the `10.0 mm` hole, visual-right
+  mapping formula, vertical center formula, `9.0 mm` reference clearance,
+  `28.20 mm` protrusion behavior, outer depth `< 183.5 mm`, `28.0/26.0 mm` guide
+  diameters, cover-socket clearance, and cable centerline radius `>= 15.0 mm`.
+- **Validation:** Cross-check only against the approved spec and current source;
+  no product research or file edits.
+- **Subagent assignment:** One clean-context test-focused worker, maximum five
+  minutes.
 
-### D1 - Universal Vertical-Support Feet
+### D1 — Power Pass-Through And Compact Rear Geometry
 
-- Type: development.
-- Owned file: `designs/linksys_lgs105_cable_management_enclosure.scad`.
-- Dependencies: none.
-- Behavior and component boundary:
-  - add adjustable vertical-support parameters with the approved defaults:
-    two feet, `60.0 mm` base width, `18.0 mm` along-enclosure foot length,
-    `3.0 mm` tabletop vent gap, and `0.30 mm` fit clearance;
-  - add one named `vertical_support_foot` printable module and the tray-side
-    engagement geometry it requires;
-  - make the two printed foot instances identical and usable on either long
-    tray side, without a left/right-specific variant;
-  - engage only the bottom tray, remain tool-free and detachable, and place the
-    two feet apart along enclosure depth to resist rocking;
-  - keep both side-vent banks, all three cable apertures, the LED sightline, and
-    the cover removal path unobstructed;
-  - preserve the existing horizontal tray contact and use when feet are removed.
-- Acceptance criteria:
-  - exactly two identical foot instances support either approved vertical side;
-  - the configured support width is narrower than the horizontal enclosure width;
-  - the downward-facing side wall retains at least the configured `3.0 mm`
-    tabletop gap;
-  - neither support nor attachment geometry overlaps a vent, cable-service
-    aperture, retention feature, or cable envelope;
-  - the foot is connected, non-floating, separable, and oriented on its broadest
-    stable print face.
-- Validation: source dimension/keepout inspection and deferred D3 renders.
-- Subagent assignment: one clean-context implementation worker, at most five
-  minutes active work.
+- **Type:** Development.
+- **Boundary:** Replace the power lay-in slot and its cover-skirt relief with a
+  bounded round wall hole; add adjustable measured inputs and derived X/Z
+  placement; reduce rear depth to the smallest derived value compatible with
+  the preserved latches, sockets, walls, vents, feet, switch clearance, and
+  printable layout; update power preview geometry and assertions.
+- **Owned files:**
+  `designs/linksys_lgs105_cable_management_enclosure.scad`, limited to power,
+  enclosure-depth, dependent rear-Y placement, preview, and assertion sections.
+- **Dependencies:** T1.
+- **Acceptance criteria:** Exactly three service apertures remain; only the two
+  Ethernet openings are lay-in slots; the power hole uses the approved formulas
+  and clears the reference head; default outer depth is below `183.5 mm`; all
+  preserved rear features remain in bounds and non-overlapping.
+- **Validation:** OpenSCAD command-line syntax/CSG evaluation for horizontal
+  assembly with references hidden, plus relevant assertion output; maximum
+  `15` seconds.
+- **Subagent assignment:** One clean-context implementation worker, maximum five
+  minutes.
 
-### D2 - Positive Tool-Free Cover Capture
+### D2 — Mild Hourglass Routing Guides
 
-- Type: development.
-- Owned file: `designs/linksys_lgs105_cable_management_enclosure.scad`.
-- Dependencies: D1.
-- Behavior and component boundary:
-  - preserve the skirt and pin geometry as cover alignment features;
-  - add at least two opposed positive snap catches with matching shoulders or
-    undercuts and the revised PLA-oriented default `0.15 mm` interference;
-  - expose adjustable catch interference, flexure, engagement, and release
-    geometry near the existing cover-retention parameters;
-  - keep retention independent of the feet, switch body, and stored cables;
-  - provide deliberate tool-free release access without destructive flexing;
-  - keep catches clear of vents, service apertures, cable paths, switch pads,
-    and printable stable faces.
-- Acceptance criteria:
-  - each catch has visible geometric capture and cannot be classified as smooth
-    pin friction alone;
-  - at least two opposed catches retain the installed cover in horizontal and
-    either vertical placement;
-  - catches remain printable in the approved tray and cover orientations and
-    expose an accessible release action;
-  - cover removal still exposes the complete switch, cable bay, connectors, and
-    all three lay-in slots.
-- Validation: source cross-section/engagement inspection and deferred D3 renders;
-  physical force and wear remain subject to the approved printed checks.
-- Subagent assignment: one new clean-context implementation worker, at most five
-  minutes active work.
+- **Type:** Development.
+- **Boundary:** Refactor the two routing-guide solids and derived route radii to
+  separate guide radius from cable centerline bend radius; implement smooth,
+  floor-connected, support-free `28.0 mm` shoulder / `26.0 mm` waist guides;
+  recalculate guide centers, representative cable paths, vent keepouts, and
+  assertions affected by the smaller guide envelope.
+- **Owned files:**
+  `designs/linksys_lgs105_cable_management_enclosure.scad`, limited to routing
+  guide parameters, derived values, modules, previews, keepouts, and assertions.
+- **Dependencies:** T1 and D1; serialization prevents overlapping SCAD edits.
+- **Acceptance criteria:** Both guides have the approved profile, remain joined
+  to the tray floor, clear all female cover-pin sockets, introduce no floating
+  geometry, and keep both representative cable centerline radii at least
+  `15.0 mm`.
+- **Validation:** OpenSCAD command-line syntax/CSG evaluation for horizontal
+  assembly with references hidden, plus relevant assertion output; maximum
+  `15` seconds.
+- **Subagent assignment:** One new clean-context implementation worker, maximum
+  five minutes.
 
-### D3 - Orientation, Assertions, And Printable-Layout Integration
+### D3 — Documentation Alignment
 
-- Type: development.
-- Owned file: `designs/linksys_lgs105_cable_management_enclosure.scad`.
-- Dependencies: D2.
-- Behavior and component boundary:
-  - add `assembly_orientation` with `horizontal` as the default and `vertical` as
-    the alternate value;
-  - add `vertical_standing_side` with `left` and `right` values so the permitted
-    long-side configurations can be inspected using the same support feet;
-  - compose the assembled tray, cover, and both feet without transforming the
-    individual printable modules away from their stable print orientations;
-  - add deterministic derived values/assertions for foot count, supported
-    orientation values, reduced bounding footprint, vent/attachment keepouts,
-    positive cover engagement, and complete P2S layout bounds;
-  - extend the render dispatcher with `vertical_support_foot` while preserving
-    every existing render mode;
-  - revise `printable_layout` to include one tray, one cover, and two separated
-    foot instances, all within the configured P2S plate with positive margins;
-  - preserve all existing switch, cable, aperture, routing, ventilation, and
-    horizontal-layout assertions and behavior.
-- Acceptance criteria:
-  - horizontal assembly remains the default and matches the previously approved
-    arrangement;
-  - both vertical-side assemblies rest only through the feet, keep cable walls
-    upright, and show no tray/cover/foot/tabletop collision;
-  - default vertical bounding tabletop area is strictly smaller than default
-    horizontal bounding tabletop area;
-  - both downward-facing side-vent configurations retain the approved gap and
-    all three cable-service apertures remain usable;
-  - printable layout contains exactly four separated printable objects with no
-    electronics or cable references and positive bed margins;
-  - OpenSCAD remains compatible with 2021.01 and has no external dependency.
-- Validation:
-  - bounded horizontal `assembly` render with references hidden;
-  - bounded left-side and right-side vertical `assembly` renders with references
-    hidden;
-  - bounded `printable_layout` render with references hidden;
-  - source inspection of individual-part and cable-preview dispatch;
-  - stop every render at 15 seconds.
-- Subagent assignment: one new clean-context implementation worker, at most five
-  minutes active work.
+- **Type:** Documentation development; test-first not applicable.
+- **Boundary:** Update the Linksys README section to describe the final power-hole
+  geometry, coordinate orientation, insertion/service procedure, reduced-depth
+  behavior, hourglass defaults, calibration warning, preserved bend radius, and
+  physical-validation limits. Remove stale claims that all three apertures are
+  lay-in slots or that the rear cavity is `30.0 mm`.
+- **Owned files:** `README.md` only.
+- **Dependencies:** D1 and D2 so documentation uses implemented final values.
+- **Acceptance criteria:** README and approved spec describe the same final
+  behavior and exact defaults, without claiming physical fit or validation that
+  did not occur.
+- **Validation:** Targeted `rg` consistency scan and `git diff --check`.
+- **Subagent assignment:** One clean-context implementation/documentation worker,
+  maximum five minutes.
 
-### D4 - Final-State README Documentation
+### R1 — Power, Depth, And Preserved-Feature Review
 
-- Type: documentation development.
-- Owned file: `README.md`.
-- Dependencies: D3.
-- Behavior and component boundary:
-  - preserve existing hardware, cable-profile, routing, assembly, and ventilation
-    guidance;
-  - document horizontal use and vertical use on either long tray side, including
-    installation and removal of the two identical feet;
-  - document exact support and cover-latch defaults, tuning parameters, reduced
-    footprint, vent gap, cable-wall prohibition, and cover release procedure;
-  - document the horizontal, both vertical, and printable-layout validation
-    commands using only repository-permitted render modes;
-  - document the padded stability/cable-handling check and ten-cycle latch test;
-  - state that vertical stability, retention force, material durability, airflow,
-    slicer behavior, and physical fit are not validated by renders alone.
-- Acceptance criteria:
-  - README parameter names and defaults exactly match the final source;
-  - users are told never to stand the enclosure on the Ethernet or power wall;
-  - instructions distinguish rendered evidence from required physical checks;
-  - no claim overstates hardware, thermal, slicer, test-print, or wear validation.
-- Validation: targeted source/README contract comparison.
-- Subagent assignment: one new clean-context documentation worker, at most five
-  minutes active work.
+- **Type:** Independent code review; no edits.
+- **Boundary:** Review the power pass-through, coordinate conversion, rear-depth
+  derivation, aperture count, catches, sockets, vents, feet, and printable-layout
+  consequences against the approved spec and plan.
+- **Owned files:** Read-only review of the SCAD diff, README, spec, and plan.
+- **Dependencies:** D1, D2, and D3.
+- **Acceptance criteria:** Report every spec/plan mismatch, regression risk,
+  missing assertion, stale claim, or unvalidated physical assumption; explicitly
+  state when no issue is found.
+- **Validation:** Diff/source inspection only.
+- **Subagent assignment:** One clean-context code-review worker, maximum five
+  minutes.
 
-### R1 - Geometry And Spec-Conformance Review
+### R2 — Guide Geometry And Printability Review
 
-- Type: read-only code review.
-- Owned files: review of final SCAD, approved spec, and approved plan.
-- Dependencies: D4.
-- Behavior and component boundary: independently review vertical stability
-  geometry, universal foot fit, vent and aperture keepouts, positive catch
-  engagement/release, horizontal regressions, part connectivity, print
-  orientation, layout bounds, and OpenSCAD compatibility.
-- Acceptance criteria: severity-ranked findings with exact file locations and
-  spec/plan references; no edits.
-- Validation: inspect the final diff and permitted render evidence.
-- Subagent assignment: one clean-context reviewer, at most five minutes active
-  work.
+- **Type:** Independent code review; no edits.
+- **Boundary:** Review hourglass profile continuity, guide/socket clearance,
+  cable-radius derivations, representative routes, vent keepouts, floor
+  connection, OpenSCAD 2021.01 compatibility, and Bambu-friendly orientation.
+- **Owned files:** Read-only review of the SCAD diff and relevant spec/README
+  sections.
+- **Dependencies:** D1, D2, and D3.
+- **Acceptance criteria:** Report every geometry, printability, radius, collision,
+  or documentation issue; explicitly state when no issue is found.
+- **Validation:** Diff/source inspection only.
+- **Subagent assignment:** One clean-context code-review worker, maximum five
+  minutes, concurrent with R1.
 
-### R2 - Documentation And Parameter-Contract Review
+### F1 — Review-Finding Fixes
 
-- Type: read-only code/documentation review.
-- Owned files: review of README, final SCAD, approved spec, and approved plan.
-- Dependencies: D4.
-- Behavior and component boundary: independently compare all support, latch,
-  orientation, render, assembly, safety, and physical-validation contracts while
-  checking that preserved cable and enclosure guidance remains accurate.
-- Acceptance criteria: severity-ranked findings with exact file locations and no
-  edits.
-- Validation: exact source-to-document parameter and behavior comparison.
-- Subagent assignment: one clean-context reviewer, at most five minutes active
-  work.
+- **Type:** Conditional development.
+- **Boundary:** Resolve only accepted in-scope findings from R1, R2, or main-agent
+  QA. Split independent findings into new non-overlapping assignments; serialize
+  any shared `.scad` edit.
+- **Owned files:** The narrow paths/sections named in each accepted finding.
+- **Dependencies:** R1 and R2 for review fixes; relevant QA finding for QA fixes.
+- **Acceptance criteria:** Each accepted finding is fixed without expanding the
+  approved scope, and targeted validation is rerun.
+- **Validation:** Finding-specific assertion/render check and `git diff --check`.
+- **Subagent assignment:** New clean-context implementation worker per
+  deterministic finding, each maximum five minutes.
 
-## Concurrency And Supervision
+## Main-Agent Integration And QA
 
-- Test-focused concurrency: `0`; test-first is not applicable.
-- Development-worker concurrency: `1`; D1-D3 share the SCAD file and D4 depends
-  on its final parameter and render contract.
-- Review-worker concurrency: up to `2`; R1 and R2 are independent and read-only.
-- QA concurrency: not applicable; the main agent owns QA.
-- At five minutes, stop any active worker, record completed work, partial work,
-  changed files, validation, blockers, and remaining work, then inspect and split
-  the remainder into smaller non-overlapping clean-context assignments.
-- The main agent serializes all shared-file integration and routes each accepted
-  review or QA fix to a new clean-context implementation worker.
+The main agent owns integration and QA and must not delegate final QA.
 
-## Main-Agent Review And QA
+1. Inspect every worker result and the complete worktree after each unit.
+2. Confirm all accepted edits remain within approved artifacts and ownership
+   boundaries; preserve unrelated changes.
+3. Run `git diff --check`.
+4. Run each permitted OpenSCAD command with a hard `15`-second limit and hidden
+   electronic/cable references, exporting only under `/tmp`:
+   - horizontal `assembly`;
+   - vertical-left `assembly`;
+   - vertical-right `assembly`;
+   - `printable_layout`.
+5. Inspect temporary previews or renders for:
+   - the correctly oriented, vertically aligned round power hole;
+   - the `9.0 mm` head envelope passing through without requiring the rigid
+     `28.20 mm` section inside;
+   - reduced depth with intact rear catches, sockets, walls, vents, and feet;
+   - hourglass guides clearing all cover sockets and remaining floor-connected;
+   - representative cable paths meeting the `15.0 mm` radius;
+   - exactly three service apertures and only two lay-in slots;
+   - separated, stable printable objects fitting the configured bed.
+6. Inspect non-rendered mode dispatch for `bottom_tray`, `top_cover`,
+   `vertical_support_foot`, and `cable_routing_preview` as required by repository
+   instructions.
+7. Reconcile source assertions and derived values with all approved measurements.
+8. Route any accepted review or QA fix through F1, then repeat affected checks.
 
-After development and independent review, the main agent must:
+OpenSCAD renders provide visual geometry evidence only. Bambu Studio inspection,
+printed-hole measurement, DC-head insertion, physical switch fit, cable winding,
+thermal observation, vertical stability, and ten-cycle catch validation remain
+unverified unless actually performed by the user.
 
-1. Inspect the complete diff against the approved spec and plan.
-2. Confirm the same two feet fit both long-side configurations and engage only
-   the tray.
-3. Confirm the feet do not cover side vents, service apertures, cables, release
-   points, or the LED sightline and preserve the configured tabletop gap.
-4. Confirm positive cover capture has matching shoulders/undercuts, deliberate
-   release access, and no dependence on smooth-pin friction or the feet.
-5. Confirm horizontal use and every previously approved switch, cable, aperture,
-   routing, service, and ventilation contract remain intact.
-6. Confirm horizontal, left-vertical, right-vertical, and printable-layout render
-   evidence and inspect non-rendered mode wiring.
-7. Confirm all four printable objects are stable, connected, separated, and
-   inside the P2S footprint with positive margins.
-8. Confirm README matches source and distinguishes rendered from physical
-   validation.
-9. Record the physical stability and ten-cycle latch tests as passed only if they
-   were actually performed; otherwise mark delivery and commit `DRAFT`.
-10. Reconcile every changed path, resolve or document all findings, and complete
-    final main-agent acceptance.
+## Documentation And Contract Reconciliation
 
-## Validation Commands
+- Ensure the approved spec, approved plan, SCAD source, and README agree on every
+  changed dimension and behavior.
+- Preserve the exact count of three service apertures while documenting that only
+  the two Ethernet apertures are lay-in slots.
+- Document manual measurements separately from adjustable planning clearance.
+- Do not add unrelated documentation churn.
 
-Run from the repository root:
+## Commit And Push
 
-```sh
-timeout 15 openscad -o /tmp/linksys_lgs105_enclosure_horizontal.off \
-  -D 'render_mode="assembly"' \
-  -D 'assembly_orientation="horizontal"' \
-  -D 'show_switch_reference=false' \
-  -D 'show_cable_references=false' \
-  designs/linksys_lgs105_cable_management_enclosure.scad
+- Before staging, inspect `git status --short --branch` and classify every
+  modified, added, deleted, renamed, and untracked path.
+- Stage every accepted in-scope path: SCAD source, README, approved spec, and
+  approved plan. Preserve and identify unrelated user changes.
+- Inspect `git diff --cached --check`, `git diff --cached --stat`,
+  `git diff --cached --name-status`, and the complete staged diff.
+- Because physical fit, Bambu Studio, and test-print checks are expected to remain
+  unperformed, use a `DRAFT` commit subject such as
+  `feature: DRAFT compact Linksys power and cable routing`.
+- Commit on `main`, push to its configured upstream, and verify the local branch
+  is no longer ahead of upstream.
+- After committing, inspect final `git status --short --branch`; no accepted
+  in-scope change may remain outside the commit.
 
-timeout 15 openscad -o /tmp/linksys_lgs105_enclosure_vertical_left.off \
-  -D 'render_mode="assembly"' \
-  -D 'assembly_orientation="vertical"' \
-  -D 'vertical_standing_side="left"' \
-  -D 'show_switch_reference=false' \
-  -D 'show_cable_references=false' \
-  designs/linksys_lgs105_cable_management_enclosure.scad
+## Completion Criteria
 
-timeout 15 openscad -o /tmp/linksys_lgs105_enclosure_vertical_right.off \
-  -D 'render_mode="assembly"' \
-  -D 'assembly_orientation="vertical"' \
-  -D 'vertical_standing_side="right"' \
-  -D 'show_switch_reference=false' \
-  -D 'show_cable_references=false' \
-  designs/linksys_lgs105_cable_management_enclosure.scad
-
-timeout 15 openscad -o /tmp/linksys_lgs105_enclosure_printable_layout.off \
-  -D 'render_mode="printable_layout"' \
-  -D 'show_switch_reference=false' \
-  -D 'show_cable_references=false' \
-  designs/linksys_lgs105_cable_management_enclosure.scad
-
-git diff --check
-git status --short --branch
-```
-
-If a render reaches 15 seconds, stop it and report the timeout. Inspect
-`bottom_tray`, `top_cover`, `vertical_support_foot`, and
-`cable_routing_preview` dispatch and module wiring without rendering those
-modes. Keep all temporary outputs under `/tmp`.
-
-Physical validation, when the printed enclosure and hardware are available:
-
-1. On a padded surface, install both feet and hold the populated enclosure for at
-   least 60 seconds on each long side.
-2. Reposition the connected cables normally and confirm the feet remain engaged,
-   the enclosure does not rock or tip, no cable bears on the tabletop, and the
-   cover remains fully caught.
-3. Release and reinstall the cover ten times and confirm every positive catch
-   remains intact, tool-free, and engaged.
-
-## Commit And Push Expectations
-
-- Reconcile the complete worktree and classify every modified, added, deleted,
-  renamed, and untracked path.
-- Preserve and identify unrelated user changes.
-- Stage every accepted in-scope change: approved spec, approved plan, SCAD source,
-  and README.
-- Inspect the staged path list and staged diff before committing.
-- Commit on `main` with `feature: Add vertical Linksys enclosure placement`.
-- Include `DRAFT` in the commit subject when any required render, review, QA,
-  documentation, physical validation, or risk-reporting step is skipped, blocked,
-  incomplete, or failing.
-- Push `main` to `origin` and verify the local branch is no longer ahead of its
-  configured upstream.
-- Inspect final `git status` and do not report completion while any accepted
-  in-scope change remains outside the commit.
-
-## Completion Report Requirements
-
-Report the implemented final-state behavior; review and QA findings; resolved
-issues; validation run and not run; render timing and visual evidence; physical
-stability and latch-cycle status; remaining fit, retention, wear, airflow, slicer,
-and test-print risks; documentation changes; complete changed-path
-reconciliation; commit and push status; final or draft status; skipped, blocked,
-or unvalidated steps; Definition of Done status; and final main-agent acceptance.
+Delivery is complete only when implementation matches the approved spec and
+plan, assertions and permitted renders pass, review and QA findings are resolved
+or explicitly blocked, documentation is aligned, every accepted in-scope path is
+committed and pushed, final status is reconciled, and the main agent presents the
+required completion report. Delivery remains `DRAFT` until the physical and
+slicer checks listed above are completed.

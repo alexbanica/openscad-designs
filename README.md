@@ -177,39 +177,72 @@ cable apertures.
 
 To connect or service the enclosure, remove the complete cover, install the
 switch, place each RJ45 head inside the enclosure and connect it, then lower the
-attached cable jackets into the open-topped slots. Connect and lay in the DC lead
-the same way, arrange the slack, and reinstall the cover. The switch, connectors,
-storage bay, and all three slots remain accessible while the cover is off; no
-RJ45 head has to pass through a cable-sized opening.
+attached cable jackets into the two open-topped Ethernet slots. From outside the
+power face, pass the approximately `9.0 mm` DC head through the bounded round
+hole, keep the external AC adapter outside, and connect the head to the switch.
+The measured `28.20 mm` rigid section may remain partly outside the enclosure;
+keep it straight rather than forcing it to bend. Arrange the Ethernet slack and
+reinstall the cover. The switch, connectors, storage bay, and both Ethernet
+slots remain accessible while the cover is off; no RJ45 head has to pass through
+a cable-sized opening.
 
 The assembled enclosure has exactly three intentional cable-service apertures:
 
 - one uplink aperture in the Ethernet-side wall;
 - one adjacent shared aperture for the four device cables in that same wall;
-- one DC power-lead aperture in the opposite power-side wall.
+- one bounded round DC power-head pass-through in the opposite power-side wall.
 
-All three are open-topped tray-wall lay-in slots. Their default usable sizes are
-`6.0 mm x 6.0 mm` for the round uplink, `8.0 mm x 7.0 mm` for the single shared
-device-bundle slot, and `6.0 mm x 6.0 mm` for the power lead. The four flat device
+Only the two Ethernet apertures are open-topped tray-wall lay-in slots. Their
+default usable sizes are `6.0 mm x 6.0 mm` for the round uplink and
+`8.0 mm x 7.0 mm` for the single shared device-bundle slot. The four flat device
 cables share that one device slot as the default `6.0 mm x 5.6 mm` stack; they do
 not use four separate exits. Aperture side clearance defaults to `0.4 mm`.
-Installing the cover bounds the open side of each slot, while aligned locating-
-skirt reliefs preserve its cable envelope. Do not attempt to pass RJ45 plugs, the
-barrel connector, or the external AC adapter through the slots. Ventilation
-openings and the closed LED sightline are separate from these three cable-service
+Installing the cover bounds the open side of both Ethernet slots, while aligned
+locating-skirt reliefs preserve their cable envelopes. Do not attempt to pass
+RJ45 plugs through those slots.
+
+The third aperture is a `10.0 mm` diameter round through-hole for the measured
+approximately `9.0 mm` DC head, giving `0.5 mm` nominal radial clearance. Looking
+directly at the exterior power face, the hole center is `21.0 mm` inward from
+visual right. Because source X is defined from the Ethernet-side view, that
+measurement maps toward lower X as
+`power_pass_through_center_x_mm = switch_origin_x_mm + 21.0`; its Z coordinate is
+the switch body centerline, `switch_origin_z_mm + switch_height_mm / 2`. Pass only
+the DC head and lead through this hole, never the external AC adapter. The
+`10.0 mm` diameter is a printable starting point, not a guaranteed finished-hole
+size; print a coupon or measure a test print and tune
+`power_pass_through_diameter_mm` for the actual printer and head, keeping it at
+least as large as `power_head_reference_diameter_mm` so radial clearance remains
+nonnegative. This hole calibration does not set the enclosure depth. Ventilation
+openings and the closed LED sightline are separate from the three cable-service
 apertures.
 
-Two rounded routing guides support separate uplink and device-bundle paths, and
-a short divider keeps the two Ethernet exits identifiable. The default guide
-radius follows `minimum_cable_bend_radius_mm = 15.0`; guide wall, height, edge
-clearance, and cable-contact rounding remain adjustable. Leave each cable's
+Two mild hourglass routing guides support separate uplink and device-bundle
+paths, and a short divider keeps the two Ethernet exits identifiable. Each guide
+defaults to `28.0 mm` diameter at its lower and upper retaining shoulders and a
+deliberately broad `26.0 mm` waist, with smooth support-free transitions and a
+floor-connected upright profile. The guide-solid radii are distinct from the
+cable centerline radii. The representative routes stay at their Ethernet
+aperture heights and protect each complete cable profile from the maximum
+`14.0 mm` shoulder envelope, yielding default centerline radii of `16.0 mm` for
+the round uplink and `17.0 mm` for the flat device bundle while preserving
+`minimum_cable_bend_radius_mm = 15.0`. The shoulder, waist, and profile parameters
+remain adjustable subject to the source geometry and printability assertions.
+Derived guide and route placement clears all four female cover-pin sockets and
+leaves usable representative cable space around them. Leave each cable's
 necessary external length outside, wind only its remaining slack around the
 guides, keep the round uplink separate from the four-flat-cable bundle near the
-exits, and avoid forcing a cable into the preview route. Increase the bend radius
-or storage dimensions if the real cable manufacturer's limit, jacket stiffness,
-or boot geometry requires it. A default `30.0 mm` power-side connector/service
-cavity is derived from twice the minimum bend radius; it is not a measured DC
-connector envelope.
+exits, and avoid forcing a cable into the preview route. Increase the centerline
+bend radius or storage dimensions if the real
+cable manufacturer's limit, jacket stiffness, or boot geometry requires it.
+
+The enclosure no longer reserves the old adapter-derived `30.0 mm` rear service
+cavity. Rear depth is instead the maximum clearance required by the switch,
+positive-catch release geometry, top vents, support interfaces, and rear
+cover-pin sockets. These constraints derive the default outer depth to
+`178.2 mm`, below the prior `183.5 mm`. The installed rigid-head reference starts
+at the switch power face and ends at `178.7 mm`, so the default `28.20 mm` head
+remains connected to the switch while protruding `0.5 mm` beyond the enclosure.
 
 A separate Ethernet-side wall sightline exposes the modeled status-LED region
 without opening the cover. Floor slots and elevated side-wall slots occupy a
@@ -233,8 +266,13 @@ The source groups its public controls near the top by:
 - cable counts, `ethernet_cable_lengths_mm`, total storage allowance, cable
   profiles (`uplink_cable_diameter_mm`, `device_cable_width_mm`, and
   `device_cable_thickness_mm`), contact rounding, and minimum bend radius;
-- cable-storage depth, switch gap, guide geometry, and uplink/device divider;
-- uplink, device-bundle, and power aperture dimensions and X positions;
+- cable-storage depth, switch gap, `routing_guide_shoulder_diameter_mm`,
+  `routing_guide_waist_diameter_mm`, transition geometry, and uplink/device
+  divider;
+- uplink and device-bundle lay-in dimensions and X positions, plus
+  `power_head_reference_diameter_mm`, `power_head_rigid_length_mm`,
+  `power_pass_through_diameter_mm`, and
+  `power_input_visual_right_offset_mm`;
 - LED sightline dimensions and position;
 - bottom, side, and top vent dimensions, counts, spacing, and offsets;
 - cover-pin, tapered-tip, socket, retention, and fit geometry, including
@@ -255,8 +293,9 @@ Common fit changes start with `switch_width_mm`, `switch_depth_mm`,
 `switch_top_clearance_mm`. For real cables, tune
 `uplink_cable_diameter_mm`, `device_cable_width_mm`,
 `device_cable_thickness_mm`, `minimum_cable_bend_radius_mm`,
-`cable_storage_depth_mm`, `routing_guide_*`, and the uplink, device, and power
-`*_aperture_*` groups. Recheck `switch_vertical_pad_clearance_mm`,
+`cable_storage_depth_mm`, `routing_guide_*`, the uplink/device
+`*_aperture_*` groups, and `power_pass_through_diameter_mm`. Recheck
+`switch_vertical_pad_clearance_mm`,
 `cover_retention_clearance_mm`, and `cover_fit_clearance_mm` for printed fit.
 Tune the `cover_latch_*` controls and `vertical_support_*` controls for the
 actual material and printer only after a test print. Any dimensional change can
@@ -330,7 +369,7 @@ The default printable layout targets the configured `256.0 mm x 256.0 mm`
 Bambu Lab P2S bed. It places the bottom tray, inside-up cover, and two identical
 broad-base-down feet as four separate printable objects with `0.5 mm` spacing
 and a `0.5 mm` bed margin. The current default derived nominal layout bounds are
-`255.5 mm x 203.0 mm`; source assertions require positive separation and bed
+`255.5 mm x 202.5 mm`; source assertions require positive separation and bed
 margins. The geometry does not require multi-material printing, so an AMS 2 Pro
 is optional; select filament, process settings, adhesion strategy, and supports
 in Bambu Studio for the actual print.
@@ -342,10 +381,13 @@ bend safety, pin/socket fit, wall continuity after slicing, support requirements
 warping behavior, airflow, or operating temperature. Before final use:
 
 - measure the actual switch, cables, boots, and DC lead;
+- print a hole coupon or test the tray and confirm that the finished round power
+  hole accepts the DC head without forcing or bending its rigid section;
 - inspect all four parts in Bambu Studio for bed fit, wall continuity, bridges,
   supports, and print orientation;
 - make a test print and physically verify switch retention, cover removal,
-  aperture clearance, cable routing, LED visibility, vent clearance, both foot
+  both Ethernet-slot and round power-hole clearance, cable routing, LED
+  visibility, vent clearance, both foot
   fits, and both opposed cover catches;
 - on a padded surface, install both feet and hold the populated enclosure for at
   least `60 seconds` on each long side; while each side is down, reposition the
