@@ -2,6 +2,63 @@
 
 Status: Approved
 
+## Auto-Approved Super-Agent Correction: Measured 89 mm Switch Span (2026-07-23)
+
+### Purpose And Requested Behavior
+
+Correct the enclosure after physical measurement showed that the switch body is
+`89.0 mm` from its Ethernet face to its power face and does not fit the prior
+`75.5 mm` default. Increase the corresponding enclosure dimension and retain
+positive fit room around the measured body.
+
+### Scope, Definitions, Inputs, And Constraints
+
+- The user-described switch "width" maps to source Y (`switch_depth_mm`), not
+  source X: the existing source-X body width is already `121.0 mm` and its
+  derived enclosure width is `127.0 mm`.
+- `89.0 mm` is a manually entered, user-provided physical measurement of the
+  switch body from the Ethernet face to the opposite power face.
+- Preserve the established `0.6 mm` clearance at both ends, providing `1.2 mm`
+  total extra room and a `90.2 mm` switch-bay allocation along that axis.
+- Cable storage, switch X width and height, side/top clearances, wall thickness,
+  power-hole relationship, routing guides, cover retention, vents, feet, and
+  all other adjustable values remain unchanged.
+
+### Deterministic Behavior Delivered
+
+- Change `switch_depth_mm` from `75.5` to `89.0`.
+- Continue deriving the switch origin and enclosure outline from the measured
+  body plus both `0.6 mm` end clearances and the existing walls; the default
+  outer enclosure depth becomes `167.0 mm`.
+- Derive and assert a `90.2 mm` switch-bay allocation, the shifted power wall
+  and pass-through reference, shifted top-vent bounds, and a default printable
+  layout of `255.5 mm x 186.5 mm`.
+- Preserve the `25.2 mm` rigid power-head reference protrusion because the
+  switch power face and enclosure power wall move together.
+
+### Assumptions, Impact, And Residual Risk
+
+- The reported `89 mm` dimension is assumed to be the body span that replaces
+  the undersized `75.5 mm` Ethernet-to-power default. Changing the already
+  larger source-X dimension to `89 mm` would shrink the enclosure and would not
+  resolve the reported non-fit.
+- The larger tray and cover require reprinting; this is not compatible with the
+  prior `153.5 mm`-deep printed tray or cover.
+- Nominal source clearance does not prove printed fit. Printer calibration,
+  corner radii, and measurement uncertainty still require a physical test fit.
+
+### Validation And Documentation
+
+- Short validation performed: `git diff --check` and one hidden-reference
+  horizontal `assembly` export, limited to the super-agent time budget.
+- Unit tests are prohibited. Full QA, independent code review, vertical and
+  printable-layout renders, slicer inspection, reprinting, and physical fit
+  validation were skipped.
+- `README.md` documents the measured `89.0 mm` span, `90.2 mm` bay allocation,
+  `167.0 mm` enclosure depth, and updated printable-layout bounds.
+- Delivery remains `DRAFT` until the enlarged enclosure is sliced, printed, and
+  physically fitted to the measured switch.
+
 ## Auto-Approved Super-Agent Correction: Receiver Relief And Catch Reach (2026-07-23)
 
 ### Purpose And Requested Behavior
@@ -707,7 +764,9 @@ source.
 - Use descriptive `snake_case` names and `_mm` suffixes for linear dimensions.
 - Keep user-adjustable parameters grouped by purpose and derived values in a
   separate section.
-- Default switch body dimensions are `121.0 mm x 75.5 mm x 26.0 mm`.
+- Default switch body dimensions are `121.0 mm x 89.0 mm x 26.0 mm`; the
+  `89.0 mm` Ethernet-to-power span is the user-provided physical measurement
+  that supersedes the initial retailer-derived `75.5 mm` assumption.
 - The source coordinate convention must clearly state which axis represents
   switch width, switch depth from Ethernet side to power side, and height.
 - The enclosure must fit a Bambu Lab P2S build plate in every individual-part
@@ -916,10 +975,12 @@ The source must expose at least these groups near the top:
 
 ## Assumptions
 
-- EAN `4260184663453` identifies an original-size LGS105 closely enough to use
-  `121.0 mm x 75.5 mm x 26.0 mm` as the initial body envelope.
-- The actual unit may differ from merged retailer data, so measured dimensions
-  override the defaults.
+- EAN `4260184663453` originally supported a researched
+  `121.0 mm x 75.5 mm x 26.0 mm` body envelope, but the user-measured unit has
+  an `89.0 mm` Ethernet-to-power span and that measurement now controls the
+  default.
+- The actual unit may differ from both retailer data and the current measured
+  sample, so physical dimensions remain authoritative.
 - The DC input is on the side opposite the five Ethernet ports.
 - All five Ethernet ports can be used simultaneously: one uplink and four device
   connections.

@@ -4,6 +4,49 @@ Status: Approved
 
 Approved Spec: `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
 
+## Auto-Approved Super-Agent Work Record: Measured 89 mm Switch Span (2026-07-23)
+
+This completed record supersedes the prior plan's `153.5 mm` depth invariant;
+the earlier top-cover correction history remains unchanged.
+
+### Affected Files
+
+- `designs/linksys_lgs105_cable_management_enclosure.scad`
+- `README.md`
+- `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
+- `specs/PLAN-linksys-lgs105-cable-management-enclosure.md`
+
+### Implementation Steps Performed
+
+1. Mapped the reported `89 mm` switch width to the undersized source-Y
+   Ethernet-to-power body span, leaving the already larger `121.0 mm` source-X
+   body width unchanged.
+2. Changed `switch_depth_mm` from `75.5` to the user-measured `89.0` while
+   preserving `0.6 mm` clearance at each end, yielding a `90.2 mm` bay
+   allocation and `167.0 mm` outer enclosure depth.
+3. Updated exact-value assertions for the power face/wall, power pass-through
+   reference, top vent bounds, and `255.5 mm x 186.5 mm` printable layout.
+4. Documented the new measured default, clearance, enclosure depth, and layout
+   bounds in the Linksys README section.
+5. Updated the matching approved spec and this completed-work record.
+
+### Validation And Delivery Record
+
+- Validation run: `git diff --check` and one hidden-reference horizontal
+  `assembly` OpenSCAD export with a hard ten-second limit.
+- Validation skipped: unit tests are prohibited; vertical assemblies,
+  printable-layout export, Bambu Studio inspection, reprinting, and physical
+  switch fit were not run.
+- QA skipped: required by the explicit super-agent workflow.
+- Code review skipped: required by the explicit super-agent workflow.
+- Documentation updated: Linksys measured body span, fit allowance, enclosure
+  depth, and printable-layout guidance.
+- Staging status: all four in-scope paths staged; no unrelated paths staged.
+- Commit status: not committed.
+- Push status: not pushed.
+- Residual risk: assertions and one short render cannot prove printed fit;
+  delivery remains `DRAFT` until slicer and physical checks pass.
+
 ## Auto-Approved Super-Agent Work Record: Receiver Relief And Catch Reach (2026-07-23)
 
 ### Affected Files

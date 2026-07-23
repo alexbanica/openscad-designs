@@ -99,9 +99,11 @@ Manual inspection checklist:
 tabletop enclosure with a fixed switch bay and an adjacent covered cable-storage
 bay. The switch and cable identifiers are distinct:
 
-- switch EAN `4260184663453` is used for the original-size Linksys LGS105 body
-  assumption of `121.0 mm x 75.5 mm x 26.0 mm`; product listings for this EAN
-  are not consistent about hardware revision, dimensions, or power input;
+- switch EAN `4260184663453` is used for the Linksys LGS105 body. The current
+  default is `121.0 mm x 89.0 mm x 26.0 mm`, with the `89.0 mm`
+  Ethernet-to-power span supplied from physical measurement; product listings
+  for this EAN are not consistent about hardware revision, dimensions, or
+  power input;
 - device-cable EAN `7432022397395` is associated by a retailer listing with a
   flat CAT6 cable reported as `6.0 mm x 1.4 mm`. This is retailer-derived data,
   not a measured sample or manufacturer mechanical drawing.
@@ -158,8 +160,10 @@ the hook, but PLA layer adhesion and repeated flexing still require a test
 print.
 
 The default switch clearances are `0.6 mm` on each horizontal side, `0.6 mm`
-at each end, and `0.8 mm` above the body; the downward pads retain an additional
-`0.4 mm` clearance. Cover-pin/socket retention clearance defaults to `0.25 mm`,
+at each end, and `0.8 mm` above the body. The measured `89.0 mm`
+Ethernet-to-power body span therefore receives a `90.2 mm` bay allocation with
+`1.2 mm` total end room; the downward pads retain an additional `0.4 mm`
+clearance. Cover-pin/socket retention clearance defaults to `0.25 mm`,
 locating-skirt fit clearance defaults to `0.30 mm`, and the socket-receiver
 skirt reliefs add `cover_receiver_relief_extra_clearance_mm = 0.5` on every
 side after the first physical replacement cover would not pass over the
@@ -272,7 +276,7 @@ bend radius or storage dimensions if the real
 cable manufacturer's limit, jacket stiffness, or boot geometry requires it.
 
 The enclosure no longer reserves the old adapter-derived `30.0 mm` rear service
-cavity. The default tray and matching cover outer depth is exactly `153.5 mm`,
+cavity. The default tray and matching cover outer depth is exactly `167.0 mm`,
 derived directly from switch placement and depth, `0.6 mm` internal power-side
 clearance, and the `2.4 mm` power wall. The exterior power face is therefore
 exactly `3.0 mm` beyond the switch power face. The shortened cover skirt, rear
@@ -285,7 +289,7 @@ exterior power face.
 A separate Ethernet-side wall sightline exposes the modeled status-LED region
 without opening the cover. Floor slots occupy a derived clear aisle in the
 cable-storage region. Elevated side-wall slots occupy the switch-bay long side
-walls, spanning default Y positions `104.75 mm` through `120.75 mm`, while
+walls, spanning default Y positions `111.5 mm` through `127.5 mm`, while
 top-cover slots above the switch region provide the high outlet. The open
 internal volume provides the passive path between those regions without adding
 a fourth service aperture. Default vent keepouts avoid the switch, retention
@@ -409,7 +413,7 @@ The default printable layout targets the configured `256.0 mm x 256.0 mm`
 Bambu Lab P2S bed. It places the bottom tray, inside-up cover, and two identical
 broad-base-down feet as four separate printable objects with `0.5 mm` spacing
 and a `0.5 mm` bed margin. The current default derived nominal layout bounds are
-`255.5 mm x 173.0 mm`; source assertions require positive separation and bed
+`255.5 mm x 186.5 mm`; source assertions require positive separation and bed
 margins. The geometry does not require multi-material printing, so an AMS 2 Pro
 is optional; select filament, process settings, adhesion strategy, and supports
 in Bambu Studio for the actual print.

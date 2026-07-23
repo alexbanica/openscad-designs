@@ -23,7 +23,7 @@ show_minimum_bend_reference = true;
 
 // Switch body dimensions and fit clearances
 switch_width_mm = 121.0;
-switch_depth_mm = 75.5;
+switch_depth_mm = 89.0;
 switch_height_mm = 26.0;
 switch_corner_radius_mm = 3.0;
 switch_side_clearance_mm = 0.6;
@@ -170,6 +170,7 @@ reference_transparency = 0.45;
 // ======================================================
 
 switch_bay_width_mm = switch_width_mm + 2 * switch_side_clearance_mm;
+switch_bay_depth_mm = switch_depth_mm + 2 * switch_end_clearance_mm;
 geometry_overlap_mm = 0.1;
 switch_bay_height_mm = switch_height_mm + switch_top_clearance_mm;
 enclosure_inner_width_mm = switch_bay_width_mm;
@@ -607,7 +608,7 @@ power_head_external_protrusion_mm = power_head_reference_outer_y_mm
     - enclosure_outer_depth_mm;
 default_minimal_depth_inputs = abs(cable_storage_depth_mm - 68.0) < 0.000001
     && abs(cable_storage_switch_gap_mm - 4.0) < 0.000001
-    && abs(switch_depth_mm - 75.5) < 0.000001
+    && abs(switch_depth_mm - 89.0) < 0.000001
     && abs(switch_end_clearance_mm - 0.6) < 0.000001
     && abs(wall_thickness_mm - 2.4) < 0.000001;
 default_power_reference_inputs = default_minimal_depth_inputs
@@ -1012,22 +1013,25 @@ assert(power_head_reference_inner_y_mm
 assert(enclosure_outer_depth_mm
             == switch_origin_y_mm + switch_depth_mm
                 + switch_end_clearance_mm + wall_thickness_mm
+        && abs(switch_bay_depth_mm
+                - (switch_depth_mm + 2 * switch_end_clearance_mm)) < 0.000001
         && abs(power_side_clearance_mm - switch_end_clearance_mm) < 0.000001
         && abs(power_side_rear_extension_mm
                 - (switch_end_clearance_mm + wall_thickness_mm)) < 0.000001,
     "Power-side depth must follow direct switch fit and preserve inner clearance");
 assert(!default_minimal_depth_inputs
-        || (abs(switch_power_face_y_mm - 150.5) < 0.000001
-            && abs(enclosure_outer_depth_mm - 153.5) < 0.000001
-            && abs(power_wall_y_mm - 151.1) < 0.000001
+        || (abs(switch_bay_depth_mm - 90.2) < 0.000001
+            && abs(switch_power_face_y_mm - 164.0) < 0.000001
+            && abs(enclosure_outer_depth_mm - 167.0) < 0.000001
+            && abs(power_wall_y_mm - 164.6) < 0.000001
             && abs(power_side_clearance_mm - 0.6) < 0.000001
             && abs(power_side_rear_extension_mm - 3.0) < 0.000001),
-    "Default power wall must end at 153.5 with 0.6 inner and 3.0 rear clearance");
+    "Default 89 mm switch span requires a 90.2 mm bay and 167 mm enclosure depth");
 assert(!default_power_reference_inputs
-        || (abs(power_pass_through_cut_start_y_mm - 151.0) < 0.000001
-            && abs(power_pass_through_cut_end_y_mm - 153.6) < 0.000001
-            && abs(power_head_reference_inner_y_mm - 150.5) < 0.000001
-            && abs(power_head_reference_outer_y_mm - 178.7) < 0.000001
+        || (abs(power_pass_through_cut_start_y_mm - 164.5) < 0.000001
+            && abs(power_pass_through_cut_end_y_mm - 167.1) < 0.000001
+            && abs(power_head_reference_inner_y_mm - 164.0) < 0.000001
+            && abs(power_head_reference_outer_y_mm - 192.2) < 0.000001
             && abs(power_head_external_protrusion_mm - 25.2) < 0.000001),
     "Default power cut and rigid head reference must match the shortened wall");
 assert(rear_cover_socket_near_y_mm - cover_latch_release_far_y_mm
@@ -1124,8 +1128,8 @@ assert(top_vent_left_x_mm
                 - cover_socket_outer_diameter_mm / 2 - wall_thickness_mm,
     "Top vents cross the cover-pin retention clearance");
 assert(!default_top_vent_inputs
-        || (abs(top_vent_near_y_mm - 88.75) < 0.000001
-            && abs(top_vent_far_y_mm - 136.75) < 0.000001),
+        || (abs(top_vent_near_y_mm - 95.5) < 0.000001
+            && abs(top_vent_far_y_mm - 143.5) < 0.000001),
     "Default top vents must retain their shortened-outline Y bounds");
 assert(vertical_support_foot_count == 2
         && len(vertical_support_depth_positions_mm) == 2,
@@ -1314,8 +1318,8 @@ assert(printable_layout_width_mm < print_bed_width_mm
     "Printable layout requires positive bed margins");
 assert(!default_layout_inputs
         || (abs(printable_layout_width_mm - 255.5) < 0.000001
-            && abs(printable_layout_depth_mm - 173.0) < 0.000001),
-    "Default printable layout must be 255.5 by 173.0");
+            && abs(printable_layout_depth_mm - 186.5) < 0.000001),
+    "Default printable layout must be 255.5 by 186.5");
 assert(printable_layout_foot_1_y_mm
             > printable_layout_tray_y_mm + enclosure_outer_depth_mm
         && printable_layout_foot_2_x_mm
