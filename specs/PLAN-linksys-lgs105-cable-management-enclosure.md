@@ -4,6 +4,44 @@ Status: Approved
 
 Approved Spec: `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
 
+## Auto-Approved Super-Agent Work Record: Increase Power Pass-Through Raise (2026-07-23)
+
+### Affected Files
+
+- `designs/linksys_lgs105_cable_management_enclosure.scad`
+- `README.md`
+- `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
+- `specs/PLAN-linksys-lgs105-cable-management-enclosure.md`
+
+### Implementation Steps Performed
+
+1. Interpreted the initial `3 mm extra` followed by `add 1 more` as a final
+   total `4.0 mm` offset from the original switch-body centerline, replacing
+   the committed `2.0 mm` offset.
+2. Changed `power_pass_through_vertical_offset_mm` to `4.0`, raising the
+   staged `3.0 mm` opening by another `1.0 mm` and placing its default center
+   `19.4 mm` above the print plane.
+3. Updated the exact default assertion without changing the hole diameter,
+   horizontal position, wall-cut depth, or other enclosure geometry.
+4. Updated Linksys README guidance and the matching approved spec record.
+
+### Validation And Delivery Record
+
+- Validation run: `git diff --check` and one hidden-reference horizontal
+  `assembly` OpenSCAD export with a hard ten-second limit.
+- Validation skipped: unit tests are prohibited; vertical assemblies,
+  printable-layout export, Bambu Studio inspection, printing, and physical
+  connector alignment were not run.
+- QA skipped: required by the explicit super-agent workflow.
+- Code review skipped: required by the explicit super-agent workflow.
+- Documentation updated: Linksys power-hole offset and center-height guidance.
+- Staging status: all four in-scope paths staged; no unrelated paths staged.
+- Commit status: not committed.
+- Push status: not pushed.
+- Residual risk: assertions and one short render cannot prove physical
+  connector alignment; delivery remains `DRAFT` until slicer or printed-fit
+  checks pass.
+
 ## Auto-Approved Super-Agent Work Record: Raise Power Pass-Through (2026-07-23)
 
 ### Affected Files

@@ -252,8 +252,8 @@ visual right. Because source X is defined from the Ethernet-side view, that
 measurement maps toward lower X as
 `power_pass_through_center_x_mm = switch_origin_x_mm + 21.0`; its Z coordinate is
 the switch body centerline plus the adjustable
-`power_pass_through_vertical_offset_mm = 2.0`, placing the default center
-`17.4 mm` above the print plane. Pass only the DC head and lead through this
+`power_pass_through_vertical_offset_mm = 4.0`, placing the default center
+`19.4 mm` above the print plane. Pass only the DC head and lead through this
 hole, never the external AC adapter. The
 `10.0 mm` diameter is a printable starting point, not a guaranteed finished-hole
 size; print a coupon or measure a test print and tune

@@ -2,6 +2,49 @@
 
 Status: Approved
 
+## Auto-Approved Super-Agent Correction: Increase Power Pass-Through Raise (2026-07-23)
+
+### Purpose And Requested Behavior
+
+Increase the Linksys enclosure power-head hole's total extra vertical offset
+from `2.0 mm` to `4.0 mm`.
+
+### Scope, Definitions, Inputs, And Constraints
+
+- The user first requested a total `3.0 mm` offset, then requested `1.0 mm`
+  more before commit; the delivered final value is therefore `4.0 mm` from the
+  original switch-body centerline, superseding the committed `2.0 mm` offset.
+- Scope is limited to the power pass-through Z offset, its representative
+  rigid-head centerline, assertions, README guidance, and completed work record.
+- Preserve the `10.0 mm` diameter, `21.0 mm` visual-right horizontal offset,
+  wall penetration depth, enclosure outline, and all other geometry.
+
+### Deterministic Behavior Delivered
+
+- Change `power_pass_through_vertical_offset_mm` from `2.0` to `4.0`.
+- Raise the default center from `17.4 mm` to `19.4 mm` above the print plane.
+- Apply the same centerline to the power-head reference and assert the exact
+  `19.4 mm` default.
+
+### Assumptions, Impact, And Residual Risk
+
+- Positive source Z is upward in the installed enclosure orientation.
+- The `10.0 mm` hole remains fully bounded by the `31.0 mm` tray wall, with
+  its default vertical envelope spanning `14.4 mm` through `24.4 mm`.
+- Source geometry cannot prove alignment with the physical power connector;
+  slicer inspection or a test print remains authoritative.
+
+### Validation And Documentation
+
+- Short validation performed: `git diff --check` and one hidden-reference
+  horizontal `assembly` export with a hard ten-second limit.
+- Unit tests are prohibited. Full QA, independent code review, vertical and
+  printable-layout renders, Bambu Studio inspection, printing, and physical
+  connector alignment were skipped.
+- `README.md` documents the `4.0 mm` offset and `19.4 mm` default center.
+- Delivery remains `DRAFT` until slicer or physical connector alignment is
+  verified.
+
 ## Auto-Approved Super-Agent Correction: Raise Power Pass-Through (2026-07-23)
 
 ### Purpose And Requested Behavior
