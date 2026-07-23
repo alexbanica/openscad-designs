@@ -4,6 +4,88 @@ Status: Approved
 
 Approved Spec: `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
 
+## Auto-Approved Super-Agent Work Record: Receiver Relief And Catch Reach (2026-07-23)
+
+### Affected Files
+
+- `designs/linksys_lgs105_cable_management_enclosure.scad`
+- `README.md`
+- `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
+- `specs/PLAN-linksys-lgs105-cable-management-enclosure.md`
+
+### Implementation Steps Performed
+
+1. Added an adjustable `0.5 mm` extra per-side clearance to all four top-cover
+   skirt reliefs around the complete female receiver bosses and wall webs,
+   increasing each relief by `1.0 mm` overall.
+2. Increased the top-cover tapered catch lead-in reach from `1.0 mm` to
+   `2.0 mm`, adding `1.0 mm` without changing the existing bottom tray,
+   capture ledges, engagement height, interference, or flexure sections.
+3. Updated the receiver-clearance and default-value assertions.
+4. Corrected one stale exact-value assertion found by the first bounded render;
+   it still expected the previous `1.0 mm` lead-in offset.
+5. Documented the physical-fit calibration values and retained test-print risk.
+6. Updated the matching approved spec and this completed-work record.
+
+### Validation And Delivery Record
+
+- Validation run: `git diff --check` and one hidden-reference horizontal
+  `assembly` OpenSCAD export with a hard ten-second limit.
+- Validation skipped: unit tests are prohibited; vertical assemblies,
+  printable-layout export, Bambu Studio inspection, physical replacement-cover
+  print, existing-tray fit, and latch cycling were not run.
+- QA skipped: required by the explicit super-agent workflow.
+- Code review skipped: required by the explicit super-agent workflow.
+- Documentation updated: Linksys receiver-relief and catch-reach guidance.
+- Staging status: all four in-scope paths staged; no unrelated paths staged.
+- Commit status: not committed.
+- Push status: not pushed.
+- Residual risk: source assertions and one short render cannot prove printed
+  clearance or latch engagement; delivery remains `DRAFT` until slicer and
+  physical checks pass.
+
+## Auto-Approved Super-Agent Work Record: Physical Cover-Flip Alignment (2026-07-23)
+
+### Affected Files
+
+- `designs/linksys_lgs105_cable_management_enclosure.scad`
+- `README.md`
+- `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
+- `specs/PLAN-linksys-lgs105-cable-management-enclosure.md`
+
+### Implementation Steps Performed
+
+1. Replaced the nonphysical Z-only cover reflection with the real installation
+   transform: a `180` degree Y rotation plus enclosure-width X translation and
+   the existing seated Z translation.
+2. Mirrored each printable cover-local Ethernet relief center from its unchanged
+   tray center so the installed center maps back to the tray coordinate.
+3. Updated installed-coordinate assertions for reliefs, pins, catches, and the
+   seated roof datum without changing tray or retention geometry.
+4. Replaced exact installed pin-coordinate equality with the existing
+   microscopic retention tolerance after short validation exposed floating-point
+   representation differences.
+5. Documented the required installation rotation and local-to-installed X
+   mapping in the Linksys README section.
+6. Updated the matching approved spec and this completed-work record.
+
+### Validation And Delivery Record
+
+- Validation run: `git diff --check` and one hidden-reference horizontal
+  `assembly` OpenSCAD export with a hard ten-second limit.
+- Validation skipped: unit tests are prohibited; vertical assemblies,
+  printable-layout export, Bambu Studio inspection, physical replacement-cover
+  print, existing-tray fit, representative-cable fit, and latch cycling were not
+  run.
+- QA skipped: required by the explicit super-agent workflow.
+- Code review skipped: required by the explicit super-agent workflow.
+- Documentation updated: Linksys README installation and alignment guidance.
+- Staging status: all four in-scope paths staged; no unrelated paths staged.
+- Commit status: not committed.
+- Push status: not pushed.
+- Residual risk: nominal coordinate assertions and one short render cannot prove
+  printed fit; delivery remains `DRAFT` until slicer and physical checks pass.
+
 ## Objective
 
 Correct the three approved top-cover physical-fit defects while preserving the
@@ -102,7 +184,9 @@ Every subagent assignment is limited to five minutes of active work.
   solids, catch windows, enclosure depth, or unrelated source sections.
 - **Required approach:**
   - derive each top-cover Ethernet relief from the matching tray aperture's
-    shared X center, width, and complete installed Y passage;
+    installed X center, width, and complete installed Y passage; because the
+    printed cover is installed with a `180` degree Y rotation, derive cover-local
+    X as `enclosure_outer_width_mm - tray_aperture_x_mm`;
   - keep the exterior roof intact while clearing the skirt through the complete
     lay-in passage;
   - replace boss-only circular skirt clearance with local cover-only reliefs for

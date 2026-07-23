@@ -133,13 +133,14 @@ cover_pin_inset_mm = 8.0;
 cover_socket_wall_mm = 1.8;
 cover_retention_clearance_mm = 0.25;
 cover_fit_clearance_mm = 0.30;
+cover_receiver_relief_extra_clearance_mm = 0.5;
 cover_latch_interference_mm = 0.15;
 cover_latch_flexure_length_mm = 12.0;
 cover_latch_flexure_thickness_mm = 2.0;
 cover_latch_flexure_side_gap_mm = 1.5;
 cover_latch_engagement_depth_mm = 0.8;
 cover_latch_engagement_height_mm = 1.6;
-cover_latch_lead_in_reach_allowance_mm = 1.0;
+cover_latch_lead_in_reach_allowance_mm = 2.0;
 cover_latch_release_access_width_mm = 16.0;
 cover_latch_release_access_height_mm = 6.0;
 
@@ -322,18 +323,27 @@ cover_ethernet_relief_depth_mm = cover_ethernet_relief_end_y_mm
 cover_ethernet_relief_bottom_z_mm = cover_thickness_mm;
 cover_ethernet_relief_height_mm = cover_skirt_depth_mm
     + 2 * geometry_overlap_mm;
-cover_ethernet_relief_centers_x_mm = [
-    uplink_aperture_x_mm,
-    device_aperture_x_mm
+// The cover prints roof-face-down and is installed with a real 180-degree
+// rotation around Y. That preserves the Ethernet-side Y face but reverses X,
+// so the printable cover-local relief centers must mirror the tray centers.
+cover_ethernet_relief_local_centers_x_mm = [
+    enclosure_outer_width_mm - uplink_aperture_x_mm,
+    enclosure_outer_width_mm - device_aperture_x_mm
+];
+cover_ethernet_relief_installed_centers_x_mm = [
+    for (local_center_x_mm = cover_ethernet_relief_local_centers_x_mm)
+        enclosure_outer_width_mm - local_center_x_mm
 ];
 cover_ethernet_relief_widths_mm = [
     uplink_aperture_width_mm,
     device_aperture_width_mm
 ];
+cover_receiver_total_relief_clearance_mm = cover_fit_clearance_mm
+    + cover_receiver_relief_extra_clearance_mm;
 cover_receiver_boss_relief_diameter_mm = cover_socket_outer_diameter_mm
-    + 2 * cover_fit_clearance_mm;
+    + 2 * cover_receiver_total_relief_clearance_mm;
 cover_receiver_web_relief_diameter_mm = wall_thickness_mm
-    + 2 * cover_fit_clearance_mm;
+    + 2 * cover_receiver_total_relief_clearance_mm;
 cover_receiver_relief_bottom_z_mm = cover_thickness_mm;
 cover_receiver_relief_height_mm = cover_skirt_depth_mm
     + 2 * geometry_overlap_mm;
@@ -347,15 +357,22 @@ cover_retention_y_positions_mm = [
     cover_pin_center_inset_mm,
     rear_cover_socket_center_y_mm
 ];
-cover_pin_centers_mm = [
+cover_pin_local_centers_mm = [
     for (pin_x_mm = cover_retention_x_positions_mm)
         for (pin_y_mm = cover_retention_y_positions_mm)
             [pin_x_mm, pin_y_mm]
 ];
 tray_wall_top_z_mm = tray_floor_thickness_mm + tray_wall_height_mm;
 cover_roof_underside_local_z_mm = cover_thickness_mm;
+cover_assembly_rotate_y_deg = 180;
+cover_assembly_translate_x_mm = enclosure_outer_width_mm;
 cover_assembly_translate_z_mm = cover_installed_z_mm + cover_thickness_mm;
-// mirror([0, 0, 1]) maps local Z to -Z before the assembly translation.
+cover_pin_installed_centers_mm = [
+    for (pin_center_mm = cover_pin_local_centers_mm)
+        [enclosure_outer_width_mm - pin_center_mm[0], pin_center_mm[1]]
+];
+cover_pin_installed_socket_match_indices = [2, 3, 0, 1];
+// rotate([0, 180, 0]) maps local X/Z to -X/-Z before translation.
 cover_roof_underside_installed_z_mm = cover_assembly_translate_z_mm
     - cover_roof_underside_local_z_mm;
 // Each catch arm roots beside the inner wall with locating-skirt fit clearance.
@@ -413,9 +430,9 @@ cover_latch_hook_outer_x_positions_mm = [
         + cover_latch_flexure_thickness_mm
         + cover_latch_hook_projection_mm
 ];
-// The assembly transform mirrors only Z, so these are also the installed X/Y
-// envelopes. Probe the actual hull taper just inside the unchanged tray-window
-// top, between the installed arm-tip and hook slabs used by the catch module.
+// Probe the actual local hull taper just inside the unchanged tray-window top.
+// The physical Y-axis cover rotation reverses X and preserves Y; installed
+// envelopes below explicitly swap/mirror the two local catches.
 cover_latch_window_min_x_positions_mm = [
     -geometry_overlap_mm,
     enclosure_outer_width_mm - wall_thickness_mm - geometry_overlap_mm
@@ -454,6 +471,14 @@ cover_latch_entry_max_x_positions_mm = [
         + cover_latch_flexure_thickness_mm
         + cover_latch_window_probe_fraction
             * cover_latch_hook_projection_mm
+];
+cover_latch_entry_installed_min_x_positions_mm = [
+    enclosure_outer_width_mm - cover_latch_entry_max_x_positions_mm[1],
+    enclosure_outer_width_mm - cover_latch_entry_max_x_positions_mm[0]
+];
+cover_latch_entry_installed_max_x_positions_mm = [
+    enclosure_outer_width_mm - cover_latch_entry_min_x_positions_mm[1],
+    enclosure_outer_width_mm - cover_latch_entry_min_x_positions_mm[0]
 ];
 cover_latch_entry_near_y_mm = cover_latch_center_y_mm
     - cover_latch_arm_width_mm / 2;
@@ -605,7 +630,8 @@ default_cover_latch_inputs = default_layout_inputs
     && abs(cover_latch_flexure_side_gap_mm - 1.5) < 0.000001
     && abs(cover_latch_engagement_depth_mm - 0.8) < 0.000001
     && abs(cover_latch_engagement_height_mm - 1.6) < 0.000001
-    && abs(cover_latch_lead_in_reach_allowance_mm - 1.0) < 0.000001
+    && abs(cover_receiver_relief_extra_clearance_mm - 0.5) < 0.000001
+    && abs(cover_latch_lead_in_reach_allowance_mm - 2.0) < 0.000001
     && abs(cover_latch_release_access_width_mm - 16.0) < 0.000001
     && abs(cover_latch_release_access_height_mm - 6.0) < 0.000001;
 // Keep the complete representative routes on their aperture Z profiles. The
@@ -921,12 +947,18 @@ assert(cable_service_aperture_count == 3,
     "The enclosure contract requires exactly three cable-service apertures");
 assert(ethernet_lay_in_aperture_count == 2,
     "Only the two Ethernet cable-service apertures may be lay-in slots");
-assert(len(cover_ethernet_relief_centers_x_mm) == 2
-        && cover_ethernet_relief_centers_x_mm[0] == uplink_aperture_x_mm
-        && cover_ethernet_relief_centers_x_mm[1] == device_aperture_x_mm
+assert(len(cover_ethernet_relief_local_centers_x_mm) == 2
+        && cover_ethernet_relief_local_centers_x_mm[0]
+            == enclosure_outer_width_mm - uplink_aperture_x_mm
+        && cover_ethernet_relief_local_centers_x_mm[1]
+            == enclosure_outer_width_mm - device_aperture_x_mm
+        && cover_ethernet_relief_installed_centers_x_mm[0]
+            == uplink_aperture_x_mm
+        && cover_ethernet_relief_installed_centers_x_mm[1]
+            == device_aperture_x_mm
         && cover_ethernet_relief_widths_mm[0] == uplink_aperture_width_mm
         && cover_ethernet_relief_widths_mm[1] == device_aperture_width_mm,
-    "Cover Ethernet reliefs must share both tray aperture X envelopes");
+    "Physically rotated cover reliefs must share both installed tray X envelopes");
 assert(ethernet_passage_start_y_mm
             == ethernet_wall_y_mm - aperture_side_clearance_mm
         && cover_ethernet_relief_end_y_mm > cover_skirt_near_inner_y_mm
@@ -1183,13 +1215,13 @@ assert(cover_latch_lead_in_reach_allowance_mm > 0
     "Extended catch entries must enter the fixed windows without bottoming out");
 assert(cover_latch_window_probe_fraction > 0
         && cover_latch_window_probe_fraction < 1
-        && cover_latch_entry_min_x_positions_mm[0]
+        && cover_latch_entry_installed_min_x_positions_mm[0]
             < cover_latch_window_max_x_positions_mm[0]
-        && cover_latch_entry_max_x_positions_mm[0]
+        && cover_latch_entry_installed_max_x_positions_mm[0]
             > cover_latch_window_min_x_positions_mm[0]
-        && cover_latch_entry_min_x_positions_mm[1]
+        && cover_latch_entry_installed_min_x_positions_mm[1]
             < cover_latch_window_max_x_positions_mm[1]
-        && cover_latch_entry_max_x_positions_mm[1]
+        && cover_latch_entry_installed_max_x_positions_mm[1]
             > cover_latch_window_min_x_positions_mm[1]
         && cover_latch_entry_near_y_mm < cover_latch_window_far_y_mm
         && cover_latch_entry_far_y_mm > cover_latch_window_near_y_mm,
@@ -1209,7 +1241,7 @@ assert(!default_cover_latch_inputs
         || (abs(cover_latch_hook_projection_mm - 1.25) < 0.000001
             && abs(cover_latch_release_travel_mm - 0.95) < 0.000001
             && abs(cover_latch_entry_tip_z_mm
-                    - (cover_latch_hook_bottom_z_mm - 1.0)) < 0.000001
+                    - (cover_latch_hook_bottom_z_mm - 2.0)) < 0.000001
             && abs(cover_latch_arm_outer_x_positions_mm[0] - 2.7)
                 < 0.000001
             && abs(cover_latch_arm_outer_x_positions_mm[1] - 122.3)
@@ -1247,19 +1279,33 @@ assert(cover_pin_tip_diameter_mm > 0
 assert((cover_receiver_boss_relief_diameter_mm
             - cover_socket_outer_diameter_mm) / 2
             + cover_retention_assertion_epsilon_mm
-            >= cover_fit_clearance_mm
+            >= cover_receiver_total_relief_clearance_mm
         && (cover_receiver_web_relief_diameter_mm - wall_thickness_mm) / 2
             + cover_retention_assertion_epsilon_mm
-            >= cover_fit_clearance_mm
+            >= cover_receiver_total_relief_clearance_mm
+        && cover_receiver_total_relief_clearance_mm
+            == cover_fit_clearance_mm
+                + cover_receiver_relief_extra_clearance_mm
+        && cover_receiver_relief_extra_clearance_mm >= 0
         && cover_receiver_relief_bottom_z_mm == cover_thickness_mm
         && cover_receiver_relief_height_mm >= cover_skirt_depth_mm,
     "Cover skirt reliefs must clear complete receiver bosses and structural webs");
-assert(len(cover_pin_centers_mm) == 4
-        && cover_pin_centers_mm == cover_socket_centers_mm,
-    "All four cover pins must remain coaxial with the unchanged tray sockets");
-assert(cover_roof_underside_installed_z_mm == tray_wall_top_z_mm
+assert(len(cover_pin_installed_centers_mm) == 4
+        && max([
+            for (pin_index = [0 : len(cover_pin_installed_centers_mm) - 1])
+                planar_distance_mm(
+                    cover_pin_installed_centers_mm[pin_index],
+                    cover_socket_centers_mm[
+                        cover_pin_installed_socket_match_indices[pin_index]
+                    ]
+                )
+        ]) <= cover_retention_assertion_epsilon_mm,
+    "All four physically rotated cover pins must remain coaxial with the tray sockets");
+assert(cover_assembly_rotate_y_deg == 180
+        && cover_assembly_translate_x_mm == enclosure_outer_width_mm
+        && cover_roof_underside_installed_z_mm == tray_wall_top_z_mm
         && tray_wall_top_z_mm == cover_installed_z_mm,
-    "The mirrored and translated cover roof underside must seat on the tray-wall top datum");
+    "The physically rotated and translated cover must align and seat on the tray-wall datum");
 assert(printable_layout_cover_x_mm
         > printable_layout_tray_x_mm + enclosure_outer_width_mm,
     "Printable tray and cover require positive separation");
@@ -2086,8 +2132,9 @@ module cover_receiver_relief(receiver_x_mm, receiver_y_mm) {
         : enclosure_outer_width_mm - wall_thickness_mm / 2;
 
     // Match the complete unchanged tray receiver, expanding both its boss and
-    // wall-owning web by the cover fit clearance. This cut affects the skirt
-    // only; the roof and coaxial alignment pin remain solid.
+    // wall-owning web by the cover fit clearance plus the physical-fit
+    // calibration allowance. This cut affects the skirt only; the roof and
+    // coaxial alignment pin remain solid.
     hull() {
         translate([
             receiver_x_mm,
@@ -2172,10 +2219,10 @@ module cover_skirt() {
         // Installed, both cuts share their tray aperture X envelopes and run
         // continuously from the tray passage through the skirt inner face.
         // Starting at the roof underside leaves the exterior roof intact.
-        for (relief_index = [0 : len(cover_ethernet_relief_centers_x_mm) - 1]) {
+        for (relief_index = [0 : len(cover_ethernet_relief_local_centers_x_mm) - 1]) {
             relief_width_mm = cover_ethernet_relief_widths_mm[relief_index];
             translate([
-                cover_ethernet_relief_centers_x_mm[relief_index]
+                cover_ethernet_relief_local_centers_x_mm[relief_index]
                     - relief_width_mm / 2,
                 ethernet_passage_start_y_mm,
                 cover_ethernet_relief_bottom_z_mm
@@ -2346,8 +2393,12 @@ module top_cover() {
 module assembled_enclosure() {
     color(tray_preview_colour) bottom_tray();
     color(cover_preview_colour)
-        translate([0, 0, cover_assembly_translate_z_mm])
-            mirror([0, 0, 1])
+        translate([
+            cover_assembly_translate_x_mm,
+            0,
+            cover_assembly_translate_z_mm
+        ])
+            rotate([0, cover_assembly_rotate_y_deg, 0])
                 top_cover();
     reference_geometry();
 }

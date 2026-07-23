@@ -2,6 +2,118 @@
 
 Status: Approved
 
+## Auto-Approved Super-Agent Correction: Receiver Relief And Catch Reach (2026-07-23)
+
+### Purpose And Requested Behavior
+
+Correct the replacement top cover after physical inspection showed that its
+four locating-skirt openings do not pass over the unchanged bottom-tray female
+socket receivers and its two catches still do not click into their unchanged
+tray windows.
+
+### Scope, Definitions, Inputs, And Constraints
+
+- Scope is limited to top-cover receiver-relief clearance, tapered catch
+  lead-in reach, their assertions, the Linksys README section, and completed
+  spec/plan records.
+- "`0.5 mm` on each side" means adding a dedicated `0.5 mm` radial/per-side
+  calibration allowance beyond the existing `cover_fit_clearance_mm`, so every
+  boss/web relief is `1.0 mm` larger overall than the preceding opening.
+- "Clamp height" is implemented as an additional `1.0 mm` of top-cover tapered
+  catch lead-in reach. The positive-capture ledge, engagement height,
+  interference, flexure section, and unchanged tray windows do not move.
+- Bottom-tray geometry, socket receivers, pin centers and sizes, cover roof,
+  enclosure depth, cable apertures, vents, feet, and all other behavior remain
+  unchanged.
+
+### Deterministic Behavior Delivered
+
+- Add adjustable `cover_receiver_relief_extra_clearance_mm = 0.5` and derive
+  both receiver-boss and wall-web top-cover reliefs from the existing fit
+  clearance plus this additional per-side allowance.
+- Increase `cover_latch_lead_in_reach_allowance_mm` from `1.0 mm` to `2.0 mm`,
+  adding the requested `1.0 mm` only to the tapered catch entry.
+- Assert the complete combined receiver-relief clearance and preserve the
+  existing catch-window entry, non-bottoming, capture, and release invariants.
+
+### Assumptions, Impact, And Residual Risk
+
+- The physical obstruction is the top-cover locating skirt around the complete
+  female receiver boss/web, not pin-to-socket alignment or the DC power hole.
+- Extending only the tapered catch entry is the smallest change consistent with
+  tray reuse; changing `cover_latch_engagement_height_mm` would also move the
+  tray shoulder/window geometry.
+- The new values are physical-fit calibration inputs, not proven final
+  tolerances. Only a newly printed cover fitted to the existing tray can confirm
+  seating and positive catch engagement.
+
+### Validation And Documentation
+
+- Short validation performed: `git diff --check` and one hidden-reference
+  horizontal `assembly` export, each limited to the super-agent time budget.
+- Unit tests are prohibited. Full QA, independent code review, vertical and
+  printable-layout renders, slicer inspection, test printing, physical seating,
+  and latch-cycle validation were skipped.
+- `README.md` documents the new `0.5 mm` per-side receiver relief and `2.0 mm`
+  catch lead-in default.
+- Delivery remains `DRAFT` until the revised top cover is sliced, printed,
+  seated on the existing tray, and both catches are physically cycled.
+
+## Auto-Approved Super-Agent Correction: Physical Cover-Flip X Alignment (2026-07-23)
+
+### Purpose And Requested Behavior
+
+Correct the still-misaligned top-cover Ethernet cable reliefs reported after the
+previous top-cover fit change. The printed cover must align with the unchanged
+bottom tray when it is physically turned over for installation.
+
+### Scope, Definitions, Inputs, And Constraints
+
+- Scope is limited to the removable cover's two Ethernet skirt reliefs, the
+  assembly-preview transform, corresponding assertions, this spec and plan, and
+  the Linksys README section.
+- "Physical cover flip" means a `180` degree rotation around Y, followed by an X
+  translation of `enclosure_outer_width_mm`. This keeps the Ethernet and power
+  edges on their original Y sides while reversing cover-local X.
+- Tray-local aperture centers remain `uplink_aperture_x_mm = 45.0` and
+  `device_aperture_x_mm = 75.0`; no new physical measurements are introduced.
+- Bottom-tray geometry, cable profiles, aperture widths/heights, cover roof,
+  receiver reliefs, pins, catches, depth, vents, feet, and printable orientation
+  are out of scope and remain unchanged.
+
+### Deterministic Behavior Delivered
+
+- Each printable cover-local relief center is derived as
+  `enclosure_outer_width_mm - tray_aperture_x_mm`.
+- The assembly preview uses the same physically achievable Y-axis rotation and
+  X/Z translations required to install the roof-face-down printed cover.
+- Installed relief centers are derived by applying that transform and asserted
+  equal to the unchanged tray aperture centers and widths.
+- Installed pin and catch envelopes are asserted after the same X reversal so
+  the transform cannot make prior mating assertions pass only in local cover
+  coordinates.
+
+### Assumptions And Impact
+
+- The cover is installed by rotating it side-to-side around Y, not by flipping
+  it front-to-back around X.
+- Only a replacement top cover must be printed; the existing tray remains the
+  physical reference.
+- OpenSCAD geometry can establish nominal alignment but cannot prove printed
+  dimensional accuracy or fit.
+
+### Validation And Documentation
+
+- Short validation performed: `git diff --check` and one hidden-reference
+  horizontal `assembly` export, limited to ten seconds.
+- Unit tests are prohibited and were not run. Full QA, independent code review,
+  vertical renders, printable-layout render, Bambu Studio inspection, test
+  printing, existing-tray fitting, and latch cycling were skipped by the
+  explicitly requested super-agent workflow.
+- `README.md` documents the physical installation rotation and cover-local X
+  mapping.
+- Delivery remains `DRAFT` pending slicer and physical fit validation.
+
 ## Iteration: Top-Cover Physical Fit Corrections (2026-07-23)
 
 ### Purpose And Reported Bugs
@@ -30,8 +142,10 @@ remains a tray-only opening and is not changed by this iteration.
   windows, vents, vertical-foot interfaces, and cable-routing features.
 - Correct the two top-cover skirt reliefs so their installed X positions, usable
   widths, and complete wall-to-skirt Y passages are derived from the same uplink
-  and device-aperture envelopes used by the bottom tray. The reliefs must not be
-  independently offset from the tray openings.
+  and device-aperture envelopes used by the bottom tray. Because physical
+  installation rotates the printable cover `180` degrees around Y, cover-local X
+  is `enclosure_outer_width_mm - tray_aperture_x_mm`; installed X must equal the
+  unchanged tray coordinate rather than the raw printable coordinate.
 - Keep the top-cover roof intact above the two lay-in slots so it closes their
   open tops, while ensuring the skirt and roof do not reduce or pinch the
   approved `6.0 mm x 6.0 mm` uplink envelope or `8.0 mm x 7.0 mm` device-bundle

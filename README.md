@@ -149,7 +149,7 @@ are
 `cover_latch_flexure_side_gap_mm = 1.5`,
 `cover_latch_engagement_depth_mm = 0.8`,
 `cover_latch_engagement_height_mm = 1.6`,
-`cover_latch_lead_in_reach_allowance_mm = 1.0`,
+`cover_latch_lead_in_reach_allowance_mm = 2.0`,
 `cover_latch_release_access_width_mm = 16.0`, and
 `cover_latch_release_access_height_mm = 6.0`. The derived default inward release
 travel is `0.95 mm`: `0.8 mm` engagement plus `0.15 mm` interference. The
@@ -160,9 +160,12 @@ print.
 The default switch clearances are `0.6 mm` on each horizontal side, `0.6 mm`
 at each end, and `0.8 mm` above the body; the downward pads retain an additional
 `0.4 mm` clearance. Cover-pin/socket retention clearance defaults to `0.25 mm`,
-and locating-skirt fit clearance defaults to `0.30 mm`. Tune these clearances,
-catch interference, flexure, engagement, and release access before expecting
-repeatable tool-free operation from a particular printer and material. To
+locating-skirt fit clearance defaults to `0.30 mm`, and the socket-receiver
+skirt reliefs add `cover_receiver_relief_extra_clearance_mm = 0.5` on every
+side after the first physical replacement cover would not pass over the
+receivers. Tune these clearances, catch interference, flexure, engagement, and
+release access before expecting repeatable tool-free operation from a
+particular printer and material. To
 remove the cover without tools, deliberately pinch both opposed catch tongues
 inward through their outward-facing release openings, keep them released, and
 lift the cover evenly off its independent alignment pins. Do not pry or force
@@ -172,14 +175,23 @@ behind their shoulders.
 
 The physical-fit correction changes only the removable top cover; the existing
 bottom tray is reused with all of its solid and cut geometry unchanged. The two
-top-cover Ethernet reliefs now derive their X positions, usable widths, and
-complete tray-wall-to-skirt passages from the corresponding tray apertures. The
-locating-skirt reliefs clear each complete female socket receiver, including its
-wall-connecting structural web, while preserving the coaxial cover pins and the
-exterior roof. The adjustable
-`cover_latch_lead_in_reach_allowance_mm = 1.0` default extends only the tapered
-catch entry into the unchanged tray windows; it is a printable calibration
-starting point, not a physically proven measurement.
+top-cover Ethernet reliefs derive their installed X positions, usable widths,
+and complete tray-wall-to-skirt passages from the corresponding tray apertures.
+Because the cover prints exterior-roof-face-down, install it by rotating it
+`180` degrees around its Y axis while keeping the Ethernet edge on the Ethernet
+side; do not flip it front-to-back. That real rotation reverses X, so each
+printable cover-local relief uses `enclosure_outer_width_mm - tray_aperture_x_mm`
+and lands on the original tray coordinate after installation. The assembly
+preview uses that same physical rotation instead of a nonphysical Z reflection.
+The locating-skirt reliefs clear each complete female socket receiver,
+including its wall-connecting structural web, while preserving the coaxial
+cover pins and the exterior roof. Their dedicated `0.5 mm` extra per-side
+allowance makes each boss/web relief `1.0 mm` larger overall than the previous
+fit-correction opening. The adjustable
+`cover_latch_lead_in_reach_allowance_mm = 2.0` default extends only the tapered
+catch entry into the unchanged tray windows, including the additional `1.0 mm`
+requested after the catches still did not click; both values remain printable
+calibration starting points rather than physically proven measurements.
 
 Use the enclosure horizontally with both detachable feet removed. For the
 smaller-footprint vertical configuration, fit the same two identical snap-in feet to
