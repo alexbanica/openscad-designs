@@ -91,6 +91,7 @@ power_head_reference_diameter_mm = 9.0;
 power_head_rigid_length_mm = 28.20;
 power_pass_through_diameter_mm = 10.0;
 power_input_visual_right_offset_mm = 21.0;
+power_pass_through_vertical_offset_mm = 2.0;
 aperture_side_clearance_mm = 0.4;
 aperture_edge_rounding_mm = 2.0;
 
@@ -248,7 +249,9 @@ aperture_bottom_z_mm = min(
 );
 power_pass_through_center_x_mm = switch_origin_x_mm
     + power_input_visual_right_offset_mm;
-power_pass_through_center_z_mm = switch_origin_z_mm + switch_height_mm / 2;
+power_pass_through_center_z_mm = switch_origin_z_mm
+    + switch_height_mm / 2
+    + power_pass_through_vertical_offset_mm;
 power_pass_through_radius_mm = power_pass_through_diameter_mm / 2;
 power_pass_through_cut_start_y_mm = enclosure_outer_depth_mm
     - wall_thickness_mm
@@ -998,8 +1001,15 @@ assert(ethernet_aperture_separation_mm >= wall_thickness_mm,
 assert(power_pass_through_center_x_mm
             == switch_origin_x_mm + power_input_visual_right_offset_mm
         && power_pass_through_center_z_mm
-            == switch_origin_z_mm + switch_height_mm / 2,
+            == switch_origin_z_mm
+                + switch_height_mm / 2
+                + power_pass_through_vertical_offset_mm,
     "Power pass-through center must follow the approved switch-input formulas");
+assert(abs(power_pass_through_vertical_offset_mm - 2.0) >= 0.000001
+        || abs(switch_origin_z_mm - 2.4) >= 0.000001
+        || abs(switch_height_mm - 26.0) >= 0.000001
+        || abs(power_pass_through_center_z_mm - 17.4) < 0.000001,
+    "Default power pass-through vertical offset must raise its center to 17.4 mm");
 assert(power_pass_through_diameter_mm >= power_head_reference_diameter_mm
         && (power_pass_through_diameter_mm
             - power_head_reference_diameter_mm) / 2 >= 0,

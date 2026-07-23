@@ -4,6 +4,45 @@ Status: Approved
 
 Approved Spec: `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
 
+## Auto-Approved Super-Agent Work Record: Raise Power Pass-Through (2026-07-23)
+
+### Affected Files
+
+- `designs/linksys_lgs105_cable_management_enclosure.scad`
+- `README.md`
+- `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
+- `specs/PLAN-linksys-lgs105-cable-management-enclosure.md`
+
+### Implementation Steps Performed
+
+1. Interpreted the reported cover power hole as the existing round opening in
+   the bottom tray's power-side wall; the removable top cover has no power
+   opening.
+2. Added adjustable `power_pass_through_vertical_offset_mm = 2.0` and applied
+   it to the pass-through and representative rigid-head centerline.
+3. Raised the default hole center from `15.4 mm` to `17.4 mm` above the print
+   plane without changing its diameter, X position, or wall-cut depth.
+4. Updated derivation/default assertions and Linksys README guidance.
+5. Updated the matching approved spec and this completed-work record.
+
+### Validation And Delivery Record
+
+- Validation run: `git diff --check` and one hidden-reference horizontal
+  `assembly` OpenSCAD export with a hard ten-second limit.
+- Validation skipped: unit tests are prohibited; vertical assemblies,
+  printable-layout export, Bambu Studio inspection, printing, and physical
+  connector alignment were not run.
+- QA skipped: required by the explicit super-agent workflow.
+- Code review skipped: required by the explicit super-agent workflow.
+- Documentation updated: Linksys power-hole vertical offset and default center
+  height guidance.
+- Staging status: all four in-scope paths staged; no unrelated paths staged.
+- Commit status: not committed.
+- Push status: not pushed.
+- Residual risk: assertions and one short render cannot prove physical
+  connector alignment; delivery remains `DRAFT` until slicer or printed-fit
+  checks pass.
+
 ## Auto-Approved Super-Agent Work Record: 5.90 mm Round UTP Fit (2026-07-23)
 
 ### Affected Files

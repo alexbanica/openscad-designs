@@ -2,6 +2,53 @@
 
 Status: Approved
 
+## Auto-Approved Super-Agent Correction: Raise Power Pass-Through (2026-07-23)
+
+### Purpose And Requested Behavior
+
+Raise the Linksys enclosure's power-head hole by `2.0 mm` after physical
+inspection showed that the existing opening sits too low.
+
+### Scope, Definitions, Inputs, And Constraints
+
+- "Power hole in the cover" is interpreted as the existing bounded round
+  opening through the bottom tray's power-side wall; the removable top-cover
+  roof does not contain a power opening.
+- Scope is limited to the power pass-through Z position, its representative
+  rigid-head centerline, assertions, README guidance, and completed spec/plan
+  records.
+- Preserve the `10.0 mm` hole diameter, X position, wall penetration depth,
+  enclosure outline, switch placement, top cover, retention, ventilation,
+  cable guides, and all other geometry.
+
+### Deterministic Behavior Delivered
+
+- Add adjustable `power_pass_through_vertical_offset_mm = 2.0`.
+- Derive the power pass-through center from the former switch-body centerline
+  plus that offset, raising the default center from `15.4 mm` to `17.4 mm`
+  above the print plane.
+- Apply the same raised centerline to the power-head reference and assert both
+  the derivation and the exact default center.
+
+### Assumptions, Impact, And Residual Risk
+
+- "Raise" means positive source Z in the installed enclosure orientation.
+- The shifted `10.0 mm` hole remains fully bounded by the `31.0 mm` tray wall.
+- Source geometry cannot prove alignment with the physical switch connector;
+  a slicer check or test print remains authoritative.
+
+### Validation And Documentation
+
+- Short validation performed: `git diff --check` and one hidden-reference
+  horizontal `assembly` export with a hard ten-second limit.
+- Unit tests are prohibited. Full QA, independent code review, vertical and
+  printable-layout renders, Bambu Studio inspection, printing, and physical
+  connector alignment were skipped.
+- `README.md` documents the adjustable `2.0 mm` offset and resulting default
+  `17.4 mm` center height.
+- Delivery remains `DRAFT` until the revised hole is sliced or printed and
+  checked against the physical power connector.
+
 ## Auto-Approved Super-Agent Correction: 5.90 mm Round UTP Fit (2026-07-23)
 
 ### Purpose And Requested Behavior
