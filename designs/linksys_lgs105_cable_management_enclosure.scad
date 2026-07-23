@@ -58,7 +58,8 @@ uplink_cable_count = 1;
 device_cable_count = 4;
 ethernet_cable_lengths_mm = [250, 250, 250, 250, 500];
 ethernet_total_storage_allowance_mm = 1500;
-uplink_cable_diameter_mm = 4.0;
+uplink_cable_diameter_mm = 5.90;
+uplink_cable_fit_clearance_mm = 0.5;
 device_cable_width_mm = 6.0;
 device_cable_thickness_mm = 1.4;
 minimum_cable_bend_radius_mm = 15.0;
@@ -80,8 +81,8 @@ uplink_device_divider_length_mm = 20.0;
 uplink_device_divider_height_mm = 12.0;
 
 // Ethernet lay-in apertures and measured power-head pass-through
-uplink_aperture_width_mm = 6.0;
-uplink_aperture_height_mm = 6.0;
+uplink_aperture_width_mm = 7.0;
+uplink_aperture_height_mm = 8.0;
 uplink_aperture_x_mm = 45.0;
 device_aperture_width_mm = 8.0;
 device_aperture_height_mm = 7.0;
@@ -235,6 +236,9 @@ cable_storage_center_y_mm = wall_thickness_mm + cable_storage_depth_mm / 2;
 uplink_aperture_bottom_z_mm = tray_floor_thickness_mm
     + tray_wall_height_mm
     - uplink_aperture_height_mm;
+uplink_aperture_radial_clearance_mm =
+    (min(uplink_aperture_width_mm, uplink_aperture_height_mm)
+        - uplink_cable_diameter_mm) / 2;
 device_aperture_bottom_z_mm = tray_floor_thickness_mm
     + tray_wall_height_mm
     - device_aperture_height_mm;
@@ -614,6 +618,10 @@ default_minimal_depth_inputs = abs(cable_storage_depth_mm - 68.0) < 0.000001
 default_power_reference_inputs = default_minimal_depth_inputs
     && abs(power_head_rigid_length_mm - 28.20) < 0.000001
     && abs(geometry_overlap_mm - 0.1) < 0.000001;
+default_uplink_fit_inputs = abs(uplink_cable_diameter_mm - 5.90) < 0.000001
+    && abs(uplink_cable_fit_clearance_mm - 0.5) < 0.000001
+    && abs(uplink_aperture_width_mm - 7.0) < 0.000001
+    && abs(uplink_aperture_height_mm - 8.0) < 0.000001;
 default_top_vent_inputs = default_minimal_depth_inputs
     && abs(top_vent_length_mm - 48.0) < 0.000001
     && abs(top_vent_y_offset_mm) < 0.000001;
@@ -942,8 +950,14 @@ assert(device_cable_width_mm <= device_aperture_width_mm
         && device_bundle_height_mm <= device_aperture_height_mm,
     "Flat-device bundle does not fit its shared lay-in slot");
 assert(uplink_cable_diameter_mm <= uplink_aperture_width_mm
-        && uplink_cable_diameter_mm <= uplink_aperture_height_mm,
-    "Round uplink does not fit both dimensions of its lay-in slot");
+        && uplink_cable_diameter_mm <= uplink_aperture_height_mm
+        && uplink_cable_fit_clearance_mm >= 0
+        && uplink_aperture_radial_clearance_mm
+            >= uplink_cable_fit_clearance_mm,
+    "Round uplink does not retain its required per-side aperture clearance");
+assert(!default_uplink_fit_inputs
+        || abs(uplink_aperture_radial_clearance_mm - 0.55) < 0.000001,
+    "Default 5.90 mm uplink requires 0.55 mm clearance per side");
 assert(cable_service_aperture_count == 3,
     "The enclosure contract requires exactly three cable-service apertures");
 assert(ethernet_lay_in_aperture_count == 2,

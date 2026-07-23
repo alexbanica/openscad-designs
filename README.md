@@ -115,7 +115,8 @@ source defaults.
 The manually entered connected-cable inputs are exactly five Ethernet cables:
 one conventional round `500 mm` CAT6 uplink and four flat `250 mm` CAT6 device
 cables, for a combined connected length of `1500 mm`. The default round uplink
-diameter is `4.0 mm`. Each flat device cable defaults to `6.0 mm x 1.4 mm`, so
+maximum cross-section/diagonal is the user-measured `5.90 mm`. Each flat device
+cable defaults to `6.0 mm x 1.4 mm`, so
 the four-cable stack is `6.0 mm x 5.6 mm`. These cable profiles, stacking
 behavior, bend behavior, and available storage are planning assumptions, not
 certified measurements or a guarantee that all slack will fit.
@@ -232,10 +233,14 @@ The assembled enclosure has exactly three intentional cable-service apertures:
 - one bounded round DC power-head pass-through in the opposite power-side wall.
 
 Only the two Ethernet apertures are open-topped tray-wall lay-in slots. Their
-default usable sizes are `6.0 mm x 6.0 mm` for the round uplink and
+default usable sizes are `7.0 mm x 8.0 mm` for the round uplink and
 `8.0 mm x 7.0 mm` for the single shared device-bundle slot. The four flat device
 cables share that one device slot as the default `6.0 mm x 5.6 mm` stack; they do
-not use four separate exits. Aperture side clearance defaults to `0.4 mm`.
+not use four separate exits. The uplink slot leaves `0.55 mm` nominal clearance
+on each lateral side and `1.05 mm` vertically around the centered `5.90 mm`
+cable envelope, exceeding the adjustable
+`uplink_cable_fit_clearance_mm = 0.5` minimum. Aperture wall-cut
+overlap (`aperture_side_clearance_mm`) separately defaults to `0.4 mm`.
 Installing the cover bounds the open side of both Ethernet slots, while aligned
 locating-skirt reliefs preserve their cable envelopes. Do not attempt to pass
 RJ45 plugs through those slots.
@@ -263,7 +268,7 @@ deliberately broad `26.0 mm` waist, with smooth support-free transitions and a
 floor-connected upright profile. The guide-solid radii are distinct from the
 cable centerline radii. The representative routes stay at their Ethernet
 aperture heights and protect each complete cable profile from the maximum
-`14.0 mm` shoulder envelope, yielding default centerline radii of `16.0 mm` for
+`14.0 mm` shoulder envelope, yielding default centerline radii of `16.95 mm` for
 the round uplink and `17.0 mm` for the flat device bundle while preserving
 `minimum_cable_bend_radius_mm = 15.0`. The shoulder, waist, and profile parameters
 remain adjustable subject to the source geometry and printability assertions.
@@ -307,8 +312,9 @@ The source groups its public controls near the top by:
 - tray, wall, floor, cover, skirt, and corner dimensions;
 - horizontal switch rails/stops and cover-mounted vertical pads;
 - cable counts, `ethernet_cable_lengths_mm`, total storage allowance, cable
-  profiles (`uplink_cable_diameter_mm`, `device_cable_width_mm`, and
-  `device_cable_thickness_mm`), contact rounding, and minimum bend radius;
+  profiles (`uplink_cable_diameter_mm`, `uplink_cable_fit_clearance_mm`,
+  `device_cable_width_mm`, and `device_cable_thickness_mm`), contact rounding,
+  and minimum bend radius;
 - cable-storage depth, switch gap, `routing_guide_shoulder_diameter_mm`,
   `routing_guide_waist_diameter_mm`, transition geometry, and uplink/device
   divider;
@@ -335,7 +341,7 @@ The source groups its public controls near the top by:
 Common fit changes start with `switch_width_mm`, `switch_depth_mm`,
 `switch_height_mm`, `switch_side_clearance_mm`, `switch_end_clearance_mm`, and
 `switch_top_clearance_mm`. For real cables, tune
-`uplink_cable_diameter_mm`, `device_cable_width_mm`,
+`uplink_cable_diameter_mm`, `uplink_cable_fit_clearance_mm`, `device_cable_width_mm`,
 `device_cable_thickness_mm`, `minimum_cable_bend_radius_mm`,
 `cable_storage_depth_mm`, `routing_guide_*`, the uplink/device
 `*_aperture_*` groups, and `power_pass_through_diameter_mm`. Recheck

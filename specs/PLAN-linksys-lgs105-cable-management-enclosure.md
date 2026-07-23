@@ -4,6 +4,48 @@ Status: Approved
 
 Approved Spec: `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
 
+## Auto-Approved Super-Agent Work Record: 5.90 mm Round UTP Fit (2026-07-23)
+
+### Affected Files
+
+- `designs/linksys_lgs105_cable_management_enclosure.scad`
+- `README.md`
+- `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
+- `specs/PLAN-linksys-lgs105-cable-management-enclosure.md`
+
+### Implementation Steps Performed
+
+1. Replaced the old `4.0 mm` round-uplink assumption with the user-supplied
+   `5.90 mm` maximum diagonal/circular envelope.
+2. Added an adjustable `0.5 mm` minimum fit allowance per side and increased the
+   uplink lay-in passage from `6.0 mm x 6.0 mm` to `7.0 mm x 8.0 mm`, yielding
+   `0.55 mm` nominal lateral and `1.05 mm` nominal vertical clearance per side.
+3. Applied the measured profile to the representative internal route and kept
+   the installed cover relief derived from the enlarged tray aperture.
+4. Added calculated-clearance assertions and reconciled the documented route
+   radius and public controls. The first bounded render rejected a `7.0 mm`
+   slot height because the centered cable exceeded the guide's fully protected
+   top envelope by `0.15 mm`; the delivered `8.0 mm` height centers the cable
+   lower while retaining the existing guide.
+5. Updated the matching approved spec and this completed-work record.
+
+### Validation And Delivery Record
+
+- Validation run: `git diff --check` and one hidden-reference horizontal
+  `assembly` OpenSCAD export with a hard ten-second limit.
+- Validation skipped: unit tests are prohibited; vertical assemblies,
+  printable-layout export, Bambu Studio inspection, cable coupon, printing, and
+  physical cable fit were not run.
+- QA skipped: required by the explicit super-agent workflow.
+- Code review skipped: required by the explicit super-agent workflow.
+- Documentation updated: Linksys UTP profile, aperture, clearance, routing, and
+  calibration guidance.
+- Staging status: all four in-scope paths staged; no unrelated paths staged.
+- Commit status: not committed.
+- Push status: not pushed.
+- Residual risk: nominal assertions and one short render cannot prove printed
+  cable fit; delivery remains `DRAFT` until slicer and physical checks pass.
+
 ## Auto-Approved Super-Agent Work Record: Measured 89 mm Switch Span (2026-07-23)
 
 This completed record supersedes the prior plan's `153.5 mm` depth invariant;

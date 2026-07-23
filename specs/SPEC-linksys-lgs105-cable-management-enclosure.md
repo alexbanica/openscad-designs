@@ -2,6 +2,62 @@
 
 Status: Approved
 
+## Auto-Approved Super-Agent Correction: 5.90 mm Round UTP Fit (2026-07-23)
+
+### Purpose And Requested Behavior
+
+Ensure that the normal round UTP cable fits through the enclosure after the user
+provided a `5.90 mm` maximum diagonal/cross-sectional measurement, with an
+explicit error margin for printed fit.
+
+### Scope, Definitions, Inputs, And Constraints
+
+- Treat the supplied `5.90 mm` diagonal as a conservative circular cable
+  envelope, so the cable fits without depending on cross-section orientation.
+- Use an adjustable minimum per-side fit allowance of `0.5 mm`.
+- Scope includes the round uplink cable profile, its Ethernet-side lay-in slot,
+  installed cover relief, representative internal route, assertions, README,
+  and completed spec/plan records.
+- Preserve the shared flat-cable slot, bounded power hole, aperture centers,
+  cable count and lengths, walls, enclosure outline, cover retention, vents,
+  feet, and all other behavior.
+
+### Deterministic Behavior Delivered
+
+- Change `uplink_cable_diameter_mm` from `4.0` to the measured `5.90`.
+- Add `uplink_cable_fit_clearance_mm = 0.5` as the minimum allowed clearance on
+  every side of the usable uplink passage.
+- Increase the uplink lay-in slot from `6.0 mm x 6.0 mm` to
+  `7.0 mm x 8.0 mm`; this yields `0.55 mm` nominal lateral clearance per side
+  and `1.05 mm` vertical clearance per side around the centered measured
+  envelope.
+- Continue deriving the installed top-cover relief from the tray slot and use
+  the `5.90 mm` profile for the complete representative internal route.
+- Assert the calculated radial clearance and its exact default value.
+
+### Assumptions, Impact, And Residual Risk
+
+- "Diagonal" is interpreted as the largest cable cross-section. Modeling it as
+  a circle is conservative for a non-circular jacket of the same diagonal.
+- The slot is a lay-in passage for the cable jacket; an RJ45 plug is installed
+  with the cover removed and is not required to pass through the `7.0 mm` slot.
+- Nominal OpenSCAD clearance does not include printer-specific shrinkage,
+  elephant foot, surface roughness, or measurement error beyond the selected
+  margin. A printed fit check remains authoritative.
+
+### Validation And Documentation
+
+- Short validation performed: `git diff --check` and one hidden-reference
+  horizontal `assembly` export, limited to the super-agent time budget.
+- Unit tests are prohibited. Full QA, independent code review, vertical and
+  printable-layout renders, slicer inspection, cable test coupon, printing, and
+  physical cable fit were skipped.
+- `README.md` documents the measured cable envelope, `7.0 mm x 8.0 mm`
+  passage, nominal lateral/vertical clearances, and adjustable minimum
+  allowance.
+- Delivery remains `DRAFT` until the slot is sliced or printed and physically
+  checked with the supplied cable.
+
 ## Auto-Approved Super-Agent Correction: Measured 89 mm Switch Span (2026-07-23)
 
 ### Purpose And Requested Behavior
@@ -205,7 +261,7 @@ remains a tray-only opening and is not changed by this iteration.
   unchanged tray coordinate rather than the raw printable coordinate.
 - Keep the top-cover roof intact above the two lay-in slots so it closes their
   open tops, while ensuring the skirt and roof do not reduce or pinch the
-  approved `6.0 mm x 6.0 mm` uplink envelope or `8.0 mm x 7.0 mm` device-bundle
+  approved `7.0 mm x 8.0 mm` uplink envelope or `8.0 mm x 7.0 mm` device-bundle
   envelope when installed.
 - Replace each boss-only circular skirt relief with top-cover relief geometry
   that clears the complete corresponding tray receiver: the female socket boss,
@@ -712,14 +768,19 @@ as design inputs:
 - DC input center: `21.0 mm` inward from the switch's visual right margin when
   looking directly at the exterior power face.
 
-The user identified the device cables as flat and the uplink as round but did
-not provide measured RJ45 head or molded-boot dimensions. Initial adjustable
-planning assumptions are:
+The user identified the device cables as flat and supplied the round uplink's
+maximum cross-sectional diagonal, but did not provide measured RJ45 head or
+molded-boot dimensions. Current adjustable cable inputs are:
 
-- Round uplink cable diameter: `uplink_cable_diameter_mm = 4.0`.
+- Round uplink cable maximum diagonal:
+  `uplink_cable_diameter_mm = 5.90`.
+- Round uplink minimum fit allowance:
+  `uplink_cable_fit_clearance_mm = 0.5` per side.
 - Flat device cable width: `device_cable_width_mm = 6.0`.
 - Flat device cable thickness: `device_cable_thickness_mm = 1.4`.
-- Uplink aperture usable width and height: `6.0 mm x 6.0 mm`.
+- Uplink aperture usable width and height: `7.0 mm x 8.0 mm`, providing
+  `0.55 mm` nominal lateral clearance and `1.05 mm` nominal vertical clearance
+  per side around the centered `5.90 mm` cable envelope.
 - Shared four-device-cable aperture usable width and height:
   `8.0 mm x 7.0 mm`, supporting a default four-cable stack of
   `6.0 mm x 5.6 mm` with clearance.
