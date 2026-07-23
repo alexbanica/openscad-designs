@@ -2,6 +2,139 @@
 
 Status: Approved
 
+## Iteration: Top-Cover Physical Fit Corrections (2026-07-23)
+
+### Purpose And Reported Bugs
+
+A physical fit attempt exposed three defects in the removable top cover:
+
+1. the two top-cover cable reliefs do not align with the corresponding openings
+   in the bottom tray;
+2. the top-cover locating skirt collides with the bottom-tray female alignment
+   socket geometry, so the cover cannot lower to its seated position; and
+3. the two top-cover positive catches do not reach the existing capture windows
+   in the bottom tray.
+
+This iteration is limited to top-cover production geometry. The already printed
+bottom tray must remain reusable without cutting, drilling, or reprinting it.
+Because the only plural cable openings that meet the removable cover are the
+round-uplink and shared flat-device Ethernet lay-in slots, "back cable holes" is
+defined here as those two Ethernet-side openings. The bounded round power hole
+remains a tray-only opening and is not changed by this iteration.
+
+### Final Behavior Added By This Iteration
+
+- Preserve the complete bottom-tray solid and cut geometry, including its outer
+  dimensions, both Ethernet lay-in slots, round power hole, four female
+  alignment sockets and their wall-connecting webs, two catch release/capture
+  windows, vents, vertical-foot interfaces, and cable-routing features.
+- Correct the two top-cover skirt reliefs so their installed X positions, usable
+  widths, and complete wall-to-skirt Y passages are derived from the same uplink
+  and device-aperture envelopes used by the bottom tray. The reliefs must not be
+  independently offset from the tray openings.
+- Keep the top-cover roof intact above the two lay-in slots so it closes their
+  open tops, while ensuring the skirt and roof do not reduce or pinch the
+  approved `6.0 mm x 6.0 mm` uplink envelope or `8.0 mm x 7.0 mm` device-bundle
+  envelope when installed.
+- Replace each boss-only circular skirt relief with top-cover relief geometry
+  that clears the complete corresponding tray receiver: the female socket boss,
+  its wall-connecting structural web, and `cover_fit_clearance_mm` around their
+  installed overlap. Local reliefs may open through the skirt toward the nearby
+  perimeter; they must not cut through the exterior roof.
+- Preserve all four tapered alignment pins and their current center positions,
+  diameters, taper, insertion depth, and alignment-only role. Each pin must
+  remain coaxial with its existing tray socket after the skirt relief changes.
+- Make the cover's fully seated datum explicit: the exterior roof remains
+  aligned to the tray outline and the roof underside reaches the top of the tray
+  wall without any skirt-to-socket, skirt-to-web, pin-to-socket-wall, or
+  catch-to-wall collision preventing settlement.
+- Preserve the existing two tray capture windows and their shoulders. Correct
+  only the top-cover catches so each catch enters its existing window and snaps
+  behind its existing shoulder when the cover reaches the seated datum.
+- Add an adjustable top-cover catch lead-in/reach allowance with a default of
+  `1.0 mm`. This extends the tapered entry portion into the existing window
+  beyond the current nominal reach without moving the positive-capture ledge,
+  changing the tray window, or weakening the roof-rooted flexure section.
+- Preserve the approved `12.0 mm` flexure length, `2.0 mm` flexure thickness,
+  `1.6 mm` engagement height, `0.15 mm` positive interference, opposed outward
+  release direction, and tool-free release behavior unless the catch lead-in
+  cannot be extended independently; any need to change those approved values
+  requires another spec amendment.
+- Derive and assert the installed cover/tray mating envelopes so slot alignment,
+  complete receiver clearance, pin/socket coaxiality, catch-window entry, and
+  positive shoulder capture cannot be satisfied only by visual coincidence.
+
+### Preserved Behavior And Scope Boundary
+
+- Preserve the approved `153.5 mm` tray and cover depth, `3.0 mm` power-side
+  extension, switch clearance, `10.0 mm` power pass-through, `25.2 mm` external
+  rigid-head reference, exactly-three-aperture contract, cable storage,
+  hourglass guides, ventilation, switch retention, detachable vertical feet,
+  horizontal and vertical placement, and printable layout.
+- Preserve the top cover as one connected, independently printable object with
+  its broad exterior roof face on the print bed in `top_cover` and
+  `printable_layout` modes.
+- Do not modify bottom-tray geometry to accommodate the revised cover. Source
+  refactoring may name or expose the tray's existing mating envelopes for shared
+  calculations and assertions, but rendered bottom-tray geometry must remain
+  unchanged.
+- Do not add a cover opening around the round power pass-through, change cable
+  sizes, add cable-service apertures, move sockets or tray catch windows, or
+  change enclosure depth.
+- Only the Linksys SCAD source, this spec, its separate plan, and the Linksys
+  README section are in scope. Generated mesh or preview artifacts remain out of
+  source control.
+
+### Constraints, Assumptions, And Impact
+
+- The `1.0 mm` extra catch reach is a proposed printable calibration default,
+  not a measured dimension from the failed print. It must remain adjustable and
+  must fit within the existing `6.0 mm`-high tray release window without
+  bottoming out or blocking tool-free release.
+- The reported inability to settle the cover is treated as a collision with the
+  complete female socket receiver, including its structural web, rather than as
+  evidence that socket or pin centers should move.
+- OpenSCAD inspection can prove nominal alignment, clearance, and engagement but
+  cannot prove the printed fit, latch force, fatigue life, or dimensional
+  accuracy. The existing tray and a newly printed cover remain the authoritative
+  physical compatibility check.
+- The implementation remains `DRAFT` until the revised cover is sliced, printed,
+  fully seated on the existing tray, and cycled through engagement and release.
+
+### Acceptance And Validation Delta
+
+- An assembly section through each Ethernet lay-in slot shows one continuous
+  cable passage across the tray wall and cover skirt with no X or Y step, and the
+  installed roof closes the slot without entering its usable cable envelope.
+- The installed top-cover skirt has positive `cover_fit_clearance_mm` from every
+  complete female socket boss and wall-connecting web; no skirt material blocks
+  vertical settlement.
+- The four cover pins remain coaxial with and enter the four unchanged female
+  sockets while the roof underside reaches the tray-wall top datum.
+- Both revised catch lead-ins enter the two unchanged tray windows. Each
+  unchanged capture ledge snaps behind its window shoulder with the approved
+  `0.15 mm` positive interference, and the added reach does not bottom out in the
+  window or obstruct inward tool-free release.
+- OpenSCAD assertions cover shared tray/cover aperture coordinates, complete
+  receiver-to-skirt clearance, pin/socket alignment, catch/window intersection,
+  shoulder capture, and in-window reach bounds.
+- Bounded hidden-reference renders of horizontal `assembly`, left and right
+  vertical `assembly`, and `printable_layout` complete within `15` seconds.
+  Inspection confirms a fully seated cover, aligned cable passages, four engaged
+  alignment pairs, two engaged catches, connected printable geometry, and no
+  regression to apertures, vents, feet, switch clearance, or the shortened
+  outline.
+- `git diff --check` passes, and no generated render or mesh is tracked.
+- Physical validation reuses the current tray and prints only the revised top
+  cover. The cover must lower vertically to the tray-wall datum without forced
+  flexing, both Ethernet passages must align without pinching representative
+  cables, all four pins must enter, both catches must audibly or visibly engage,
+  and ten tool-free release/reinstall cycles must leave the cover and catches
+  intact. Until this check passes, delivery remains `DRAFT`.
+- `README.md` documents the corrected top-cover-only fit, the `1.0 mm` adjustable
+  catch-reach default, reuse of the unchanged tray, and the remaining slicer and
+  physical-fit limitations.
+
 ## Iteration: Minimal Power-Side Cover Depth (2026-07-22)
 
 ### Purpose And Requested Delta

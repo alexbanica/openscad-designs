@@ -139,6 +139,7 @@ cover_latch_flexure_thickness_mm = 2.0;
 cover_latch_flexure_side_gap_mm = 1.5;
 cover_latch_engagement_depth_mm = 0.8;
 cover_latch_engagement_height_mm = 1.6;
+cover_latch_lead_in_reach_allowance_mm = 1.0;
 cover_latch_release_access_width_mm = 16.0;
 cover_latch_release_access_height_mm = 6.0;
 
@@ -310,6 +311,32 @@ cover_skirt_inner_width_mm = cover_skirt_outer_width_mm
     - 2 * wall_thickness_mm;
 cover_skirt_inner_depth_mm = cover_skirt_outer_depth_mm
     - 2 * wall_thickness_mm;
+cover_skirt_near_outer_y_mm = wall_thickness_mm + cover_fit_clearance_mm;
+cover_skirt_near_inner_y_mm = cover_skirt_near_outer_y_mm + wall_thickness_mm;
+ethernet_passage_start_y_mm = ethernet_wall_y_mm
+    - aperture_side_clearance_mm;
+cover_ethernet_relief_end_y_mm = cover_skirt_near_inner_y_mm
+    + geometry_overlap_mm;
+cover_ethernet_relief_depth_mm = cover_ethernet_relief_end_y_mm
+    - ethernet_passage_start_y_mm;
+cover_ethernet_relief_bottom_z_mm = cover_thickness_mm;
+cover_ethernet_relief_height_mm = cover_skirt_depth_mm
+    + 2 * geometry_overlap_mm;
+cover_ethernet_relief_centers_x_mm = [
+    uplink_aperture_x_mm,
+    device_aperture_x_mm
+];
+cover_ethernet_relief_widths_mm = [
+    uplink_aperture_width_mm,
+    device_aperture_width_mm
+];
+cover_receiver_boss_relief_diameter_mm = cover_socket_outer_diameter_mm
+    + 2 * cover_fit_clearance_mm;
+cover_receiver_web_relief_diameter_mm = wall_thickness_mm
+    + 2 * cover_fit_clearance_mm;
+cover_receiver_relief_bottom_z_mm = cover_thickness_mm;
+cover_receiver_relief_height_mm = cover_skirt_depth_mm
+    + 2 * geometry_overlap_mm;
 cover_pin_body_height_mm = cover_pin_height_mm
     - cover_pin_tip_taper_height_mm;
 cover_retention_x_positions_mm = [
@@ -320,6 +347,17 @@ cover_retention_y_positions_mm = [
     cover_pin_center_inset_mm,
     rear_cover_socket_center_y_mm
 ];
+cover_pin_centers_mm = [
+    for (pin_x_mm = cover_retention_x_positions_mm)
+        for (pin_y_mm = cover_retention_y_positions_mm)
+            [pin_x_mm, pin_y_mm]
+];
+tray_wall_top_z_mm = tray_floor_thickness_mm + tray_wall_height_mm;
+cover_roof_underside_local_z_mm = cover_thickness_mm;
+cover_assembly_translate_z_mm = cover_installed_z_mm + cover_thickness_mm;
+// mirror([0, 0, 1]) maps local Z to -Z before the assembly translation.
+cover_roof_underside_installed_z_mm = cover_assembly_translate_z_mm
+    - cover_roof_underside_local_z_mm;
 // Each catch arm roots beside the inner wall with locating-skirt fit clearance.
 // Its hook points outward across the wall, away from the switch and its 0.6 mm
 // side clearance; the through-wall window remains the deliberate finger-release
@@ -339,11 +377,23 @@ cover_latch_release_travel_mm = cover_latch_hook_projection_mm
     - cover_fit_clearance_mm;
 cover_latch_hook_bottom_z_mm = cover_installed_z_mm
     - cover_latch_flexure_length_mm;
+cover_latch_entry_tip_z_mm = cover_latch_hook_bottom_z_mm
+    - cover_latch_lead_in_reach_allowance_mm;
+cover_latch_capture_ledge_z_mm = cover_latch_hook_bottom_z_mm
+    + cover_latch_engagement_height_mm;
 cover_latch_shoulder_z_mm = cover_latch_hook_bottom_z_mm
     + cover_latch_engagement_height_mm
     - cover_latch_interference_mm;
 cover_latch_release_bottom_z_mm = cover_latch_shoulder_z_mm
     - cover_latch_release_access_height_mm;
+cover_latch_release_top_z_mm = cover_latch_release_bottom_z_mm
+    + cover_latch_release_access_height_mm;
+cover_latch_entry_tip_local_z_mm = cover_thickness_mm
+    + cover_latch_flexure_length_mm
+    + cover_latch_lead_in_reach_allowance_mm;
+cover_latch_capture_ledge_local_z_mm = cover_thickness_mm
+    + cover_latch_flexure_length_mm
+    - cover_latch_engagement_height_mm;
 cover_latch_arm_width_mm = cover_latch_release_access_width_mm
     - 2 * cover_latch_flexure_side_gap_mm;
 cover_socket_bottom_z_mm = cover_installed_z_mm - cover_pin_height_mm;
@@ -363,6 +413,52 @@ cover_latch_hook_outer_x_positions_mm = [
         + cover_latch_flexure_thickness_mm
         + cover_latch_hook_projection_mm
 ];
+// The assembly transform mirrors only Z, so these are also the installed X/Y
+// envelopes. Probe the actual hull taper just inside the unchanged tray-window
+// top, between the installed arm-tip and hook slabs used by the catch module.
+cover_latch_window_min_x_positions_mm = [
+    -geometry_overlap_mm,
+    enclosure_outer_width_mm - wall_thickness_mm - geometry_overlap_mm
+];
+cover_latch_window_max_x_positions_mm = [
+    wall_thickness_mm + geometry_overlap_mm,
+    enclosure_outer_width_mm + geometry_overlap_mm
+];
+cover_latch_window_near_y_mm = cover_latch_center_y_mm
+    - cover_latch_release_access_width_mm / 2;
+cover_latch_window_far_y_mm = cover_latch_center_y_mm
+    + cover_latch_release_access_width_mm / 2;
+cover_latch_hull_taper_lower_z_mm = cover_latch_entry_tip_z_mm
+    + geometry_overlap_mm;
+cover_latch_hull_taper_upper_z_mm = cover_latch_capture_ledge_z_mm
+    - geometry_overlap_mm;
+cover_latch_window_probe_z_mm = cover_latch_release_top_z_mm
+    - geometry_overlap_mm;
+cover_latch_window_probe_fraction =
+    (cover_latch_window_probe_z_mm - cover_latch_hull_taper_lower_z_mm)
+        / (cover_latch_hull_taper_upper_z_mm
+            - cover_latch_hull_taper_lower_z_mm);
+cover_latch_entry_min_x_positions_mm = [
+    cover_latch_arm_outer_x_positions_mm[0]
+        - cover_latch_window_probe_fraction
+            * cover_latch_hook_projection_mm,
+    cover_latch_arm_outer_x_positions_mm[1]
+        + cover_latch_window_probe_fraction
+            * cover_latch_flexure_thickness_mm
+];
+cover_latch_entry_max_x_positions_mm = [
+    cover_latch_arm_outer_x_positions_mm[0]
+        + (1 - cover_latch_window_probe_fraction)
+            * cover_latch_flexure_thickness_mm,
+    cover_latch_arm_outer_x_positions_mm[1]
+        + cover_latch_flexure_thickness_mm
+        + cover_latch_window_probe_fraction
+            * cover_latch_hook_projection_mm
+];
+cover_latch_entry_near_y_mm = cover_latch_center_y_mm
+    - cover_latch_arm_width_mm / 2;
+cover_latch_entry_far_y_mm = cover_latch_center_y_mm
+    + cover_latch_arm_width_mm / 2;
 cover_latch_side_envelope_depth_mm = 2 * wall_thickness_mm
     + cover_fit_clearance_mm;
 
@@ -509,6 +605,7 @@ default_cover_latch_inputs = default_layout_inputs
     && abs(cover_latch_flexure_side_gap_mm - 1.5) < 0.000001
     && abs(cover_latch_engagement_depth_mm - 0.8) < 0.000001
     && abs(cover_latch_engagement_height_mm - 1.6) < 0.000001
+    && abs(cover_latch_lead_in_reach_allowance_mm - 1.0) < 0.000001
     && abs(cover_latch_release_access_width_mm - 16.0) < 0.000001
     && abs(cover_latch_release_access_height_mm - 6.0) < 0.000001;
 // Keep the complete representative routes on their aperture Z profiles. The
@@ -824,6 +921,22 @@ assert(cable_service_aperture_count == 3,
     "The enclosure contract requires exactly three cable-service apertures");
 assert(ethernet_lay_in_aperture_count == 2,
     "Only the two Ethernet cable-service apertures may be lay-in slots");
+assert(len(cover_ethernet_relief_centers_x_mm) == 2
+        && cover_ethernet_relief_centers_x_mm[0] == uplink_aperture_x_mm
+        && cover_ethernet_relief_centers_x_mm[1] == device_aperture_x_mm
+        && cover_ethernet_relief_widths_mm[0] == uplink_aperture_width_mm
+        && cover_ethernet_relief_widths_mm[1] == device_aperture_width_mm,
+    "Cover Ethernet reliefs must share both tray aperture X envelopes");
+assert(ethernet_passage_start_y_mm
+            == ethernet_wall_y_mm - aperture_side_clearance_mm
+        && cover_ethernet_relief_end_y_mm > cover_skirt_near_inner_y_mm
+        && cover_ethernet_relief_depth_mm
+            == cover_ethernet_relief_end_y_mm
+                - ethernet_passage_start_y_mm,
+    "Cover Ethernet reliefs must cross the complete installed tray-to-skirt passage");
+assert(cover_ethernet_relief_bottom_z_mm == cover_thickness_mm
+        && cover_ethernet_relief_height_mm >= cover_skirt_depth_mm,
+    "Ethernet skirt reliefs must leave the exterior cover roof intact");
 assert(uplink_aperture_x_mm - uplink_aperture_width_mm / 2
             >= aperture_safe_left_x_mm
         && uplink_aperture_x_mm + uplink_aperture_width_mm / 2
@@ -1055,14 +1168,53 @@ assert(cover_positive_catch_count == 2
                 - cover_latch_interference_mm
         && cover_latch_interference_mm > 0,
     "Opposed catches must retain exact positive interference and shoulder capture");
+assert(cover_latch_lead_in_reach_allowance_mm > 0
+        && cover_latch_entry_tip_z_mm < cover_latch_hook_bottom_z_mm
+        && cover_latch_entry_tip_z_mm > cover_latch_release_bottom_z_mm
+        && cover_latch_entry_tip_z_mm < cover_latch_release_top_z_mm
+        && cover_latch_capture_ledge_local_z_mm
+            < cover_thickness_mm + cover_latch_flexure_length_mm
+        && cover_latch_entry_tip_local_z_mm
+            > cover_thickness_mm + cover_latch_flexure_length_mm
+        && abs(cover_latch_release_top_z_mm
+                - cover_latch_release_bottom_z_mm
+                - cover_latch_release_access_height_mm)
+            <= cover_retention_assertion_epsilon_mm,
+    "Extended catch entries must enter the fixed windows without bottoming out");
+assert(cover_latch_window_probe_fraction > 0
+        && cover_latch_window_probe_fraction < 1
+        && cover_latch_entry_min_x_positions_mm[0]
+            < cover_latch_window_max_x_positions_mm[0]
+        && cover_latch_entry_max_x_positions_mm[0]
+            > cover_latch_window_min_x_positions_mm[0]
+        && cover_latch_entry_min_x_positions_mm[1]
+            < cover_latch_window_max_x_positions_mm[1]
+        && cover_latch_entry_max_x_positions_mm[1]
+            > cover_latch_window_min_x_positions_mm[1]
+        && cover_latch_entry_near_y_mm < cover_latch_window_far_y_mm
+        && cover_latch_entry_far_y_mm > cover_latch_window_near_y_mm,
+    "Both installed hulled catch entries must intersect their fixed tray windows in X and Y");
+assert(abs(cover_latch_capture_ledge_z_mm
+                - cover_latch_release_top_z_mm
+                - cover_latch_interference_mm)
+            <= cover_retention_assertion_epsilon_mm
+        && abs(cover_latch_release_travel_mm
+                - (cover_latch_engagement_depth_mm
+                    + cover_latch_interference_mm))
+            <= cover_retention_assertion_epsilon_mm
+        && cover_latch_release_travel_mm
+            < cover_latch_flexure_length_mm,
+    "Catch ledges must preserve positive shoulder capture and inward release clearance");
 assert(!default_cover_latch_inputs
         || (abs(cover_latch_hook_projection_mm - 1.25) < 0.000001
             && abs(cover_latch_release_travel_mm - 0.95) < 0.000001
+            && abs(cover_latch_entry_tip_z_mm
+                    - (cover_latch_hook_bottom_z_mm - 1.0)) < 0.000001
             && abs(cover_latch_arm_outer_x_positions_mm[0] - 2.7)
                 < 0.000001
             && abs(cover_latch_arm_outer_x_positions_mm[1] - 122.3)
                 < 0.000001),
-    "Default positive catches must retain the approved placement and release travel");
+    "Default catches must retain approved placement, lead-in reach, and release travel");
 assert(cover_latch_arm_outer_x_positions_mm[0] >= 0
         && cover_latch_arm_inner_x_positions_mm[0]
             <= cover_latch_side_envelope_depth_mm
@@ -1092,6 +1244,22 @@ assert(cover_pin_tip_diameter_mm > 0
         && cover_pin_tip_taper_height_mm < cover_pin_height_mm
         && cover_pin_socket_diameter_mm > cover_pin_diameter_mm,
     "Alignment pins require a smaller tapered lead-in and positive socket clearance");
+assert((cover_receiver_boss_relief_diameter_mm
+            - cover_socket_outer_diameter_mm) / 2
+            + cover_retention_assertion_epsilon_mm
+            >= cover_fit_clearance_mm
+        && (cover_receiver_web_relief_diameter_mm - wall_thickness_mm) / 2
+            + cover_retention_assertion_epsilon_mm
+            >= cover_fit_clearance_mm
+        && cover_receiver_relief_bottom_z_mm == cover_thickness_mm
+        && cover_receiver_relief_height_mm >= cover_skirt_depth_mm,
+    "Cover skirt reliefs must clear complete receiver bosses and structural webs");
+assert(len(cover_pin_centers_mm) == 4
+        && cover_pin_centers_mm == cover_socket_centers_mm,
+    "All four cover pins must remain coaxial with the unchanged tray sockets");
+assert(cover_roof_underside_installed_z_mm == tray_wall_top_z_mm
+        && tray_wall_top_z_mm == cover_installed_z_mm,
+    "The mirrored and translated cover roof underside must seat on the tray-wall top datum");
 assert(printable_layout_cover_x_mm
         > printable_layout_tray_x_mm + enclosure_outer_width_mm,
     "Printable tray and cover require positive separation");
@@ -1912,6 +2080,36 @@ module cover_ventilation_openings() {
     }
 }
 
+module cover_receiver_relief(receiver_x_mm, receiver_y_mm) {
+    wall_anchor_x_mm = receiver_x_mm < enclosure_outer_width_mm / 2
+        ? wall_thickness_mm / 2
+        : enclosure_outer_width_mm - wall_thickness_mm / 2;
+
+    // Match the complete unchanged tray receiver, expanding both its boss and
+    // wall-owning web by the cover fit clearance. This cut affects the skirt
+    // only; the roof and coaxial alignment pin remain solid.
+    hull() {
+        translate([
+            receiver_x_mm,
+            receiver_y_mm,
+            cover_receiver_relief_bottom_z_mm
+        ])
+            cylinder(
+                d = cover_receiver_boss_relief_diameter_mm,
+                h = cover_receiver_relief_height_mm
+            );
+        translate([
+            wall_anchor_x_mm,
+            receiver_y_mm,
+            cover_receiver_relief_bottom_z_mm
+        ])
+            cylinder(
+                d = cover_receiver_web_relief_diameter_mm,
+                h = cover_receiver_relief_height_mm
+            );
+    }
+}
+
 module cover_skirt() {
     skirt_x_mm = wall_thickness_mm + cover_fit_clearance_mm;
     skirt_y_mm = wall_thickness_mm + cover_fit_clearance_mm;
@@ -1943,15 +2141,10 @@ module cover_skirt() {
                     );
             }
 
-        // Reliefs keep the locating skirt independent from the pin/socket fit.
+        // Reliefs keep the locating skirt clear of each complete receiver.
         for (pin_x_mm = cover_retention_x_positions_mm) {
             for (pin_y_mm = cover_retention_y_positions_mm) {
-                translate([pin_x_mm, pin_y_mm, cover_thickness_mm - 0.1])
-                    cylinder(
-                        d = cover_socket_outer_diameter_mm
-                            + 2 * cover_fit_clearance_mm,
-                        h = cover_skirt_depth_mm + 0.2
-                    );
+                cover_receiver_relief(pin_x_mm, pin_y_mm);
             }
         }
 
@@ -1976,28 +2169,23 @@ module cover_skirt() {
                 ]);
         }
 
-        // Installed, these cuts align with the two Ethernet lay-in slots and
-        // clear the locating skirt only. The uncut roof closes both slots.
-        translate([
-            uplink_aperture_x_mm - uplink_aperture_width_mm / 2,
-            skirt_y_mm - aperture_side_clearance_mm,
-            cover_thickness_mm - 2 * geometry_overlap_mm
-        ])
-            cube([
-                uplink_aperture_width_mm,
-                wall_thickness_mm + 2 * aperture_side_clearance_mm,
-                cover_skirt_depth_mm + 4 * geometry_overlap_mm
-            ]);
-        translate([
-            device_aperture_x_mm - device_aperture_width_mm / 2,
-            skirt_y_mm - aperture_side_clearance_mm,
-            cover_thickness_mm - 2 * geometry_overlap_mm
-        ])
-            cube([
-                device_aperture_width_mm,
-                wall_thickness_mm + 2 * aperture_side_clearance_mm,
-                cover_skirt_depth_mm + 4 * geometry_overlap_mm
-            ]);
+        // Installed, both cuts share their tray aperture X envelopes and run
+        // continuously from the tray passage through the skirt inner face.
+        // Starting at the roof underside leaves the exterior roof intact.
+        for (relief_index = [0 : len(cover_ethernet_relief_centers_x_mm) - 1]) {
+            relief_width_mm = cover_ethernet_relief_widths_mm[relief_index];
+            translate([
+                cover_ethernet_relief_centers_x_mm[relief_index]
+                    - relief_width_mm / 2,
+                ethernet_passage_start_y_mm,
+                cover_ethernet_relief_bottom_z_mm
+            ])
+                cube([
+                    relief_width_mm,
+                    cover_ethernet_relief_depth_mm,
+                    cover_ethernet_relief_height_mm
+                ]);
+        }
     }
 }
 
@@ -2011,8 +2199,9 @@ module cover_positive_snap_catch(left_side) {
         ? arm_x_mm - cover_latch_hook_projection_mm
         : arm_x_mm + cover_latch_flexure_thickness_mm;
 
-    // Roof-rooted cantilever remains separate from the relieved skirt.  The
-    // tapered hook leads into the tray and then captures the window shoulder.
+    // Roof-rooted cantilever keeps its fixed flexure length. The tapered entry
+    // continues beyond its free end, while the fixed ledge captures the window
+    // shoulder at its existing height.
     translate([arm_x_mm, arm_y_mm, cover_thickness_mm - geometry_overlap_mm])
         cube([
             cover_latch_flexure_thickness_mm,
@@ -2024,9 +2213,7 @@ module cover_positive_snap_catch(left_side) {
         translate([
             hook_x_mm,
             arm_y_mm,
-            cover_thickness_mm
-                + cover_latch_flexure_length_mm
-                - cover_latch_engagement_height_mm
+            cover_latch_capture_ledge_local_z_mm
         ])
             cube([
                 cover_latch_hook_projection_mm,
@@ -2036,8 +2223,7 @@ module cover_positive_snap_catch(left_side) {
         translate([
             arm_x_mm,
             arm_y_mm,
-            cover_thickness_mm + cover_latch_flexure_length_mm
-                - geometry_overlap_mm
+            cover_latch_entry_tip_local_z_mm - geometry_overlap_mm
         ])
             cube([
                 cover_latch_flexure_thickness_mm,
@@ -2160,7 +2346,7 @@ module top_cover() {
 module assembled_enclosure() {
     color(tray_preview_colour) bottom_tray();
     color(cover_preview_colour)
-        translate([0, 0, cover_installed_z_mm + cover_thickness_mm])
+        translate([0, 0, cover_assembly_translate_z_mm])
             mirror([0, 0, 1])
                 top_cover();
     reference_geometry();

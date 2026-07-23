@@ -149,6 +149,7 @@ are
 `cover_latch_flexure_side_gap_mm = 1.5`,
 `cover_latch_engagement_depth_mm = 0.8`,
 `cover_latch_engagement_height_mm = 1.6`,
+`cover_latch_lead_in_reach_allowance_mm = 1.0`,
 `cover_latch_release_access_width_mm = 16.0`, and
 `cover_latch_release_access_height_mm = 6.0`. The derived default inward release
 travel is `0.95 mm`: `0.8 mm` engagement plus `0.15 mm` interference. The
@@ -168,6 +169,17 @@ lift the cover evenly off its independent alignment pins. Do not pry or force
 one caught side upward. To reinstall it, align the skirt and pins, press the
 cover down evenly, and confirm that both outward-capturing hooks have snapped
 behind their shoulders.
+
+The physical-fit correction changes only the removable top cover; the existing
+bottom tray is reused with all of its solid and cut geometry unchanged. The two
+top-cover Ethernet reliefs now derive their X positions, usable widths, and
+complete tray-wall-to-skirt passages from the corresponding tray apertures. The
+locating-skirt reliefs clear each complete female socket receiver, including its
+wall-connecting structural web, while preserving the coaxial cover pins and the
+exterior roof. The adjustable
+`cover_latch_lead_in_reach_allowance_mm = 1.0` default extends only the tapered
+catch entry into the unchanged tray windows; it is a printable calibration
+starting point, not a physically proven measurement.
 
 Use the enclosure horizontally with both detachable feet removed. For the
 smaller-footprint vertical configuration, fit the same two identical snap-in feet to
@@ -295,6 +307,7 @@ The source groups its public controls near the top by:
   `cover_latch_interference_mm`, `cover_latch_flexure_length_mm`,
   `cover_latch_flexure_thickness_mm`, `cover_latch_flexure_side_gap_mm`,
   `cover_latch_engagement_depth_mm`, `cover_latch_engagement_height_mm`,
+  `cover_latch_lead_in_reach_allowance_mm`,
   `cover_latch_release_access_width_mm`, and
   `cover_latch_release_access_height_mm`;
 - `assembly_orientation`, `vertical_standing_side`, and the detachable-foot
@@ -400,6 +413,10 @@ warping behavior, airflow, or operating temperature. Before final use:
   hole accepts the DC head without forcing or bending its rigid section;
 - inspect all four parts in Bambu Studio for bed fit, wall continuity, bridges,
   supports, and print orientation;
+- for the top-cover fit correction, slice and test-print the revised top cover,
+  reuse the already printed bottom tray unchanged, and confirm that both
+  Ethernet passages remain complete, the skirt clears all four full socket
+  receivers and their wall webs, all four pins enter, and the cover fully seats;
 - make a test print and physically verify switch retention, cover removal,
   both Ethernet-slot and round power-hole clearance, cable routing, LED
   visibility, vent clearance, both foot
@@ -422,9 +439,9 @@ validation, dimensional fit check, support-foot or cover retention test, latch
 wear test, airflow validation, thermal validation, or test print has been
 performed or should be inferred from this documentation. In particular, neither
 the padded `60 seconds` per-side cable-handling check nor the `10-cycle` latch
-test is render-validated. Delivery remains draft until those physical tests pass;
-actual switch and cable measurement and the other physical and slicer checks
-remain required before final use.
+test is render-validated. Delivery remains `DRAFT` until those physical tests
+pass; actual switch and cable measurement and the other physical and slicer
+checks remain required before final use.
 
 ## Reusable Raspberry Pi Reference Models
 

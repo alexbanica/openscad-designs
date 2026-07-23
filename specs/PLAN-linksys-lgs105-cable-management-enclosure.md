@@ -6,32 +6,46 @@ Approved Spec: `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
 
 ## Objective
 
-Deliver the approved final Linksys LGS105 enclosure with the power-side tray
-wall and matching cover edge immediately behind the switch instead of retaining
-an unused cover-retention cavity.
+Correct the three approved top-cover physical-fit defects while preserving the
+existing bottom tray as a reusable printed part:
 
-The final default geometry must:
+- align the two top-cover Ethernet reliefs with the tray's uplink and shared
+  device-cable lay-in slots;
+- clear each complete female tray socket receiver, including its structural
+  wall web, so the cover reaches its seated datum; and
+- extend the two top-cover catch lead-ins by an adjustable default `1.0 mm` so
+  they enter the unchanged tray windows while their capture ledges retain the
+  approved positive engagement.
 
-- derive outer depth as `switch_origin_y_mm + switch_depth_mm +
-  switch_end_clearance_mm + wall_thickness_mm`;
-- reduce the default tray and cover depth from `178.2 mm` to `153.5 mm`;
-- leave exactly `3.0 mm` behind the switch power face;
-- preserve the `10.0 mm` round power-head hole and allow `25.2 mm` of the
-  installed `28.20 mm` rigid reference to remain outside;
-- relocate four alignment pins/sockets and two positive cover catches within
-  the shortened outline without allowing retention geometry to increase depth;
-- preserve all approved cable storage, hourglass routing, ventilation,
-  horizontal/vertical placement, printable-layout, and service behavior.
+The implementation must not change rendered bottom-tray geometry, enclosure
+depth, tray apertures, socket receivers, catch windows, or any other preserved
+enclosure behavior.
+
+## Approved Invariants
+
+- The bottom tray remains physically and geometrically unchanged so the user can
+  print only a replacement top cover.
+- "Back cable holes" means the two Ethernet-side lay-in openings: one round
+  uplink cable slot and one shared four-flat-device-cable slot.
+- The round power pass-through remains tray-only and unchanged.
+- All four pin/socket centers and the two tray capture windows remain fixed.
+- The default enclosure depth remains `153.5 mm`; the switch-to-exterior
+  power-side extension remains `3.0 mm`.
+- Exactly three cable-service apertures, all cable profiles, guide geometry,
+  ventilation, switch retention, vertical feet, render modes, and printable
+  orientation remain unchanged.
+- The approved catch flexure length/thickness, engagement height, positive
+  interference, release direction, and capture ledge remain unchanged. Only the
+  top-cover lead-in reach may gain the approved adjustable extension.
 
 ## No-Research Boundary
 
-Implementation may use only the approved spec, this approved plan, applicable
-repository/workspace instructions, current branch and worktree state, the named
-files, and minimal current Linksys SCAD/README patterns. Do not reopen product,
-hardware, cable, architecture, or planning research. Do not invent measurements
-or relax approved retention, power-hole, cable, ventilation, or printing
-behavior. Stop for an artifact amendment if the shortened geometry requires
-materially different behavior.
+Implementation may load only applicable instructions, the approved spec, this
+approved plan, Git/worktree state, the named files, and the smallest relevant
+current Linksys source and README sections. Do not reopen product, cable,
+hardware, architecture, or planning research. Do not invent additional
+measurements or change the approved `1.0 mm` calibration default. If the fixed
+tray cannot be reused under this contract, stop for a spec amendment.
 
 ## Affected Files
 
@@ -40,225 +54,215 @@ materially different behavior.
 - `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
 - `specs/PLAN-linksys-lgs105-cable-management-enclosure.md`
 
-Do not add OFF, STL, STEP, 3MF, PNG, or other generated artifacts to source
-control. Temporary validation artifacts belong under `/tmp`.
+Do not add OFF, STL, STEP, 3MF, PNG, CSG, or other generated artifacts to source
+control. Temporary inspection outputs belong under `/tmp`.
 
 ## Branch And Worktree Policy
 
-- Expected base and delivery branch: current `main`.
+- Expected base and delivery branch: `main` tracking `origin/main`.
 - Direct implementation and delivery on `main` is allowed.
-- Inspect `git status --short --branch` before edits and preserve unrelated
-  changes.
+- Inspect `git status --short --branch` before implementation and preserve any
+  unrelated user changes.
 - Workers must not create or switch branches, commit, push, or edit outside
-  their stated ownership boundary.
-- Shared SCAD integration is serialized through the main agent.
+  their assigned ownership boundary.
+- The main agent serializes all SCAD integration and owns staging, commit, push,
+  final worktree reconciliation, and acceptance.
 
-## Test-First Applicability
+## Unit-Test And Test-First Applicability
 
-This is printable geometry and documentation work rather than business/domain
-logic, and the repository has no unit-test harness for OpenSCAD geometry.
-Conventional test-first files are therefore not applicable.
+Unit tests and conventional test-first work are not applicable and are
+prohibited by repository instructions. No unit-test files or test-focused
+subagents may be created or run.
 
-Before production edits, a read-only test-focused worker will convert the
-approved delta into a static acceptance oracle. Executable protection will be
-implemented through OpenSCAD assertions and bounded render evaluation.
+Geometry protection comes from approved-formula review before editing,
+OpenSCAD assertions, bounded permitted renders, source/diff inspection, and
+physical fit criteria. Each development unit records its test assignment as not
+applicable for this repository.
 
 ## Dependency-Aware Execution Graph
 
-Maximum planned concurrency is one test-focused subagent, one implementation
-subagent, and two code-review subagents. D1 and D2 are serialized because they
-share the SCAD source. Reviews may run concurrently after documentation is
-aligned. Every assignment is limited to five minutes of active subagent work.
+Maximum planned concurrency is one development subagent and two code-review
+subagents. D1 and D2 are serialized because they edit the same SCAD file and D2
+depends on D1's seated-cover datum. R1 and R2 may run concurrently after D3.
+Every subagent assignment is limited to five minutes of active work.
 
-### T1 — Shortened-Depth And Retention Acceptance Oracle
+### D1 — Top-Cover Slot And Receiver Reliefs
 
-- **Type:** Test-focused, read-only; no test files.
-- **Boundary:** Translate the approved iteration into exact formulas,
-  inequalities, collision keepouts, assertion requirements, and render
-  observations before production edits.
-- **Owned files:** None; report only.
+- **Type:** Geometry development.
+- **Behavior boundary:** Correct only the top-cover mating/skirt geometry for
+  Ethernet-slot alignment and full female-receiver clearance.
+- **Owned file:**
+  `designs/linksys_lgs105_cable_management_enclosure.scad`, limited to relevant
+  adjustable/derived mating values, `cover_skirt()`, top-cover-only helper
+  geometry, and directly corresponding assertions.
 - **Dependencies:** None.
-- **Acceptance criteria:** Cover `153.5 mm` outer depth, `3.0 mm` rear extension,
-  `25.2 mm` rigid-head protrusion, complete round-hole passage, four relocated
-  alignment pairs, two positive catches, switch/removal clearance, ventilation,
-  feet, and printable-layout bounds.
-- **Validation:** Cross-check only the approved spec and current source.
-- **Subagent assignment:** One clean-context test-focused worker, maximum five
-  minutes.
-
-### D1 — Minimal Power-Side Tray And Cover Geometry
-
-- **Type:** Development.
-- **Boundary:** Remove retention-controlled depth derivations and derive the
-  complete tray, cover, skirt, rear wall, power cut, route preview, dependent
-  rear-Y features, and printable layout from the direct switch-fit formula.
-- **Owned file:**
-  `designs/linksys_lgs105_cable_management_enclosure.scad`, limited to enclosure
-  depth, matching tray/cover outlines, power-wall/reference geometry, dependent
-  rear-Y/layout values, and D1 assertions.
-- **Dependencies:** T1.
+- **Unit-test assignment:** Not applicable; unit tests are prohibited.
+- **Development assignment:** One clean-context developer subagent, maximum five
+  minutes. It must not edit tray modules, tray cut geometry, socket receiver
+  solids, catch windows, enclosure depth, or unrelated source sections.
 - **Required approach:**
-  - set `enclosure_outer_depth_mm` directly from the approved switch power-face,
-    end-clearance, and wall-thickness inputs;
-  - remove `power_side_*_clearance_depth_mm` maximum candidates and every
-    retention-driven depth dependency;
-  - preserve the current power-hole X/Z formulas and full-wall subtraction;
-  - derive the rigid reference from the switch power face and assert the default
-    `25.2 mm` exterior protrusion without hard-locking adjustable inputs;
-  - recalculate cover/skirt, support-foot, vent, preview, and layout positions
-    from the shortened depth rather than retaining stale absolute Y values.
-- **Acceptance criteria:** Default tray and cover depth is exactly `153.5 mm`;
-  their power edges match; no unused rear shelf remains; the switch retains
-  `0.6 mm` internal clearance; the bounded power hole and connected rigid-head
-  reference remain correct; preserved features remain within the new outline.
-- **Validation:** Hidden-reference horizontal assembly CSG evaluation under
-  `15` seconds and `git diff --check`.
-- **Subagent assignment:** One clean-context implementation worker, maximum five
-  minutes.
+  - derive each top-cover Ethernet relief from the matching tray aperture's
+    shared X center, width, and complete installed Y passage;
+  - keep the exterior roof intact while clearing the skirt through the complete
+    lay-in passage;
+  - replace boss-only circular skirt clearance with local cover-only reliefs for
+    the complete receiver boss and wall web plus `cover_fit_clearance_mm`;
+  - retain four coaxial tapered pins at their existing centers;
+  - add assertions for shared slot coordinates, receiver/web clearance,
+    pin/socket coaxiality, and the fully seated roof/tray-wall datum.
+- **Acceptance criteria:** Both Ethernet passages have no installed X/Y step or
+  reduced usable envelope; the skirt clears all four complete tray receivers;
+  all pins remain aligned; the cover can nominally settle; rendered bottom-tray
+  geometry remains unchanged by source inspection.
+- **Validation:** Targeted source/diff inspection, assertion evaluation through
+  the permitted horizontal assembly render, and `git diff --check`.
 
-### D2 — Relocated Alignment And Positive-Catch Geometry
+### D2 — Top-Cover Catch Lead-In Reach
 
-- **Type:** Development.
-- **Boundary:** Reposition the second, switch-side alignment pair and redesign
-  the two positive catches so all retention fits within the `153.5 mm` outline
-  without occupying the switch or power-wall keepouts.
+- **Type:** Geometry development.
+- **Behavior boundary:** Extend only the two top-cover catch entry portions so
+  they reach the fixed tray windows while preserving the capture ledges and
+  release behavior.
 - **Owned file:**
-  `designs/linksys_lgs105_cable_management_enclosure.scad`, limited to cover-pin
-  Y derivations, socket webs/reliefs, catch placement/orientation, release
-  openings, retention assertions, and directly dependent foot/vent positions.
-- **Dependencies:** T1 and D1.
+  `designs/linksys_lgs105_cable_management_enclosure.scad`, limited to the new
+  adjustable catch-reach parameter, its derived top-cover values,
+  `cover_positive_snap_catch()`, and corresponding assertions.
+- **Dependencies:** D1.
+- **Unit-test assignment:** Not applicable; unit tests are prohibited.
+- **Development assignment:** One new clean-context developer subagent, maximum
+  five minutes. It must not edit tray release openings or shared values in a way
+  that moves or resizes them.
 - **Required approach:**
-  - keep two front and two switch-side tapered alignment pins with the approved
-    diameters, taper, clearance, and alignment-only role;
-  - derive the switch-side pair immediately ahead of the switch's conservative
-    straight-up removal sweep, with its complete boss retaining the approved
-    switch-end clearance; this approved placement replaces the infeasible rear
-    inset because the available side margins cannot keep a same-X rear pair out
-    of that removal sweep;
-  - keep the switch-side pair's socket and pin Z envelopes above the switch;
-  - retain one positive catch on each long side but move the release span ahead
-    of the switch-side socket keepout;
-  - confine each catch arm to its side-wall envelope and direct its hook/capture
-    away from the switch so the `0.6 mm` switch clearance is not consumed;
-  - derive catch Y so the release far edge remains at least one wall thickness
-    before the switch-side socket boss near edge;
-  - preserve the approved catch flexure length/thickness, engagement,
-    interference, release width/height, tool-free access, and independent
-    positive-retention role;
-  - assert complete XY/Z separation among switch, sockets, catch arms/hooks,
-    power hole, vents, support sockets, and cover-removal paths.
-- **Acceptance criteria:** Four alignment pairs and two catches are connected,
-  accessible, in bounds, geometrically engaged, clear of the switch and power
-  aperture, and no longer contribute to enclosure depth. Horizontal and both
-  vertical assemblies retain positive cover capture.
-- **Validation:** Hidden-reference horizontal and both vertical assembly CSG
-  evaluations under `15` seconds plus relevant assertion output.
-- **Subagent assignment:** One new clean-context implementation worker, maximum
-  five minutes; serialized after D1.
+  - add an adjustable `1.0 mm` default top-cover lead-in/reach allowance in the
+    appropriate parameter group;
+  - extend the tapered entry into the existing window without moving the
+    positive-capture ledge or weakening the roof-rooted flexure;
+  - keep the existing `12.0 mm` flexure length, `2.0 mm` flexure thickness,
+    `1.6 mm` engagement height, `0.15 mm` interference, and inward release travel;
+  - derive against the unchanged tray-window coordinates and assert entry,
+    non-bottoming, positive shoulder capture, and release clearance.
+- **Acceptance criteria:** Both catches enter their existing windows at the
+  seated datum, retain the approved capture interference, fit within the
+  `6.0 mm` window height, remain connected/printable, and release without a
+  tool; tray window geometry is unchanged.
+- **Validation:** Targeted source/diff inspection, horizontal and both vertical
+  assembly assertion evaluation, and `git diff --check`.
 
-### D3 — Documentation Alignment
+### D3 — Linksys Documentation Alignment
 
-- **Type:** Documentation development; test-first not applicable.
-- **Boundary:** Update only the Linksys README section for the final shortened
-  geometry, retention placement, power insertion, layout bounds, and physical
-  validation limitations.
-- **Owned file:** `README.md` only.
+- **Type:** Documentation development.
+- **Behavior boundary:** Document only the approved top-cover fit correction and
+  physical reuse/validation procedure.
+- **Owned file:** `README.md`, limited to the Linksys LGS105 section.
 - **Dependencies:** D1 and D2.
-- **Acceptance criteria:** README records the implemented `153.5 mm` depth,
-  `3.0 mm` switch-to-exterior distance, `25.2 mm` protrusion, relocated
-  retention behavior, unchanged three-aperture contract, and no stale `178.2 mm`
-  default claim.
-- **Validation:** Targeted consistency scan and `git diff --check`.
-- **Subagent assignment:** One clean-context documentation worker, maximum five
+- **Unit-test assignment:** Not applicable; documentation-only work.
+- **Development assignment:** One clean-context developer subagent, maximum five
   minutes.
+- **Acceptance criteria:** README states that only the top cover changes, the
+  existing tray is reused, the two Ethernet reliefs now share tray coordinates,
+  the skirt clears full socket receivers/webs, the catch lead-in default is
+  adjustable at `1.0 mm`, and slicer/test-print validation remains required.
+- **Validation:** Targeted Linksys consistency scan and `git diff --check`.
 
-### R1 — Depth, Power, And Preserved-Feature Review
-
-- **Type:** Independent read-only code review.
-- **Boundary:** Review the depth formula, tray/cover match, switch clearance,
-  power-hole/reference behavior, vents, feet, vertical placement, and printable
-  layout against the approved artifacts.
-- **Owned files:** Read-only review of the SCAD diff, README, spec, and plan.
-- **Dependencies:** D1, D2, and D3.
-- **Acceptance criteria:** Report every spec/plan mismatch, stale depth
-  dependency, regression risk, missing assertion, or unsupported physical claim;
-  explicitly state when none is found.
-- **Validation:** Diff/source inspection only.
-- **Subagent assignment:** One clean-context reviewer, maximum five minutes.
-
-### R2 — Retention, Clearance, And Printability Review
+### R1 — Mating Geometry And Retention Review
 
 - **Type:** Independent read-only code review.
-- **Boundary:** Review all four pin/socket pairs, both catches, switch/removal
-  clearance, power-wall continuity, release accessibility, vent/foot conflicts,
-  OpenSCAD 2021.01 compatibility, and Bambu-friendly part connectivity and
-  orientation.
-- **Owned files:** Read-only review of the SCAD diff and relevant artifact/docs
-  sections.
+- **Boundary:** Review the complete SCAD diff against the approved spec and plan,
+  focusing on bottom-tray preservation, installed coordinate transforms, slot
+  continuity, receiver/web clearance, pin/socket alignment, seated datum,
+  catch-window entry, shoulder capture, release, and assertions.
+- **Owned files:** Read-only review of the SCAD diff and approved artifacts.
 - **Dependencies:** D1, D2, and D3.
-- **Acceptance criteria:** Report every collision, capture, printability,
-  strength, serviceability, assertion, or documentation issue; explicitly state
-  when none is found.
-- **Validation:** Diff/source inspection only.
-- **Subagent assignment:** One clean-context reviewer, maximum five minutes,
-  concurrent with R1.
+- **Subagent assignment:** One clean-context code-review subagent, maximum five
+  minutes; concurrent with R2; no edits.
+- **Acceptance criteria:** Report every spec/plan mismatch, tray regression,
+  collision, insufficient clearance, unproven coordinate relationship, or
+  missing assertion; explicitly state when none is found.
+- **Validation:** Diff and source inspection only.
+
+### R2 — Printability, Regression, And Documentation Review
+
+- **Type:** Independent read-only code review.
+- **Boundary:** Review top-cover connectivity and stable orientation, OpenSCAD
+  2021.01 compatibility, aperture/vent/feet/switch/depth regressions, parameter
+  organization, README accuracy, and physical-validation claims.
+- **Owned files:** Read-only review of all four affected files.
+- **Dependencies:** D1, D2, and D3.
+- **Subagent assignment:** One clean-context code-review subagent, maximum five
+  minutes; concurrent with R1; no edits.
+- **Acceptance criteria:** Report every printability, compatibility,
+  documentation, scope, or regression issue; explicitly state when none is
+  found.
+- **Validation:** Diff and source inspection only.
 
 ### F1 — Review And QA Finding Fixes
 
 - **Type:** Conditional development.
 - **Boundary:** Resolve only accepted in-scope findings from R1, R2, or
-  main-agent QA. Serialize shared SCAD fixes and split independent findings when
-  ownership permits.
-- **Owned files:** Narrow sections named by each accepted finding.
-- **Dependencies:** R1 and R2 for review fixes; relevant QA finding for QA fixes.
-- **Acceptance criteria:** Each finding is resolved without expanding approved
-  behavior, followed by targeted revalidation.
-- **Validation:** Finding-specific assertion/render check and
+  main-agent QA; no artifact or behavior expansion.
+- **Owned files:** Narrow sections identified by each accepted finding.
+- **Dependencies:** The relevant completed review or QA finding.
+- **Unit-test assignment:** Not applicable; unit tests remain prohibited.
+- **Development assignment:** One new clean-context developer subagent per
+  deterministic finding, maximum five minutes each. Serialize SCAD fixes.
+- **Acceptance criteria:** Each accepted finding is resolved inside the approved
+  contract and affected validation is repeated.
+- **Validation:** Finding-specific source/assertion/render checks and
   `git diff --check`.
-- **Subagent assignment:** One new clean-context implementation worker per
-  deterministic finding, each maximum five minutes.
 
 ## Main-Agent Integration And QA
 
 The main agent owns integration and final QA.
 
-1. Inspect every worker result and the complete worktree after each unit.
-2. Confirm edits stay within approved artifacts and ownership boundaries.
+1. Inspect each worker result and the complete worktree after every unit.
+2. Confirm the bottom-tray modules, solids, openings, sockets, windows, and
+   geometry-driving values remain unchanged; source refactoring may only expose
+   their existing mating envelopes for top-cover calculations/assertions.
 3. Run `git diff --check`.
-4. Run each permitted OpenSCAD render with a hard `15`-second timeout and hidden
-   electronic/cable references, exporting only under `/tmp`:
+4. Run only permitted OpenSCAD renders, each with a hard `15`-second timeout,
+   hidden electronic/cable references, and output under `/tmp`:
    - horizontal `assembly`;
-   - vertical-left `assembly`;
-   - vertical-right `assembly`;
+   - left-side vertical `assembly`;
+   - right-side vertical `assembly`;
    - `printable_layout`.
-5. Inspect render or mesh evidence for:
-   - matching `153.5 mm` tray/cover depth and the `3.0 mm` rear extension;
-   - a connected `28.20 mm` rigid reference with `25.2 mm` outside;
-   - the correct round power aperture with continuous surrounding wall;
-   - four aligned pin/socket pairs above and clear of the switch;
-   - two engaged, releasable catches clear of switch, pins, vents, feet, and
-     power hole;
-   - intact cable storage, guides, vents, vertical supports, and apertures;
-   - four separated stable printable objects inside the configured bed.
-6. Inspect source dispatch for `bottom_tray`, `top_cover`,
-   `vertical_support_foot`, and `cable_routing_preview` without separately
-   rendering those modes.
-7. Reconcile formulas/assertions with every approved default and ensure
-   adjustable parameters remain adjustable.
-8. Route accepted findings through F1 and repeat affected checks.
+5. Inspect the rendered geometry for a cover at the seated datum, continuous
+   Ethernet passages, roof closure without cable-envelope intrusion, clearance
+   around all complete receiver bosses/webs, four aligned pin/socket pairs, two
+   catches entering and capturing their windows, unobstructed release, connected
+   printable parts, stable orientation, and unchanged depth/apertures/vents/feet.
+6. Inspect `bottom_tray`, `top_cover`, `vertical_support_foot`, and
+   `cable_routing_preview` dispatch in source without separately rendering those
+   modes, as required by repository instructions.
+7. Reconcile all adjustable and derived formulas with the approved defaults and
+   inspect assertion output for every new mating invariant.
+8. Route accepted findings through F1 and repeat all affected checks.
 
-OpenSCAD evidence does not replace Bambu Studio inspection, physical switch and
-power-head fit, cable routing, thermal observation, vertical stability, printed
-retention force, or the ten-cycle catch test.
+OpenSCAD evidence is nominal visual validation. It does not replace Bambu Studio
+inspection or fitting a newly printed cover to the existing physical tray.
+
+## Physical Validation And Delivery Status
+
+The implementation agent must report these checks as unperformed unless the user
+provides direct evidence:
+
+- slice the replacement top cover in Bambu Studio and inspect supports, wall
+  continuity, thin features, and plate contact;
+- print only the replacement top cover;
+- lower it vertically onto the existing tray without forced flexing;
+- confirm both Ethernet passages align and do not pinch representative cables;
+- confirm all four pins enter and both catches engage their unchanged windows;
+- release and reinstall the cover for ten tool-free cycles without damage.
+
+Delivery remains `DRAFT` until those physical checks pass.
 
 ## Documentation And Contract Reconciliation
 
-- Keep approved spec, plan, source, and README aligned on all depth, retention,
-  power-hole, and protrusion values.
-- Preserve exactly three cable-service apertures: two Ethernet lay-in slots and
-  one bounded round power pass-through.
-- Document the distinction between external hardware connectors and internal
-  cover-alignment sockets.
+- Keep spec, plan, SCAD, and the Linksys README section consistent.
+- Preserve exactly three cable-service apertures and the distinction between the
+  two Ethernet lay-in slots, the tray-only power hole, internal alignment
+  sockets, and catch release windows.
+- Document the `1.0 mm` reach as an adjustable calibration default, not a proven
+  physical measurement.
 - Do not add unrelated documentation churn.
 
 ## Commit And Push
@@ -269,17 +273,18 @@ retention force, or the ten-cycle catch test.
   approved plan. Preserve and identify unrelated changes.
 - Inspect `git diff --cached --check`, staged statistics, staged path list, and
   the complete staged diff.
-- Use a `DRAFT` commit subject because slicer and physical validation are
-  expected to remain unperformed, for example
-  `fix: DRAFT shorten Linksys power-side enclosure`.
-- Commit on `main`, push to its configured upstream, and verify the local branch
-  is no longer ahead of upstream.
-- Confirm no accepted in-scope change remains outside the commit.
+- Use a DRAFT commit subject because slicer and physical fit validation remain
+  unperformed, for example:
+  `fix: DRAFT correct Linksys top cover fit`.
+- Commit on `main`, push to its configured upstream, verify the local branch is
+  no longer ahead, and confirm no accepted in-scope change remains outside the
+  commit.
 
 ## Completion Criteria
 
-Implementation is complete when source and documentation match the approved
-spec/plan, assertions and bounded renders pass, review and QA findings are
-resolved or explicitly blocked, all accepted paths are committed and pushed,
-final status is reconciled, and the main agent presents the required completion
-report. Delivery remains `DRAFT` until slicer and physical checks are completed.
+Implementation is complete when the source and README match both approved
+artifacts, bottom-tray geometry is preserved, all assertions and bounded renders
+pass, review/QA findings are resolved or explicitly blocked, all accepted paths
+are committed and pushed, final Git status is reconciled, and final main-agent
+acceptance and the required completion report are complete. Delivery remains
+`DRAFT` until slicer and physical existing-tray fit checks pass.
