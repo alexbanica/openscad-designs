@@ -16,35 +16,40 @@ Approved Spec: `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
 ### Implementation Steps Performed
 
 1. Interpreted the requested "bottom cover" as the `bottom_tray` and increased
-   `tray_wall_height_mm` by exactly `2.0 mm`, from `31.0` to `33.0`.
+   `tray_wall_height_mm` by exactly `3.0 mm`, from `31.0` to `34.0`.
 2. Kept the footprint and all horizontal geometry unchanged while allowing the
    existing derivations to raise the seating datum, socket tops, catch windows,
    Ethernet lay-in tops, installed cover, and vertical retention reach.
 3. Ran a short OpenSCAD assertion evaluation. It exposed that the raised cable
    profiles exceeded the old fixed routing-guide envelope, so
-   `routing_guide_height_mm` was increased by the same `2.0 mm`, from `30.9` to
-   `32.9`, preserving the prior cable and cover clearances.
-4. Added assertions for switch containment and the revised default `35.4 mm`
-   seating datum, `37.8 mm` outside height, `35.2 mm` guide cap, and `4.8 mm`
+   `routing_guide_height_mm` was increased by the same `3.0 mm`, from `30.9` to
+   `33.9`, preserving the prior cable and cover clearances.
+4. Added assertions for switch containment and the revised default `36.4 mm`
+   seating datum, `38.8 mm` outside height, `36.2 mm` guide cap, and `5.8 mm`
    vertical-pad standoff.
-5. Updated Linksys printing and physical-fit guidance and recorded the delivered
+5. Changed the source `render_mode` default to `"printable_layout"` as required
+   by the repository guidance applicable to every modified `.scad` file.
+6. Updated Linksys printing and physical-fit guidance and recorded the delivered
    behavior in the matching approved spec.
 
 ### Validation And Delivery Record
 
-- Validation run: `git diff --check` and one hidden-reference horizontal
-  `assembly` CSG export with OpenSCAD assertion evaluation; the final run passed.
+- Validation run: `git diff --check`, one no-override `printable_layout` CSG
+  export, and one hidden-reference horizontal `assembly` CSG export with
+  OpenSCAD assertion evaluation; both final exports passed.
 - Validation skipped: unit tests are prohibited; full mesh and visual renders,
-  vertical assemblies, printable-layout rendering, Bambu Studio inspection,
-  printing, and physical closure/fit checks were not run.
+  vertical assemblies, Bambu Studio inspection, printing, and physical
+  closure/fit checks were not run.
 - QA skipped: required by the explicit super-agent workflow.
 - Code review skipped: required by the explicit super-agent workflow.
 - Documentation updated: Linksys bottom-tray height, routing-guide height,
-  seating datum, outside height, unchanged footprint, and reprint guidance.
-- Staging status: all four in-scope paths staged; no unrelated paths staged.
+  seating datum, outside height, unchanged footprint, reprint guidance, and
+  source render-mode default.
+- Staging status: all four Linksys paths staged; no unrelated worktree path was
+  modified or staged.
 - Commit status: not committed.
 - Push status: not pushed.
-- Residual risk: assertion evaluation cannot prove that the additional `2.0 mm`
+- Residual risk: assertion evaluation cannot prove that the additional `3.0 mm`
   resolves the installed switch fit or that the revised parts slice and latch
   correctly; delivery remains `DRAFT` until slicer and physical-fit checks pass.
 

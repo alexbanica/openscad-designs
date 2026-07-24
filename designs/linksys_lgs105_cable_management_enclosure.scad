@@ -14,7 +14,7 @@
 
 // Render controls and reference visibility
 $fn = 48;
-render_mode = "assembly"; // [assembly/bottom_tray/top_cover/vertical_support_foot/cable_routing_preview/printable_layout]
+render_mode = "printable_layout"; // [assembly/bottom_tray/top_cover/vertical_support_foot/cable_routing_preview/printable_layout]
 assembly_orientation = "horizontal"; // [horizontal/vertical]
 vertical_standing_side = "left"; // [left/right]
 show_switch_reference = true;
@@ -33,7 +33,7 @@ switch_top_clearance_mm = 0.8;
 // Tray, wall, floor, cover, and corner dimensions
 wall_thickness_mm = 2.4;
 tray_floor_thickness_mm = 2.4;
-tray_wall_height_mm = 33.0;
+tray_wall_height_mm = 34.0;
 cover_thickness_mm = 2.4;
 cover_skirt_depth_mm = 4.0;
 outer_corner_radius_mm = 5.0;
@@ -70,7 +70,7 @@ cable_storage_depth_mm = 68.0;
 cable_storage_switch_gap_mm = 4.0;
 routing_guide_shoulder_diameter_mm = 28.0;
 routing_guide_waist_diameter_mm = 26.0;
-routing_guide_height_mm = 32.9;
+routing_guide_height_mm = 33.9;
 routing_guide_floor_clearance_mm = 0.0;
 routing_guide_edge_clearance_mm = 5.0;
 routing_guide_shoulder_height_mm = 1.5;
@@ -626,9 +626,9 @@ default_uplink_fit_inputs = abs(uplink_cable_diameter_mm - 5.90) < 0.000001
     && abs(uplink_aperture_width_mm - 7.0) < 0.000001
     && abs(uplink_aperture_height_mm - 8.0) < 0.000001;
 default_tray_height_inputs = abs(tray_floor_thickness_mm - 2.4) < 0.000001
-    && abs(tray_wall_height_mm - 33.0) < 0.000001
+    && abs(tray_wall_height_mm - 34.0) < 0.000001
     && abs(cover_thickness_mm - 2.4) < 0.000001
-    && abs(routing_guide_height_mm - 32.9) < 0.000001
+    && abs(routing_guide_height_mm - 33.9) < 0.000001
     && abs(switch_height_mm - 26.0) < 0.000001
     && abs(switch_top_clearance_mm - 0.8) < 0.000001
     && abs(switch_vertical_pad_height_mm - 1.8) < 0.000001
@@ -972,11 +972,11 @@ assert(!default_uplink_fit_inputs
 assert(tray_wall_height_mm >= switch_bay_height_mm,
     "Tray wall height must contain the switch plus configured top clearance");
 assert(!default_tray_height_inputs
-        || (abs(cover_installed_z_mm - 35.4) < 0.000001
-            && abs(enclosure_outer_height_mm - 37.8) < 0.000001
-            && abs(routing_guide_cap_top_z_mm - 35.2) < 0.000001
-            && abs(vertical_pad_standoff_height_mm - 4.8) < 0.000001),
-    "Default 33 mm tray wall requires matching guide, cover, and retention heights");
+        || (abs(cover_installed_z_mm - 36.4) < 0.000001
+            && abs(enclosure_outer_height_mm - 38.8) < 0.000001
+            && abs(routing_guide_cap_top_z_mm - 36.2) < 0.000001
+            && abs(vertical_pad_standoff_height_mm - 5.8) < 0.000001),
+    "Default 34 mm tray wall requires matching guide, cover, and retention heights");
 assert(cable_service_aperture_count == 3,
     "The enclosure contract requires exactly three cable-service apertures");
 assert(ethernet_lay_in_aperture_count == 2,

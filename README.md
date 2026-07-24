@@ -165,14 +165,14 @@ at each end, and `0.8 mm` above the body. The measured `89.0 mm`
 Ethernet-to-power body span therefore receives a `90.2 mm` bay allocation with
 `1.2 mm` total end room; the downward pads retain an additional `0.4 mm`
 clearance. After the installed switch prevented the cover from fully closing,
-the bottom-tray wall height was increased by `2.0 mm`, from `31.0 mm` to
-`33.0 mm`. With the `2.4 mm` floor and `2.4 mm` cover roof, the cover seating
-datum is now `35.4 mm` above the print plane and the assembled outside height is
-`37.8 mm`; the `127.0 mm x 167.0 mm` footprint is unchanged. The socket tops,
+the bottom-tray wall height was increased by `3.0 mm`, from `31.0 mm` to
+`34.0 mm`. With the `2.4 mm` floor and `2.4 mm` cover roof, the cover seating
+datum is now `36.4 mm` above the print plane and the assembled outside height is
+`38.8 mm`; the `127.0 mm x 167.0 mm` footprint is unchanged. The socket tops,
 catch windows, Ethernet lay-in slot tops, and cover-mounted vertical pad reach
 remain derived from the seating datum. Reprint both the bottom tray and top
 cover so those mating and switch-retention features use the same revised
-height. The routing guides also grow by `2.0 mm`, from `30.9 mm` to `32.9 mm`,
+height. The routing guides also grow by `3.0 mm`, from `30.9 mm` to `33.9 mm`,
 so the raised Ethernet cable paths retain their prior protected envelope and
 cover clearance. Cover-pin/socket retention clearance defaults to `0.25 mm`,
 locating-skirt fit clearance defaults to `0.30 mm`, and the socket-receiver
@@ -189,7 +189,7 @@ cover down evenly, and confirm that both outward-capturing hooks have snapped
 behind their shoulders.
 
 The earlier receiver-relief physical-fit correction changed only the removable
-top cover and reused the then-current bottom tray. The later `2.0 mm` tray-wall
+top cover and reused the then-current bottom tray. The later `3.0 mm` tray-wall
 height correction supersedes that reuse instruction: the revised bottom tray
 and its height-derived replacement top cover must be printed together. The two
 top-cover Ethernet reliefs derive their installed X positions, usable widths,
@@ -370,7 +370,7 @@ isolation.
 
 ### Render Modes
 
-Set `render_mode` to one of:
+`render_mode` defaults to `"printable_layout"`. Set it explicitly to one of:
 
 `assembly_orientation` defaults to `"horizontal"`; `vertical_standing_side`
 defaults to `"left"` and is consulted only for a vertical assembly.
