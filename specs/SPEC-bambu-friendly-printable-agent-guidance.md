@@ -2,6 +2,53 @@
 
 Status: Approved
 
+## Auto-Approved Super-Agent Update: Default Printable Layout (2026-07-24)
+
+### Purpose And Requested Behavior
+
+Update repository agent guidance so OpenSCAD designs default to the
+`printable_layout` render mode.
+
+### Scope, Definitions, Inputs, And Constraints
+
+- Scope is limited to `AGENTS.md` and this matching completed-work record.
+- "Default" means the source value assigned to `render_mode` when a `.scad`
+  file is opened or rendered without a command-line or Customizer override.
+- Apply the rule to every new or modified `.scad` file that exposes
+  `render_mode`.
+- Preserve assembly, individual-part, electronics, clearance, and other
+  supported render modes as explicit overrides.
+- Do not retroactively modify existing `.scad` files in this guidance-only
+  invocation and do not add generated exports.
+
+### Deterministic Behavior Delivered
+
+- `AGENTS.md` requires `render_mode = "printable_layout"` as the source default
+  in every new or modified `.scad` file that exposes the control.
+- Other supported render modes remain selectable explicitly and are not
+  removed or renamed.
+- Designs without a `render_mode` control are unaffected.
+
+### Assumptions, Impact, And Residual Risk
+
+- The request to update `AGENTS.md` is interpreted as durable guidance for
+  future agent work, not authorization to rewrite all existing designs now.
+- Existing files may continue to default to another mode until they are next
+  modified. The rule depends on future agents following repository guidance.
+- Defaulting to printable geometry reduces the risk of accidentally exporting
+  electronics or assembly references, but it does not prove that a layout is
+  physically printable or correctly arranged.
+
+### Validation And Documentation
+
+- Short validation performed: `git diff --check` and manual inspection of the
+  scoped guidance diff.
+- Unit tests are prohibited and not applicable. OpenSCAD rendering, slicer
+  inspection, code review, QA, and physical printing were skipped because no
+  geometry changed.
+- Documentation updated: `AGENTS.md` only; `README.md` remains unchanged.
+- Delivery is lower-assurance under the explicit super-agent workflow.
+
 ## Purpose
 
 Update repository agent instructions so future printable OpenSCAD designs are explicitly Bambu Lab-friendly and avoid common print-layout problems.

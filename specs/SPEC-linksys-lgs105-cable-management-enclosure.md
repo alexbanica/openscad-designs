@@ -2,6 +2,73 @@
 
 Status: Approved
 
+## Auto-Approved Super-Agent Correction: Increase Bottom-Tray Height (2026-07-24)
+
+### Purpose And Requested Behavior
+
+Increase the Linksys enclosure bottom tray by `2.0 mm` after physical
+installation showed that the tray did not provide enough vertical enclosure
+height for the switch and the top cover could not fully close.
+
+### Scope, Definitions, Inputs, And Constraints
+
+- "Bottom cover" is the source `bottom_tray` printable part and its adjustable
+  `tray_wall_height_mm`; the separate mating part remains `top_cover`.
+- Increase only the vertical enclosure allowance. Preserve the
+  `127.0 mm x 167.0 mm` footprint, wall and floor thicknesses, switch XY
+  placement, cable counts, power-hole position and diameter, vents, feet, and
+  horizontal routing.
+- Preserve the existing cover seating, alignment, catches, Ethernet passages,
+  routing-guide cable protection, and switch vertical-retention clearance by
+  continuing to derive those features from the revised tray-wall datum.
+- The `2.0 mm` increment is a manually entered dimension supplied from the
+  user's physical installation result.
+
+### Deterministic Behavior Delivered
+
+- Change `tray_wall_height_mm` from `31.0` to `33.0`, raising the cover seating
+  datum from `33.4 mm` to `35.4 mm` above the print plane.
+- Increase assembled outside height from `35.8 mm` to `37.8 mm` while leaving
+  enclosure width and depth unchanged.
+- Raise the derived socket tops, catch windows, Ethernet lay-in slots, installed
+  cover, and cover-mounted vertical retention reach by the same `2.0 mm`.
+- Increase `routing_guide_height_mm` from `30.9` to `32.9` so the raised cable
+  paths retain their previous complete-profile protection and nominal cover
+  clearance.
+- Increase the derived vertical-pad standoff from `2.8 mm` to `4.8 mm`, keeping
+  the existing `0.4 mm` switch retention clearance.
+- Assert the switch-plus-clearance containment invariant and the revised
+  default guide, cover-datum, outer-height, and retention derivations.
+
+### Assumptions, Impact, And Residual Risk
+
+- The reported closure failure is assumed to require the explicitly requested
+  `2.0 mm` vertical increase; no unreported internal protrusion or localized
+  interference is modeled.
+- Both bottom tray and top cover must be reprinted because the tray mating
+  features move upward and the cover's vertical retention pads grow to preserve
+  switch constraint. Reusing the prior top cover would not provide the intended
+  vertical retention geometry.
+- Nominal source geometry and assertion evaluation cannot prove that the extra
+  `2.0 mm` resolves physical closure, catch engagement, cable packing, or
+  printer tolerances. A slicer inspection and fitted test print remain
+  authoritative.
+
+### Validation And Documentation
+
+- Short validation performed: `git diff --check` and a hidden-reference
+  horizontal `assembly` CSG export that evaluated all OpenSCAD assertions.
+- The first assertion evaluation exposed that the raised Ethernet paths had
+  outgrown the fixed routing guides; the delivered `32.9 mm` guide height
+  resolved that regression and the repeated evaluation passed.
+- Unit tests are prohibited. Full mesh rendering, visual geometry inspection,
+  vertical and printable-layout renders, Bambu Studio inspection, printing,
+  and physical fit validation were skipped.
+- `README.md` documents the revised tray, guide, cover datum, outer height,
+  unchanged footprint, and two-part reprint requirement.
+- Delivery remains `DRAFT` until the revised parts are sliced, printed, and
+  physically checked with the installed switch.
+
 ## Auto-Approved Super-Agent Correction: Increase Power Pass-Through Raise (2026-07-23)
 
 ### Purpose And Requested Behavior
@@ -29,7 +96,7 @@ from `2.0 mm` to `4.0 mm`.
 ### Assumptions, Impact, And Residual Risk
 
 - Positive source Z is upward in the installed enclosure orientation.
-- The `10.0 mm` hole remains fully bounded by the `31.0 mm` tray wall, with
+- The `10.0 mm` hole remains fully bounded by the `33.0 mm` tray wall, with
   its default vertical envelope spanning `14.4 mm` through `24.4 mm`.
 - Source geometry cannot prove alignment with the physical power connector;
   slicer inspection or a test print remains authoritative.
@@ -76,7 +143,7 @@ inspection showed that the existing opening sits too low.
 ### Assumptions, Impact, And Residual Risk
 
 - "Raise" means positive source Z in the installed enclosure orientation.
-- The shifted `10.0 mm` hole remains fully bounded by the `31.0 mm` tray wall.
+- The shifted `10.0 mm` hole remains fully bounded by the `33.0 mm` tray wall.
 - Source geometry cannot prove alignment with the physical switch connector;
   a slicer check or test print remains authoritative.
 

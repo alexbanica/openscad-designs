@@ -164,7 +164,17 @@ The default switch clearances are `0.6 mm` on each horizontal side, `0.6 mm`
 at each end, and `0.8 mm` above the body. The measured `89.0 mm`
 Ethernet-to-power body span therefore receives a `90.2 mm` bay allocation with
 `1.2 mm` total end room; the downward pads retain an additional `0.4 mm`
-clearance. Cover-pin/socket retention clearance defaults to `0.25 mm`,
+clearance. After the installed switch prevented the cover from fully closing,
+the bottom-tray wall height was increased by `2.0 mm`, from `31.0 mm` to
+`33.0 mm`. With the `2.4 mm` floor and `2.4 mm` cover roof, the cover seating
+datum is now `35.4 mm` above the print plane and the assembled outside height is
+`37.8 mm`; the `127.0 mm x 167.0 mm` footprint is unchanged. The socket tops,
+catch windows, Ethernet lay-in slot tops, and cover-mounted vertical pad reach
+remain derived from the seating datum. Reprint both the bottom tray and top
+cover so those mating and switch-retention features use the same revised
+height. The routing guides also grow by `2.0 mm`, from `30.9 mm` to `32.9 mm`,
+so the raised Ethernet cable paths retain their prior protected envelope and
+cover clearance. Cover-pin/socket retention clearance defaults to `0.25 mm`,
 locating-skirt fit clearance defaults to `0.30 mm`, and the socket-receiver
 skirt reliefs add `cover_receiver_relief_extra_clearance_mm = 0.5` on every
 side after the first physical replacement cover would not pass over the
@@ -178,8 +188,10 @@ one caught side upward. To reinstall it, align the skirt and pins, press the
 cover down evenly, and confirm that both outward-capturing hooks have snapped
 behind their shoulders.
 
-The physical-fit correction changes only the removable top cover; the existing
-bottom tray is reused with all of its solid and cut geometry unchanged. The two
+The earlier receiver-relief physical-fit correction changed only the removable
+top cover and reused the then-current bottom tray. The later `2.0 mm` tray-wall
+height correction supersedes that reuse instruction: the revised bottom tray
+and its height-derived replacement top cover must be printed together. The two
 top-cover Ethernet reliefs derive their installed X positions, usable widths,
 and complete tray-wall-to-skirt passages from the corresponding tray apertures.
 Because the cover prints exterior-roof-face-down, install it by rotating it
@@ -342,7 +354,8 @@ The source groups its public controls near the top by:
 
 Common fit changes start with `switch_width_mm`, `switch_depth_mm`,
 `switch_height_mm`, `switch_side_clearance_mm`, `switch_end_clearance_mm`, and
-`switch_top_clearance_mm`. For real cables, tune
+`switch_top_clearance_mm`, plus `tray_wall_height_mm` when physical switch fit
+requires more vertical enclosure room. For real cables, tune
 `uplink_cable_diameter_mm`, `uplink_cable_fit_clearance_mm`, `device_cable_width_mm`,
 `device_cable_thickness_mm`, `minimum_cable_bend_radius_mm`,
 `cable_storage_depth_mm`, `routing_guide_*`, the uplink/device

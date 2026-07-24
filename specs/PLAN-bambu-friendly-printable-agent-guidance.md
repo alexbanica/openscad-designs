@@ -4,6 +4,43 @@ Status: Approved
 
 Approved Spec: `specs/SPEC-bambu-friendly-printable-agent-guidance.md`
 
+## Auto-Approved Super-Agent Work Record: Default Printable Layout (2026-07-24)
+
+### Affected Files
+
+- `AGENTS.md`
+- `specs/SPEC-bambu-friendly-printable-agent-guidance.md`
+- `specs/PLAN-bambu-friendly-printable-agent-guidance.md`
+
+### Implementation Steps Performed
+
+1. Interpreted "always default to printable_layout" as a repository rule for
+   the source default of any `render_mode` control in new or modified `.scad`
+   files.
+2. Added the rule under `AGENTS.md` OpenSCAD guidance and preserved all other
+   supported modes as explicit overrides.
+3. Kept the invocation guidance-only: no existing design source, README text,
+   or generated export was changed.
+4. Updated the matching approved spec and this completed-work record.
+
+### Validation And Delivery Record
+
+- Validation run: `git diff --check` and manual inspection of the three-file
+  guidance/artifact diff.
+- Validation skipped: unit tests are prohibited and not applicable; OpenSCAD
+  rendering, slicer inspection, and physical printing were not run because no
+  geometry changed.
+- QA skipped: required by the explicit super-agent workflow.
+- Code review skipped: required by the explicit super-agent workflow.
+- Documentation updated: repository OpenSCAD default-render guidance in
+  `AGENTS.md`; no README update was required.
+- Staging status: all three paths changed by this invocation staged; the four
+  pre-existing staged Linksys paths were preserved and not modified.
+- Commit status: not committed.
+- Push status: not pushed.
+- Residual risk: existing `.scad` files are not retroactively normalized and
+  remain subject to their current defaults until a later in-scope edit.
+
 ## Target Branch
 
 No dedicated branch is required. Repository instructions allow committing directly to `main` when otherwise unspecified.

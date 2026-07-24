@@ -24,6 +24,9 @@ These instructions apply to this OpenSCAD design repository.
 - Use `_mm` for linear dimensions and `_deg` for angles.
 - Do not redefine user-adjustable values inside modules.
 - Use named modules for major printable parts, previews, and repeated helper geometry.
+- In every new or modified `.scad` file that exposes `render_mode`, set its
+  source default to `"printable_layout"`. Keep assembly, individual-part,
+  electronics, and other supported modes available only as explicit overrides.
 - Future `.scad` files that require Raspberry Pi Zero board geometry should use `designs/pi_zero.scad` as the fit and clearance reference instead of duplicating board models.
 - Future `.scad` files that require Raspberry Pi 5 board geometry should use `designs/rpi5.scad` as the fit and clearance reference instead of duplicating board models.
 - Dependent cases, supports, enclosures, and accessories should keep these Raspberry Pi reference models toggleable from child designs.
