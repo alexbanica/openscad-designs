@@ -142,7 +142,7 @@ cover_latch_flexure_thickness_mm = 2.0;
 cover_latch_flexure_side_gap_mm = 1.5;
 cover_latch_engagement_depth_mm = 0.8;
 cover_latch_engagement_height_mm = 1.6;
-cover_latch_lead_in_reach_allowance_mm = 2.0;
+cover_latch_lead_in_reach_allowance_mm = 3.0;
 cover_latch_release_access_width_mm = 16.0;
 cover_latch_release_access_height_mm = 6.0;
 
@@ -651,7 +651,7 @@ default_cover_latch_inputs = default_layout_inputs
     && abs(cover_latch_engagement_depth_mm - 0.8) < 0.000001
     && abs(cover_latch_engagement_height_mm - 1.6) < 0.000001
     && abs(cover_receiver_relief_extra_clearance_mm - 0.5) < 0.000001
-    && abs(cover_latch_lead_in_reach_allowance_mm - 2.0) < 0.000001
+    && abs(cover_latch_lead_in_reach_allowance_mm - 3.0) < 0.000001
     && abs(cover_latch_release_access_width_mm - 16.0) < 0.000001
     && abs(cover_latch_release_access_height_mm - 6.0) < 0.000001;
 // Keep the complete representative routes on their aperture Z profiles. The
@@ -1285,7 +1285,7 @@ assert(!default_cover_latch_inputs
         || (abs(cover_latch_hook_projection_mm - 1.25) < 0.000001
             && abs(cover_latch_release_travel_mm - 0.95) < 0.000001
             && abs(cover_latch_entry_tip_z_mm
-                    - (cover_latch_hook_bottom_z_mm - 2.0)) < 0.000001
+                    - (cover_latch_hook_bottom_z_mm - 3.0)) < 0.000001
             && abs(cover_latch_arm_outer_x_positions_mm[0] - 2.7)
                 < 0.000001
             && abs(cover_latch_arm_outer_x_positions_mm[1] - 122.3)

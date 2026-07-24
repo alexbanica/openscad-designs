@@ -4,6 +4,46 @@ Status: Approved
 
 Approved Spec: `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
 
+## Auto-Approved Super-Agent Work Record: Extend Top-Cover Catch Entry (2026-07-24)
+
+### Affected Files
+
+- `designs/linksys_lgs105_cable_management_enclosure.scad`
+- `README.md`
+- `specs/SPEC-linksys-lgs105-cable-management-enclosure.md`
+- `specs/PLAN-linksys-lgs105-cable-management-enclosure.md`
+
+### Implementation Steps Performed
+
+1. Interpreted the reported clamps as the two top-cover positive snap catches
+   and their holes as the existing tray release/capture windows.
+2. Selected the smallest established calibration increment, `1.0 mm`, because
+   the user requested a longer reach without specifying an amount.
+3. Increased `cover_latch_lead_in_reach_allowance_mm` from `2.0` to `3.0`,
+   extending only each tapered entry tip while preserving the capture ledge,
+   flexure arm, positive interference, release travel, and bottom tray.
+4. Updated the default assertion from a `2.0 mm` to a `3.0 mm` entry-tip offset.
+5. Updated README physical-fit guidance and the matching approved spec.
+
+### Validation And Delivery Record
+
+- Validation run: `git diff --check`, one no-override `printable_layout` CSG
+  export, and one hidden-reference horizontal `assembly` CSG export with
+  OpenSCAD assertion evaluation; both exports passed.
+- Validation skipped: unit tests are prohibited; full mesh and visual renders,
+  Bambu Studio inspection, printing, and physical latch cycling were not run.
+- QA skipped: required by the explicit super-agent workflow.
+- Code review skipped: required by the explicit super-agent workflow.
+- Documentation updated: Linksys catch-entry reach and preserved capture
+  geometry.
+- Staging status: all four Linksys paths staged; no unrelated worktree path was
+  modified or staged.
+- Commit status: not committed.
+- Push status: not pushed.
+- Residual risk: nominal geometry cannot prove that the extra `1.0 mm` provides
+  natural entry or durable positive engagement on the printed parts; delivery
+  remains `DRAFT` until physical fitting and repeated cycling pass.
+
 ## Auto-Approved Super-Agent Work Record: Increase Bottom-Tray Height (2026-07-24)
 
 ### Affected Files

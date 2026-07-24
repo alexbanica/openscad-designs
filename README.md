@@ -152,7 +152,7 @@ are
 `cover_latch_flexure_side_gap_mm = 1.5`,
 `cover_latch_engagement_depth_mm = 0.8`,
 `cover_latch_engagement_height_mm = 1.6`,
-`cover_latch_lead_in_reach_allowance_mm = 2.0`,
+`cover_latch_lead_in_reach_allowance_mm = 3.0`,
 `cover_latch_release_access_width_mm = 16.0`, and
 `cover_latch_release_access_height_mm = 6.0`. The derived default inward release
 travel is `0.95 mm`: `0.8 mm` engagement plus `0.15 mm` interference. The
@@ -205,10 +205,12 @@ including its wall-connecting structural web, while preserving the coaxial
 cover pins and the exterior roof. Their dedicated `0.5 mm` extra per-side
 allowance makes each boss/web relief `1.0 mm` larger overall than the previous
 fit-correction opening. The adjustable
-`cover_latch_lead_in_reach_allowance_mm = 2.0` default extends only the tapered
-catch entry into the unchanged tray windows, including the additional `1.0 mm`
-requested after the catches still did not click; both values remain printable
-calibration starting points rather than physically proven measurements.
+`cover_latch_lead_in_reach_allowance_mm = 3.0` default extends only the tapered
+catch entry into the unchanged tray windows. It includes two successive
+`1.0 mm` physical-fit increases beyond the original `1.0 mm` allowance while
+leaving the capture ledge, flexure arm, engagement, and tray windows unchanged.
+The value remains a printable calibration starting point rather than a
+physically proven measurement.
 
 Use the enclosure horizontally with both detachable feet removed. For the
 smaller-footprint vertical configuration, fit the same two identical snap-in feet to

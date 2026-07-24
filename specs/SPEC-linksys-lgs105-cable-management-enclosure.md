@@ -2,6 +2,56 @@
 
 Status: Approved
 
+## Auto-Approved Super-Agent Correction: Extend Top-Cover Catch Entry (2026-07-24)
+
+### Purpose And Requested Behavior
+
+Lengthen the two top-cover clamps after physical fitting showed that they do
+not naturally reach the matching holes in the bottom tray.
+
+### Scope, Definitions, Inputs, And Constraints
+
+- "Clamps" are the two opposed `cover_positive_snap_catch()` features on the
+  top cover; "holes" are their existing tray release/capture windows.
+- Because no increment was supplied, use the smallest prior calibration step:
+  add `1.0 mm` to the adjustable tapered entry reach.
+- Preserve the `34.0 mm` tray wall, tray windows, capture ledges, `12.0 mm`
+  flexure length, `2.0 mm` flexure thickness, engagement depth/height,
+  interference, release travel, cover seating datum, and all unrelated
+  geometry.
+- Keep `render_mode = "printable_layout"` as the source default.
+
+### Deterministic Behavior Delivered
+
+- Increase `cover_latch_lead_in_reach_allowance_mm` from `2.0` to `3.0`.
+- Extend each tapered catch entry `1.0 mm` farther into its unchanged tray
+  window while leaving the positive-capture ledge at its existing height.
+- Keep the default release travel at `0.95 mm` and the hook projection at
+  `1.25 mm`; only the entry tip reach changes.
+- Update the default-value assertion so the entry tip remains exactly `3.0 mm`
+  beyond the hook bottom, intersects the fixed window, and does not nominally
+  bottom out.
+
+### Assumptions, Impact, And Residual Risk
+
+- The reported non-reach is assumed to concern catch entry rather than lateral
+  misalignment or incomplete seating caused by another collision.
+- Only the top cover changes; the current bottom tray can be reused.
+- Nominal assertion evaluation cannot prove natural insertion, positive latch
+  engagement, release force, PLA durability, or printer tolerance. A newly
+  printed top cover must be fitted and cycled against the physical tray.
+
+### Validation And Documentation
+
+- Short validation performed: `git diff --check`, a no-override
+  `printable_layout` CSG export, and a hidden-reference horizontal `assembly`
+  CSG export; both exports evaluated all OpenSCAD assertions.
+- Unit tests are prohibited. Full mesh rendering, visual geometry inspection,
+  Bambu Studio inspection, printing, and physical latch cycling were skipped.
+- `README.md` documents the `3.0 mm` entry reach and preserved capture geometry.
+- Delivery remains `DRAFT` until a replacement top cover naturally enters,
+  positively latches, releases, and survives repeated physical cycles.
+
 ## Auto-Approved Super-Agent Correction: Increase Bottom-Tray Height (2026-07-24)
 
 ### Purpose And Requested Behavior
