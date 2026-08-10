@@ -70,13 +70,18 @@ and its snap tabs and fit remain material- and printer-dependent.
 
 The visual-right curved wall and the straight rear wall each have one
 `20.0 mm`-wide passage running continuously from the wall top to the interior
-floor. Remove the cap before routing either mains cable. Lower the cable segment
-into the open slot from above while the attached Schuko head remains inside or
-outside the case; a Schuko head is never expected to pass through the `20.0 mm`
-width. The right passage is shared by four cable jackets up to the provisional
-`12.0 mm` diameter, stacked at distinct heights. The rear passage accepts the
-power strip's attached lead. Arrange both routes before seating the cap, and
-confirm that the cap neither pinches the cables nor forces a sharp bend.
+floor. The right passage center is rotated `30.0 deg` toward the rear from the
+exact visual-right midpoint of the semicircular wall; `0 deg` is exact right and
+positive angles move rearward. Its subtraction extends completely beyond the
+curved exterior, so that passage is see-through like the rear passage and has no
+thin crescent of wall covering it. Remove the cap before routing either mains
+cable. Lower the cable segment into the open slot from above while the attached
+Schuko head remains inside or outside the case; a Schuko head is never expected
+to pass through the `20.0 mm` width. The right passage is shared by four cable
+jackets up to the provisional `12.0 mm` diameter, stacked at distinct heights.
+The rear passage accepts the power strip's attached lead. Arrange both routes
+before seating the cap, and confirm that the cap neither pinches the cables nor
+forces a sharp bend.
 
 The top cap has a flat, plain exterior with no stripes, grid, or engraving. Its
 continuous alignment skirt locates it before four cantilever clips engage: one
@@ -113,6 +118,7 @@ The source groups its adjustable parameters near the top. Key groups include:
   `wall_thickness_mm`, `floor_thickness_mm`, `cap_roof_thickness_mm`,
   `powerstrip_*`, and `powerstrip_fit_clearance_mm`;
 - cable routing: `lay_in_passage_width_mm`,
+  `right_passage_center_angle_deg`,
   `maximum_cable_diameter_mm`, `right_routed_cable_count`,
   `cable_lateral_clearance_mm`, `cable_contact_edge_radius_mm`, and
   `rear_passage_center_x_mm`;

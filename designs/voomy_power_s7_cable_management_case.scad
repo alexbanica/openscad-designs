@@ -37,6 +37,7 @@ powerstrip_center_y_mm = 0.0;
 
 // Cable interfaces
 lay_in_passage_width_mm = 20.0;
+right_passage_center_angle_deg = 30.0;
 maximum_cable_diameter_mm = 12.0;
 right_routed_cable_count = 4;
 cable_lateral_clearance_mm = 4.0;
@@ -115,6 +116,10 @@ powerstrip_clear_width_mm = powerstrip_width_mm + 2 * powerstrip_fit_clearance_m
 powerstrip_clear_depth_mm = powerstrip_depth_mm + 2 * powerstrip_fit_clearance_mm;
 right_passage_arc_angle_deg =
     lay_in_passage_width_mm / capsule_outer_radius_mm * 180 / PI;
+right_passage_center_x_mm = capsule_tangent_center_offset_x_mm
+    + capsule_outer_radius_mm * cos(right_passage_center_angle_deg);
+right_passage_center_y_mm =
+    capsule_outer_radius_mm * sin(right_passage_center_angle_deg);
 right_cable_stack_height_mm =
     right_routed_cable_count * maximum_cable_diameter_mm;
 powerstrip_bottom_z_mm = floor_thickness_mm;
@@ -128,6 +133,11 @@ right_passage_inner_half_angle_deg =
 right_passage_bottom_half_angle_deg =
     (lay_in_passage_width_mm + 2 * cable_contact_edge_radius_mm)
     / capsule_outer_radius_mm * 180 / PI / 2;
+right_passage_top_cut_outer_radius_mm =
+    (capsule_outer_radius_mm + eps_mm) / cos(right_passage_half_angle_deg);
+right_passage_bottom_cut_outer_radius_mm =
+    (capsule_outer_radius_mm + eps_mm)
+    / cos(right_passage_bottom_half_angle_deg);
 slot_bottom_z_mm = floor_thickness_mm;
 right_cable_first_center_z_mm = slot_bottom_z_mm
     + maximum_cable_diameter_mm / 2;
@@ -327,9 +337,19 @@ assert(rear_passage_center_x_mm - lay_in_passage_width_mm / 2
 assert(right_passage_arc_angle_deg * capsule_outer_radius_mm
         * PI / 180 == lay_in_passage_width_mm,
     "The right slot must span 20 mm of tangential arc at the outer radius");
+assert(right_passage_center_angle_deg
+        - right_passage_bottom_half_angle_deg > -90
+    && right_passage_center_angle_deg
+        + right_passage_bottom_half_angle_deg < 90,
+    "The complete right slot must remain within the right semicircle");
 assert(slot_bottom_z_mm == floor_thickness_mm
     && body_height_mm > slot_bottom_z_mm,
     "Both lay-in slots must remain continuous from the wall top to the floor");
+assert(right_passage_top_cut_outer_radius_mm
+        * cos(right_passage_half_angle_deg) > capsule_outer_radius_mm
+    && right_passage_bottom_cut_outer_radius_mm
+        * cos(right_passage_bottom_half_angle_deg) > capsule_outer_radius_mm,
+    "The right cable slot outer chords must cut beyond the curved exterior wall");
 assert(right_routed_cable_count == 4
     && right_cable_stack_height_mm == 48.0,
     "The right slot requires four non-overlapping 12 mm cable references");
@@ -930,22 +950,31 @@ module rear_main_lead_slot() {
     }
 }
 
-module right_slot_plan_profile(outer_half_angle_deg, inner_half_angle_deg) {
+module right_slot_plan_profile(outer_half_angle_deg, inner_half_angle_deg,
+        cut_outer_radius_mm) {
     right_center_x_mm = capsule_tangent_center_offset_x_mm;
 
     polygon(points = [
         [right_center_x_mm
-                + right_passage_inner_radius_mm * cos(-inner_half_angle_deg),
-            right_passage_inner_radius_mm * sin(-inner_half_angle_deg)],
+                + right_passage_inner_radius_mm
+                    * cos(right_passage_center_angle_deg - inner_half_angle_deg),
+            right_passage_inner_radius_mm
+                * sin(right_passage_center_angle_deg - inner_half_angle_deg)],
         [right_center_x_mm
-                + (capsule_outer_radius_mm + eps_mm) * cos(-outer_half_angle_deg),
-            (capsule_outer_radius_mm + eps_mm) * sin(-outer_half_angle_deg)],
+                + cut_outer_radius_mm
+                    * cos(right_passage_center_angle_deg - outer_half_angle_deg),
+            cut_outer_radius_mm
+                * sin(right_passage_center_angle_deg - outer_half_angle_deg)],
         [right_center_x_mm
-                + (capsule_outer_radius_mm + eps_mm) * cos(outer_half_angle_deg),
-            (capsule_outer_radius_mm + eps_mm) * sin(outer_half_angle_deg)],
+                + cut_outer_radius_mm
+                    * cos(right_passage_center_angle_deg + outer_half_angle_deg),
+            cut_outer_radius_mm
+                * sin(right_passage_center_angle_deg + outer_half_angle_deg)],
         [right_center_x_mm
-                + right_passage_inner_radius_mm * cos(inner_half_angle_deg),
-            right_passage_inner_radius_mm * sin(inner_half_angle_deg)]
+                + right_passage_inner_radius_mm
+                    * cos(right_passage_center_angle_deg + inner_half_angle_deg),
+            right_passage_inner_radius_mm
+                * sin(right_passage_center_angle_deg + inner_half_angle_deg)]
     ]);
 }
 
@@ -955,27 +984,39 @@ module right_shared_cable_slot() {
             linear_extrude(height = eps_mm)
                 right_slot_plan_profile(
                     right_passage_bottom_half_angle_deg,
-                    right_passage_inner_half_angle_deg
+                    right_passage_inner_half_angle_deg,
+                    right_passage_bottom_cut_outer_radius_mm
                 );
         translate([0, 0, slot_bottom_z_mm + cable_contact_edge_radius_mm])
             linear_extrude(height = body_height_mm - slot_bottom_z_mm
                 - cable_contact_edge_radius_mm + 2 * eps_mm)
                 right_slot_plan_profile(
                     right_passage_half_angle_deg,
-                    right_passage_inner_half_angle_deg
+                    right_passage_inner_half_angle_deg,
+                    right_passage_top_cut_outer_radius_mm
                 );
     }
 }
 
 module right_side_cable_reference(center_z_mm) {
     cable_start_x_mm = powerstrip_center_x_mm + powerstrip_width_mm / 2;
-    cable_length_mm = case_width_mm / 2 + capsule_outer_radius_mm
-        - cable_start_x_mm + maximum_cable_diameter_mm;
+    cable_start_y_mm = powerstrip_center_y_mm;
+    cable_end_x_mm = right_passage_center_x_mm
+        + maximum_cable_diameter_mm * cos(right_passage_center_angle_deg);
+    cable_end_y_mm = right_passage_center_y_mm
+        + maximum_cable_diameter_mm * sin(right_passage_center_angle_deg);
+    cable_delta_x_mm = cable_end_x_mm - cable_start_x_mm;
+    cable_delta_y_mm = cable_end_y_mm - cable_start_y_mm;
+    cable_length_mm = sqrt(
+        pow(cable_delta_x_mm, 2) + pow(cable_delta_y_mm, 2)
+    );
+    cable_angle_deg = atan2(cable_delta_y_mm, cable_delta_x_mm);
 
     color("Orange")
-        translate([cable_start_x_mm, 0, center_z_mm])
-            rotate([0, 90, 0])
-                cylinder(h = cable_length_mm, d = maximum_cable_diameter_mm);
+        translate([cable_start_x_mm, cable_start_y_mm, center_z_mm])
+            rotate([0, 0, cable_angle_deg])
+                rotate([0, 90, 0])
+                    cylinder(h = cable_length_mm, d = maximum_cable_diameter_mm);
 }
 
 module right_side_cable_references() {
