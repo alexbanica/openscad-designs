@@ -2,7 +2,81 @@
 
 Status: Approved
 
-## Iteration: Adjustable USB Height And Top-Cap Ventilation (2026-08-10)
+## Super-Agent Update: Midpoint Vertical USB Interface (2026-08-10)
+
+### Purpose And Requested Behavior
+
+Use `103.5 mm` as the default USB-opening center and rotate the rectangular USB
+interface by `90 deg`, changing it from a horizontal `60.0 x 36.0 mm` opening to
+a vertical `36.0 x 60.0 mm` opening. The matching solid removable cover changes
+orientation and size with the opening.
+
+### Scope
+
+- Change the USB cutout and solid-cover defaults to `36.0 mm` wide by `60.0 mm`
+  high at center Z `103.5 mm`.
+- Preserve the existing left-biased X center and `3.0 mm` cover overlap.
+- Reorient the cover in `printable_layout` so the three parts remain separate
+  and fit the nominal `256 x 256 mm` plate envelope.
+- Update the Voomy README section and these approved completed-work artifacts.
+
+### Out Of Scope
+
+- Changes to the cap, ventilation grid, cable passages, body envelope, power
+  strip reference, cap retention, or any other design.
+- Generated mesh or preview artifacts in source control.
+
+### Definitions, Inputs, And Constraints
+
+- Rotating the rectangle by `90 deg` means swapping its width and height while
+  retaining its center and front-wall plane.
+- The `103.5 mm` center is the exact midpoint of the `207.0 mm` body wall.
+- The vertical opening spans Z `73.5..133.5 mm`; this is valid body geometry but
+  remains measurement-sensitive against the provisional floor-standing
+  `80 x 80 x 88 mm` Voomy reference.
+- OpenSCAD 2021.01 compatibility, the fixed exterior envelope, and Bambu Lab P2S
+  printable orientation remain required.
+
+### Deterministic Behavior Delivered
+
+- `usb_cutout_width_mm = 36.0`, `usb_cutout_height_mm = 60.0`, and
+  `usb_cutout_center_z_mm = 103.5` are the source defaults.
+- The installed opening and solid cover share the unchanged left-biased X center
+  and exact midpoint Z center.
+- The solid cover is `42.0 x 66.0 mm`, providing `3.0 mm` overlap on every edge.
+- The printable cover remains broad-face-down, is no longer rotated around Z in
+  `printable_layout`, stays separate from the body and cap, and keeps the nominal
+  layout within `256 x 256 mm`.
+
+### Assumptions And Impact
+
+- "The rectangle" refers to the USB wall opening and its matching removable
+  cover, not another rectangular feature.
+- Physical USB-group alignment is not inferred from the provisional reference;
+  the actual device must still be measured.
+- Only the Voomy source, Voomy README section, and matching approved artifacts
+  change.
+
+### Validation Performed And Skipped
+
+- `git diff --check` passed.
+- Short reference-free OpenSCAD CSG evaluations passed for `printable_layout`
+  and `assembly` with the new defaults.
+- Unit tests are prohibited and not applicable. Super-agent QA and code review
+  were intentionally skipped.
+- Bambu Studio inspection, test printing, physical USB alignment, cover fit and
+  cycle testing, airflow, and thermal/electrical checks remain unvalidated;
+  delivery remains DRAFT.
+
+### Documentation Changes
+
+- The README now documents the vertical `36.0 x 60.0 mm` interface, `103.5 mm`
+  midpoint default, `73.5..133.5 mm` span, and measurement-sensitive fit.
+
+## Previous Iteration: Adjustable USB Height And Top-Cap Ventilation (2026-08-10)
+
+The USB placement and orientation values in this previous iteration are
+superseded by the approved midpoint vertical-interface update above.
 
 This iteration changes only the following approved behavior:
 
@@ -204,9 +278,8 @@ physical measurements.
 | Top-open lay-in passage width | `20.0 mm` | User supplied |
 | Maximum routed cable diameter | `12.0 mm` | Provisional definition of a fat cable |
 | Right-side routed cable count | `4` | User supplied |
-| Front-wall USB wall cutout | `60.0 x 36.0 mm` | Provisional group-only service envelope |
-| Default USB cutout center Z | `73.0 mm` | Highest full-opening center within the floor-standing `88.0 mm` reference face |
-| Supported body-wall midpoint override | `103.5 mm` | Half of the `207.0 mm` body-wall height |
+| Front-wall USB wall cutout | `36.0 x 60.0 mm` | User-requested `90 deg` rotation of the provisional group-only service envelope |
+| Default USB cutout center Z | `103.5 mm` | Half of the `207.0 mm` body-wall height |
 | Solid USB cover wall overlap | `3.0 mm` per edge | Provisional retention allowance |
 | Cap receiver-hole width | `12.6 mm` | `12.0 mm` clip width plus `0.3 mm` clearance per side |
 | Cap receiver-hole height | `5.6 mm` | `5.0 mm` release-pad height plus `0.3 mm` clearance per side |
@@ -315,20 +388,16 @@ space.
   on the case's left side wall.
 - The front-wall cutout serves the USB port group only. It must not
   intentionally expose an adjacent AC socket or the power switch.
-- The default wall cutout is `60.0 x 36.0 mm`; its position is derived from the
+- The default wall cutout is a vertical `36.0 x 60.0 mm`; its position is derived from the
   installed power-strip datum and adjustable USB-group offsets.
 - The cutout remains within the `100.0 mm` straight front-wall run. Its
-  provisional center is `38.0 mm` from the left front-to-arc tangent, placing
-  the `60.0 mm` opening `8.0 mm` from that tangent and biasing it toward visual
-  left.
+  provisional center is `38.0 mm` from the left front-to-arc tangent, preserving
+  the approved left-biased placement.
 - `usb_cutout_center_z_mm` is an adjustable parameter with a default of
-  `73.0 mm`. With the default `36.0 mm` cutout height and the floor-standing
-  `88.0 mm` reference, the opening spans `55.0..91.0 mm` and stays within the
-  provisional device face.
-- `103.5 mm` is a supported override that vertically centers the opening on the
-  `207.0 mm` body wall. The opening then spans `85.5..121.5 mm`; this remains
-  valid body geometry but is not assumed to align with the provisional
-  floor-standing device reference.
+  `103.5 mm`, which vertically centers the `60.0 mm`-high opening on the
+  `207.0 mm` body wall. The opening spans `73.5..133.5 mm`; this remains valid
+  body geometry but is not assumed to align with the provisional floor-standing
+  device reference.
 - Any adjusted effective center must keep the complete cutout between the
   interior floor surface and the body top edge. Changing the vertical center
   does not alter the approved left-biased X position.
@@ -448,9 +517,9 @@ space.
 - Plain exterior walls means the raised horizontal stripes and front-wall
   hexagonal grid are removed; the approved grid moves to the top cap.
 - Middle and left means the USB opening preserves its approved left-biased X
-  center while its Z center is adjustable. The default is `73.0 mm`; setting it
-  to `103.5 mm` centers it on the body wall but may not align with the
-  provisional floor-standing device.
+  center while its Z center is adjustable. The default is `103.5 mm`, centered
+  on the body wall, but it may not align with the provisional floor-standing
+  device. The rectangle is vertical at `36.0 x 60.0 mm`.
 - The solid USB cover is installed only when the USB opening is intended to be
   closed. USB plugs and cables use the group opening with the cover removed.
 - A smooth interior floor means the power strip has no printed locating or
@@ -470,8 +539,9 @@ space.
   while retaining its fixed envelope.
 - The hexagonal grid moves from the front wall to the top cap, changing the cap
   from fully solid to a flat, perimeter-supported ventilated roof.
-- The USB opening and solid cover move upward to a `73.0 mm` default center and
-  support a `103.5 mm` body-midpoint override without changing their X position.
+- The USB opening and solid cover use a `103.5 mm` body-midpoint default and
+  rotate from horizontal `60.0 x 36.0 mm` to vertical `36.0 x 60.0 mm` without
+  changing their X position.
 - The USB printable part changes from an open bezel to a solid removable cover;
   the existing `usb_passthrough_clip` render-mode identifier remains supported.
 - The body receiver gaps shrink to four closed clamp holes, and all internal
@@ -501,8 +571,8 @@ space.
   - `20.0 mm` tangential arc width and `30.0 deg` rearward default placement of
     the right passage, including its rearward-positive adjustable angle,
   - `12.0 mm` cable clearance and four-cable vertical stacking,
-  - solid USB-cover seating, full closure, removal, and reinstallation at the
-    `73.0 mm` default center and `103.5 mm` override,
+  - solid USB-cover seating, full closure, removal, and reinstallation for the
+    vertical `36.0 x 60.0 mm` opening at the `103.5 mm` default center,
   - cap seating, clip alignment, engagement, release clearance, and exactly four
     closed `12.6 x 5.6 mm` receiver holes with continuous wall above them,
   - no hexagonal openings in the front wall,
@@ -535,9 +605,9 @@ space.
 - Verify that the solid USB cover fully closes the opening, can be removed and
   reinstalled externally, and leaves the complete USB group accessible while
   removed.
-- Verify USB alignment first at the `73.0 mm` default; if `103.5 mm` or another
-  height is used, measure the actual device and confirm the complete opening
-  still serves only the USB group.
+- Verify USB alignment at the `103.5 mm` default; if another height is used,
+  measure the actual device and confirm the complete opening still serves only
+  the USB group.
 - Verify that the power strip rests stably on the smooth floor without printed
   supports or locating pins and can still be aligned with the USB opening.
 - Fit and release the cap repeatedly, including at least 20 complete clip
@@ -564,9 +634,9 @@ space.
 - Document that the right passage cuts fully through the curved body wall while
   both body passages continue to stop at the interior floor.
 - Document that the USB opening is in the left-hand portion of the front wall
-  and serves only the USB group; its default center is `73.0 mm`, `103.5 mm` is
-  a supported measurement-sensitive override, and the solid cover must be
-  removed for USB access or cable routing.
+  and serves only the USB group; it is a vertical `36.0 x 60.0 mm` rectangle at
+  the measurement-sensitive `103.5 mm` default center, and the solid cover must
+  be removed for USB access or cable routing.
 - Document the measurement checklist, material-dependent clip risk, ventilation
   limitations, electrical and thermal non-certification, and DRAFT physical-fit
   boundary.

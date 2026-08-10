@@ -45,9 +45,9 @@ cable_contact_edge_radius_mm = 2.0;
 rear_passage_center_x_mm = powerstrip_center_x_mm;
 
 // Front USB group and solid removable cover (provisional)
-usb_cutout_width_mm = 60.0;
-usb_cutout_height_mm = 36.0;
-usb_cutout_center_z_mm = 73.0;
+usb_cutout_width_mm = 36.0;
+usb_cutout_height_mm = 60.0;
+usb_cutout_center_z_mm = 103.5;
 usb_group_offset_x_mm = 0.0;
 usb_group_offset_z_mm = 0.0;
 usb_clip_wall_overlap_mm = 3.0;
@@ -85,7 +85,7 @@ printable_layout_body_center_y_mm = -59.0;
 printable_layout_cap_center_y_mm = 59.0;
 printable_layout_clip_center_x_mm = 129.0;
 printable_layout_clip_center_y_mm = 0.0;
-printable_layout_clip_rotation_deg = 90.0;
+printable_layout_clip_rotation_deg = 0.0;
 
 // Preview colours
 case_body_colour = "Gainsboro";
@@ -182,8 +182,8 @@ usb_cutout_min_z_mm =
     usb_cutout_effective_center_z_mm - usb_cutout_height_mm / 2;
 usb_cutout_max_z_mm =
     usb_cutout_effective_center_z_mm + usb_cutout_height_mm / 2;
-usb_cutout_default_min_z_mm = 73.0 - usb_cutout_height_mm / 2;
-usb_cutout_default_max_z_mm = 73.0 + usb_cutout_height_mm / 2;
+usb_cutout_default_min_z_mm = 103.5 - usb_cutout_height_mm / 2;
+usb_cutout_default_max_z_mm = 103.5 + usb_cutout_height_mm / 2;
 usb_cutout_midpoint_center_z_mm = body_height_mm / 2;
 usb_cutout_midpoint_min_z_mm =
     usb_cutout_midpoint_center_z_mm - usb_cutout_height_mm / 2;
@@ -292,10 +292,10 @@ assert(usb_clip_outer_width_mm - usb_cutout_width_mm
     && usb_clip_outer_height_mm - usb_cutout_height_mm
         == 2 * usb_clip_wall_overlap_mm,
     "The solid USB cover must overlap the body cutout by 3 mm on every edge");
-assert(usb_clip_outer_width_mm == 66.0
-    && usb_clip_outer_height_mm == 42.0
+assert(usb_clip_outer_width_mm == 42.0
+    && usb_clip_outer_height_mm == 66.0
     && usb_clip_panel_thickness_mm >= wall_thickness_mm,
-    "The solid USB cover panel must fully close the 60 x 36 mm body cutout");
+    "The solid USB cover panel must fully close the vertical 36 x 60 mm body cutout");
 assert(usb_clip_panel_thickness_mm >= wall_thickness_mm
     && usb_clip_retention_depth_mm > wall_thickness_mm + usb_clip_fit_clearance_mm
     && usb_clip_hook_engagement_mm <= usb_clip_wall_overlap_mm,
@@ -365,16 +365,16 @@ assert(pow(max(abs(powerstrip_center_x_mm) + powerstrip_clear_width_mm / 2
 assert(powerstrip_bottom_z_mm == floor_thickness_mm
     && powerstrip_top_z_mm < body_height_mm,
     "The Voomy reference must rest on the floor and fit below the open body top");
-assert(usb_cutout_width_mm == 60.0 && usb_cutout_height_mm == 36.0
+assert(usb_cutout_width_mm == 36.0 && usb_cutout_height_mm == 60.0
     && usb_cutout_center_from_left_tangent_mm == 38.0,
-    "The USB group opening must retain its approved provisional size and offset");
-assert(usb_cutout_default_min_z_mm == 55.0
-    && usb_cutout_default_max_z_mm == 91.0,
-    "The default USB opening must span exactly Z 55.0 through 91.0 mm");
+    "The USB group opening must retain its approved vertical size and left-biased offset");
+assert(usb_cutout_default_min_z_mm == 73.5
+    && usb_cutout_default_max_z_mm == 133.5,
+    "The default vertical USB opening must span exactly Z 73.5 through 133.5 mm");
 assert(usb_cutout_midpoint_center_z_mm == 103.5
-    && usb_cutout_midpoint_min_z_mm == 85.5
-    && usb_cutout_midpoint_max_z_mm == 121.5,
-    "The body-midpoint USB opening must span exactly Z 85.5 through 121.5 mm");
+    && usb_cutout_midpoint_min_z_mm == 73.5
+    && usb_cutout_midpoint_max_z_mm == 133.5,
+    "The body-midpoint vertical USB opening must span exactly Z 73.5 through 133.5 mm");
 assert(usb_cutout_center_x_mm == powerstrip_center_x_mm + usb_group_offset_x_mm,
     "The USB group opening must derive from the installed power-strip datum");
 assert(installed_usb_clip_center_x_mm == usb_cutout_center_x_mm
@@ -508,13 +508,13 @@ assert(printable_layout_cap_center_y_mm - capsule_outer_radius_mm
             + printable_layout_spacing_mm,
     "Printable body and cap must remain separated by the requested spacing");
 assert(sqrt(pow(printable_layout_clip_center_x_mm
-            - usb_clip_outer_height_mm / 2
+            - usb_clip_outer_width_mm / 2
             - capsule_tangent_center_offset_x_mm, 2)
         + pow(printable_layout_cap_center_y_mm
-            - usb_clip_outer_width_mm / 2, 2))
+            - usb_clip_outer_height_mm / 2, 2))
         >= capsule_outer_radius_mm + printable_layout_spacing_mm,
-    "The rotated USB clip must remain separated from both capsule parts");
-assert(printable_layout_clip_center_x_mm + usb_clip_outer_height_mm / 2
+    "The vertical USB cover must remain separated from both capsule parts");
+assert(printable_layout_clip_center_x_mm + usb_clip_outer_width_mm / 2
         + case_width_mm / 2 <= 256.0
     && printable_layout_cap_center_y_mm + capsule_outer_radius_mm
         - (printable_layout_body_center_y_mm - capsule_outer_radius_mm)

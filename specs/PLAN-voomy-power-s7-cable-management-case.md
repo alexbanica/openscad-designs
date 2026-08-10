@@ -1,10 +1,89 @@
-# PLAN: Voomy Power S7 USB Position And Cap Ventilation
+# PLAN: Voomy Power S7 Midpoint Vertical USB Interface
 
 Status: Approved
 
 Approved Spec: `specs/SPEC-voomy-power-s7-cable-management-case.md`
 
-## Objective
+## Super-Agent Completed Work
+
+### Affected Files
+
+- `designs/voomy_power_s7_cable_management_case.scad`
+- `README.md`
+- `specs/SPEC-voomy-power-s7-cable-management-case.md`
+- `specs/PLAN-voomy-power-s7-cable-management-case.md`
+
+No other source or generated artifact is included.
+
+### Implementation Steps Performed
+
+1. Changed the USB source defaults from horizontal `60.0 x 36.0 mm` at center Z
+   `73.0 mm` to vertical `36.0 x 60.0 mm` at center Z `103.5 mm`.
+2. Updated the solid-cover dimensions and assertions to `42.0 x 66.0 mm`,
+   retaining `3.0 mm` overlap, the left-biased X center, and installed alignment.
+3. Updated exact midpoint-span assertions to Z `73.5..133.5 mm`.
+4. Set the vertical cover's printable-layout rotation to `0 deg` and updated its
+   separation and plate-bound assertions so the three parts remain separate and
+   nominally fit within `256 x 256 mm`.
+5. Updated the Voomy README section and approved completed-work artifacts.
+
+### Validation Run
+
+- `git diff --check` passed.
+- A reference-free `printable_layout` CSG evaluation completed within the
+  super-agent short-validation limit.
+- A reference-free `assembly` CSG evaluation completed within the super-agent
+  short-validation limit.
+- The first layout evaluation identified the old cover rotation/spacing
+  dependency; the final layout rotation and assertions were corrected before
+  the passing validation above.
+
+### Validation Skipped
+
+- Unit tests are prohibited and not applicable in this repository.
+- Longer render inspection, PNG inspection, Bambu Studio slicing, test printing,
+  physical USB alignment, cover fit/cycling, airflow, and thermal/electrical
+  validation were not performed.
+
+### QA And Code Review
+
+- QA was intentionally skipped by the explicitly invoked super-agent workflow.
+- Code review was intentionally skipped by the explicitly invoked super-agent
+  workflow.
+
+### Documentation Updates
+
+- The README now documents the vertical `36.0 x 60.0 mm` USB interface,
+  `103.5 mm` midpoint default, Z `73.5..133.5 mm` span, printable orientation,
+  and physical-alignment caveat.
+- The approved spec records the delivered final behavior and validation boundary.
+
+### Staging, Commit, And Push Status
+
+- Staging status: complete for the four affected paths; no unrelated path is
+  included.
+- Commit status: not committed, as required by the super-agent workflow unless
+  the user explicitly requests a commit.
+- Push status: not pushed.
+
+### Residual Risk And Delivery Status
+
+- The `103.5 mm` center and rotated service envelope remain provisional until
+  checked against the actual Voomy USB group.
+- Printable separation is assertion- and CSG-validated, not slicer- or
+  test-print-validated.
+- Delivery remains DRAFT and the default Definition of Done is not fully
+  satisfied because QA, code review, slicer inspection, and physical validation
+  were intentionally skipped or unavailable.
+
+## Previous Approved Implementation Record
+
+The remaining sections record the previous approved implementation that created
+the adjustable-height and top-cap-ventilation state. Its `73.0 mm` default and
+horizontal `60.0 x 36.0 mm` USB values are superseded by the completed work
+above and the current approved spec.
+
+## Previous Approved Implementation Objective
 
 Complete the final approved Voomy Power S7 design by keeping the USB access
 opening left-biased while changing its adjustable default vertical center to

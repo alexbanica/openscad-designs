@@ -59,17 +59,17 @@ implicitly.
 Looking at the front, the power strip installs vertically with its USB face
 toward the front wall and its USB group biased toward visual left. The removable
 solid USB cover is therefore in the left-hand portion of the straight **front
-wall**, not in the curved left wall. Its provisional body cutout is one shared
-`60.0 mm x 36.0 mm` group-only opening. Its adjustable center height is
-`usb_cutout_center_z_mm = 73.0` by default, giving the exact default span
-`Z 55.0..91.0 mm`. The supported `103.5 mm` override is the exact midpoint of
-the `207.0 mm` body wall and spans `Z 85.5..121.5 mm`; it is
-measurement-sensitive because most of that opening lies above the provisional
-`88.0 mm` floor-standing Voomy reference. Other center heights are supported
-only when the complete opening remains between the `3.0 mm` interior floor and
-the body top. The left-biased X center does not change with height, and the
-installed cover follows the effective opening center with exactly `3.0 mm` of
-wall overlap on every edge. The cover completely closes the opening with a
+wall**, not in the curved left wall. Its provisional body cutout is one shared,
+vertical `36.0 mm x 60.0 mm` group-only opening. Its adjustable center height is
+`usb_cutout_center_z_mm = 103.5` by default, placing it at the exact midpoint of
+the `207.0 mm` body wall and giving the exact span `Z 73.5..133.5 mm`. This
+midpoint placement remains measurement-sensitive because most of the opening
+lies above the provisional `88.0 mm` floor-standing Voomy reference. Other
+center heights are supported only when the complete opening remains between the
+`3.0 mm` interior floor and the body top. The left-biased X center does not
+change with height, and the installed vertical cover follows the effective
+opening center with exactly `3.0 mm` of wall overlap on every edge. The cover
+completely closes the opening with a
 solid, opaque panel: it has no through-opening, port divider, grille, or
 see-through region, and must not intentionally expose an adjacent AC socket or
 the power switch. Remove the cover from outside before accessing the USB group
@@ -159,13 +159,11 @@ parameter adjustment.
 
 Unsupported values fail an assertion. Repository validation permits only the
 reference-free `assembly` and `printable_layout` renders, each with a 15-second
-hard limit. The assembly command is also run with the supported midpoint USB
-override:
+hard limit:
 
 ```sh
 timeout 15s openscad -o /tmp/voomy_power_s7_case_printable_layout.csg -D 'render_mode="printable_layout"' designs/voomy_power_s7_cable_management_case.scad
 timeout 15s openscad -o /tmp/voomy_power_s7_case_assembly.csg -D 'render_mode="assembly"' -D 'show_powerstrip_reference=false' designs/voomy_power_s7_cable_management_case.scad
-timeout 15s openscad -o /tmp/voomy_power_s7_case_assembly_midpoint.csg -D 'render_mode="assembly"' -D 'show_powerstrip_reference=false' -D 'usb_cutout_center_z_mm=103.5' designs/voomy_power_s7_cable_management_case.scad
 ```
 
 Keep these temporary outputs in `/tmp`; do not add STL, STEP, 3MF, OFF, CSG, or
