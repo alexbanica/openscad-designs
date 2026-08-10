@@ -5,7 +5,7 @@
 // and +Z points upward from the bottom face.
 //
 // Complete editable design with an upright case body, removable plain cap,
-// USB passthrough clip, cable routing, ventilation, and printable layout.
+// solid removable USB access cover, cable routing, ventilation, and printable layout.
 
 // ======================================================
 // Adjustable Parameters
@@ -34,10 +34,6 @@ powerstrip_depth_mm = 80.0;
 powerstrip_height_mm = 88.0;
 powerstrip_center_x_mm = -12.0;
 powerstrip_center_y_mm = 0.0;
-powerstrip_support_height_mm = 3.0;
-powerstrip_support_diameter_mm = 14.0;
-powerstrip_stop_height_mm = 12.0;
-powerstrip_stop_radius_mm = 3.0;
 
 // Cable interfaces
 lay_in_passage_width_mm = 20.0;
@@ -47,17 +43,15 @@ cable_lateral_clearance_mm = 4.0;
 cable_contact_edge_radius_mm = 2.0;
 rear_passage_center_x_mm = powerstrip_center_x_mm;
 
-// Front USB group and removable clip (provisional)
+// Front USB group and solid removable cover (provisional)
 usb_cutout_width_mm = 60.0;
 usb_cutout_height_mm = 36.0;
 usb_cutout_center_z_mm = 50.0;
 usb_group_offset_x_mm = 0.0;
 usb_group_offset_z_mm = 0.0;
-usb_clip_clear_width_mm = 56.0;
-usb_clip_clear_height_mm = 32.0;
 usb_clip_wall_overlap_mm = 3.0;
 usb_clip_fit_clearance_mm = 0.3;
-usb_clip_bezel_thickness_mm = 3.0;
+usb_clip_panel_thickness_mm = 3.0;
 usb_clip_retention_depth_mm = 5.0;
 usb_clip_tab_width_mm = 8.0;
 usb_clip_hook_engagement_mm = 0.8;
@@ -76,18 +70,13 @@ cap_clip_interference_mm = 0.6;
 cap_clip_release_travel_mm = 1.2;
 cap_skirt_thickness_mm = 3.0;
 cap_clip_press_pad_projection_mm = 0.6;
+cap_clip_press_pad_height_mm = 5.0;
+cap_clip_receiver_clearance_mm = 0.3;
 
 // Ventilation grid (provisional)
 grid_hex_across_flats_mm = 12.0;
 grid_minimum_rib_width_mm = 3.0;
 grid_structural_border_mm = 12.0;
-
-// Raised horizontal wall stripes (provisional)
-wall_stripe_projection_mm = 1.0;
-wall_stripe_height_mm = 4.0;
-wall_stripe_pitch_mm = 9.0;
-wall_stripe_margin_mm = 10.0;
-wall_stripe_lower_transition_angle_deg = 45.0;
 
 // Printable layout
 printable_layout_spacing_mm = 8.0;
@@ -111,9 +100,9 @@ eps_mm = 0.02;
 capsule_outer_radius_mm = case_depth_mm / 2;
 capsule_straight_length_mm = case_width_mm - 2 * capsule_outer_radius_mm;
 capsule_tangent_center_offset_x_mm = capsule_straight_length_mm / 2;
-smooth_wall_radius_mm = capsule_outer_radius_mm - wall_stripe_projection_mm;
-smooth_wall_width_mm = case_width_mm - 2 * wall_stripe_projection_mm;
-smooth_wall_depth_mm = case_depth_mm - 2 * wall_stripe_projection_mm;
+smooth_wall_radius_mm = capsule_outer_radius_mm;
+smooth_wall_width_mm = case_width_mm;
+smooth_wall_depth_mm = case_depth_mm;
 floor_plate_contact_radius_mm = capsule_outer_radius_mm;
 floor_plate_contact_width_mm = capsule_straight_length_mm
     + 2 * floor_plate_contact_radius_mm;
@@ -128,16 +117,8 @@ right_passage_arc_angle_deg =
     lay_in_passage_width_mm / capsule_outer_radius_mm * 180 / PI;
 right_cable_stack_height_mm =
     right_routed_cable_count * maximum_cable_diameter_mm;
-powerstrip_bottom_z_mm = floor_thickness_mm + powerstrip_support_height_mm;
+powerstrip_bottom_z_mm = floor_thickness_mm;
 powerstrip_top_z_mm = powerstrip_bottom_z_mm + powerstrip_height_mm;
-powerstrip_stop_offset_x_mm = powerstrip_width_mm / 2
-    + powerstrip_fit_clearance_mm + powerstrip_stop_radius_mm;
-powerstrip_stop_offset_y_mm = powerstrip_depth_mm / 2
-    + powerstrip_fit_clearance_mm + powerstrip_stop_radius_mm;
-powerstrip_support_offset_x_mm = powerstrip_width_mm / 2
-    - powerstrip_support_diameter_mm / 2;
-powerstrip_support_offset_y_mm = powerstrip_depth_mm / 2
-    - powerstrip_support_diameter_mm / 2;
 interior_capsule_radius_mm = smooth_wall_radius_mm - wall_thickness_mm;
 right_passage_half_angle_deg = right_passage_arc_angle_deg / 2;
 right_passage_inner_radius_mm = interior_capsule_radius_mm - eps_mm;
@@ -162,9 +143,6 @@ usb_clip_outer_width_mm = usb_cutout_width_mm + 2 * usb_clip_wall_overlap_mm;
 usb_clip_outer_height_mm = usb_cutout_height_mm + 2 * usb_clip_wall_overlap_mm;
 installed_usb_clip_center_x_mm = usb_cutout_center_x_mm;
 installed_usb_clip_center_z_mm = usb_cutout_effective_center_z_mm;
-stripe_first_center_z_mm = wall_stripe_margin_mm + wall_stripe_height_mm / 2;
-stripe_last_center_z_mm =
-    body_height_mm - wall_stripe_margin_mm - wall_stripe_height_mm / 2;
 grid_hex_circumradius_mm = grid_hex_across_flats_mm / sqrt(3);
 grid_column_pitch_mm = 2 * grid_hex_circumradius_mm + grid_minimum_rib_width_mm;
 grid_row_pitch_mm = grid_hex_across_flats_mm + grid_minimum_rib_width_mm;
@@ -184,11 +162,30 @@ cap_clip_left_x_mm = -capsule_tangent_center_offset_x_mm
     - cap_skirt_outer_radius_mm;
 cap_clip_rear_left_x_mm = -42.0;
 cap_clip_rear_right_x_mm = 20.0;
-cap_clip_receiver_width_mm = cap_clip_width_mm + 4.0;
+cap_clip_receiver_width_mm = cap_clip_width_mm
+    + 2 * cap_clip_receiver_clearance_mm;
+cap_clip_receiver_height_mm = cap_clip_press_pad_height_mm
+    + 2 * cap_clip_receiver_clearance_mm;
 cap_clip_hook_start_z_mm = cap_roof_thickness_mm
     + cap_clip_flexible_length_mm - cap_clip_hook_engagement_mm;
-cap_clip_receiver_bottom_z_mm = body_height_mm
+cap_clip_catch_bottom_z_mm = body_height_mm
     - cap_clip_flexible_length_mm + cap_clip_hook_engagement_mm;
+cap_clip_catch_top_z_mm = cap_clip_catch_bottom_z_mm
+    + cap_clip_thickness_mm;
+cap_clip_press_pad_installed_bottom_z_mm = cap_clip_catch_top_z_mm
+    + cap_clip_receiver_clearance_mm;
+cap_clip_press_pad_installed_top_z_mm = cap_clip_press_pad_installed_bottom_z_mm
+    + cap_clip_press_pad_height_mm;
+cap_clip_press_pad_source_bottom_z_mm = case_height_mm
+    - cap_clip_press_pad_installed_top_z_mm;
+cap_clip_press_pad_source_top_z_mm = case_height_mm
+    - cap_clip_press_pad_installed_bottom_z_mm;
+cap_clip_receiver_bottom_z_mm = cap_clip_press_pad_installed_bottom_z_mm
+    - cap_clip_receiver_clearance_mm;
+cap_clip_receiver_top_z_mm = cap_clip_receiver_bottom_z_mm
+    + cap_clip_receiver_height_mm;
+cap_clip_receiver_top_bridge_mm = body_height_mm
+    - cap_clip_receiver_top_z_mm;
 cap_installed_flip_x_deg = 180;
 cap_front_right_source_x_mm = cap_clip_front_right_x_mm;
 cap_front_right_source_y_mm = cap_skirt_outer_radius_mm;
@@ -202,6 +199,13 @@ cap_rear_left_source_angle_deg = 180;
 cap_rear_right_source_x_mm = cap_clip_rear_right_x_mm;
 cap_rear_right_source_y_mm = -cap_skirt_outer_radius_mm;
 cap_rear_right_source_angle_deg = 180;
+cap_clip_receiver_transforms = [
+    [cap_clip_front_right_x_mm, -interior_capsule_radius_mm, 180],
+    [-capsule_tangent_center_offset_x_mm - interior_capsule_radius_mm, 0, 90],
+    [cap_clip_rear_left_x_mm, interior_capsule_radius_mm, 0],
+    [cap_clip_rear_right_x_mm, interior_capsule_radius_mm, 0]
+];
+cap_clip_receiver_count = len(cap_clip_receiver_transforms);
 
 // ======================================================
 // Top-Level Contract Assertions
@@ -210,15 +214,13 @@ cap_rear_right_source_angle_deg = 180;
 assert(case_width_mm == 210.0 && case_height_mm == 210.0 && case_depth_mm == 110.0,
     "The assembled exterior envelope must remain exactly 210 x 210 x 110 mm");
 assert(capsule_outer_radius_mm == 55.0,
-    "The stripe-peak capsule side radius must be 55 mm");
+    "The capsule side radius must be 55 mm");
 assert(capsule_straight_length_mm == 100.0,
     "The capsule front and rear tangent runs must be 100 mm");
 assert(smooth_wall_radius_mm > wall_thickness_mm,
-    "Wall thickness must fit inside the inset smooth-wall radius");
+    "Wall thickness must fit inside the smooth-wall radius");
 assert(wall_thickness_mm > 0 && floor_thickness_mm > 0 && cap_roof_thickness_mm > 0,
     "Shell thicknesses must be positive");
-assert(wall_stripe_projection_mm >= 0 && wall_stripe_projection_mm < capsule_outer_radius_mm,
-    "Stripe projection must preserve a positive smooth-wall radius");
 assert(lay_in_passage_width_mm >= maximum_cable_diameter_mm + 2 * cable_lateral_clearance_mm,
     "The lay-in passage must preserve nominal cable lateral clearance");
 assert(cable_contact_edge_radius_mm >= 2.0,
@@ -226,21 +228,35 @@ assert(cable_contact_edge_radius_mm >= 2.0,
 assert(usb_cutout_center_x_mm - usb_cutout_width_mm / 2 >= -capsule_tangent_center_offset_x_mm
     && usb_cutout_center_x_mm + usb_cutout_width_mm / 2 <= capsule_tangent_center_offset_x_mm,
     "The USB wall cutout must remain within the straight front-wall run");
-assert(usb_clip_clear_width_mm >= 56.0 && usb_clip_clear_height_mm >= 32.0,
-    "The USB clip shared clear opening is below its approved minimum");
 assert(usb_clip_outer_width_mm - usb_cutout_width_mm
         == 2 * usb_clip_wall_overlap_mm
     && usb_clip_outer_height_mm - usb_cutout_height_mm
         == 2 * usb_clip_wall_overlap_mm,
-    "The USB clip must overlap the body cutout by 3 mm on every edge");
-assert(usb_clip_bezel_thickness_mm >= wall_thickness_mm
+    "The solid USB cover must overlap the body cutout by 3 mm on every edge");
+assert(usb_clip_outer_width_mm == 66.0
+    && usb_clip_outer_height_mm == 42.0
+    && usb_clip_panel_thickness_mm >= wall_thickness_mm,
+    "The solid USB cover panel must fully close the 60 x 36 mm body cutout");
+assert(usb_clip_panel_thickness_mm >= wall_thickness_mm
     && usb_clip_retention_depth_mm > wall_thickness_mm + usb_clip_fit_clearance_mm
     && usb_clip_hook_engagement_mm <= usb_clip_wall_overlap_mm,
-    "The USB clip retention geometry must bridge and catch the front wall");
+    "The USB cover retention geometry must bridge and catch the front wall");
+assert(usb_clip_tab_width_mm <= usb_cutout_width_mm / 2
+    && usb_cutout_width_mm / 4 + usb_clip_tab_width_mm / 2
+        <= usb_cutout_width_mm / 2
+    && cap_clip_thickness_mm <= usb_cutout_height_mm / 2,
+    "The USB cover snap tabs must fit within and remain accessible through the body opening");
 assert(cap_skirt_clearance_mm >= 0.3 && cap_skirt_engagement_depth_mm >= 6.0,
     "Cap skirt clearance or engagement is below the approved minimum");
-assert(cap_clip_count == 4,
-    "The cap requires exactly four retention clips");
+assert(cap_clip_count == 4 && cap_clip_receiver_count == cap_clip_count,
+    "The body requires exactly one closed receiver hole for each of four cap clips");
+assert(cap_clip_receiver_width_mm == 12.6
+    && cap_clip_receiver_height_mm == 5.6
+    && cap_clip_receiver_clearance_mm == 0.3,
+    "All four closed cap receiver holes must be exactly 12.6 x 5.6 mm by default");
+assert(cap_clip_receiver_top_bridge_mm >= wall_thickness_mm
+    && cap_clip_receiver_bottom_z_mm > floor_thickness_mm,
+    "Each receiver hole must retain continuous structural wall above and below");
 assert(cap_clip_flexible_length_mm >= 20.0 && cap_clip_width_mm >= 12.0
     && cap_clip_thickness_mm >= 2.4 && cap_clip_root_fillet_radius_mm >= 2.0,
     "Cap clip beam dimensions are below approved minimums");
@@ -251,12 +267,9 @@ assert(cap_clip_interference_mm <= 0.6 && cap_clip_release_travel_mm <= 1.2,
 assert(grid_hex_across_flats_mm == 12.0 && grid_minimum_rib_width_mm >= 3.0
     && grid_structural_border_mm >= 12.0,
     "Ventilation grid dimensions violate the approved defaults or minimums");
-assert(wall_stripe_height_mm == 4.0 && wall_stripe_pitch_mm == 9.0
-    && wall_stripe_margin_mm == 10.0,
-    "Wall stripe dimensions must retain the approved defaults");
-assert(smooth_wall_width_mm == 208.0 && smooth_wall_depth_mm == 108.0
-    && smooth_wall_radius_mm == 54.0,
-    "The smooth wall datum must be inset by the stripe projection");
+assert(smooth_wall_width_mm == 210.0 && smooth_wall_depth_mm == 110.0
+    && smooth_wall_radius_mm == 55.0,
+    "The smooth wall must use the complete 210 x 110 mm capsule outline");
 assert(floor_plate_contact_width_mm == 210.0
     && floor_plate_contact_depth_mm == 110.0,
     "The upright body plate-contact footprint must be exactly 210 x 110 mm");
@@ -264,9 +277,6 @@ assert(capsule_tangent_center_offset_x_mm * 2 == capsule_straight_length_mm,
     "Capsule end centers must preserve the 100 mm tangent runs");
 assert(wall_thickness_mm >= 3.0 && floor_thickness_mm >= 3.0,
     "The body wall and floor must be at least 3 mm thick");
-assert(wall_stripe_pitch_mm > wall_stripe_height_mm
-    && wall_stripe_projection_mm <= wall_stripe_height_mm / 2,
-    "Wall stripes require positive spacing and a self-supporting projection");
 assert(grid_column_pitch_mm - 2 * grid_hex_circumradius_mm
         >= grid_minimum_rib_width_mm
     && grid_row_pitch_mm - grid_hex_across_flats_mm
@@ -279,28 +289,15 @@ assert(powerstrip_width_mm == 80.0 && powerstrip_depth_mm == 80.0
     && powerstrip_height_mm == 88.0,
     "The non-printable Voomy reference must remain exactly 80 x 80 x 88 mm");
 assert(powerstrip_fit_clearance_mm == 1.5,
-    "The Voomy locating stops must preserve 1.5 mm nominal clearance");
+    "The Voomy reference envelope must preserve 1.5 mm nominal clearance");
 assert(pow(max(abs(powerstrip_center_x_mm) + powerstrip_clear_width_mm / 2
             - capsule_tangent_center_offset_x_mm, 0), 2)
         + pow(abs(powerstrip_center_y_mm) + powerstrip_clear_depth_mm / 2, 2)
         <= pow(interior_capsule_radius_mm, 2),
     "The Voomy clearance envelope must fit inside the body capsule");
-assert(powerstrip_bottom_z_mm >= floor_thickness_mm
+assert(powerstrip_bottom_z_mm == floor_thickness_mm
     && powerstrip_top_z_mm < body_height_mm,
-    "The Voomy reference must fit below the open body top");
-assert(powerstrip_stop_height_mm < powerstrip_height_mm
-    && powerstrip_stop_radius_mm > 0,
-    "Rounded floor stops must leave the vertical removal path unobstructed");
-assert(powerstrip_stop_offset_x_mm - powerstrip_stop_radius_mm
-        - powerstrip_width_mm / 2 == powerstrip_fit_clearance_mm
-    && powerstrip_stop_offset_y_mm - powerstrip_stop_radius_mm
-        - powerstrip_depth_mm / 2 == powerstrip_fit_clearance_mm,
-    "Rounded stops must locate the Voomy reference at nominal clearance");
-assert(powerstrip_support_offset_x_mm + powerstrip_support_diameter_mm / 2
-        <= powerstrip_width_mm / 2
-    && powerstrip_support_offset_y_mm + powerstrip_support_diameter_mm / 2
-        <= powerstrip_depth_mm / 2,
-    "Floor supports must remain beneath the Voomy reference footprint");
+    "The Voomy reference must rest on the floor and fit below the open body top");
 assert(usb_cutout_width_mm == 60.0 && usb_cutout_height_mm == 36.0
     && usb_cutout_center_from_left_tangent_mm == 38.0,
     "The USB group opening must retain its approved provisional size and offset");
@@ -308,7 +305,7 @@ assert(usb_cutout_center_x_mm == powerstrip_center_x_mm + usb_group_offset_x_mm,
     "The USB group opening must derive from the installed power-strip datum");
 assert(installed_usb_clip_center_x_mm == usb_cutout_center_x_mm
     && installed_usb_clip_center_z_mm == usb_cutout_effective_center_z_mm,
-    "The installed USB bezel and body cutout centers must align exactly");
+    "The installed solid USB cover and body cutout centers must align exactly");
 assert(installed_usb_clip_center_x_mm - usb_clip_outer_width_mm / 2
         == usb_cutout_center_x_mm - usb_cutout_width_mm / 2
             - usb_clip_wall_overlap_mm
@@ -321,7 +318,7 @@ assert(installed_usb_clip_center_x_mm - usb_clip_outer_width_mm / 2
     && installed_usb_clip_center_z_mm + usb_clip_outer_height_mm / 2
         == usb_cutout_effective_center_z_mm + usb_cutout_height_mm / 2
             + usb_clip_wall_overlap_mm,
-    "The installed USB bezel must overlap the centered body cutout on every edge");
+    "The installed solid USB cover must overlap the centered body cutout on every edge");
 assert(rear_passage_center_x_mm - lay_in_passage_width_mm / 2
         >= -capsule_tangent_center_offset_x_mm
     && rear_passage_center_x_mm + lay_in_passage_width_mm / 2
@@ -358,14 +355,20 @@ assert(cap_roof_thickness_mm + cap_skirt_engagement_depth_mm
     "The alignment skirt must locate the cap before the clip hooks engage");
 assert(cap_clip_front_right_x_mm - cap_clip_receiver_width_mm / 2
         >= usb_cutout_center_x_mm + usb_cutout_width_mm / 2
-            + grid_structural_border_mm,
+            + grid_structural_border_mm
+    && cap_clip_front_right_x_mm + cap_clip_receiver_width_mm / 2
+        <= capsule_tangent_center_offset_x_mm,
     "The front-right cap receiver must remain in solid wall beyond the USB keepout");
 assert(cap_clip_rear_left_x_mm + cap_clip_receiver_width_mm / 2
         <= rear_passage_center_x_mm - lay_in_passage_width_mm / 2
             - grid_structural_border_mm
+    && cap_clip_rear_left_x_mm - cap_clip_receiver_width_mm / 2
+        >= -capsule_tangent_center_offset_x_mm
     && cap_clip_rear_right_x_mm - cap_clip_receiver_width_mm / 2
         >= rear_passage_center_x_mm + lay_in_passage_width_mm / 2
-            + grid_structural_border_mm,
+            + grid_structural_border_mm
+    && cap_clip_rear_right_x_mm + cap_clip_receiver_width_mm / 2
+        <= capsule_tangent_center_offset_x_mm,
     "The rear cap receivers must remain split around the rear-passage keepout");
 assert(cap_clip_thickness_mm
         + max(cap_clip_press_pad_projection_mm, cap_clip_hook_engagement_mm)
@@ -397,8 +400,21 @@ assert(cap_front_right_source_x_mm == cap_clip_front_right_x_mm
     && 180 - cap_rear_right_source_angle_deg == 0,
     "Rigidly flipped cap-local hooks and skirt pockets must align all receivers");
 assert(case_height_mm - cap_clip_hook_start_z_mm
-        == cap_clip_receiver_bottom_z_mm,
+        == cap_clip_catch_bottom_z_mm,
     "Rigidly flipped cap hooks must align receiver catches vertically");
+assert(cap_clip_press_pad_source_bottom_z_mm >= cap_roof_thickness_mm
+    && cap_clip_press_pad_source_top_z_mm
+        <= cap_roof_thickness_mm + cap_clip_flexible_length_mm,
+    "Each release pad must remain fully supported by its cantilever beam");
+assert(abs(cap_clip_receiver_bottom_z_mm
+        - (cap_clip_press_pad_installed_bottom_z_mm
+            - cap_clip_receiver_clearance_mm)) < eps_mm
+    && abs(cap_clip_receiver_top_z_mm
+        - (cap_clip_press_pad_installed_top_z_mm
+            + cap_clip_receiver_clearance_mm)) < eps_mm,
+    "Rigidly flipped release pads must align inside the closed receiver holes");
+assert(abs(cap_clip_receiver_bottom_z_mm - cap_clip_catch_top_z_mm) < eps_mm,
+    "Receiver access and catch must meet without overlap");
 assert(printable_layout_cap_center_y_mm - capsule_outer_radius_mm
         >= printable_layout_body_center_y_mm + capsule_outer_radius_mm
             + printable_layout_spacing_mm,
@@ -459,16 +475,12 @@ module voomy_power_s7_case_body() {
     color(case_body_colour)
         union() {
             difference() {
-                union() {
-                    capsule_shell_and_floor();
-                    horizontal_wall_stripes();
-                    powerstrip_floor_supports_and_stops();
-                }
+                capsule_shell_and_floor();
                 front_wall_ventilation_grid();
                 front_usb_group_opening();
                 rear_main_lead_slot();
                 right_shared_cable_slot();
-                cap_clip_receiver_windows();
+                cap_clip_receiver_holes();
             }
             cap_clip_receiver_catches();
         }
@@ -504,42 +516,29 @@ module voomy_power_s7_printable_layout() {
             voomy_power_s7_usb_passthrough_clip();
 }
 
-module usb_clip_bezel() {
-    difference() {
-        translate([
-            -usb_clip_outer_width_mm / 2,
-            -usb_clip_outer_height_mm / 2,
-            0
-        ])
-            cube([
-                usb_clip_outer_width_mm,
-                usb_clip_outer_height_mm,
-                usb_clip_bezel_thickness_mm
-            ]);
-
-        translate([
-            -usb_clip_clear_width_mm / 2,
-            -usb_clip_clear_height_mm / 2,
-            -eps_mm
-        ])
-            cube([
-                usb_clip_clear_width_mm,
-                usb_clip_clear_height_mm,
-                usb_clip_bezel_thickness_mm + 2 * eps_mm
-            ]);
-    }
+module usb_clip_solid_panel() {
+    translate([
+        -usb_clip_outer_width_mm / 2,
+        -usb_clip_outer_height_mm / 2,
+        0
+    ])
+        cube([
+            usb_clip_outer_width_mm,
+            usb_clip_outer_height_mm,
+            usb_clip_panel_thickness_mm
+        ]);
 }
 
 module usb_clip_snap_tab(tab_x_mm, top_tab = true) {
     tab_inner_y_mm = usb_cutout_height_mm / 2 - cap_clip_thickness_mm;
-    hook_start_z_mm = usb_clip_bezel_thickness_mm + wall_thickness_mm
+    hook_start_z_mm = usb_clip_panel_thickness_mm + wall_thickness_mm
         + usb_clip_fit_clearance_mm;
 
     translate([tab_x_mm, 0, 0]) {
         translate([
             -usb_clip_tab_width_mm / 2,
             top_tab ? tab_inner_y_mm : -usb_cutout_height_mm / 2,
-            usb_clip_bezel_thickness_mm - eps_mm
+            usb_clip_panel_thickness_mm - eps_mm
         ])
             cube([
                 usb_clip_tab_width_mm,
@@ -577,7 +576,7 @@ module usb_clip_snap_tab(tab_x_mm, top_tab = true) {
             -usb_clip_tab_width_mm / 2,
             top_tab ? tab_inner_y_mm - cap_clip_press_pad_projection_mm
                 : -usb_cutout_height_mm / 2 + cap_clip_thickness_mm,
-            usb_clip_bezel_thickness_mm + 0.8
+            usb_clip_panel_thickness_mm + 0.8
         ])
             cube([
                 usb_clip_tab_width_mm,
@@ -589,7 +588,7 @@ module usb_clip_snap_tab(tab_x_mm, top_tab = true) {
 
 module usb_clip_print_geometry() {
     union() {
-        usb_clip_bezel();
+        usb_clip_solid_panel();
         usb_clip_snap_tab(-usb_cutout_width_mm / 4, true);
         usb_clip_snap_tab(usb_cutout_width_mm / 4, true);
         usb_clip_snap_tab(-usb_cutout_width_mm / 4, false);
@@ -621,7 +620,7 @@ module voomy_power_s7_reference() {
 }
 
 // ======================================================
-// D2 Capsule Body Geometry
+// Capsule Body Geometry
 // ======================================================
 
 module capsule_2d(radius_mm) {
@@ -656,48 +655,12 @@ module capsule_shell_and_floor() {
     }
 }
 
-module stripe_outer_profile(center_z_mm) {
-    lower_z_mm = center_z_mm - wall_stripe_height_mm / 2;
-    upper_z_mm = center_z_mm + wall_stripe_height_mm / 2;
-    transition_height_mm = min(
-        wall_stripe_projection_mm,
-        wall_stripe_height_mm / 2 - eps_mm
-    );
-
-    hull() {
-        translate([0, 0, lower_z_mm])
-            capsule_prism(smooth_wall_radius_mm, eps_mm);
-        translate([0, 0, lower_z_mm + transition_height_mm])
-            capsule_prism(capsule_outer_radius_mm, eps_mm);
-        translate([0, 0, upper_z_mm - transition_height_mm])
-            capsule_prism(capsule_outer_radius_mm, eps_mm);
-        translate([0, 0, upper_z_mm - eps_mm])
-            capsule_prism(smooth_wall_radius_mm, eps_mm);
-    }
-}
-
-module horizontal_wall_stripe(center_z_mm) {
-    difference() {
-        stripe_outer_profile(center_z_mm);
-        translate([0, 0, center_z_mm - wall_stripe_height_mm / 2 - eps_mm])
-            capsule_prism(
-                smooth_wall_radius_mm - eps_mm,
-                wall_stripe_height_mm + 2 * eps_mm
-            );
-    }
-}
-
-module horizontal_wall_stripes() {
-    for (center_z_mm = [stripe_first_center_z_mm : wall_stripe_pitch_mm : stripe_last_center_z_mm])
-        horizontal_wall_stripe(center_z_mm);
-}
-
 module front_wall_hex_aperture(center_x_mm, center_z_mm) {
     translate([center_x_mm, -smooth_wall_radius_mm + wall_thickness_mm + eps_mm,
             center_z_mm])
         rotate([90, 0, 0])
             cylinder(
-                h = wall_thickness_mm + wall_stripe_projection_mm + 2 * eps_mm,
+                h = wall_thickness_mm + 2 * eps_mm,
                 r = grid_hex_circumradius_mm,
                 $fn = 6
             );
@@ -723,7 +686,7 @@ module front_wall_ventilation_grid() {
 }
 
 // ======================================================
-// D4 Plain Capsule Cap And Durable Retention
+// Plain Capsule Cap And Durable Retention
 // ======================================================
 
 module cap_wall_local(origin_x_mm, origin_y_mm, angle_deg) {
@@ -837,12 +800,12 @@ module cap_cantilever_clip() {
         translate([
             -cap_clip_width_mm / 2,
             cap_clip_thickness_mm,
-            cap_roof_thickness_mm + cap_clip_flexible_length_mm - 6.0
+            cap_clip_press_pad_source_bottom_z_mm
         ])
             cube([
                 cap_clip_width_mm,
                 cap_clip_press_pad_projection_mm,
-                5.0
+                cap_clip_press_pad_height_mm
             ]);
 
         cap_clip_hook();
@@ -878,37 +841,32 @@ module cap_retention_clips() {
         cap_cantilever_clip();
 }
 
-module cap_clip_receiver_window() {
+module cap_clip_receiver_hole() {
     translate([
         -cap_clip_receiver_width_mm / 2,
         -cap_skirt_clearance_mm - cap_clip_release_travel_mm,
-        cap_clip_receiver_bottom_z_mm - 5.0
+        cap_clip_receiver_bottom_z_mm
     ])
         cube([
             cap_clip_receiver_width_mm,
-            wall_thickness_mm + wall_stripe_projection_mm
+            wall_thickness_mm + cap_skirt_clearance_mm
                 + cap_clip_release_travel_mm + 2 * eps_mm,
-            body_height_mm - cap_clip_receiver_bottom_z_mm + 5.0 + eps_mm
+            cap_clip_receiver_height_mm
         ]);
 }
 
-module cap_clip_receiver_windows() {
-    cap_wall_local(cap_clip_front_right_x_mm, -interior_capsule_radius_mm, 180)
-        cap_clip_receiver_window();
-    cap_wall_local(-capsule_tangent_center_offset_x_mm
-            - interior_capsule_radius_mm, 0, 90)
-        cap_clip_receiver_window();
-    cap_wall_local(cap_clip_rear_left_x_mm, interior_capsule_radius_mm, 0)
-        cap_clip_receiver_window();
-    cap_wall_local(cap_clip_rear_right_x_mm, interior_capsule_radius_mm, 0)
-        cap_clip_receiver_window();
+module cap_clip_receiver_holes() {
+    for (receiver_transform = cap_clip_receiver_transforms)
+        cap_wall_local(receiver_transform[0], receiver_transform[1],
+                receiver_transform[2])
+            cap_clip_receiver_hole();
 }
 
 module cap_clip_receiver_catch() {
     translate([
         -cap_clip_receiver_width_mm / 2 - wall_thickness_mm / 2,
         cap_clip_thickness_mm - cap_clip_interference_mm,
-        cap_clip_receiver_bottom_z_mm
+        cap_clip_catch_bottom_z_mm
     ])
         cube([
             cap_clip_receiver_width_mm + wall_thickness_mm,
@@ -919,65 +877,15 @@ module cap_clip_receiver_catch() {
 }
 
 module cap_clip_receiver_catches() {
-    cap_wall_local(cap_clip_front_right_x_mm, -interior_capsule_radius_mm, 180)
-        cap_clip_receiver_catch();
-    cap_wall_local(-capsule_tangent_center_offset_x_mm
-            - interior_capsule_radius_mm, 0, 90)
-        cap_clip_receiver_catch();
-    cap_wall_local(cap_clip_rear_left_x_mm, interior_capsule_radius_mm, 0)
-        cap_clip_receiver_catch();
-    cap_wall_local(cap_clip_rear_right_x_mm, interior_capsule_radius_mm, 0)
-        cap_clip_receiver_catch();
+    for (receiver_transform = cap_clip_receiver_transforms)
+        cap_wall_local(receiver_transform[0], receiver_transform[1],
+                receiver_transform[2])
+            cap_clip_receiver_catch();
 }
 
 // ======================================================
-// D3 Device Placement And Cable Interfaces
+// Device Placement And Cable Interfaces
 // ======================================================
-
-module powerstrip_floor_support(center_x_mm, center_y_mm) {
-    translate([center_x_mm, center_y_mm, floor_thickness_mm - eps_mm])
-        cylinder(
-            h = powerstrip_support_height_mm + eps_mm,
-            d = powerstrip_support_diameter_mm
-        );
-}
-
-module powerstrip_rounded_stop(center_x_mm, center_y_mm) {
-    translate([center_x_mm, center_y_mm, floor_thickness_mm - eps_mm])
-        cylinder(
-            h = powerstrip_stop_height_mm + eps_mm,
-            r = powerstrip_stop_radius_mm
-        );
-}
-
-module powerstrip_floor_supports_and_stops() {
-    for (x_offset_mm = [-powerstrip_support_offset_x_mm,
-            powerstrip_support_offset_x_mm])
-        for (y_offset_mm = [-powerstrip_support_offset_y_mm,
-                powerstrip_support_offset_y_mm])
-            powerstrip_floor_support(
-                powerstrip_center_x_mm + x_offset_mm,
-                powerstrip_center_y_mm + y_offset_mm
-            );
-
-    for (x_offset_mm = [-powerstrip_stop_offset_x_mm,
-            powerstrip_stop_offset_x_mm])
-        for (y_offset_mm = [-powerstrip_depth_mm / 4,
-                powerstrip_depth_mm / 4])
-            powerstrip_rounded_stop(
-                powerstrip_center_x_mm + x_offset_mm,
-                powerstrip_center_y_mm + y_offset_mm
-            );
-
-    for (x_offset_mm = [-powerstrip_width_mm / 4,
-            powerstrip_width_mm / 4])
-        for (y_offset_mm = [-powerstrip_stop_offset_y_mm,
-                powerstrip_stop_offset_y_mm])
-            powerstrip_rounded_stop(
-                powerstrip_center_x_mm + x_offset_mm,
-                powerstrip_center_y_mm + y_offset_mm
-            );
-}
 
 module front_usb_group_opening() {
     translate([
@@ -987,7 +895,7 @@ module front_usb_group_opening() {
     ])
         cube([
             usb_cutout_width_mm,
-            wall_thickness_mm + wall_stripe_projection_mm + 2 * eps_mm,
+            wall_thickness_mm + 2 * eps_mm,
             usb_cutout_height_mm
         ]);
 }
@@ -997,9 +905,9 @@ module rear_slot_plan_profile(width_mm) {
 
     polygon(points = [
         [rear_passage_center_x_mm - width_mm / 2,
-            smooth_wall_radius_mm + wall_stripe_projection_mm + eps_mm],
+            smooth_wall_radius_mm + eps_mm],
         [rear_passage_center_x_mm + width_mm / 2,
-            smooth_wall_radius_mm + wall_stripe_projection_mm + eps_mm],
+            smooth_wall_radius_mm + eps_mm],
         [rear_passage_center_x_mm + inner_half_width_mm,
             interior_capsule_radius_mm - eps_mm],
         [rear_passage_center_x_mm - inner_half_width_mm,

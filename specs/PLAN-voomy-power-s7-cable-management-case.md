@@ -1,4 +1,4 @@
-# PLAN: Voomy Power S7 Cable-Management Case
+# PLAN: Voomy Power S7 Plain-Body And Closure Corrections
 
 Status: Approved
 
@@ -6,275 +6,236 @@ Approved Spec: `specs/SPEC-voomy-power-s7-cable-management-case.md`
 
 ## Objective
 
-Implement the approved Voomy Power S7 cable-management case as one standalone
-OpenSCAD design, document it, validate the source and bounded geometry, obtain
-independent review, reconcile every in-scope path, commit the complete accepted
-change, and push it to `origin/main`.
+Correct the existing Voomy Power S7 OpenSCAD design so its final geometry
+matches the approved specification: smooth exterior walls with the hexagonal
+ventilation retained, a solid removable USB cover, four minimal closed cap
+receiver holes without top-edge gaps, and a smooth interior floor without
+supports or locating pins. Update only the Voomy README section, validate and
+review the corrected final state, commit every accepted in-scope change, and
+push it to `origin/main`.
 
-Implementation must reproduce the approved spec literally. It must not perform
-new product research, architecture research, scope discovery, planning
-research, or plan discovery. If implementation exposes an infeasible dimension
-or a materially different requirement, stop and request a spec or plan
-amendment instead of silently changing behavior.
+Implementation must use the approved spec as the complete behavior source and
+this plan as the complete execution approach. It must not perform product,
+architecture, scope, planning, or plan-discovery research. If implementation
+reveals missing or materially different behavior, stop for an artifact
+amendment rather than inventing a solution.
 
 ## Clean-Context Gate
 
-Implementation may start only in a newly started session, after context is
+Implementation may begin only in a newly started session, after context is
 cleared, or after the user explicitly confirms same-context implementation for
-that invocation. The implementation command must verify and record which
-condition applies before editing production files.
-
-After that gate, load only:
-
-- applicable repository and workspace instructions,
-- this approved plan and its approved spec,
-- current branch and complete worktree state,
-- the precise existing OpenSCAD patterns needed for local syntax and print
-  layout consistency,
-- the affected files listed below.
+that invocation. After the gate, load only applicable instructions, the
+approved artifacts, branch/worktree state, the affected files, and minimal
+local source context needed for the planned corrections.
 
 ## Affected Files
 
-- `designs/voomy_power_s7_cable_management_case.scad` — new case body, plain
-  capsule cap, USB passthrough clip, optional reference model, assertions, and
-  render modes.
-- `README.md` — design behavior, parameters, render modes, printing, operation,
-  safety boundaries, and validation guidance.
-- `specs/SPEC-voomy-power-s7-cable-management-case.md` — approved behavior
-  contract included in delivery.
-- `specs/PLAN-voomy-power-s7-cable-management-case.md` — approved execution
-  contract included in delivery.
+- `designs/voomy_power_s7_cable_management_case.scad` — revise body surface,
+  interior floor, USB cover, clamp receiver holes, assertions, and dependent
+  derived values while preserving the approved envelope and render modes.
+- `README.md` — revise only the Voomy section for the smooth walls and floor,
+  retained grid, solid USB cover, minimal receiver holes, and validation
+  boundary.
+- `specs/SPEC-voomy-power-s7-cable-management-case.md` — approved revised
+  behavior contract included in delivery.
+- `specs/PLAN-voomy-power-s7-cable-management-case.md` — approved final-state
+  execution contract included in delivery.
 
-No existing design source is modified. Generated STL, STEP, 3MF, OFF, CSG,
-PNG, or similar preview/export files must remain under `/tmp` and outside Git.
+No other design source is modified. Generated STL, STEP, 3MF, OFF, CSG, PNG,
+or other exports remain temporary under `/tmp` and outside Git.
 
 ## Branch And Worktree Policy
 
 - Expected branch and base: `main`, tracking `origin/main`.
 - Direct implementation and delivery on `main` are allowed by repository
   guidance.
-- Before editing, verify the branch and inspect `git status --short --branch`.
-  If the branch is no longer `main`, or `main` is unexpectedly divergent from
-  its upstream, stop and ask before changing branch state.
-- At plan creation, the only worktree changes are the untracked approved spec
-  and this proposed plan. Re-check rather than assuming that state persists.
-- Any unrelated path present at implementation time is user-owned work. Do not
-  restore, unstage, modify, stage, or include it in the implementation commit.
+- Before editing, verify `main` is not unexpectedly divergent and inspect the
+  complete worktree with `git status --short --branch`.
+- At plan update time, only this approved spec and proposed plan are modified.
+  Re-check rather than assuming that state persists.
+- Any other path present at implementation time is unrelated user-owned work.
+  Do not restore, overwrite, stage, or commit it.
 - Reconcile every modified, added, deleted, renamed, and untracked path before
-  delivery. Classify every file listed under Affected Files as in scope and
-  identify any other path as unrelated unless the approved artifacts say
-  otherwise.
-- Stage only the four in-scope paths. Inspect the complete staged path list and
-  use an explicit path-limited commit such as
-  `git commit --only -- <in-scope paths>` so any unrelated staged work remains
-  excluded from the commit.
-- Inspect the path-limited staged diff and final commit diff. After committing,
-  verify that no accepted in-scope change remains modified or untracked and
-  that any unrelated work remains preserved in its prior state.
-- Push the resulting commit to `origin/main` and verify the local branch is no
-  longer ahead of its configured upstream.
-- Use commit message `feature: DRAFT add Voomy Power S7 cable-management case`
-  unless slicer and all physical acceptance checks are actually completed in
-  the implementation invocation. Missing physical-fit, clip-cycle, thermal, or
-  slicer evidence requires `DRAFT`.
+  delivery. Stage and commit only the four affected paths.
+- Inspect the staged path list, staged diff, and final commit diff. Use an
+  explicit path-limited commit so unrelated staged work, if any, remains
+  excluded.
+- Push the resulting commit to `origin/main` and verify local/upstream parity.
+- Use commit message `fix: DRAFT correct Voomy case geometry` unless Bambu
+  Studio inspection and every physical acceptance check are completed during
+  implementation. Missing physical-fit, cover-cycle, cap-cycle, cable, or
+  thermal evidence requires `DRAFT`.
 
 ## Test-First And Unit-Test Policy
 
-Unit tests and conventional test-first work are not applicable. Repository
-guidance explicitly prohibits creating or running unit tests for OpenSCAD work.
-No test-writer agent may be spawned. Geometry assertions, bounded OpenSCAD
-evaluation, render inspection, diff checks, independent review, slicer checks,
-and physical checks are the applicable validation layers.
+Unit tests and conventional test-first development are not applicable.
+Repository guidance prohibits creating or running unit tests for OpenSCAD
+work. No test-focused agent may be spawned. Assertions, bounded OpenSCAD
+evaluation, source inspection, independent review, slicer checks, and physical
+checks are the applicable validation layers.
 
 Planned test-focused concurrency: `0`.
 
 ## Dependency-Aware Execution Graph
 
-All development assignments that touch the new SCAD file are serialized because
-they share one ownership boundary. Each subagent receives the approved spec,
-this approved plan, its exact unit, current relevant diff context, and a strict
-five-minute active-work limit. Every development assignment uses a clean-context
-`developer` agent, must not create branches, commit, push, research, or edit
-outside its owned files, and must report changed files, validation, blockers,
-and remaining work.
+All SCAD development units are serialized because they share one file. Every
+developer receives the approved spec, this plan, its exact ownership boundary,
+current relevant diff context, and a maximum five-minute active-work limit.
+Developers must not create branches, commit, push, research, or edit outside
+their assigned files. Each reports changed files, validation, blockers, and
+remaining work.
 
 ### V0 — Validation-Policy Gate
 
 - Type: validation policy; main-agent owned.
-- Boundary: confirm unit tests/test-first are prohibited and record them as not
-  applicable before production work.
+- Behavior boundary: record unit tests and conventional test-first work as not
+  applicable while preserving the repository geometry-validation path.
 - Owned files: none.
 - Dependencies: clean-context gate.
-- Acceptance: no unit tests or test-focused agents are created or run; the
-  approved geometry-validation path remains available.
-- Validation: instruction audit.
+- Acceptance criteria: no unit tests or test-focused agents are created or run.
+- Validation: applicable-instruction audit.
 - Subagent assignment: none.
 
-### D1 — Source Contract And Parameter Scaffold
+### D1 — Smooth Body Walls And Interior Floor
 
 - Type: development.
-- Boundary: create the OpenSCAD file with grouped adjustable parameters,
-  derived capsule values, source-axis conventions, supported render-mode
-  names, top-level assertions, and named-module stubs. Set
-  `render_mode = "printable_layout"`.
+- Behavior boundary: remove all raised stripe parameters, derived values,
+  assertions, calls, and modules; expand the smooth vertical capsule wall to
+  the approved `55 mm` radius and `210 x 110 mm` outline; retain the existing
+  hexagonal ventilation grid and every functional opening; remove all internal
+  power-strip supports, stops, pins, and related parameters/modules; place the
+  optional reference directly on the `3 mm` floor.
 - Owned file: `designs/voomy_power_s7_cable_management_case.scad`.
 - Dependencies: V0.
-- Acceptance: all approved fixed, provisional, measured, and derived values are
-  represented; unsupported modes are prepared to fail; no final geometry is
-  claimed yet.
-- Validation: OpenSCAD syntax evaluation if the scaffold is renderable, plus
-  targeted source inspection.
+- Acceptance criteria:
+  - body and cap preserve the exact `210 x 210 x 110 mm` assembled envelope,
+    `55 mm` side radii, and `100 mm` tangent runs;
+  - body walls are smooth and plain except for the retained grid and approved
+    functional openings;
+  - the interior floor is one flat continuous surface with no raised locating
+    geometry;
+  - cable slots and their floor boundary remain unchanged.
+- Validation: targeted source inspection and assertions; bounded approved-mode
+  syntax/CSG evaluation if useful within the unit.
 - Subagent assignment: one clean-context developer, at most five minutes.
 
-### D2 — Capsule Body, Shell, Stripes, And Ventilation
+### D2 — Solid Removable USB Cover
 
 - Type: development.
-- Boundary: implement the upright body and floor using the exact
-  `210 x 110 mm` capsule envelope, `55 mm` semicircular ends, `100 mm` tangent
-  runs, inset smooth wall datum, raised horizontal bands, wall grid fields,
-  wall/floor continuity, and structural keepouts.
+- Behavior boundary: change the existing USB printable part from an open bezel
+  to a solid panel while preserving the `60 x 36 mm` body cutout, `3 mm`
+  per-edge overlap, external snap removal, alignment, print orientation, and
+  existing `usb_passthrough_clip` render-mode identifier.
 - Owned file: `designs/voomy_power_s7_cable_management_case.scad`.
 - Dependencies: D1.
-- Acceptance: outer stripe peaks define the fixed capsule envelope; side ends
-  are true semicircles; stripe levels wrap tangentially; the body is one
-  connected, build-plate-supported printable object; the top remains open.
-- Validation: source assertions for dimensions, tangency, minimum thickness,
-  stripe pitch/projection, and grid ribs; bounded syntax/CSG evaluation if
-  available within the unit.
+- Acceptance criteria:
+  - the installed panel has no through-opening, grille, divider, or transparent
+    geometry and completely closes the USB wall cutout;
+  - the same physical part appears in individual, assembly, and printable
+    layout modes;
+  - snap tabs remain accessible from outside and clear the body opening;
+  - USB access and cable routing require cover removal.
+- Validation: assertions for solid panel dimensions, overlap, installed
+  alignment, and printable-layout separation; approved-mode CSG evaluation.
 - Subagent assignment: one clean-context developer, at most five minutes.
 
-### D3 — Device Placement And Cable Interfaces
+### D3 — Minimal Closed Cap Receiver Holes
 
 - Type: development.
-- Boundary: add the toggleable non-printable `80 x 80 x 88 mm` Voomy reference,
-  floor stops and clearance, the front-left USB-group wall opening, the rear
-  20 mm top-open main-lead slot, and the 20 mm tangential right-arc shared cable
-  slot with four vertically stacked cable references.
+- Behavior boundary: replace the four existing top-open receiver gaps with
+  four closed holes sized to the approved `12.6 x 5.6 mm` defaults; preserve
+  the existing cap clips, rigid installed transform, catches, release pads,
+  interference, and tool-less operation.
 - Owned file: `designs/voomy_power_s7_cable_management_case.scad`.
 - Dependencies: D2.
-- Acceptance: the USB opening remains within the straight front run at the
-  approved provisional offset; both cable slots run from top edge to floor;
-  Schuko heads are never required to pass through the slots; cable-contact
-  edges and structural continuity match the spec.
-- Validation: assertions for slot widths/positions, cable clearance, USB bounds,
-  body/reference clearance, and no conflict with fixed envelope.
+- Acceptance criteria:
+  - exactly four receiver holes exist at the approved clip locations;
+  - every hole is bounded by solid body wall on all four sides and no receiver
+    opening reaches the top rim;
+  - wall material is continuous above and around each hole;
+  - each default hole is exactly `12.6 mm` wide and `5.6 mm` high;
+  - release-pad access, hook engagement, and required release travel remain
+    geometrically aligned.
+- Validation: assertions for count, dimensions, top-wall bridge thickness,
+  transformed clip/receiver alignment, and structural keepouts; approved-mode
+  CSG evaluation.
 - Subagent assignment: one clean-context developer, at most five minutes.
 
-### D4 — Plain Capsule Cap And Durable Retention
-
-- Type: development.
-- Boundary: implement the plain flat capsule cap, matching alignment skirt,
-  four approved clip locations, flexure dimensions, release pads, catches,
-  body receiver geometry, and passage-clear bridging behavior.
-- Owned file: `designs/voomy_power_s7_cable_management_case.scad`.
-- Dependencies: D3.
-- Acceptance: cap footprint matches and seats on the body capsule; exterior is
-  plain; clip roots and paths satisfy all numeric minimums; the cap does not
-  pinch either cable route; all geometry is printable exterior-face-down.
-- Validation: assertions for cap envelope, skirt clearance/depth, clip count,
-  clip dimensions, nominal interference/release travel, and keepouts.
-- Subagent assignment: one clean-context developer, at most five minutes.
-
-### D5 — Removable USB Clip And Render Integration
-
-- Type: development.
-- Boundary: implement the independent front-wall USB passthrough clip, integrate
-  all named printable/reference modules, complete exact render dispatch, and
-  arrange the default printable layout.
-- Owned file: `designs/voomy_power_s7_cable_management_case.scad`.
-- Dependencies: D4.
-- Acceptance: the clip has one shared clear opening and tool-less external
-  removal; all five render modes behave literally; printable layout contains
-  exactly body, cap, and clip as separate, non-intersecting, build-supported
-  objects in intended orientations; the optional Voomy reference never enters
-  printable output.
-- Validation: complete source assertion pass and bounded `printable_layout` and
-  reference-free `assembly` CSG exports.
-- Subagent assignment: one clean-context developer, at most five minutes.
-
-### D6 — README Documentation
+### D4 — README Final-State Documentation
 
 - Type: documentation development.
-- Boundary: add the approved README section without changing unrelated design
-  documentation.
+- Behavior boundary: update only the Voomy README section to describe smooth
+  plain walls, retained hexagonal ventilation, smooth unsupported interior
+  floor, solid removable USB cover, minimal clamp holes, unchanged render-mode
+  identifier, operation, printing, and DRAFT validation boundaries.
 - Owned file: `README.md`.
-- Dependencies: D5.
-- Acceptance: documentation covers the fixed capsule dimensions, published and
-  provisional measurements, front-left USB placement, 20 mm top-open slots,
-  cable-vs-Schuko behavior, plain cap, clip operation, wall stripes, grid,
-  parameters, render modes, print grouping, OpenSCAD commands, measurement
-  checklist, non-certification, and DRAFT physical-validation boundary.
-- Validation: documentation/source consistency audit and diff check.
+- Dependencies: D3.
+- Acceptance criteria: documentation contains no stale claims about raised
+  stripes, open USB access through an installed bezel, or floor locating
+  supports; measurements and commands match the final SCAD source.
+- Validation: documentation/source consistency inspection and diff check.
 - Subagent assignment: one clean-context developer, at most five minutes.
 
-### R1 — Contract And Geometry Review
+### R1 — Geometry And Contract Review
 
 - Type: independent code review; read-only.
-- Boundary: audit the final SCAD source against every deterministic approved
-  spec requirement, focusing on capsule derivation, fixed envelope, openings,
-  USB alignment, cap/clip geometry, assertions, and render dispatch.
-- Owned files: no writes; review
-  `designs/voomy_power_s7_cable_management_case.scad` and the approved
-  artifacts.
-- Dependencies: D5.
-- Acceptance: report every spec mismatch, plan mismatch, invalid derivation,
-  missing assertion, collision risk, or regression risk with exact locations;
-  explicitly report no findings if none exist.
-- Validation: source/diff inspection only.
-- Subagent assignment: one clean-context `code-reviewer`, at most five minutes.
+- Behavior boundary: audit the final SCAD diff against the approved revised
+  behavior, focusing on smooth outer walls, retained grid, exact capsule
+  envelope, flat floor, solid USB closure, four minimal receiver holes, clip
+  alignment, and preserved render dispatch.
+- Owned files: no writes; review the SCAD file and approved artifacts.
+- Dependencies: D3.
+- Acceptance criteria: report every spec/plan mismatch, stale stripe/support
+  path, unintended opening, collision, invalid derivation, or missing assertion
+  with exact locations; explicitly report no findings if none exist.
+- Validation: source and diff inspection only.
+- Subagent assignment: one clean-context code reviewer, at most five minutes.
 
-### R2 — Printability, Safety-Boundary, And Documentation Review
+### R2 — Printability, Documentation, And Safety Review
 
 - Type: independent code/documentation review; read-only.
-- Boundary: audit stable orientations, floating-object risk, stripe overhangs,
-  grid/clip keepouts, cable edge treatment, printable-layout grouping, README
-  accuracy, measurement caveats, and physical/slicer/thermal DRAFT language.
-- Owned files: no writes; review the new SCAD file, `README.md`, and approved
-  artifacts.
-- Dependencies: D6.
-- Acceptance: report actionable printability, documentation, validation, or
-  approved-artifact mismatches with exact locations; explicitly report no
-  findings if none exist.
-- Validation: source/diff inspection only.
-- Subagent assignment: one clean-context `code-reviewer`, at most five minutes.
+- Behavior boundary: audit build-plate contact, floating-object risk, grid and
+  clamp-hole borders, USB-cover printability, printable-layout separation,
+  README accuracy, and DRAFT physical/slicer/thermal boundaries.
+- Owned files: no writes; review the SCAD file, README, and approved artifacts.
+- Dependencies: D4.
+- Acceptance criteria: report actionable printability, documentation, safety,
+  or artifact mismatches with exact locations; explicitly report no findings if
+  none exist.
+- Validation: source and diff inspection only.
+- Subagent assignment: one clean-context code reviewer, at most five minutes.
 
 ### F1 — Review And QA Fixes (Conditional)
 
-- Type: development fix unit.
-- Boundary: resolve only accepted in-scope findings from R1, R2, or main-agent
-  QA. Split into smaller file-specific assignments if more than one five-minute
-  unit is needed.
-- Owned files: exactly the files implicated by accepted findings.
-- Dependencies: R1, R2, and the relevant QA finding.
-- Acceptance: each accepted finding is resolved without scope expansion; the
-  relevant review and validation are repeated.
-- Validation: finding-specific assertion/render/doc checks plus final validation
-  sequence.
-- Subagent assignment: new clean-context developer per non-overlapping fix
+- Type: development fix.
+- Behavior boundary: resolve only accepted findings from R1, R2, or main-agent
+  QA without expanding scope. Split by file when multiple independent fixes are
+  needed; serialize all fixes touching the SCAD file.
+- Owned files: only files directly implicated by accepted findings.
+- Dependencies: the relevant review or QA finding.
+- Acceptance criteria: each accepted finding is resolved and affected review
+  and validation are repeated.
+- Validation: finding-specific checks plus the final validation sequence.
+- Subagent assignment: one new clean-context developer per non-overlapping fix
   unit, each at most five minutes.
 
-## Concurrency And Shared-File Integration
+## Concurrency And Supervision
 
 - Test-focused maximum concurrency: `0`.
-- Development maximum concurrency: `1` because D1–D5 share one SCAD file and
-  D6 depends on its final public behavior. Conditional fixes affecting the same
-  file are also serialized.
-- Review maximum concurrency: `2`; R1 and R2 may run concurrently after their
-  respective dependencies complete because both are read-only and cover
-  distinct concerns.
-- The main agent owns all handoffs, timeout supervision, diff inspection,
-  integration, validation, review finding acceptance, QA, staging, commit, and
-  push.
-- At five minutes, forcibly stop an active subagent, capture completed work,
-  changed files, validation, blockers, and remaining work, inspect and preserve
-  usable changes, then split the remainder into a smaller clean-context unit.
-  Do not retry the same oversized assignment unchanged.
+- Development maximum concurrency: `1` because D1-D3 share the SCAD file and D4
+  depends on its final behavior.
+- Review maximum concurrency: `2`; R1 and R2 may run concurrently because both
+  are read-only and cover distinct criteria.
+- The main agent owns handoffs, dependency readiness, timeout supervision,
+  integration, finding acceptance, QA, staging, commit, and push.
+- At five minutes, stop an active subagent, record completed and partial work,
+  changed files, validation, blockers, and remainder, inspect and preserve the
+  worktree, then split the remainder into a smaller non-overlapping assignment.
 
-## Main-Agent Integration And QA
+## Main-Agent QA And Validation
 
-After each development unit, inspect the owned diff and confirm that the next
-unit's prerequisites are satisfied. After all development and accepted fixes,
-the main agent performs QA and must not delegate it.
+After development, documentation, review, and accepted fixes, the main agent
+performs QA and does not delegate it.
 
 Required local validation:
 
@@ -284,79 +245,56 @@ timeout 15s openscad -o /tmp/voomy_power_s7_case_printable_layout.csg -D 'render
 timeout 15s openscad -o /tmp/voomy_power_s7_case_assembly.csg -D 'render_mode="assembly"' -D 'show_powerstrip_reference=false' designs/voomy_power_s7_cable_management_case.scad
 ```
 
-While the new source remains untracked, inspect it with a no-index diff and
-treat exit status `1` as the expected "files differ" result only when
-`--check` emits no whitespace errors. After exact-path staging, run
-`git diff --cached --check -- <in-scope paths>`. A render that exceeds 15
-seconds must be stopped and reported, not allowed to continue in the
-background.
+Any OpenSCAD render exceeding 15 seconds must be stopped and reported. Optional
+PNG previews may be attempted only for these two modes with all references
+disabled; unavailable headless preview is reported rather than treated as
+visual validation.
 
 Main-agent inspection must confirm:
 
-- all OpenSCAD assertions evaluate without errors,
-- only `assembly` and `printable_layout` are rendered for validation and the
-  assembly excludes the reference device,
-- exact `210 x 210 x 110 mm` assembled envelope,
-- `55 mm` side radii, `100 mm` straight runs, tangent continuity, and matching
-  body/cap capsule outlines,
-- 20 mm right-arc and rear top-open slots extending to the floor,
-- four 12 mm cable references stack vertically without nominal overlap,
-- front-left group-only USB opening and removable clip alignment,
-- plain cap exterior, clip clearances, release travel, and keepouts,
-- raised wall stripes and ventilation grids remain connected and printable,
-- printable layout has exactly three separate stable printable objects,
-- no existing design changed and no generated artifact entered Git.
+- exact `210 x 210 x 110 mm` assembly and matching `55 mm` capsule outlines;
+- no raised stripe parameter, assertion, call, or geometry remains;
+- hexagonal ventilation remains present with its existing structural borders;
+- the complete interior floor is flat, continuous, and free of supports, pins,
+  stops, ridges, and other raised features;
+- the solid USB cover closes the complete cutout and stays removable;
+- exactly four `12.6 x 5.6 mm` receiver holes exist, each bounded by wall above,
+  below, and on both sides;
+- cap clips, hooks, catches, press pads, and rigid installed transform remain
+  aligned and operable by nominal geometry;
+- cable slots, cable references, cap, and fixed envelope are unchanged except
+  where wall simplification necessarily removes stripe-dependent calculations;
+- printable layout contains exactly body, cap, and solid USB cover as separate,
+  stable objects without reference geometry;
+- README and approved artifacts match the final source;
+- no other design changed and no generated artifact entered Git.
 
-Optional visual PNG previews may be attempted only for `assembly` and
-`printable_layout`, with the reference device disabled and the same 15-second
-hard limit. Failure of headless visual preview must be reported and must not be
-misrepresented as visual validation.
+While artifacts remain unstaged, use no-index whitespace checks for untracked
+files when necessary. After exact-path staging, run `git diff --cached --check`
+for all four affected paths.
 
 ## Physical And Slicer Validation Boundary
 
-OpenSCAD assertions and bounded renders cannot prove:
+OpenSCAD and source inspection cannot prove actual Voomy alignment on the now
+unlocated smooth floor, solid-cover insertion/removal force, cap-hole access,
+clip durability, cable fit, Bambu Studio support behavior, operating
+temperature, or electrical safety. Delivery and commit remain `DRAFT` unless
+the actual device, intended cables, Bambu Studio, printer/material, repeated
+cover/cap cycles, and intended-load thermal behavior are validated during the
+implementation invocation.
 
-- actual Voomy body, USB-group, attached-lead, or connected-plug fit,
-- Bambu Studio plate placement, first layer, bridge, overhang, or support
-  behavior,
-- cap insertion/release force or survival of 20 physical cycles,
-- USB clip access while other USB cables remain connected,
-- routing of the actual four fat cables and attached mains lead,
-- cable abrasion, strain, operating temperature, ventilation, or safe behavior
-  under the intended electrical load.
+## Documentation, Delivery, And Completion
 
-Unless those checks are actually completed with the physical device, intended
-cables, Bambu Studio, printer, and material during implementation, delivery and
-the commit remain `DRAFT`. The completion report must list every unavailable
-check explicitly.
-
-## Documentation, Review Fixes, And Delivery
-
-- Update only the Voomy design section of `README.md`.
-- Route accepted review or QA findings to new clean-context developer fix units;
-  review agents must not edit files.
-- Repeat affected validation after fixes, then rerun the complete final
-  validation sequence.
-- Inspect final `git status`, unstaged diff, staged diff, staged path list, and
-  commit diff. Preserve and identify unrelated work.
-- Stage every accepted in-scope path, including this spec and plan.
-- Commit only the four accepted paths, push `main`, and verify upstream parity.
-- Do not report completion while any accepted in-scope path remains untracked,
+- Update only the Voomy section of `README.md`.
+- Repeat affected review and validation after accepted fixes.
+- Reconcile the complete worktree and classify every path before staging.
+- Stage all four accepted paths and no unrelated work.
+- Inspect staged names, staged diff, staged whitespace, and final commit diff.
+- Commit with the required DRAFT message, push `main`, and verify upstream
+  parity.
+- Do not report completion while an accepted in-scope path is untracked,
   unstaged, uncommitted, or unpushed.
-
-## Completion Report Requirements
-
-The implementation completion report must state:
-
-- summary of the implemented approved spec,
-- issues found during independent review and main-agent QA,
-- findings resolved and any unresolved blockers,
-- validation run, results, and validation not run,
-- remaining fit, printability, clip, USB, cable, thermal, and safety risks,
-- README changes,
-- complete in-scope commit and push status,
-- preserved unrelated worktree paths,
-- final or DRAFT delivery status and why,
-- every skipped, blocked, incomplete, or unvalidated Definition-of-Done item,
-- whether the applicable Definition of Done was fully satisfied,
-- confirmation that final main-agent acceptance was completed.
+- The completion report must include implemented behavior, review/QA findings,
+  resolved findings, validation run and not run, documentation changes, commit
+  and push status, residual fit/print/thermal risks, final or DRAFT status,
+  skipped or blocked Definition-of-Done items, and final main-agent acceptance.

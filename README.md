@@ -34,8 +34,8 @@ The published Voomy body envelope used by the optional, non-printable fit
 reference is `80.0 mm x 80.0 mm x 88.0 mm`. It is not a complete mechanical
 drawing. The `3.0 mm` wall, floor, and cap defaults, `1.5 mm` per-side device
 clearance, cable envelopes, USB dimensions and offsets, retention clearances,
-grid dimensions, and wall-stripe dimensions are provisional printable
-allowances. They are not measurements of a physical sample or certified fit.
+grid dimensions, and clip dimensions are provisional printable allowances. They
+are not measurements of a physical sample or certified fit.
 
 Before relying on the defaults, measure and compare all of the following with
 the fixed interior space:
@@ -58,14 +58,15 @@ implicitly.
 
 Looking at the front, the power strip installs vertically with its USB face
 toward the front wall and its USB group biased toward visual left. The removable
-USB passthrough clip is therefore in the left-hand portion of the straight
-**front wall**, not in the curved left wall. Its provisional body cutout is one
-shared `60.0 mm x 36.0 mm` group-only opening, and the clip preserves a shared
-opening of at least `56.0 mm x 32.0 mm` with no individual-port dividers. It
-must not intentionally expose an adjacent AC socket or the power switch. The
-clip can be released, removed, and snapped back in from outside without taking
-off the cap or moving the power strip; its snap tabs and fit remain
-material- and printer-dependent.
+solid USB cover is therefore in the left-hand portion of the straight **front
+wall**, not in the curved left wall. Its provisional body cutout is one shared
+`60.0 mm x 36.0 mm` group-only opening. The installed cover completely closes
+that opening with a solid, opaque panel: it has no through-opening, port divider,
+grille, or see-through region, and must not intentionally expose an adjacent AC
+socket or the power switch. Remove the cover from outside before accessing the
+USB group or routing USB cables; do not install it over connected USB cables.
+It can be snapped back in without taking off the cap or moving the power strip,
+and its snap tabs and fit remain material- and printer-dependent.
 
 The visual-right curved wall and the straight rear wall each have one
 `20.0 mm`-wide passage running continuously from the wall top to the interior
@@ -87,13 +88,18 @@ the skirt, press down evenly, and confirm that all four clips engage. PETG or
 another material suited to repeated flexing is preferable; geometry cannot
 guarantee clip force, fatigue life, or layer adhesion.
 
-The body carries raised horizontal stripes around all four vertical walls at
-matching Z elevations. Defaults are `1.0 mm` projection, `4.0 mm` band height,
-`9.0 mm` pitch, and `10.0 mm` top/bottom margin. A staggered hexagonal
-through-grid ventilates the unobstructed upper front region using `12.0 mm`
-across-flats cells, at least `3.0 mm` ribs, and `12.0 mm` structural borders.
-Openings and decorative features stop around the USB interface, passages, cap
-retention, supports, and wall junctions.
+Each cap clip is accessible through one minimal, closed body receiver hole. The
+four default holes are each exactly `12.6 mm x 5.6 mm`, remain bounded by solid
+wall on all four sides, and do not reach the body top edge.
+
+The front, rear, left, and right exterior walls are smooth and plain except for
+the required functional openings and the retained staggered hexagonal
+ventilation grid. The grid ventilates the unobstructed upper front region using
+`12.0 mm` across-flats cells, at least `3.0 mm` ribs, and `12.0 mm` structural
+borders. It stops around the USB interface, passages, cap retention, and wall
+junctions. The interior floor is flat, smooth, and unobstructed: the power strip
+rests directly on it without printed supports, locating pins, stops, ridges, or
+other raised positioning features and must be positioned manually.
 
 ### Adjustable Parameters
 
@@ -103,7 +109,7 @@ The source groups its adjustable parameters near the top. Key groups include:
   `show_powerstrip_reference`, and `show_cable_references`;
 - fixed exterior dimensions: `case_width_mm`, `case_height_mm`, and
   `case_depth_mm`;
-- shell, published reference, fit, support, and placement values:
+- shell, published reference, fit, and placement values:
   `wall_thickness_mm`, `floor_thickness_mm`, `cap_roof_thickness_mm`,
   `powerstrip_*`, and `powerstrip_fit_clearance_mm`;
 - cable routing: `lay_in_passage_width_mm`,
@@ -113,7 +119,7 @@ The source groups its adjustable parameters near the top. Key groups include:
 - USB opening and clip geometry: `usb_cutout_*`, `usb_group_offset_*`, and
   `usb_clip_*`;
 - cap alignment and retention: `cap_skirt_*` and `cap_clip_*`;
-- ventilation and wall texture: `grid_*` and `wall_stripe_*`; and
+- ventilation: `grid_*`; and
 - printable-layout positions, spacing, rotation, and preview colours.
 
 Keep the exterior dimensions fixed unless a separately approved design change
@@ -124,12 +130,13 @@ parameter adjustment.
 
 `render_mode` defaults to `"printable_layout"`. The supported modes are exactly:
 
-- `assembly`: closed assembled body, cap, and USB clip; the non-printable Voomy
-  and cable references appear only when explicitly enabled;
+- `assembly`: closed assembled body, cap, and solid USB cover; the non-printable
+  Voomy and cable references appear only when explicitly enabled;
 - `case_body`: upright printable body on its full bottom face;
 - `top_cap`: printable cap with its plain exterior face on the build plate;
-- `usb_passthrough_clip`: printable USB clip on its broad exterior face; and
-- `printable_layout`: exactly one body, one cap, and one USB clip as three
+- `usb_passthrough_clip`: printable solid USB cover on its broad exterior face;
+  this identifier is unchanged for compatibility; and
+- `printable_layout`: exactly one body, one cap, and one solid USB cover as three
   separated, build-plate-supported objects with no reference geometry.
 
 Unsupported values fail an assertion. Repository validation permits only the
@@ -149,10 +156,10 @@ other generated exports to source control.
 The nominal `printable_layout` fits the three separated objects inside a
 `256 mm x 256 mm` plate. For a Bambu Lab P2S, keep the body upright on its
 `210.0 mm x 110.0 mm` bottom face, the cap plain-exterior-face-down, and the USB
-clip broad-exterior-face-down. Verify actual Bambu Studio bed margins, first
+cover broad-exterior-face-down. Verify actual Bambu Studio bed margins, first
 layers, bridges, unsupported overhangs, and support requirements. If slicer
 margins prevent the combined layout, preserve those orientations and use a body
-print group plus a cap-and-USB-clip group (or print each part independently);
+print group plus a cap-and-USB-cover group (or print each part independently);
 do not rotate parts into weaker orientations merely to force a one-plate layout.
 The model does not require multi-material printing, though it remains compatible
 with the AMS 2 Pro workflow.
@@ -162,14 +169,16 @@ operation. Before treating the design as validated:
 
 - inspect all print groups and print settings in Bambu Studio, then test-print
   the parts in the intended material;
-- confirm the measured power strip fits its supports and stops, remains
-  vertically removable, and keeps its sockets, switch, vents, USB group, and
-  attached-cord exit unobstructed;
+- confirm the measured power strip rests stably on the flat interior floor,
+  remains vertically removable, can be aligned manually with the USB opening,
+  and keeps its sockets, switch, vents, USB group, and attached-cord exit
+  unobstructed;
 - verify the intended four cable jackets fit together in the right slot and the
   attached lead fits the rear slot without passing either Schuko head through a
   slot, abrasion, pinching, or unsafe bend strain;
-- verify group-only USB access, including removing and reinstalling the USB
-  clip and inserting one plug while other USB cables stay connected;
+- verify the solid cover fully closes the USB opening, can be removed and
+  reinstalled from outside, and leaves the complete USB group accessible while
+  removed;
 - complete at least `20` full cap fit-and-release cycles, checking every clip
   for whitening, cracking, delamination, excessive force, and loss of
   retention; and
@@ -185,9 +194,9 @@ certification. It is not sealed, weatherproof, or liquid-resistant, and it does
 not override the manufacturer's limits or operating instructions.
 
 Delivery remains **DRAFT** until the actual device and cables are measured,
-Bambu Studio inspection and a test print succeed, physical device/plug/cable
-fit and USB access are proven, all `20` clip cycles pass, and intended-load
-thermal behavior is verified.
+Bambu Studio slicer inspection and a test print succeed, physical
+device/plug/cable fit and removable-cover operation are proven, all `20` cap
+clip cycles pass, and intended-load thermal behavior is verified.
 
 ## Rotating Kitchen Jar Tray
 
