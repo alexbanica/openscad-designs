@@ -20,6 +20,175 @@ This repository contains editable OpenSCAD designs.
 
 All files target OpenSCAD 2021.01 and have no external library dependencies.
 
+## Voomy Power S7 Cable-Management Case
+
+`designs/voomy_power_s7_cable_management_case.scad` provides a ventilated,
+three-part cable-management case for a Voomy Power S7 power strip. The complete
+seated assembly has a fixed `210.0 mm x 210.0 mm x 110.0 mm` exterior envelope
+(width x height x depth). Its horizontal footprint is a true capsule: `100.0 mm`
+straight front and rear runs joined tangentially to `55.0 mm` radius left and
+right semicircular ends. Changing fit allowances or shell thickness does not
+grow that fixed exterior envelope.
+
+The published Voomy body envelope used by the optional, non-printable fit
+reference is `80.0 mm x 80.0 mm x 88.0 mm`. It is not a complete mechanical
+drawing. The `3.0 mm` wall, floor, and cap defaults, `1.5 mm` per-side device
+clearance, cable envelopes, USB dimensions and offsets, retention clearances,
+grid dimensions, and wall-stripe dimensions are provisional printable
+allowances. They are not measurements of a physical sample or certified fit.
+
+Before relying on the defaults, measure and compare all of the following with
+the fixed interior space:
+
+- the actual power-strip width, depth, and height;
+- the complete USB port-group width and height and its horizontal and vertical
+  offsets from the power-strip body edges;
+- the attached-cord exit position, jacket diameter, and required bend room;
+- every intended Schuko head and its connected plug/cable envelope;
+- each of the four routed cable-jacket diameters; and
+- the clearance needed to reach the USB-A and USB-C connectors while the other
+  USB cables remain connected.
+
+If any measured device, connector, bend, or cable envelope conflicts with the
+available interior, revise the internal placement or interface parameters and
+re-evaluate the design; do not enlarge the fixed `210 x 210 x 110 mm` contract
+implicitly.
+
+### Orientation, Cable Routing, And Service
+
+Looking at the front, the power strip installs vertically with its USB face
+toward the front wall and its USB group biased toward visual left. The removable
+USB passthrough clip is therefore in the left-hand portion of the straight
+**front wall**, not in the curved left wall. Its provisional body cutout is one
+shared `60.0 mm x 36.0 mm` group-only opening, and the clip preserves a shared
+opening of at least `56.0 mm x 32.0 mm` with no individual-port dividers. It
+must not intentionally expose an adjacent AC socket or the power switch. The
+clip can be released, removed, and snapped back in from outside without taking
+off the cap or moving the power strip; its snap tabs and fit remain
+material- and printer-dependent.
+
+The visual-right curved wall and the straight rear wall each have one
+`20.0 mm`-wide passage running continuously from the wall top to the interior
+floor. Remove the cap before routing either mains cable. Lower the cable segment
+into the open slot from above while the attached Schuko head remains inside or
+outside the case; a Schuko head is never expected to pass through the `20.0 mm`
+width. The right passage is shared by four cable jackets up to the provisional
+`12.0 mm` diameter, stacked at distinct heights. The rear passage accepts the
+power strip's attached lead. Arrange both routes before seating the cap, and
+confirm that the cap neither pinches the cables nor forces a sharp bend.
+
+The top cap has a flat, plain exterior with no stripes, grid, or engraving. Its
+continuous alignment skirt locates it before four cantilever clips engage: one
+at the front-right straight region, one at the left semicircular end, and two
+on the rear wall on opposite sides of the rear slot. To remove the cap, support
+it, press the four externally reachable release pads enough to clear their
+catches, and lift evenly. Do not pry one retained edge. To reinstall it, align
+the skirt, press down evenly, and confirm that all four clips engage. PETG or
+another material suited to repeated flexing is preferable; geometry cannot
+guarantee clip force, fatigue life, or layer adhesion.
+
+The body carries raised horizontal stripes around all four vertical walls at
+matching Z elevations. Defaults are `1.0 mm` projection, `4.0 mm` band height,
+`9.0 mm` pitch, and `10.0 mm` top/bottom margin. A staggered hexagonal
+through-grid ventilates the unobstructed upper front region using `12.0 mm`
+across-flats cells, at least `3.0 mm` ribs, and `12.0 mm` structural borders.
+Openings and decorative features stop around the USB interface, passages, cap
+retention, supports, and wall junctions.
+
+### Adjustable Parameters
+
+The source groups its adjustable parameters near the top. Key groups include:
+
+- render and reference controls: `render_mode`,
+  `show_powerstrip_reference`, and `show_cable_references`;
+- fixed exterior dimensions: `case_width_mm`, `case_height_mm`, and
+  `case_depth_mm`;
+- shell, published reference, fit, support, and placement values:
+  `wall_thickness_mm`, `floor_thickness_mm`, `cap_roof_thickness_mm`,
+  `powerstrip_*`, and `powerstrip_fit_clearance_mm`;
+- cable routing: `lay_in_passage_width_mm`,
+  `maximum_cable_diameter_mm`, `right_routed_cable_count`,
+  `cable_lateral_clearance_mm`, `cable_contact_edge_radius_mm`, and
+  `rear_passage_center_x_mm`;
+- USB opening and clip geometry: `usb_cutout_*`, `usb_group_offset_*`, and
+  `usb_clip_*`;
+- cap alignment and retention: `cap_skirt_*` and `cap_clip_*`;
+- ventilation and wall texture: `grid_*` and `wall_stripe_*`; and
+- printable-layout positions, spacing, rotation, and preview colours.
+
+Keep the exterior dimensions fixed unless a separately approved design change
+redefines the case. Re-measure and revalidate all affected interfaces after any
+parameter adjustment.
+
+### Render Modes
+
+`render_mode` defaults to `"printable_layout"`. The supported modes are exactly:
+
+- `assembly`: closed assembled body, cap, and USB clip; the non-printable Voomy
+  and cable references appear only when explicitly enabled;
+- `case_body`: upright printable body on its full bottom face;
+- `top_cap`: printable cap with its plain exterior face on the build plate;
+- `usb_passthrough_clip`: printable USB clip on its broad exterior face; and
+- `printable_layout`: exactly one body, one cap, and one USB clip as three
+  separated, build-plate-supported objects with no reference geometry.
+
+Unsupported values fail an assertion. Repository validation permits only the
+reference-free `assembly` and `printable_layout` renders, each with a 15-second
+hard limit:
+
+```sh
+timeout 15s openscad -o /tmp/voomy_power_s7_case_printable_layout.csg -D 'render_mode="printable_layout"' designs/voomy_power_s7_cable_management_case.scad
+timeout 15s openscad -o /tmp/voomy_power_s7_case_assembly.csg -D 'render_mode="assembly"' -D 'show_powerstrip_reference=false' designs/voomy_power_s7_cable_management_case.scad
+```
+
+Keep these temporary outputs in `/tmp`; do not add STL, STEP, 3MF, OFF, CSG, or
+other generated exports to source control.
+
+### Printing, Validation, And Safety Limits
+
+The nominal `printable_layout` fits the three separated objects inside a
+`256 mm x 256 mm` plate. For a Bambu Lab P2S, keep the body upright on its
+`210.0 mm x 110.0 mm` bottom face, the cap plain-exterior-face-down, and the USB
+clip broad-exterior-face-down. Verify actual Bambu Studio bed margins, first
+layers, bridges, unsupported overhangs, and support requirements. If slicer
+margins prevent the combined layout, preserve those orientations and use a body
+print group plus a cap-and-USB-clip group (or print each part independently);
+do not rotate parts into weaker orientations merely to force a one-plate layout.
+The model does not require multi-material printing, though it remains compatible
+with the AMS 2 Pro workflow.
+
+OpenSCAD assertions and bounded renders do not establish physical fit or safe
+operation. Before treating the design as validated:
+
+- inspect all print groups and print settings in Bambu Studio, then test-print
+  the parts in the intended material;
+- confirm the measured power strip fits its supports and stops, remains
+  vertically removable, and keeps its sockets, switch, vents, USB group, and
+  attached-cord exit unobstructed;
+- verify the intended four cable jackets fit together in the right slot and the
+  attached lead fits the rear slot without passing either Schuko head through a
+  slot, abrasion, pinching, or unsafe bend strain;
+- verify group-only USB access, including removing and reinstalling the USB
+  clip and inserting one plug while other USB cables stay connected;
+- complete at least `20` full cap fit-and-release cycles, checking every clip
+  for whitening, cracking, delamination, excessive force, and loss of
+  retention; and
+- operate under the intended real load according to the power-strip
+  manufacturer's requirements, monitoring temperature, airflow, cable
+  insulation, enclosure deformation, and access to protective features. Stop
+  use immediately if unsafe heat, damage, obstruction, or deformation appears.
+
+This passive, ventilated printed organizer is for dry indoor use. It does not
+modify the power strip, add mains components or strain relief, or provide
+electrical, fire, thermal, ingress-protection, load, or child-safety
+certification. It is not sealed, weatherproof, or liquid-resistant, and it does
+not override the manufacturer's limits or operating instructions.
+
+Delivery remains **DRAFT** until the actual device and cables are measured,
+Bambu Studio inspection and a test print succeed, physical device/plug/cable
+fit and USB access are proven, all `20` clip cycles pass, and intended-load
+thermal behavior is verified.
+
 ## Rotating Kitchen Jar Tray
 
 `designs/rotating_kitchen_jar_tray.scad` provides a fully 3D-printed rotating kitchen tray for jars. The default tray has a 240.0 mm outside diameter and a 30.0 mm exterior wall height.
