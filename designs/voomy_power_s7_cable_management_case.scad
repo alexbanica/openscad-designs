@@ -4,7 +4,7 @@
 // Source axes: +X points toward visual right, +Y points from front to rear,
 // and +Z points upward from the bottom face.
 //
-// Complete editable design with an upright case body, removable plain cap,
+// Complete editable design with an upright case body, removable ventilated cap,
 // solid removable USB access cover, cable routing, ventilation, and printable layout.
 
 // ======================================================
@@ -47,7 +47,7 @@ rear_passage_center_x_mm = powerstrip_center_x_mm;
 // Front USB group and solid removable cover (provisional)
 usb_cutout_width_mm = 60.0;
 usb_cutout_height_mm = 36.0;
-usb_cutout_center_z_mm = 50.0;
+usb_cutout_center_z_mm = 73.0;
 usb_group_offset_x_mm = 0.0;
 usb_group_offset_z_mm = 0.0;
 usb_clip_wall_overlap_mm = 3.0;
@@ -133,11 +133,40 @@ right_passage_inner_half_angle_deg =
 right_passage_bottom_half_angle_deg =
     (lay_in_passage_width_mm + 2 * cable_contact_edge_radius_mm)
     / capsule_outer_radius_mm * 180 / PI / 2;
+capsule_rightmost_exterior_x_mm = capsule_tangent_center_offset_x_mm
+    + capsule_outer_radius_mm;
 right_passage_top_cut_outer_radius_mm =
-    (capsule_outer_radius_mm + eps_mm) / cos(right_passage_half_angle_deg);
+    (capsule_outer_radius_mm + eps_mm)
+    / min(
+        cos(right_passage_center_angle_deg - right_passage_half_angle_deg),
+        cos(right_passage_center_angle_deg + right_passage_half_angle_deg)
+    );
 right_passage_bottom_cut_outer_radius_mm =
     (capsule_outer_radius_mm + eps_mm)
-    / cos(right_passage_bottom_half_angle_deg);
+    / min(
+        cos(right_passage_center_angle_deg
+            - right_passage_bottom_half_angle_deg),
+        cos(right_passage_center_angle_deg
+            + right_passage_bottom_half_angle_deg)
+    );
+right_passage_top_outer_front_endpoint_x_mm =
+    capsule_tangent_center_offset_x_mm
+    + right_passage_top_cut_outer_radius_mm
+        * cos(right_passage_center_angle_deg - right_passage_half_angle_deg);
+right_passage_top_outer_rear_endpoint_x_mm =
+    capsule_tangent_center_offset_x_mm
+    + right_passage_top_cut_outer_radius_mm
+        * cos(right_passage_center_angle_deg + right_passage_half_angle_deg);
+right_passage_bottom_outer_front_endpoint_x_mm =
+    capsule_tangent_center_offset_x_mm
+    + right_passage_bottom_cut_outer_radius_mm
+        * cos(right_passage_center_angle_deg
+            - right_passage_bottom_half_angle_deg);
+right_passage_bottom_outer_rear_endpoint_x_mm =
+    capsule_tangent_center_offset_x_mm
+    + right_passage_bottom_cut_outer_radius_mm
+        * cos(right_passage_center_angle_deg
+            + right_passage_bottom_half_angle_deg);
 slot_bottom_z_mm = floor_thickness_mm;
 right_cable_first_center_z_mm = slot_bottom_z_mm
     + maximum_cable_diameter_mm / 2;
@@ -149,6 +178,17 @@ usb_cutout_center_from_left_tangent_mm =
     usb_cutout_center_x_mm + capsule_tangent_center_offset_x_mm;
 usb_cutout_effective_center_z_mm =
     usb_cutout_center_z_mm + usb_group_offset_z_mm;
+usb_cutout_min_z_mm =
+    usb_cutout_effective_center_z_mm - usb_cutout_height_mm / 2;
+usb_cutout_max_z_mm =
+    usb_cutout_effective_center_z_mm + usb_cutout_height_mm / 2;
+usb_cutout_default_min_z_mm = 73.0 - usb_cutout_height_mm / 2;
+usb_cutout_default_max_z_mm = 73.0 + usb_cutout_height_mm / 2;
+usb_cutout_midpoint_center_z_mm = body_height_mm / 2;
+usb_cutout_midpoint_min_z_mm =
+    usb_cutout_midpoint_center_z_mm - usb_cutout_height_mm / 2;
+usb_cutout_midpoint_max_z_mm =
+    usb_cutout_midpoint_center_z_mm + usb_cutout_height_mm / 2;
 usb_clip_outer_width_mm = usb_cutout_width_mm + 2 * usb_clip_wall_overlap_mm;
 usb_clip_outer_height_mm = usb_cutout_height_mm + 2 * usb_clip_wall_overlap_mm;
 installed_usb_clip_center_x_mm = usb_cutout_center_x_mm;
@@ -156,17 +196,23 @@ installed_usb_clip_center_z_mm = usb_cutout_effective_center_z_mm;
 grid_hex_circumradius_mm = grid_hex_across_flats_mm / sqrt(3);
 grid_column_pitch_mm = 2 * grid_hex_circumradius_mm + grid_minimum_rib_width_mm;
 grid_row_pitch_mm = grid_hex_across_flats_mm + grid_minimum_rib_width_mm;
-grid_front_min_x_mm = -capsule_tangent_center_offset_x_mm
-    + grid_structural_border_mm + grid_hex_circumradius_mm;
-grid_front_max_x_mm = capsule_tangent_center_offset_x_mm
-    - grid_structural_border_mm - grid_hex_circumradius_mm;
-grid_front_min_z_mm = usb_cutout_effective_center_z_mm
-    + usb_cutout_height_mm / 2 + grid_structural_border_mm
-    + grid_hex_across_flats_mm / 2;
-grid_front_max_z_mm = body_height_mm - grid_structural_border_mm
-    - grid_hex_across_flats_mm / 2;
+grid_staggered_center_distance_mm = sqrt(
+    pow(grid_column_pitch_mm / 2, 2) + pow(grid_row_pitch_mm, 2)
+);
+grid_staggered_rib_width_mm =
+    grid_staggered_center_distance_mm - 2 * grid_hex_circumradius_mm;
 cap_skirt_outer_radius_mm = interior_capsule_radius_mm - cap_skirt_clearance_mm;
 cap_skirt_inner_radius_mm = cap_skirt_outer_radius_mm - cap_skirt_thickness_mm;
+cap_grid_keepout_radius_mm =
+    cap_skirt_inner_radius_mm - grid_structural_border_mm;
+cap_grid_center_limit_x_mm = capsule_tangent_center_offset_x_mm
+    + cap_grid_keepout_radius_mm - grid_hex_circumradius_mm;
+cap_grid_center_limit_y_mm = cap_grid_keepout_radius_mm
+    - grid_hex_across_flats_mm / 2;
+cap_grid_row_index_max = floor(cap_grid_center_limit_y_mm / grid_row_pitch_mm);
+cap_grid_column_index_max =
+    floor(cap_grid_center_limit_x_mm / grid_column_pitch_mm);
+body_wall_grid_aperture_count = 0;
 cap_clip_front_right_x_mm = 38.0;
 cap_clip_left_x_mm = -capsule_tangent_center_offset_x_mm
     - cap_skirt_outer_radius_mm;
@@ -238,6 +284,9 @@ assert(cable_contact_edge_radius_mm >= 2.0,
 assert(usb_cutout_center_x_mm - usb_cutout_width_mm / 2 >= -capsule_tangent_center_offset_x_mm
     && usb_cutout_center_x_mm + usb_cutout_width_mm / 2 <= capsule_tangent_center_offset_x_mm,
     "The USB wall cutout must remain within the straight front-wall run");
+assert(usb_cutout_min_z_mm >= floor_thickness_mm
+    && usb_cutout_max_z_mm <= body_height_mm,
+    "The complete USB opening must stay between the interior floor and body top");
 assert(usb_clip_outer_width_mm - usb_cutout_width_mm
         == 2 * usb_clip_wall_overlap_mm
     && usb_clip_outer_height_mm - usb_cutout_height_mm
@@ -290,11 +339,19 @@ assert(wall_thickness_mm >= 3.0 && floor_thickness_mm >= 3.0,
 assert(grid_column_pitch_mm - 2 * grid_hex_circumradius_mm
         >= grid_minimum_rib_width_mm
     && grid_row_pitch_mm - grid_hex_across_flats_mm
-        >= grid_minimum_rib_width_mm,
+        >= grid_minimum_rib_width_mm
+    && grid_staggered_rib_width_mm >= grid_minimum_rib_width_mm,
     "Ventilation apertures must preserve the minimum grid ribs");
-assert(grid_front_min_x_mm <= grid_front_max_x_mm
-    && grid_front_min_z_mm <= grid_front_max_z_mm,
-    "The front ventilation field must fit within its structural keepouts");
+assert(cap_grid_keepout_radius_mm > grid_hex_across_flats_mm / 2
+    && cap_skirt_inner_radius_mm - cap_grid_keepout_radius_mm
+        >= grid_structural_border_mm
+    && capsule_outer_radius_mm - cap_grid_keepout_radius_mm
+        >= grid_structural_border_mm,
+    "The cap grid must retain its perimeter, skirt, and retention keepouts");
+assert(cap_grid_row_index_max >= 1 && cap_grid_column_index_max >= 1,
+    "The central cap ventilation field must contain staggered grid candidates");
+assert(body_wall_grid_aperture_count == 0,
+    "Ventilation apertures are prohibited in every body wall");
 assert(powerstrip_width_mm == 80.0 && powerstrip_depth_mm == 80.0
     && powerstrip_height_mm == 88.0,
     "The non-printable Voomy reference must remain exactly 80 x 80 x 88 mm");
@@ -311,6 +368,13 @@ assert(powerstrip_bottom_z_mm == floor_thickness_mm
 assert(usb_cutout_width_mm == 60.0 && usb_cutout_height_mm == 36.0
     && usb_cutout_center_from_left_tangent_mm == 38.0,
     "The USB group opening must retain its approved provisional size and offset");
+assert(usb_cutout_default_min_z_mm == 55.0
+    && usb_cutout_default_max_z_mm == 91.0,
+    "The default USB opening must span exactly Z 55.0 through 91.0 mm");
+assert(usb_cutout_midpoint_center_z_mm == 103.5
+    && usb_cutout_midpoint_min_z_mm == 85.5
+    && usb_cutout_midpoint_max_z_mm == 121.5,
+    "The body-midpoint USB opening must span exactly Z 85.5 through 121.5 mm");
 assert(usb_cutout_center_x_mm == powerstrip_center_x_mm + usb_group_offset_x_mm,
     "The USB group opening must derive from the installed power-strip datum");
 assert(installed_usb_clip_center_x_mm == usb_cutout_center_x_mm
@@ -345,11 +409,15 @@ assert(right_passage_center_angle_deg
 assert(slot_bottom_z_mm == floor_thickness_mm
     && body_height_mm > slot_bottom_z_mm,
     "Both lay-in slots must remain continuous from the wall top to the floor");
-assert(right_passage_top_cut_outer_radius_mm
-        * cos(right_passage_half_angle_deg) > capsule_outer_radius_mm
-    && right_passage_bottom_cut_outer_radius_mm
-        * cos(right_passage_bottom_half_angle_deg) > capsule_outer_radius_mm,
-    "The right cable slot outer chords must cut beyond the curved exterior wall");
+assert(right_passage_top_outer_front_endpoint_x_mm
+        > capsule_rightmost_exterior_x_mm
+    && right_passage_top_outer_rear_endpoint_x_mm
+        > capsule_rightmost_exterior_x_mm
+    && right_passage_bottom_outer_front_endpoint_x_mm
+        > capsule_rightmost_exterior_x_mm
+    && right_passage_bottom_outer_rear_endpoint_x_mm
+        > capsule_rightmost_exterior_x_mm,
+    "Every right cable slot outer endpoint must extend beyond the capsule's rightmost exterior X");
 assert(right_routed_cable_count == 4
     && right_cable_stack_height_mm == 48.0,
     "The right slot requires four non-overlapping 12 mm cable references");
@@ -496,7 +564,6 @@ module voomy_power_s7_case_body() {
         union() {
             difference() {
                 capsule_shell_and_floor();
-                front_wall_ventilation_grid();
                 front_usb_group_opening();
                 rear_main_lead_slot();
                 right_shared_cable_slot();
@@ -509,7 +576,10 @@ module voomy_power_s7_case_body() {
 module voomy_power_s7_top_cap() {
     color(top_cap_colour)
         union() {
-            capsule_prism(capsule_outer_radius_mm, cap_roof_thickness_mm);
+            difference() {
+                capsule_prism(capsule_outer_radius_mm, cap_roof_thickness_mm);
+                top_cap_ventilation_grid();
+            }
             cap_alignment_skirt();
             cap_retention_clips();
         }
@@ -675,38 +745,50 @@ module capsule_shell_and_floor() {
     }
 }
 
-module front_wall_hex_aperture(center_x_mm, center_z_mm) {
-    translate([center_x_mm, -smooth_wall_radius_mm + wall_thickness_mm + eps_mm,
-            center_z_mm])
-        rotate([90, 0, 0])
-            cylinder(
-                h = wall_thickness_mm + 2 * eps_mm,
-                r = grid_hex_circumradius_mm,
-                $fn = 6
-            );
+function point_inside_cap_grid_keepout(point_x_mm, point_y_mm) =
+    abs(point_x_mm) <= capsule_tangent_center_offset_x_mm
+        ? abs(point_y_mm) <= cap_grid_keepout_radius_mm
+        : pow(abs(point_x_mm) - capsule_tangent_center_offset_x_mm, 2)
+                + pow(point_y_mm, 2)
+            <= pow(cap_grid_keepout_radius_mm, 2);
+
+function cap_grid_hex_inside_keepouts(center_x_mm, center_y_mm) =
+    min([
+        for (vertex_angle_deg = [0 : 60 : 300])
+            point_inside_cap_grid_keepout(
+                center_x_mm
+                    + grid_hex_circumradius_mm * cos(vertex_angle_deg),
+                center_y_mm
+                    + grid_hex_circumradius_mm * sin(vertex_angle_deg)
+            ) ? 1 : 0
+    ]) == 1;
+
+module top_cap_hex_aperture(center_x_mm, center_y_mm) {
+    translate([center_x_mm, center_y_mm, -eps_mm])
+        cylinder(
+            h = cap_roof_thickness_mm + 2 * eps_mm,
+            r = grid_hex_circumradius_mm,
+            $fn = 6
+        );
 }
 
-module front_wall_ventilation_grid() {
-    row_count = floor(
-        (grid_front_max_z_mm - grid_front_min_z_mm) / grid_row_pitch_mm
-    );
+module top_cap_ventilation_grid() {
+    for (row_index = [-cap_grid_row_index_max : cap_grid_row_index_max]) {
+        center_y_mm = row_index * grid_row_pitch_mm;
+        stagger_mm = (abs(row_index) % 2) * grid_column_pitch_mm / 2;
 
-    for (row = [0 : row_count]) {
-        center_z_mm = grid_front_min_z_mm + row * grid_row_pitch_mm;
-        stagger_mm = (row % 2) * grid_column_pitch_mm / 2;
+        for (column_index = [-cap_grid_column_index_max
+                : cap_grid_column_index_max]) {
+            center_x_mm = column_index * grid_column_pitch_mm + stagger_mm;
 
-        for (center_x_mm = [grid_front_min_x_mm + stagger_mm
-                : grid_column_pitch_mm : grid_front_max_x_mm])
-            if (center_x_mm + grid_hex_circumradius_mm
-                    <= cap_clip_front_right_x_mm
-                        - cap_clip_receiver_width_mm / 2
-                        - grid_structural_border_mm)
-                front_wall_hex_aperture(center_x_mm, center_z_mm);
+            if (cap_grid_hex_inside_keepouts(center_x_mm, center_y_mm))
+                top_cap_hex_aperture(center_x_mm, center_y_mm);
+        }
     }
 }
 
 // ======================================================
-// Plain Capsule Cap And Durable Retention
+// Ventilated Capsule Cap And Durable Retention
 // ======================================================
 
 module cap_wall_local(origin_x_mm, origin_y_mm, angle_deg) {

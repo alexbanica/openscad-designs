@@ -2,6 +2,85 @@
 
 Status: Approved
 
+## Iteration: Adjustable USB Height And Top-Cap Ventilation (2026-08-10)
+
+This iteration changes only the following approved behavior:
+
+- keep the USB access opening in the left-hand portion of the front wall but
+  raise its adjustable default center from `50.0 mm` to `73.0 mm` above the
+  body bottom;
+- allow `usb_cutout_center_z_mm` to be changed to `103.5 mm` or any other value
+  that keeps the complete opening within the front body wall;
+- remove every hexagonal ventilation opening from the front body wall; and
+- place the staggered hexagonal ventilation field in the top cap instead.
+
+The `73.0 mm` default is the highest center that keeps the complete default
+`60.0 x 36.0 mm` opening within the provisional `88.0 mm` Voomy reference face
+when that reference rests on the `3.0 mm` interior floor. The `103.5 mm`
+override is the exact vertical midpoint of the `207.0 mm` body wall, but it is
+measurement-sensitive because it places most of the opening above that
+provisional floor-standing reference.
+
+All previously approved plain-wall, smooth-floor, solid USB-cover, minimal
+clamp-hole, cable-passage, fixed-envelope, render-mode, printer, validation, and
+safety behavior remains in force unless this final-state specification says
+otherwise.
+
+## Super-Agent Update: Remove Right Curved-Wall Membrane (2026-08-10)
+
+### Purpose And Requested Behavior
+
+Remove the thin curved-wall layer covering the visual-right cable opening. The
+right-hand passage must be see-through through the body wall like the rear cable
+passage, with no crescent-shaped exterior membrane remaining.
+
+### Scope
+
+- Extend the existing visual-right passage profile beyond the complete curved
+  exterior wall at both its bottom and full-height sections.
+- Preserve the passage's approved inner width, arc-centered position, edge
+  treatment, floor termination, cable references, and full-height geometry.
+- Update the Voomy README section and these approved completed-work artifacts.
+
+### Out Of Scope
+
+- The rear mains-lead passage, cap, USB cover, ventilation, retention, overall
+  envelope, power-strip placement, and every other design.
+- Generated mesh or preview artifacts in source control.
+
+### Deterministic Behavior Delivered
+
+- No body-wall membrane remains across the visual-right cable passage.
+- Both outer passage chords terminate beyond the capsule's rightmost exterior X
+  coordinate, so the curved surface cannot leave a thin crescent between the
+  subtractor and the exterior.
+- The cap, body floor, inner passage envelope, and rear passage remain unchanged.
+
+### Inputs, Constraints, And Assumptions
+
+- The reported thin layer is the curved-wall crescent left because a straight
+  outer subtraction chord was placed on the capsule radius instead of beyond the
+  capsule's rightmost tangent plane.
+- Matching the rear passage means the right body opening is fully see-through;
+  it does not require a new cap opening or a floor notch.
+- OpenSCAD 2021.01 compatibility, the fixed exterior envelope, Bambu Lab P2S
+  orientation, and all other approved design constraints remain unchanged.
+
+### Impact And Documentation
+
+- Only the Voomy source, Voomy README section, and matching approved artifacts
+  change.
+- The README now documents the fully open curved-wall passage.
+
+### Validation Performed And Skipped
+
+- Short source/assertion evaluation and `git diff --check` are required for this
+  direct correction.
+- Unit tests and conventional test-first work are prohibited and not applicable.
+- Super-agent code review and QA phases are intentionally skipped.
+- Slicer inspection, test printing, physical cable fit, and confirmation that the
+  opened wall passage prints cleanly remain unvalidated; delivery remains DRAFT.
+
 ## Iteration: Plain Body And Closure Corrections (2026-08-10)
 
 This iteration changes only the following approved behavior:
@@ -32,10 +111,11 @@ The power strip and its connected cables need a defined enclosure that remains
 serviceable without threading Schuko plug heads through cable-sized holes. The
 top cap must therefore be removable, both mains-cable passages must open at the
 top of their walls, and the USB bank must remain accessible independently from
-the cap by removing its dedicated solid cover. The large case panels retain a
-deliberate hexagonal ventilation grid without weakening the cap retention
-features. All remaining body-wall exterior surfaces and the removable top cap
-must be plain, and the body interior floor must remain smooth and unobstructed.
+the cap by removing its dedicated solid cover. The top cap carries the
+hexagonal ventilation grid without weakening the cap retention features. The
+front and remaining body-wall exterior surfaces are plain apart from required
+functional openings, and the body interior floor remains smooth and
+unobstructed.
 
 ## Scope
 
@@ -52,10 +132,12 @@ must be plain, and the body interior floor must remain smooth and unobstructed.
 - Orient the installed power strip with its USB port group toward the front
   wall and align that group with the left-hand portion of the front wall.
 - Provide top-open Schuko lay-in passages in the visual right and rear walls.
-- Provide a decorative ventilation grid with structural keepouts.
-- Keep the front, rear, left, and right body-wall exteriors plain except for the
-  approved hexagonal ventilation grid and required functional openings.
-- Keep the removable top cap exterior flat and plain.
+- Provide a decorative hexagonal ventilation grid through the top cap with
+  structural keepouts.
+- Keep the front, rear, left, and right body-wall exteriors plain except for
+  required functional openings; the front wall contains no ventilation grid.
+- Keep the removable top cap exterior flat and plain outside its approved
+  hexagonal through-grid.
 - Keep the interior floor flat and smooth, with no supports, pins, stops, or
   other raised locating geometry.
 - Update the repository documentation when the design is implemented.
@@ -123,6 +205,8 @@ physical measurements.
 | Maximum routed cable diameter | `12.0 mm` | Provisional definition of a fat cable |
 | Right-side routed cable count | `4` | User supplied |
 | Front-wall USB wall cutout | `60.0 x 36.0 mm` | Provisional group-only service envelope |
+| Default USB cutout center Z | `73.0 mm` | Highest full-opening center within the floor-standing `88.0 mm` reference face |
+| Supported body-wall midpoint override | `103.5 mm` | Half of the `207.0 mm` body-wall height |
 | Solid USB cover wall overlap | `3.0 mm` per edge | Provisional retention allowance |
 | Cap receiver-hole width | `12.6 mm` | `12.0 mm` clip width plus `0.3 mm` clearance per side |
 | Cap receiver-hole height | `5.6 mm` | `5.0 mm` release-pad height plus `0.3 mm` clearance per side |
@@ -153,8 +237,8 @@ space.
 - Every printable object must be independent, free of floating geometry, and
   oriented with a broad stable face on the build plate.
 - The body must print upright on its `210.0 mm x 110.0 mm` bottom face. The cap
-  and solid USB cover must print on their broad exterior faces. The cap's plain
-  exterior provides continuous build-plate contact in that orientation.
+  and solid USB cover must print on their broad exterior faces. The cap's solid
+  perimeter and grid ribs provide broad build-plate contact in that orientation.
 - Generated mesh files remain temporary and outside source control.
 - Unit tests and conventional test-first work are not applicable and are
   prohibited by repository guidance.
@@ -194,9 +278,13 @@ space.
 - The visual right wall contains one shared `20.0 mm`-wide lay-in passage.
 - The right wall is the right semicircular end. Passage width is measured as
   `20.0 mm` of tangential arc length at the smooth outer wall radius and is
-  centered on the arc's visual-right midpoint.
-- The passage is continuous from the wall's top edge down to the interior
-  floor, so it is fully accessible when the cap is removed.
+  centered `30.0 deg` rearward from the arc's visual-right midpoint by default,
+  as required by the superseding approved
+  `SPEC-voomy-right-cable-passage-30-degree-rearward.md` contract. `0 deg` is
+  exact visual right and positive angles rotate toward rear `+Y`.
+- The passage is continuous from the wall's top edge down to the interior floor.
+  Its outer subtraction extends beyond the complete curved wall, leaving the
+  opening see-through without a thin exterior crescent.
 - A cable segment is lowered into the passage from above while its attached
   Schuko head remains inside or outside the case; the head is not required to
   pass through the `20.0 mm` width.
@@ -233,6 +321,17 @@ space.
   provisional center is `38.0 mm` from the left front-to-arc tangent, placing
   the `60.0 mm` opening `8.0 mm` from that tangent and biasing it toward visual
   left.
+- `usb_cutout_center_z_mm` is an adjustable parameter with a default of
+  `73.0 mm`. With the default `36.0 mm` cutout height and the floor-standing
+  `88.0 mm` reference, the opening spans `55.0..91.0 mm` and stays within the
+  provisional device face.
+- `103.5 mm` is a supported override that vertically centers the opening on the
+  `207.0 mm` body wall. The opening then spans `85.5..121.5 mm`; this remains
+  valid body geometry but is not assumed to align with the provisional
+  floor-standing device reference.
+- Any adjusted effective center must keep the complete cutout between the
+  interior floor surface and the body top edge. Changing the vertical center
+  does not alter the approved left-biased X position.
 - One independently printable snap-in cover completely fills the cutout. Its
   visible panel is solid and opaque, with no through-opening, port divider,
   grille, or see-through region.
@@ -252,9 +351,9 @@ space.
   width, height, and depth.
 - The cap, roof, perimeter, and alignment skirt follow the same capsule outline
   as the body, including the semicircular left and right ends.
-- The visible top-cap exterior is one plain, flat surface apart from its
-  perimeter edge treatment. It contains no raised stripes, engraved stripes,
-  hexagonal grid, or other decorative texture.
+- The visible top-cap exterior is flat and plain outside its approved
+  hexagonal through-grid. It contains no raised stripes, engraved stripes, or
+  other decorative texture.
 - A continuous alignment skirt locates the cap before the hooks engage, using
   `0.3 mm` nominal clearance per side and at least `6.0 mm` engagement depth.
 - Four tool-less cantilever retention clips secure the cap: one in the
@@ -286,20 +385,21 @@ space.
 
 ### Decorative Ventilation Grid And Plain Walls
 
-- A staggered hexagonal through-grid appears on the unobstructed upper
-  front-wall region. Additional grid fields may appear on uninterrupted side
-  and rear-wall regions only when all structural keepouts remain satisfied.
-- The top cap contains no ventilation grid and remains plain.
+- The front body wall contains no hexagonal ventilation openings and remains
+  plain apart from the USB cover and clamp receiver holes. The other body walls
+  remain plain apart from their approved cable passages.
+- One staggered hexagonal through-grid appears in the unobstructed central
+  region of the top-cap roof.
 - Default hexagons are `12.0 mm` across flats with ribs at least `3.0 mm` wide.
 - Grid fields retain at least `12.0 mm` of solid border at exterior edges and
-  around the cap skirt, cap clips, USB cover, lay-in passages, and wall
-  junctions.
+  around the cap perimeter, alignment skirt, clip roots, flexure paths, and
+  other retention geometry.
 - Grid cells that would violate a keepout are omitted rather than clipped into
   thin partial ribs.
 - The grid provides airflow but does not make the printed case electrically or
   thermally certified.
-- Except for the retained hexagonal grid and required USB, cable, and clamp
-  openings, the front, rear, left, and right body walls are smooth and plain.
+- Except for required USB, cable, and clamp openings, the front, rear, left,
+  and right body walls are smooth and plain.
   They contain no raised stripes, ribs, bands, embossing, engraving, or other
   decorative surface texture.
 
@@ -316,7 +416,7 @@ space.
 - Individual-part modes place the requested part on the print plane in its
   intended orientation.
 - The `top_cap` and `printable_layout` modes place the cap exterior downward,
-  with its plain exterior surface touching the print plane.
+  with its solid perimeter and connected grid ribs touching the print plane.
 - `printable_layout` includes exactly one body, one cap, and one solid USB
   cover as separate build-plate-supported objects with no intersection or
   floating geometry.
@@ -337,13 +437,20 @@ space.
 - `210 x 210 x 110 mm` describes the complete assembled exterior, not the
   interior cavity or only the body below the cap.
 - The right-side and rear openings are full-height, top-open lay-in passages;
-  attached cable segments are lowered into them while the cap is absent.
-  Schuko heads do not pass through the `20.0 mm` slot widths.
+  attached cable segments are lowered into them while the cap is absent. The
+  right opening is see-through through its curved body wall like the rear opening
+  is through its flat wall. Schuko heads do not pass through the `20.0 mm` slot
+  widths. The right opening retains its separately approved adjustable
+  `30.0 deg` rearward default center angle.
 - Four fat cables means four jackets no larger than the provisional `12.0 mm`
   circular envelope stacked vertically in the right-side opening. It does not
   mean four Schuko heads pass through the right-side slot.
-- Plain exterior walls means the raised horizontal stripes are removed while
-  the approved hexagonal ventilation grid remains.
+- Plain exterior walls means the raised horizontal stripes and front-wall
+  hexagonal grid are removed; the approved grid moves to the top cap.
+- Middle and left means the USB opening preserves its approved left-biased X
+  center while its Z center is adjustable. The default is `73.0 mm`; setting it
+  to `103.5 mm` centers it on the body wall but may not align with the
+  provisional floor-standing device.
 - The solid USB cover is installed only when the USB opening is intended to be
   closed. USB plugs and cables use the group opening with the cover removed.
 - A smooth interior floor means the power strip has no printed locating or
@@ -360,11 +467,18 @@ space.
 ## Regression Impact
 
 - The existing Voomy OpenSCAD source changes from striped to smooth body walls,
-  while retaining its hexagonal ventilation grid and fixed envelope.
+  while retaining its fixed envelope.
+- The hexagonal grid moves from the front wall to the top cap, changing the cap
+  from fully solid to a flat, perimeter-supported ventilated roof.
+- The USB opening and solid cover move upward to a `73.0 mm` default center and
+  support a `103.5 mm` body-midpoint override without changing their X position.
 - The USB printable part changes from an open bezel to a solid removable cover;
   the existing `usb_passthrough_clip` render-mode identifier remains supported.
 - The body receiver gaps shrink to four closed clamp holes, and all internal
   power-strip supports and locating stops are removed.
+- The visual-right passage retains its separately approved `30.0 deg` rearward
+  default center angle and cuts beyond the curved exterior wall without
+  changing the cap, body floor, rear passage, or inner cable envelope.
 - The README Voomy section changes to match the revised operation and geometry.
 - No other OpenSCAD design changes.
 - No existing generated artifact becomes tracked.
@@ -384,35 +498,46 @@ space.
   - three separate printable objects,
   - build-plate contact and non-intersection,
   - continuous top-open right and rear passages,
-  - `20.0 mm` tangential arc width and midpoint placement of the right passage,
+  - `20.0 mm` tangential arc width and `30.0 deg` rearward default placement of
+    the right passage, including its rearward-positive adjustable angle,
   - `12.0 mm` cable clearance and four-cable vertical stacking,
-  - solid USB-cover seating, full closure, removal, and reinstallation,
+  - solid USB-cover seating, full closure, removal, and reinstallation at the
+    `73.0 mm` default center and `103.5 mm` override,
   - cap seating, clip alignment, engagement, release clearance, and exactly four
     closed `12.6 x 5.6 mm` receiver holes with continuous wall above them,
-  - grid continuity, minimum ribs, and structural keepouts,
+  - no hexagonal openings in the front wall,
+  - top-cap grid continuity, minimum ribs, perimeter/skirt/clip keepouts, and
+    broad print-plane support,
   - smooth plain wall continuity with no raised stripe geometry,
   - a flat interior floor with no support pads, pins, stops, or raised features,
-  - a plain cap exterior with continuous build-plate contact,
-  - wall and floor continuity around the full-height slots.
+  - a flat top-cap exterior with grid-rib and perimeter build-plate contact,
+  - no curved exterior wall membrane across the right passage and unchanged
+    floor termination at both passages.
 - Do not commit temporary render or mesh outputs.
 
 ### Slicer And Physical Validation
 
 - Confirm all print groups, bed margins, layer orientation, bridges, and
   unsupported overhangs in Bambu Studio for the P2S.
-- Confirm the upright smooth-walled body and exterior-down plain cap have stable,
-  continuous first-layer contact and require no unintended support material.
+- Confirm the upright smooth-walled body and exterior-down ventilated cap have
+  stable first-layer contact on the cap perimeter and grid ribs and require no
+  unintended support material.
 - Measure the actual power strip, USB group, attached-cord exit, intended
   Schuko heads, and cable jackets before relying on the defaults.
 - Test that each cable segment can be lowered into the right passage without
   passing its attached Schuko head through the slot, and that all four
   connected cables can occupy the passage together at distinct heights.
+- Confirm the printed right body passage is fully see-through like the rear
+  passage, without a skin, brim, support, or curved-wall crescent closing it.
 - Test that the power strip's own cable can be lowered into the rear passage
   while its Schuko head remains outside and that the cable is not pinched by
   the cap.
 - Verify that the solid USB cover fully closes the opening, can be removed and
   reinstalled externally, and leaves the complete USB group accessible while
   removed.
+- Verify USB alignment first at the `73.0 mm` default; if `103.5 mm` or another
+  height is used, measure the actual device and confirm the complete opening
+  still serves only the USB group.
 - Verify that the power strip rests stably on the smooth floor without printed
   supports or locating pins and can still be aligned with the USB opening.
 - Fit and release the cap repeatedly, including at least 20 complete clip
@@ -430,15 +555,18 @@ space.
 
 - Add a README section covering the design purpose, fixed exterior dimensions,
   manually entered and provisional measurements, installed orientation,
-  adjustable parameters, render modes, printable parts, retained grid behavior,
-  smooth plain walls and floor, cap and solid USB-cover operation, minimal clamp
-  holes, the plain cap requirement, and Bambu P2S print grouping.
+  adjustable parameters, render modes, printable parts, front-wall grid removal,
+  top-cap grid behavior, smooth plain walls and floor, cap and solid USB-cover
+  operation, minimal clamp holes, and Bambu P2S print grouping.
 - Document that both mains passages require cap removal so attached cable
   segments can be lowered into their open tops without passing Schuko heads
   through the `20.0 mm` slot widths.
+- Document that the right passage cuts fully through the curved body wall while
+  both body passages continue to stop at the interior floor.
 - Document that the USB opening is in the left-hand portion of the front wall
-  and serves only the USB group; the solid cover must be removed for USB access
-  or cable routing.
+  and serves only the USB group; its default center is `73.0 mm`, `103.5 mm` is
+  a supported measurement-sensitive override, and the solid cover must be
+  removed for USB access or cable routing.
 - Document the measurement checklist, material-dependent clip risk, ventilation
   limitations, electrical and thermal non-certification, and DRAFT physical-fit
   boundary.

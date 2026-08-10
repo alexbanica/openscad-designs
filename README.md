@@ -60,13 +60,22 @@ Looking at the front, the power strip installs vertically with its USB face
 toward the front wall and its USB group biased toward visual left. The removable
 solid USB cover is therefore in the left-hand portion of the straight **front
 wall**, not in the curved left wall. Its provisional body cutout is one shared
-`60.0 mm x 36.0 mm` group-only opening. The installed cover completely closes
-that opening with a solid, opaque panel: it has no through-opening, port divider,
-grille, or see-through region, and must not intentionally expose an adjacent AC
-socket or the power switch. Remove the cover from outside before accessing the
-USB group or routing USB cables; do not install it over connected USB cables.
-It can be snapped back in without taking off the cap or moving the power strip,
-and its snap tabs and fit remain material- and printer-dependent.
+`60.0 mm x 36.0 mm` group-only opening. Its adjustable center height is
+`usb_cutout_center_z_mm = 73.0` by default, giving the exact default span
+`Z 55.0..91.0 mm`. The supported `103.5 mm` override is the exact midpoint of
+the `207.0 mm` body wall and spans `Z 85.5..121.5 mm`; it is
+measurement-sensitive because most of that opening lies above the provisional
+`88.0 mm` floor-standing Voomy reference. Other center heights are supported
+only when the complete opening remains between the `3.0 mm` interior floor and
+the body top. The left-biased X center does not change with height, and the
+installed cover follows the effective opening center with exactly `3.0 mm` of
+wall overlap on every edge. The cover completely closes the opening with a
+solid, opaque panel: it has no through-opening, port divider, grille, or
+see-through region, and must not intentionally expose an adjacent AC socket or
+the power switch. Remove the cover from outside before accessing the USB group
+or routing USB cables; do not install it over connected USB cables. It can be
+snapped back in without taking off the cap or moving the power strip, and its
+snap tabs and fit remain material- and printer-dependent.
 
 The visual-right curved wall and the straight rear wall each have one
 `20.0 mm`-wide passage running continuously from the wall top to the interior
@@ -83,28 +92,29 @@ The rear passage accepts the power strip's attached lead. Arrange both routes
 before seating the cap, and confirm that the cap neither pinches the cables nor
 forces a sharp bend.
 
-The top cap has a flat, plain exterior with no stripes, grid, or engraving. Its
-continuous alignment skirt locates it before four cantilever clips engage: one
-at the front-right straight region, one at the left semicircular end, and two
-on the rear wall on opposite sides of the rear slot. To remove the cap, support
-it, press the four externally reachable release pads enough to clear their
-catches, and lift evenly. Do not pry one retained edge. To reinstall it, align
-the skirt, press down evenly, and confirm that all four clips engage. PETG or
-another material suited to repeated flexing is preferable; geometry cannot
-guarantee clip force, fatigue life, or layer adhesion.
+The top cap has a central staggered hexagonal through-grid with `12.0 mm`
+across-flats cells, at least `3.0 mm` ribs, and at least `12.0 mm` solid
+perimeter, skirt, clip-root, flexure-path, and retention keepouts. Cells that
+would violate a keepout are omitted whole. The cap exterior remains flat and
+plain outside this grid, with no stripes or engraving. Its continuous alignment
+skirt locates it before four cantilever clips engage: one at the front-right
+straight region, one at the left semicircular end, and two on the rear wall on
+opposite sides of the rear slot. To remove the cap, support it, press the four
+externally reachable release pads enough to clear their catches, and lift
+evenly. Do not pry one retained edge. To reinstall it, align the skirt, press
+down evenly, and confirm that all four clips engage. PETG or another material
+suited to repeated flexing is preferable; geometry cannot guarantee clip force,
+fatigue life, or layer adhesion.
 
 Each cap clip is accessible through one minimal, closed body receiver hole. The
 four default holes are each exactly `12.6 mm x 5.6 mm`, remain bounded by solid
 wall on all four sides, and do not reach the body top edge.
 
 The front, rear, left, and right exterior walls are smooth and plain except for
-the required functional openings and the retained staggered hexagonal
-ventilation grid. The grid ventilates the unobstructed upper front region using
-`12.0 mm` across-flats cells, at least `3.0 mm` ribs, and `12.0 mm` structural
-borders. It stops around the USB interface, passages, cap retention, and wall
-junctions. The interior floor is flat, smooth, and unobstructed: the power strip
-rests directly on it without printed supports, locating pins, stops, ridges, or
-other raised positioning features and must be positioned manually.
+required functional openings. No body wall contains a ventilation grid. The
+interior floor is flat, smooth, and unobstructed: the power strip rests directly
+on it without printed supports, locating pins, stops, ridges, or other raised
+positioning features and must be positioned manually.
 
 ### Adjustable Parameters
 
@@ -122,10 +132,11 @@ The source groups its adjustable parameters near the top. Key groups include:
   `maximum_cable_diameter_mm`, `right_routed_cable_count`,
   `cable_lateral_clearance_mm`, `cable_contact_edge_radius_mm`, and
   `rear_passage_center_x_mm`;
-- USB opening and clip geometry: `usb_cutout_*`, `usb_group_offset_*`, and
-  `usb_clip_*`;
+- USB opening and clip geometry: `usb_cutout_center_z_mm`, the remaining
+  `usb_cutout_*`, `usb_group_offset_*`, and `usb_clip_*`;
 - cap alignment and retention: `cap_skirt_*` and `cap_clip_*`;
-- ventilation: `grid_*`; and
+- top-cap ventilation: `grid_hex_across_flats_mm`,
+  `grid_minimum_rib_width_mm`, and `grid_structural_border_mm`; and
 - printable-layout positions, spacing, rotation, and preview colours.
 
 Keep the exterior dimensions fixed unless a separately approved design change
@@ -139,7 +150,8 @@ parameter adjustment.
 - `assembly`: closed assembled body, cap, and solid USB cover; the non-printable
   Voomy and cable references appear only when explicitly enabled;
 - `case_body`: upright printable body on its full bottom face;
-- `top_cap`: printable cap with its plain exterior face on the build plate;
+- `top_cap`: printable ventilated cap exterior-down, supported on its solid
+  perimeter and connected grid ribs;
 - `usb_passthrough_clip`: printable solid USB cover on its broad exterior face;
   this identifier is unchanged for compatibility; and
 - `printable_layout`: exactly one body, one cap, and one solid USB cover as three
@@ -147,11 +159,13 @@ parameter adjustment.
 
 Unsupported values fail an assertion. Repository validation permits only the
 reference-free `assembly` and `printable_layout` renders, each with a 15-second
-hard limit:
+hard limit. The assembly command is also run with the supported midpoint USB
+override:
 
 ```sh
 timeout 15s openscad -o /tmp/voomy_power_s7_case_printable_layout.csg -D 'render_mode="printable_layout"' designs/voomy_power_s7_cable_management_case.scad
 timeout 15s openscad -o /tmp/voomy_power_s7_case_assembly.csg -D 'render_mode="assembly"' -D 'show_powerstrip_reference=false' designs/voomy_power_s7_cable_management_case.scad
+timeout 15s openscad -o /tmp/voomy_power_s7_case_assembly_midpoint.csg -D 'render_mode="assembly"' -D 'show_powerstrip_reference=false' -D 'usb_cutout_center_z_mm=103.5' designs/voomy_power_s7_cable_management_case.scad
 ```
 
 Keep these temporary outputs in `/tmp`; do not add STL, STEP, 3MF, OFF, CSG, or
@@ -161,9 +175,10 @@ other generated exports to source control.
 
 The nominal `printable_layout` fits the three separated objects inside a
 `256 mm x 256 mm` plate. For a Bambu Lab P2S, keep the body upright on its
-`210.0 mm x 110.0 mm` bottom face, the cap plain-exterior-face-down, and the USB
-cover broad-exterior-face-down. Verify actual Bambu Studio bed margins, first
-layers, bridges, unsupported overhangs, and support requirements. If slicer
+`210.0 mm x 110.0 mm` bottom face, the cap exterior-down with its solid
+perimeter and connected grid ribs supporting it, and the USB cover
+broad-exterior-face-down. Verify actual Bambu Studio bed margins, first layers,
+bridges, unsupported overhangs, and support requirements. If slicer
 margins prevent the combined layout, preserve those orientations and use a body
 print group plus a cap-and-USB-cover group (or print each part independently);
 do not rotate parts into weaker orientations merely to force a one-plate layout.
