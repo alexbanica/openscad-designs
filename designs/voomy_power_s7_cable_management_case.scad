@@ -213,9 +213,10 @@ cap_grid_row_index_max = floor(cap_grid_center_limit_y_mm / grid_row_pitch_mm);
 cap_grid_column_index_max =
     floor(cap_grid_center_limit_x_mm / grid_column_pitch_mm);
 body_wall_grid_aperture_count = 0;
+cap_clip_site_radius_mm = interior_capsule_radius_mm;
 cap_clip_front_right_x_mm = 38.0;
 cap_clip_left_x_mm = -capsule_tangent_center_offset_x_mm
-    - cap_skirt_outer_radius_mm;
+    - cap_clip_site_radius_mm;
 cap_clip_rear_left_x_mm = -42.0;
 cap_clip_rear_right_x_mm = 20.0;
 cap_clip_receiver_width_mm = cap_clip_width_mm
@@ -244,16 +245,16 @@ cap_clip_receiver_top_bridge_mm = body_height_mm
     - cap_clip_receiver_top_z_mm;
 cap_installed_flip_x_deg = 180;
 cap_front_right_source_x_mm = cap_clip_front_right_x_mm;
-cap_front_right_source_y_mm = cap_skirt_outer_radius_mm;
+cap_front_right_source_y_mm = cap_clip_site_radius_mm;
 cap_front_right_source_angle_deg = 0;
 cap_left_source_x_mm = cap_clip_left_x_mm;
 cap_left_source_y_mm = 0;
 cap_left_source_angle_deg = 90;
 cap_rear_left_source_x_mm = cap_clip_rear_left_x_mm;
-cap_rear_left_source_y_mm = -cap_skirt_outer_radius_mm;
+cap_rear_left_source_y_mm = -cap_clip_site_radius_mm;
 cap_rear_left_source_angle_deg = 180;
 cap_rear_right_source_x_mm = cap_clip_rear_right_x_mm;
-cap_rear_right_source_y_mm = -cap_skirt_outer_radius_mm;
+cap_rear_right_source_y_mm = -cap_clip_site_radius_mm;
 cap_rear_right_source_angle_deg = 180;
 cap_clip_receiver_transforms = [
     [cap_clip_front_right_x_mm, -interior_capsule_radius_mm, 180],
@@ -464,29 +465,27 @@ assert(cap_clip_thickness_mm
     "Clip pads and hooks must stay within the fixed cap outline");
 assert(cap_installed_flip_x_deg == 180,
     "The cap must use a rigid 180-degree installed flip");
-assert(cap_front_right_source_x_mm == cap_clip_front_right_x_mm
-    && -cap_front_right_source_y_mm == -cap_skirt_outer_radius_mm
-    && abs(abs(-cap_front_right_source_y_mm + interior_capsule_radius_mm)
-        - cap_skirt_clearance_mm) < eps_mm
-    && 180 - cap_front_right_source_angle_deg == 180
-    && cap_left_source_x_mm == cap_clip_left_x_mm
-    && -cap_left_source_y_mm == 0
-    && abs(abs(cap_left_source_x_mm
-            - (-capsule_tangent_center_offset_x_mm
-                - interior_capsule_radius_mm))
-        - cap_skirt_clearance_mm) < eps_mm
-    && 180 - cap_left_source_angle_deg == 90
-    && cap_rear_left_source_x_mm == cap_clip_rear_left_x_mm
-    && -cap_rear_left_source_y_mm == cap_skirt_outer_radius_mm
-    && abs(abs(-cap_rear_left_source_y_mm - interior_capsule_radius_mm)
-        - cap_skirt_clearance_mm) < eps_mm
-    && 180 - cap_rear_left_source_angle_deg == 0
-    && cap_rear_right_source_x_mm == cap_clip_rear_right_x_mm
-    && -cap_rear_right_source_y_mm == cap_skirt_outer_radius_mm
-    && abs(abs(-cap_rear_right_source_y_mm - interior_capsule_radius_mm)
-        - cap_skirt_clearance_mm) < eps_mm
-    && 180 - cap_rear_right_source_angle_deg == 0,
-    "Rigidly flipped cap-local hooks and skirt pockets must align all receivers");
+assert(cap_clip_site_radius_mm == 52.0 && cap_clip_left_x_mm == -102.0,
+    "Cap clamp sites must use the body receiver radial datum");
+assert(cap_front_right_source_x_mm == cap_clip_receiver_transforms[0][0]
+    && -cap_front_right_source_y_mm == cap_clip_receiver_transforms[0][1]
+    && 180 - cap_front_right_source_angle_deg
+        == cap_clip_receiver_transforms[0][2],
+    "The installed front-right cap clamp must align with its body receiver");
+assert(cap_left_source_x_mm == cap_clip_receiver_transforms[1][0]
+    && -cap_left_source_y_mm == cap_clip_receiver_transforms[1][1]
+    && 180 - cap_left_source_angle_deg == cap_clip_receiver_transforms[1][2],
+    "The installed left-end cap clamp must align with its body receiver");
+assert(cap_rear_left_source_x_mm == cap_clip_receiver_transforms[2][0]
+    && -cap_rear_left_source_y_mm == cap_clip_receiver_transforms[2][1]
+    && 180 - cap_rear_left_source_angle_deg
+        == cap_clip_receiver_transforms[2][2],
+    "The installed rear-left cap clamp must align with its body receiver");
+assert(cap_rear_right_source_x_mm == cap_clip_receiver_transforms[3][0]
+    && -cap_rear_right_source_y_mm == cap_clip_receiver_transforms[3][1]
+    && 180 - cap_rear_right_source_angle_deg
+        == cap_clip_receiver_transforms[3][2],
+    "The installed rear-right cap clamp must align with its body receiver");
 assert(case_height_mm - cap_clip_hook_start_z_mm
         == cap_clip_catch_bottom_z_mm,
     "Rigidly flipped cap hooks must align receiver catches vertically");

@@ -2,6 +2,81 @@
 
 Status: Approved
 
+## Iteration: Top-Cover Clamp-To-Receiver Alignment (2026-08-14)
+
+### Purpose And Reported Defect
+
+Correct the top cover because its four retention clamps do not align with the
+four closed receiver holes in the already-good case base and prevent the cover
+from fitting. The case base is authoritative printed geometry and must not be
+modified.
+
+### Confirmed Discrepancy
+
+- The body receiver sites are located on the `52.0 mm` interior body-wall
+  radius.
+- The corresponding top-cover clamp and skirt-pocket sites are located on the
+  `51.7 mm` cap-skirt outer radius because they reuse the skirt's `0.3 mm`
+  per-side seating clearance.
+- After the approved rigid `180 deg` installed flip, each cover-side retention
+  site is therefore `0.3 mm` radially inboard of its matching body receiver
+  centerline. Tangential X placement, installed orientation, and vertical
+  release-pad placement otherwise match.
+- The current source assertion verifies that `0.3 mm` offset instead of
+  requiring coincident installed clamp and receiver centerlines.
+
+### Required Behavior
+
+- Move only the four top-cover clamp sites and their associated skirt-pocket and
+  bypass clearance geometry radially outward by exactly `0.3 mm` so their
+  installed centerlines coincide with the existing body receiver centerlines.
+- Preserve the existing tangential locations: front-right X `38.0 mm`, rear-left
+  X `-42.0 mm`, and rear-right X `20.0 mm`; preserve the left-end site's
+  tangential Y center at `0.0 mm`.
+- Preserve all clip dimensions, hook geometry, press-pad geometry, vertical
+  engagement, interference, release travel, and material guidance.
+- Keep the continuous alignment skirt at its current `51.7 mm` outer radius and
+  retain its `0.3 mm` per-side body-fit clearance. Clamp alignment must no longer
+  be derived from the inset skirt radius.
+- Replace the offset-accepting assertion with installed-coordinate assertions
+  proving that all four clamp centerlines and orientations match their body
+  receiver transforms after the rigid cap flip.
+
+### Preserved Behavior And Out Of Scope
+
+- Do not modify the case body, its four receiver holes or catches, the exterior
+  envelope, wall or floor geometry, cable passages, USB interface, top-cap
+  ventilation, printable layout, or any other design.
+- Do not enlarge, relocate, or reshape the base holes to compensate for the
+  cover defect.
+- Keep exactly four closed `12.6 x 5.6 mm` receiver holes with continuous body
+  wall above and below them.
+- Keep `render_mode = "printable_layout"`, OpenSCAD 2021.01 compatibility,
+  Bambu Lab P2S/AMS 2 Pro print compatibility, and generated exports outside
+  source control.
+
+### Assumptions, Impact, And Validation Boundary
+
+- The user's physical observation that the existing base is good is
+  authoritative; only the top cover needs reprinting after implementation.
+- The source-visible `0.3 mm` radial discrepancy is treated as the reported
+  alignment defect. No additional physical offset is inferred without a new
+  measurement.
+- Implementation changes only the Voomy OpenSCAD source, the Voomy README
+  retention/fit guidance, and these matching spec and plan artifacts.
+- Unit tests and conventional test-first work are prohibited and not applicable.
+- Run `git diff --check`, OpenSCAD assertions, and bounded reference-free
+  `assembly` and `printable_layout` renders or exports. Inspect installed clamp
+  centerlines, pocket clearance, cap seating, connectivity, and unchanged base
+  geometry.
+- Reprint only the corrected top cover and fit it to the existing base. Verify
+  all four clamps enter their receiver holes without collision, the skirt seats
+  fully, the cap remains flush, and at least 20 engagement/release cycles do not
+  cause whitening, cracking, delamination, excessive force, or loss of
+  retention.
+- Delivery remains DRAFT until that physical top-cover-to-existing-base fit and
+  cycle validation is completed.
+
 ## Super-Agent Update: Midpoint Vertical USB Interface (2026-08-10)
 
 ### Purpose And Requested Behavior
@@ -425,6 +500,9 @@ space.
   other decorative texture.
 - A continuous alignment skirt locates the cap before the hooks engage, using
   `0.3 mm` nominal clearance per side and at least `6.0 mm` engagement depth.
+- The skirt clearance must not offset the clamp locations. After the installed
+  cap transform, every clamp centerline and orientation coincides with its
+  corresponding body receiver centerline and orientation.
 - Four tool-less cantilever retention clips secure the cap: one in the
   available front-right straight region, one on the left semicircular end, and
   two on the rear straight region split to either side of the rear passage.
@@ -546,6 +624,9 @@ space.
   the existing `usb_passthrough_clip` render-mode identifier remains supported.
 - The body receiver gaps shrink to four closed clamp holes, and all internal
   power-strip supports and locating stops are removed.
+- The four top-cover clamp sites and their local skirt-pocket clearances move
+  `0.3 mm` radially outward to align with the unchanged body receiver
+  centerlines; the base and continuous alignment skirt remain unchanged.
 - The visual-right passage retains its separately approved `30.0 deg` rearward
   default center angle and cuts beyond the curved exterior wall without
   changing the cap, body floor, rear passage, or inner cable envelope.
@@ -575,6 +656,8 @@ space.
     vertical `36.0 x 60.0 mm` opening at the `103.5 mm` default center,
   - cap seating, clip alignment, engagement, release clearance, and exactly four
     closed `12.6 x 5.6 mm` receiver holes with continuous wall above them,
+  - coincident installed clamp/receiver centerlines at all four sites while the
+    alignment skirt retains `0.3 mm` per-side seating clearance,
   - no hexagonal openings in the front wall,
   - top-cap grid continuity, minimum ribs, perimeter/skirt/clip keepouts, and
     broad print-plane support,
@@ -613,6 +696,8 @@ space.
 - Fit and release the cap repeatedly, including at least 20 complete clip
   cycles, checking for whitening, cracking, delamination, excessive force, and
   loss of retention.
+- Reuse the existing case base and reprint only the corrected top cover for the
+  clamp-alignment fit and cycle checks.
 - Check the case under the intended real operating load according to the power
   strip manufacturer's requirements. Stop use if the printed case deforms,
   traps unsafe heat, damages cable insulation, or obstructs the power strip's
@@ -640,3 +725,5 @@ space.
 - Document the measurement checklist, material-dependent clip risk, ventilation
   limitations, electrical and thermal non-certification, and DRAFT physical-fit
   boundary.
+- Document that the clamp alignment correction is top-cover-only and that the
+  existing base and its receiver holes remain unchanged.
