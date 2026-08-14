@@ -110,6 +110,16 @@ Each cap clip is accessible through one minimal, closed body receiver hole. The
 four default holes are each exactly `12.6 mm x 5.6 mm`, remain bounded by solid
 wall on all four sides, and do not reach the body top edge.
 
+The clamp-alignment correction is top-cover-only. The existing case base and
+its four receiver holes remain unchanged and should be reused; reprint only the
+corrected top cover. Its four clamps now align to the existing receiver datum,
+while the continuous alignment skirt retains its `0.3 mm` per-side seating
+clearance. This correction remains **DRAFT** until the corrected cover is fit to
+the existing base, all four clamps enter without collision, the skirt seats
+fully, the cap remains flush, and at least `20` engagement/release cycles
+complete without whitening, cracking, delamination, excessive force, or loss
+of retention.
+
 The front, rear, left, and right exterior walls are smooth and plain except for
 required functional openings. No body wall contains a ventilation grid. The
 interior floor is flat, smooth, and unobstructed: the power strip rests directly
