@@ -75,7 +75,15 @@ see-through region, and must not intentionally expose an adjacent AC socket or
 the power switch. Remove the cover from outside before accessing the USB group
 or routing USB cables; do not install it over connected USB cables. It can be
 snapped back in without taking off the cap or moving the power strip, and its
-snap tabs and fit remain material- and printer-dependent.
+snap tabs and fit remain material- and printer-dependent. The unchanged body
+opening remains `36.0 mm x 60.0 mm`. The corrected cover retains all four tabs.
+The complete lower pair is shifted upward exactly `2.0 mm` and acts as the
+bottom-first locating pair; the upper pair remains unchanged and provides
+positive snap retention. Install the cover by inserting the lower pair first,
+then rotating the rigid panel toward the wall until the upper pair enters and
+snaps without bending the panel. The `3.0 mm`-thick panel remains seated against
+the outside face of the front wall; it is not inserted into or overlapped with
+the unchanged wall volume.
 
 The visual-right curved wall and the straight rear wall each have one
 `20.0 mm`-wide passage running continuously from the wall top to the interior
@@ -97,28 +105,35 @@ across-flats cells, at least `3.0 mm` ribs, and at least `12.0 mm` solid
 perimeter, skirt, clip-root, flexure-path, and retention keepouts. Cells that
 would violate a keepout are omitted whole. The cap exterior remains flat and
 plain outside this grid, with no stripes or engraving. Its continuous alignment
-skirt locates it before four cantilever clips engage: one at the front-right
-straight region, one at the left semicircular end, and two on the rear wall on
-opposite sides of the rear slot. To remove the cap, support it, press the four
-externally reachable release pads enough to clear their catches, and lift
-evenly. Do not pry one retained edge. To reinstall it, align the skirt, press
-down evenly, and confirm that all four clips engage. PETG or another material
-suited to repeated flexing is preferable; geometry cannot guarantee clip force,
-fatigue life, or layer adhesion.
+skirt locates it before four calibrated hook-only cantilever clamps engage: one
+at the front-right straight region, one at the left semicircular end, and two on
+the rear wall on opposite sides of the rear slot. Each clamp applies exact
+`2.4 mm` receiver-local tangential compensation. Its straight arm remains at
+least `0.3 mm` inside the unchanged base inner wall, and only its `0.8 mm` hook
+head enters the receiver hole. The installed hook head spans
+`Z 194.7..195.5 mm` and catches the opening's upper edge. There are no cap-side
+release pads, skirt bypasses, or wall-loading features. Align the skirt, press
+the cap down evenly, and confirm all four hooks engage without forcing or wall
+deflection; do not pry one retained edge during removal. PETG or another
+material suited to repeated flexing is preferable; geometry cannot guarantee
+clamp force, fatigue life, or layer adhesion.
 
 Each cap clip is accessible through one minimal, closed body receiver hole. The
 four default holes are each exactly `12.6 mm x 5.6 mm`, remain bounded by solid
 wall on all four sides, and do not reach the body top edge.
 
-The clamp-alignment correction is top-cover-only. The existing case base and
-its four receiver holes remain unchanged and should be reused; reprint only the
-corrected top cover. Its four clamps now align to the existing receiver datum,
-while the continuous alignment skirt retains its `0.3 mm` per-side seating
-clearance. This correction remains **DRAFT** until the corrected cover is fit to
-the existing base, all four clamps enter without collision, the skirt seats
-fully, the cap remains flush, and at least `20` engagement/release cycles
-complete without whitening, cracking, delamination, excessive force, or loss
-of retention.
+The calibrated clamp and USB-tab corrections are cover-only. The complete case
+base, including its four fixed `12.6 mm x 5.6 mm` receiver holes and fixed
+`36.0 mm x 60.0 mm` USB opening, remains unchanged and should be reused. Reprint
+only the corrected top cover and USB cover. The top cover retains its `0.3 mm`
+per-side skirt clearance. Its fit remains **DRAFT** until all four hook heads
+enter without collision or wall deflection, catch the receiver openings' upper
+edges, the skirt seats fully, the cap remains flush and removable, and at least
+`20` engagement/release cycles complete without whitening, cracking,
+delamination, excessive force, wall damage, or loss of retention. The USB-cover
+fit also remains **DRAFT** until bottom-first insertion, upper-pair snap
+retention, seating, removal, and repeated cycling are physically validated
+without bending the panel or stressing the base.
 
 The front, rear, left, and right exterior walls are smooth and plain except for
 required functional openings. No body wall contains a ventilation grid. The
@@ -205,9 +220,10 @@ operation. Before treating the design as validated:
 - verify the intended four cable jackets fit together in the right slot and the
   attached lead fits the rear slot without passing either Schuko head through a
   slot, abrasion, pinching, or unsafe bend strain;
-- verify the solid cover fully closes the USB opening, can be removed and
-  reinstalled from outside, and leaves the complete USB group accessible while
-  removed;
+- verify the solid USB cover fully closes the opening, installs lower-pair-first
+  before the unchanged upper pair snaps into retention, can be removed and
+  repeatedly reinstalled from outside without bending the panel or stressing
+  the base, and leaves the complete USB group accessible while removed;
 - complete at least `20` full cap fit-and-release cycles, checking every clip
   for whitening, cracking, delamination, excessive force, and loss of
   retention; and
@@ -224,8 +240,9 @@ not override the manufacturer's limits or operating instructions.
 
 Delivery remains **DRAFT** until the actual device and cables are measured,
 Bambu Studio slicer inspection and a test print succeed, physical
-device/plug/cable fit and removable-cover operation are proven, all `20` cap
-clip cycles pass, and intended-load thermal behavior is verified.
+device/plug/cable fit and both removable-cover operations are proven, all `20`
+top-cover engagement/release cycles and repeated USB-cover cycles pass, and
+intended-load thermal behavior is verified.
 
 ## Rotating Kitchen Jar Tray
 

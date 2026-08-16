@@ -55,7 +55,11 @@ usb_clip_fit_clearance_mm = 0.3;
 usb_clip_panel_thickness_mm = 3.0;
 usb_clip_retention_depth_mm = 5.0;
 usb_clip_tab_width_mm = 8.0;
-usb_clip_hook_engagement_mm = 0.8;
+usb_clip_tab_thickness_mm = 1.6;
+usb_clip_edge_clearance_mm = 0.5;
+usb_clip_hook_engagement_mm = 0.45;
+usb_clip_hook_lead_in_depth_mm = 1.0;
+usb_clip_lower_tab_shift_mm = 2.0;
 
 // Plain cap alignment and retention (provisional)
 cap_skirt_clearance_mm = 0.3;
@@ -73,6 +77,9 @@ cap_skirt_thickness_mm = 3.0;
 cap_clip_press_pad_projection_mm = 0.6;
 cap_clip_press_pad_height_mm = 5.0;
 cap_clip_receiver_clearance_mm = 0.3;
+cap_clip_tangential_compensation_mm = 2.4;
+cap_clip_arm_wall_clearance_mm = 0.3;
+cap_clip_arm_reach_mm = 12.3;
 
 // Ventilation grid (provisional)
 grid_hex_across_flats_mm = 12.0;
@@ -191,8 +198,42 @@ usb_cutout_midpoint_max_z_mm =
     usb_cutout_midpoint_center_z_mm + usb_cutout_height_mm / 2;
 usb_clip_outer_width_mm = usb_cutout_width_mm + 2 * usb_clip_wall_overlap_mm;
 usb_clip_outer_height_mm = usb_cutout_height_mm + 2 * usb_clip_wall_overlap_mm;
+usb_clip_tab_x_positions_mm = [
+    -usb_cutout_width_mm / 4,
+    usb_cutout_width_mm / 4
+];
+usb_clip_tab_pair_count = len(usb_clip_tab_x_positions_mm);
+usb_clip_total_tab_count = 2 * usb_clip_tab_pair_count;
+usb_clip_upper_tab_offset_y_mm = 0.0;
+usb_clip_lower_tab_offset_y_mm = usb_clip_lower_tab_shift_mm;
+usb_clip_upper_tab_outer_edge_y_mm = usb_cutout_height_mm / 2
+    - usb_clip_edge_clearance_mm;
+usb_clip_upper_tab_inner_edge_y_mm = usb_clip_upper_tab_outer_edge_y_mm
+    - usb_clip_tab_thickness_mm;
+usb_clip_upper_hook_tip_y_mm = usb_cutout_height_mm / 2
+    + usb_clip_hook_engagement_mm;
+usb_clip_lower_unshifted_tab_outer_edge_y_mm = -usb_cutout_height_mm / 2
+    + usb_clip_edge_clearance_mm;
+usb_clip_lower_tab_outer_edge_y_mm =
+    usb_clip_lower_unshifted_tab_outer_edge_y_mm
+    + usb_clip_lower_tab_offset_y_mm;
+usb_clip_lower_tab_inner_edge_y_mm = usb_clip_lower_tab_outer_edge_y_mm
+    + usb_clip_tab_thickness_mm;
+usb_clip_lower_unshifted_hook_tip_y_mm = -usb_cutout_height_mm / 2
+    - usb_clip_hook_engagement_mm;
+usb_clip_lower_hook_tip_y_mm = usb_clip_lower_unshifted_hook_tip_y_mm
+    + usb_clip_lower_tab_offset_y_mm;
+usb_clip_hook_projection_from_tab_mm = usb_clip_edge_clearance_mm
+    + usb_clip_hook_engagement_mm;
+usb_clip_tab_root_z_mm = usb_clip_panel_thickness_mm - eps_mm;
 installed_usb_clip_center_x_mm = usb_cutout_center_x_mm;
 installed_usb_clip_center_z_mm = usb_cutout_effective_center_z_mm;
+installed_usb_clip_panel_outer_y_mm = -capsule_outer_radius_mm
+    - usb_clip_panel_thickness_mm;
+installed_usb_clip_panel_inner_y_mm = -capsule_outer_radius_mm;
+installed_usb_clip_hook_y_mm = installed_usb_clip_panel_outer_y_mm
+    + usb_clip_panel_thickness_mm + wall_thickness_mm
+    + usb_clip_fit_clearance_mm;
 grid_hex_circumradius_mm = grid_hex_across_flats_mm / sqrt(3);
 grid_column_pitch_mm = 2 * grid_hex_circumradius_mm + grid_minimum_rib_width_mm;
 grid_row_pitch_mm = grid_hex_across_flats_mm + grid_minimum_rib_width_mm;
@@ -243,17 +284,43 @@ cap_clip_receiver_top_z_mm = cap_clip_receiver_bottom_z_mm
     + cap_clip_receiver_height_mm;
 cap_clip_receiver_top_bridge_mm = body_height_mm
     - cap_clip_receiver_top_z_mm;
+cap_clip_arm_outer_y_mm = -cap_clip_arm_wall_clearance_mm;
+cap_clip_arm_inner_y_mm = cap_clip_arm_outer_y_mm - cap_clip_thickness_mm;
+cap_skirt_roof_overlap_mm = eps_mm;
+cap_skirt_source_bottom_z_mm = cap_roof_thickness_mm
+    - cap_skirt_roof_overlap_mm;
+cap_skirt_source_top_z_mm = cap_skirt_source_bottom_z_mm
+    + cap_skirt_engagement_depth_mm + cap_skirt_roof_overlap_mm;
+cap_clip_arm_roof_overlap_mm = eps_mm;
+cap_clip_arm_source_root_z_mm = cap_roof_thickness_mm
+    - cap_clip_arm_roof_overlap_mm;
+cap_clip_arm_source_tip_z_mm = cap_clip_arm_source_root_z_mm
+    + cap_clip_arm_reach_mm + cap_clip_arm_roof_overlap_mm;
+cap_clip_hook_arm_overlap_mm = eps_mm;
+cap_clip_hook_inner_y_mm = cap_clip_arm_outer_y_mm
+    - cap_clip_hook_arm_overlap_mm;
+cap_clip_hook_source_ledge_z_mm = 14.5;
+cap_clip_hook_source_tip_z_mm = 15.3;
+cap_clip_hook_installed_ledge_z_mm = case_height_mm
+    - cap_clip_hook_source_ledge_z_mm;
+cap_clip_hook_installed_tip_z_mm = case_height_mm
+    - cap_clip_hook_source_tip_z_mm;
+cap_clip_hook_wall_penetration_mm = cap_clip_hook_engagement_mm
+    - cap_clip_arm_wall_clearance_mm;
 cap_installed_flip_x_deg = 180;
-cap_front_right_source_x_mm = cap_clip_front_right_x_mm;
+cap_front_right_source_x_mm = cap_clip_front_right_x_mm
+    - cap_clip_tangential_compensation_mm;
 cap_front_right_source_y_mm = cap_clip_site_radius_mm;
 cap_front_right_source_angle_deg = 0;
 cap_left_source_x_mm = cap_clip_left_x_mm;
-cap_left_source_y_mm = 0;
+cap_left_source_y_mm = -cap_clip_tangential_compensation_mm;
 cap_left_source_angle_deg = 90;
-cap_rear_left_source_x_mm = cap_clip_rear_left_x_mm;
+cap_rear_left_source_x_mm = cap_clip_rear_left_x_mm
+    + cap_clip_tangential_compensation_mm;
 cap_rear_left_source_y_mm = -cap_clip_site_radius_mm;
 cap_rear_left_source_angle_deg = 180;
-cap_rear_right_source_x_mm = cap_clip_rear_right_x_mm;
+cap_rear_right_source_x_mm = cap_clip_rear_right_x_mm
+    + cap_clip_tangential_compensation_mm;
 cap_rear_right_source_y_mm = -cap_clip_site_radius_mm;
 cap_rear_right_source_angle_deg = 180;
 cap_clip_receiver_transforms = [
@@ -304,8 +371,61 @@ assert(usb_clip_panel_thickness_mm >= wall_thickness_mm
 assert(usb_clip_tab_width_mm <= usb_cutout_width_mm / 2
     && usb_cutout_width_mm / 4 + usb_clip_tab_width_mm / 2
         <= usb_cutout_width_mm / 2
-    && cap_clip_thickness_mm <= usb_cutout_height_mm / 2,
+    && usb_clip_tab_thickness_mm <= usb_cutout_height_mm / 2,
     "The USB cover snap tabs must fit within and remain accessible through the body opening");
+assert(usb_clip_tab_pair_count == 2 && usb_clip_total_tab_count == 4
+    && usb_clip_tab_x_positions_mm[0] == -usb_cutout_width_mm / 4
+    && usb_clip_tab_x_positions_mm[1] == usb_cutout_width_mm / 4,
+    "The USB cover must retain exactly two upper and two lower tabs at the approved X positions");
+assert(usb_clip_upper_tab_offset_y_mm == 0.0
+    && abs(usb_clip_upper_tab_outer_edge_y_mm
+        - (usb_cutout_height_mm / 2 - usb_clip_edge_clearance_mm)) < eps_mm
+    && abs(usb_clip_upper_tab_inner_edge_y_mm
+        - (usb_clip_upper_tab_outer_edge_y_mm
+            - usb_clip_tab_thickness_mm)) < eps_mm
+    && abs(usb_clip_upper_hook_tip_y_mm
+        - (usb_cutout_height_mm / 2
+            + usb_clip_hook_engagement_mm)) < eps_mm,
+    "The complete upper USB tab pair must retain its approved coordinates");
+assert(usb_clip_lower_tab_shift_mm == 2.0
+    && usb_clip_lower_tab_offset_y_mm == usb_clip_lower_tab_shift_mm
+    && abs(usb_clip_lower_tab_outer_edge_y_mm
+        - usb_clip_lower_unshifted_tab_outer_edge_y_mm
+        - usb_clip_lower_tab_shift_mm) < eps_mm
+    && abs(usb_clip_lower_hook_tip_y_mm
+        - usb_clip_lower_unshifted_hook_tip_y_mm
+        - usb_clip_lower_tab_shift_mm) < eps_mm
+    && abs(usb_clip_lower_tab_inner_edge_y_mm
+        - usb_clip_lower_tab_outer_edge_y_mm
+        - usb_clip_tab_thickness_mm) < eps_mm,
+    "The complete lower USB tab pair must move upward exactly 2 mm without distortion");
+assert(usb_clip_edge_clearance_mm >= usb_clip_fit_clearance_mm
+    && usb_clip_upper_tab_outer_edge_y_mm < usb_cutout_height_mm / 2
+    && usb_clip_lower_tab_outer_edge_y_mm > -usb_cutout_height_mm / 2,
+    "Both USB cover tab pairs must pass through the unchanged body opening");
+assert(usb_clip_upper_hook_tip_y_mm > usb_cutout_height_mm / 2
+    && abs(usb_clip_upper_hook_tip_y_mm
+        - usb_clip_upper_tab_outer_edge_y_mm
+        - usb_clip_hook_projection_from_tab_mm) < eps_mm,
+    "The unchanged upper USB tabs must retain positive snap engagement");
+assert(usb_clip_lower_hook_tip_y_mm > -usb_cutout_height_mm / 2
+    && abs(usb_clip_lower_tab_outer_edge_y_mm
+        - usb_clip_lower_hook_tip_y_mm
+        - usb_clip_hook_projection_from_tab_mm) < eps_mm,
+    "The shifted lower USB tabs must remain locating-only inside the lower opening edge");
+assert(usb_clip_tab_root_z_mm < usb_clip_panel_thickness_mm
+    && usb_clip_tab_root_z_mm + usb_clip_retention_depth_mm + eps_mm
+        > usb_clip_panel_thickness_mm
+    && usb_clip_upper_tab_outer_edge_y_mm <= usb_clip_outer_height_mm / 2
+    && usb_clip_lower_tab_outer_edge_y_mm >= -usb_clip_outer_height_mm / 2
+    && abs(usb_clip_tab_x_positions_mm[0]) + usb_clip_tab_width_mm / 2
+        <= usb_clip_outer_width_mm / 2
+    && abs(usb_clip_tab_x_positions_mm[1]) + usb_clip_tab_width_mm / 2
+        <= usb_clip_outer_width_mm / 2,
+    "All four USB tabs must overlap and remain connected to the solid panel");
+assert(atan(usb_clip_hook_projection_from_tab_mm
+        / usb_clip_hook_lead_in_depth_mm) <= 45,
+    "The USB cover hook lead-in must not exceed 45 degrees");
 assert(cap_skirt_clearance_mm >= 0.3 && cap_skirt_engagement_depth_mm >= 6.0,
     "Cap skirt clearance or engagement is below the approved minimum");
 assert(cap_clip_count == 4 && cap_clip_receiver_count == cap_clip_count,
@@ -317,13 +437,25 @@ assert(cap_clip_receiver_width_mm == 12.6
 assert(cap_clip_receiver_top_bridge_mm >= wall_thickness_mm
     && cap_clip_receiver_bottom_z_mm > floor_thickness_mm,
     "Each receiver hole must retain continuous structural wall above and below");
-assert(cap_clip_flexible_length_mm >= 20.0 && cap_clip_width_mm >= 12.0
-    && cap_clip_thickness_mm >= 2.4 && cap_clip_root_fillet_radius_mm >= 2.0,
-    "Cap clip beam dimensions are below approved minimums");
-assert(cap_clip_lead_in_angle_deg <= 45.0 && cap_clip_hook_engagement_mm >= 0.8,
-    "Cap clip lead-in or hook engagement violates the approved contract");
-assert(cap_clip_interference_mm <= 0.6 && cap_clip_release_travel_mm <= 1.2,
-    "Cap clip interference or release travel exceeds the approved maximum");
+assert(cap_clip_width_mm == 12.0 && cap_clip_hook_engagement_mm == 0.8,
+    "Each hook-only cap clamp must preserve its 12.0 mm width and 0.8 mm head");
+assert(cap_clip_arm_reach_mm == 12.3
+    && cap_roof_thickness_mm + cap_clip_arm_reach_mm
+        == cap_clip_hook_source_tip_z_mm,
+    "Each straight cap arm must reach exactly 12.3 mm from the roof underside");
+assert(cap_skirt_roof_overlap_mm > 0
+    && cap_skirt_source_bottom_z_mm < cap_roof_thickness_mm
+    && cap_skirt_source_top_z_mm == cap_roof_thickness_mm
+        + cap_skirt_engagement_depth_mm,
+    "The alignment skirt must overlap the roof without changing its endpoints");
+assert(cap_clip_arm_roof_overlap_mm > 0
+    && cap_clip_arm_source_root_z_mm < cap_roof_thickness_mm
+    && cap_clip_arm_source_tip_z_mm == cap_clip_hook_source_tip_z_mm,
+    "Each cap arm must overlap the roof and preserve the nominal hook tip");
+assert(cap_clip_hook_arm_overlap_mm > 0
+    && cap_clip_hook_inner_y_mm < cap_clip_arm_outer_y_mm
+    && cap_clip_hook_inner_y_mm >= cap_clip_arm_inner_y_mm,
+    "Each hook head must overlap its arm without changing the outer hook face");
 assert(grid_hex_across_flats_mm == 12.0 && grid_minimum_rib_width_mm >= 3.0
     && grid_structural_border_mm >= 12.0,
     "Ventilation grid dimensions violate the approved defaults or minimums");
@@ -381,6 +513,14 @@ assert(usb_cutout_center_x_mm == powerstrip_center_x_mm + usb_group_offset_x_mm,
 assert(installed_usb_clip_center_x_mm == usb_cutout_center_x_mm
     && installed_usb_clip_center_z_mm == usb_cutout_effective_center_z_mm,
     "The installed solid USB cover and body cutout centers must align exactly");
+assert(installed_usb_clip_panel_inner_y_mm == -capsule_outer_radius_mm
+    && installed_usb_clip_panel_outer_y_mm
+        == -capsule_outer_radius_mm - usb_clip_panel_thickness_mm,
+    "The USB cover panel must stop outside the body while only its tabs enter the opening");
+assert(installed_usb_clip_hook_y_mm
+        == -capsule_outer_radius_mm + wall_thickness_mm
+            + usb_clip_fit_clearance_mm,
+    "The USB cover hooks must sit behind the unchanged front wall");
 assert(installed_usb_clip_center_x_mm - usb_clip_outer_width_mm / 2
         == usb_cutout_center_x_mm - usb_cutout_width_mm / 2
             - usb_clip_wall_overlap_mm
@@ -440,7 +580,7 @@ assert(cap_skirt_outer_radius_mm == interior_capsule_radius_mm - 0.3
         == cap_skirt_thickness_mm,
     "The continuous cap skirt must preserve 0.3 mm per-side clearance");
 assert(cap_roof_thickness_mm + cap_skirt_engagement_depth_mm
-        < cap_roof_thickness_mm + cap_clip_flexible_length_mm,
+        < cap_clip_hook_source_tip_z_mm,
     "The alignment skirt must locate the cap before the clip hooks engage");
 assert(cap_clip_front_right_x_mm - cap_clip_receiver_width_mm / 2
         >= usb_cutout_center_x_mm + usb_cutout_width_mm / 2
@@ -459,47 +599,54 @@ assert(cap_clip_rear_left_x_mm + cap_clip_receiver_width_mm / 2
     && cap_clip_rear_right_x_mm + cap_clip_receiver_width_mm / 2
         <= capsule_tangent_center_offset_x_mm,
     "The rear cap receivers must remain split around the rear-passage keepout");
-assert(cap_clip_thickness_mm
-        + max(cap_clip_press_pad_projection_mm, cap_clip_hook_engagement_mm)
-        <= wall_thickness_mm + cap_skirt_clearance_mm,
-    "Clip pads and hooks must stay within the fixed cap outline");
 assert(cap_installed_flip_x_deg == 180,
     "The cap must use a rigid 180-degree installed flip");
 assert(cap_clip_site_radius_mm == 52.0 && cap_clip_left_x_mm == -102.0,
     "Cap clamp sites must use the body receiver radial datum");
-assert(cap_front_right_source_x_mm == cap_clip_receiver_transforms[0][0]
+assert(cap_front_right_source_x_mm == 35.6
     && -cap_front_right_source_y_mm == cap_clip_receiver_transforms[0][1]
     && 180 - cap_front_right_source_angle_deg
         == cap_clip_receiver_transforms[0][2],
-    "The installed front-right cap clamp must align with its body receiver");
+    "The installed front cap clamp must have compensated X 35.6 mm");
 assert(cap_left_source_x_mm == cap_clip_receiver_transforms[1][0]
-    && -cap_left_source_y_mm == cap_clip_receiver_transforms[1][1]
+    && -cap_left_source_y_mm == 2.4
     && 180 - cap_left_source_angle_deg == cap_clip_receiver_transforms[1][2],
-    "The installed left-end cap clamp must align with its body receiver");
-assert(cap_rear_left_source_x_mm == cap_clip_receiver_transforms[2][0]
+    "The installed left-end cap clamp must have compensated Y 2.4 mm");
+assert(cap_rear_left_source_x_mm == -39.6
     && -cap_rear_left_source_y_mm == cap_clip_receiver_transforms[2][1]
     && 180 - cap_rear_left_source_angle_deg
         == cap_clip_receiver_transforms[2][2],
-    "The installed rear-left cap clamp must align with its body receiver");
-assert(cap_rear_right_source_x_mm == cap_clip_receiver_transforms[3][0]
+    "The installed rear-left cap clamp must have compensated X -39.6 mm");
+assert(cap_rear_right_source_x_mm == 22.4
     && -cap_rear_right_source_y_mm == cap_clip_receiver_transforms[3][1]
     && 180 - cap_rear_right_source_angle_deg
         == cap_clip_receiver_transforms[3][2],
-    "The installed rear-right cap clamp must align with its body receiver");
-assert(case_height_mm - cap_clip_hook_start_z_mm
-        == cap_clip_catch_bottom_z_mm,
-    "Rigidly flipped cap hooks must align receiver catches vertically");
-assert(cap_clip_press_pad_source_bottom_z_mm >= cap_roof_thickness_mm
-    && cap_clip_press_pad_source_top_z_mm
-        <= cap_roof_thickness_mm + cap_clip_flexible_length_mm,
-    "Each release pad must remain fully supported by its cantilever beam");
-assert(abs(cap_clip_receiver_bottom_z_mm
-        - (cap_clip_press_pad_installed_bottom_z_mm
-            - cap_clip_receiver_clearance_mm)) < eps_mm
-    && abs(cap_clip_receiver_top_z_mm
-        - (cap_clip_press_pad_installed_top_z_mm
-            + cap_clip_receiver_clearance_mm)) < eps_mm,
-    "Rigidly flipped release pads must align inside the closed receiver holes");
+    "The installed rear-right cap clamp must have compensated X 22.4 mm");
+assert(abs(cap_clip_front_right_x_mm - cap_front_right_source_x_mm - 2.4)
+        < eps_mm
+    && abs(-cap_left_source_y_mm - 2.4) < eps_mm
+    && abs(cap_rear_left_source_x_mm - cap_clip_rear_left_x_mm - 2.4)
+        < eps_mm
+    && abs(cap_rear_right_source_x_mm - cap_clip_rear_right_x_mm - 2.4)
+        < eps_mm,
+    "All four clamps must apply exact receiver-local signed 2.4 mm compensation");
+assert(cap_clip_hook_source_ledge_z_mm == 14.5
+    && cap_clip_hook_source_tip_z_mm == 15.3
+    && cap_clip_hook_installed_tip_z_mm == 194.7
+    && cap_clip_hook_installed_ledge_z_mm == 195.5,
+    "Each hook head must span installed Z 194.7 through 195.5 mm");
+assert(cap_clip_hook_installed_tip_z_mm >= cap_clip_receiver_bottom_z_mm
+    && cap_clip_hook_installed_ledge_z_mm <= cap_clip_receiver_top_z_mm,
+    "Each hook head must remain vertically contained in its receiver opening");
+assert(cap_clip_arm_wall_clearance_mm >= 0.3
+    && cap_clip_arm_outer_y_mm <= -0.3
+    && cap_clip_arm_inner_y_mm < cap_clip_arm_outer_y_mm,
+    "Each straight arm must remain clear of the unchanged inner wall");
+assert(cap_clip_hook_wall_penetration_mm > 0
+    && cap_clip_hook_wall_penetration_mm <= wall_thickness_mm
+    && cap_clip_arm_outer_y_mm + cap_clip_hook_engagement_mm
+        == cap_clip_hook_wall_penetration_mm,
+    "Only the hook head may penetrate the receiver opening");
 assert(abs(cap_clip_receiver_bottom_z_mm - cap_clip_catch_top_z_mm) < eps_mm,
     "Receiver access and catch must meet without overlap");
 assert(printable_layout_cap_center_y_mm - capsule_outer_radius_mm
@@ -618,41 +765,49 @@ module usb_clip_solid_panel() {
         ]);
 }
 
-module usb_clip_snap_tab(tab_x_mm, top_tab = true) {
-    tab_inner_y_mm = usb_cutout_height_mm / 2 - cap_clip_thickness_mm;
+module usb_clip_snap_tab(tab_x_mm, upper_tab = true) {
+    tab_outer_edge_y_mm = upper_tab
+        ? usb_clip_upper_tab_outer_edge_y_mm
+        : usb_clip_lower_unshifted_tab_outer_edge_y_mm;
+    tab_inner_edge_y_mm = upper_tab
+        ? usb_clip_upper_tab_inner_edge_y_mm
+        : usb_clip_lower_unshifted_tab_outer_edge_y_mm
+            + usb_clip_tab_thickness_mm;
+    tab_offset_y_mm = upper_tab
+        ? usb_clip_upper_tab_offset_y_mm
+        : usb_clip_lower_tab_offset_y_mm;
     hook_start_z_mm = usb_clip_panel_thickness_mm + wall_thickness_mm
         + usb_clip_fit_clearance_mm;
 
-    translate([tab_x_mm, 0, 0]) {
+    translate([tab_x_mm, tab_offset_y_mm, 0]) {
         translate([
             -usb_clip_tab_width_mm / 2,
-            top_tab ? tab_inner_y_mm : -usb_cutout_height_mm / 2,
-            usb_clip_panel_thickness_mm - eps_mm
+            upper_tab ? tab_inner_edge_y_mm : tab_outer_edge_y_mm,
+            usb_clip_tab_root_z_mm
         ])
             cube([
                 usb_clip_tab_width_mm,
-                cap_clip_thickness_mm,
+                usb_clip_tab_thickness_mm,
                 usb_clip_retention_depth_mm + eps_mm
             ]);
 
         hull() {
             translate([
                 -usb_clip_tab_width_mm / 2,
-                top_tab ? usb_cutout_height_mm / 2
-                    : -usb_cutout_height_mm / 2 - usb_clip_hook_engagement_mm,
+                upper_tab ? usb_clip_upper_tab_outer_edge_y_mm
+                    : usb_clip_lower_unshifted_hook_tip_y_mm,
                 hook_start_z_mm
             ])
                 cube([
                     usb_clip_tab_width_mm,
-                    usb_clip_hook_engagement_mm,
+                    usb_clip_hook_projection_from_tab_mm,
                     eps_mm
                 ]);
 
             translate([
                 -usb_clip_tab_width_mm / 2,
-                top_tab ? usb_cutout_height_mm / 2
-                    : -usb_cutout_height_mm / 2,
-                hook_start_z_mm + usb_clip_hook_engagement_mm
+                tab_outer_edge_y_mm,
+                hook_start_z_mm + usb_clip_hook_lead_in_depth_mm
             ])
                 cube([
                     usb_clip_tab_width_mm,
@@ -663,8 +818,8 @@ module usb_clip_snap_tab(tab_x_mm, top_tab = true) {
 
         translate([
             -usb_clip_tab_width_mm / 2,
-            top_tab ? tab_inner_y_mm - cap_clip_press_pad_projection_mm
-                : -usb_cutout_height_mm / 2 + cap_clip_thickness_mm,
+            upper_tab ? tab_inner_edge_y_mm - cap_clip_press_pad_projection_mm
+                : tab_inner_edge_y_mm,
             usb_clip_panel_thickness_mm + 0.8
         ])
             cube([
@@ -678,17 +833,17 @@ module usb_clip_snap_tab(tab_x_mm, top_tab = true) {
 module usb_clip_print_geometry() {
     union() {
         usb_clip_solid_panel();
-        usb_clip_snap_tab(-usb_cutout_width_mm / 4, true);
-        usb_clip_snap_tab(usb_cutout_width_mm / 4, true);
-        usb_clip_snap_tab(-usb_cutout_width_mm / 4, false);
-        usb_clip_snap_tab(usb_cutout_width_mm / 4, false);
+        for (tab_x_mm = usb_clip_tab_x_positions_mm)
+            usb_clip_snap_tab(tab_x_mm, true);
+        for (tab_x_mm = usb_clip_tab_x_positions_mm)
+            usb_clip_snap_tab(tab_x_mm, false);
     }
 }
 
 module installed_usb_passthrough_clip() {
     translate([
         installed_usb_clip_center_x_mm,
-        -capsule_outer_radius_mm,
+        installed_usb_clip_panel_outer_y_mm,
         installed_usb_clip_center_z_mm
     ])
         rotate([-90, 0, 0])
@@ -796,92 +951,30 @@ module cap_wall_local(origin_x_mm, origin_y_mm, angle_deg) {
             children();
 }
 
-module cap_skirt_clip_pocket() {
-    translate([
-        -cap_clip_receiver_width_mm / 2,
-        -cap_skirt_thickness_mm - cap_clip_release_travel_mm,
-        cap_roof_thickness_mm - eps_mm
-    ])
-        cube([
-            cap_clip_receiver_width_mm,
-            cap_skirt_thickness_mm + cap_clip_release_travel_mm + eps_mm,
-            cap_skirt_engagement_depth_mm + 2 * eps_mm
-        ]);
-}
-
-module cap_skirt_pocket_bypass() {
-    translate([
-        -cap_clip_receiver_width_mm / 2 - cap_skirt_thickness_mm,
-        -cap_skirt_thickness_mm - cap_clip_release_travel_mm,
-        cap_roof_thickness_mm
-    ])
-        cube([
-            cap_clip_receiver_width_mm + 2 * cap_skirt_thickness_mm,
-            cap_skirt_thickness_mm,
-            cap_skirt_engagement_depth_mm
-        ]);
-}
-
 module cap_alignment_skirt() {
-    union() {
+    translate([0, 0, cap_skirt_source_bottom_z_mm])
         difference() {
-            translate([0, 0, cap_roof_thickness_mm])
-                difference() {
-                    capsule_prism(
-                        cap_skirt_outer_radius_mm,
-                        cap_skirt_engagement_depth_mm
-                    );
-                    translate([0, 0, -eps_mm])
-                        capsule_prism(
-                            cap_skirt_inner_radius_mm,
-                            cap_skirt_engagement_depth_mm + 2 * eps_mm
-                        );
-                }
-
-            cap_wall_local(cap_front_right_source_x_mm,
-                    cap_front_right_source_y_mm,
-                    cap_front_right_source_angle_deg)
-                cap_skirt_clip_pocket();
-            cap_wall_local(cap_left_source_x_mm, cap_left_source_y_mm,
-                    cap_left_source_angle_deg)
-                cap_skirt_clip_pocket();
-            cap_wall_local(cap_rear_left_source_x_mm,
-                    cap_rear_left_source_y_mm,
-                    cap_rear_left_source_angle_deg)
-                cap_skirt_clip_pocket();
-            cap_wall_local(cap_rear_right_source_x_mm,
-                    cap_rear_right_source_y_mm,
-                    cap_rear_right_source_angle_deg)
-                cap_skirt_clip_pocket();
+            capsule_prism(
+                cap_skirt_outer_radius_mm,
+                cap_skirt_engagement_depth_mm + cap_skirt_roof_overlap_mm
+            );
+            translate([0, 0, -eps_mm])
+                capsule_prism(
+                    cap_skirt_inner_radius_mm,
+                    cap_skirt_engagement_depth_mm + 2 * eps_mm
+                );
         }
-
-        cap_wall_local(cap_front_right_source_x_mm,
-                cap_front_right_source_y_mm,
-                cap_front_right_source_angle_deg)
-            cap_skirt_pocket_bypass();
-        cap_wall_local(cap_left_source_x_mm, cap_left_source_y_mm,
-                cap_left_source_angle_deg)
-            cap_skirt_pocket_bypass();
-        cap_wall_local(cap_rear_left_source_x_mm,
-                cap_rear_left_source_y_mm,
-                cap_rear_left_source_angle_deg)
-            cap_skirt_pocket_bypass();
-        cap_wall_local(cap_rear_right_source_x_mm,
-                cap_rear_right_source_y_mm,
-                cap_rear_right_source_angle_deg)
-            cap_skirt_pocket_bypass();
-    }
 }
 
 module cap_clip_hook() {
     rotate([0, -90, 0])
         linear_extrude(height = cap_clip_width_mm, center = true)
             polygon(points = [
-                [cap_clip_hook_start_z_mm, cap_clip_thickness_mm],
-                [cap_clip_hook_start_z_mm,
-                    cap_clip_thickness_mm + cap_clip_hook_engagement_mm],
-                [cap_roof_thickness_mm + cap_clip_flexible_length_mm,
-                    cap_clip_thickness_mm]
+                [cap_clip_hook_source_ledge_z_mm, cap_clip_hook_inner_y_mm],
+                [cap_clip_hook_source_ledge_z_mm,
+                    cap_clip_arm_outer_y_mm + cap_clip_hook_engagement_mm],
+                [cap_clip_hook_source_tip_z_mm, cap_clip_arm_outer_y_mm],
+                [cap_clip_hook_source_tip_z_mm, cap_clip_hook_inner_y_mm]
             ]);
 }
 
@@ -889,38 +982,15 @@ module cap_cantilever_clip() {
     union() {
         translate([
             -cap_clip_width_mm / 2,
-            0,
-            cap_roof_thickness_mm
+            cap_clip_arm_inner_y_mm,
+            cap_clip_arm_source_root_z_mm
         ])
             cube([
                 cap_clip_width_mm,
                 cap_clip_thickness_mm,
-                cap_clip_flexible_length_mm
+                cap_clip_arm_reach_mm + cap_clip_arm_roof_overlap_mm
             ]);
-
-        translate([
-            -cap_clip_width_mm / 2,
-            cap_clip_thickness_mm,
-            cap_clip_press_pad_source_bottom_z_mm
-        ])
-            cube([
-                cap_clip_width_mm,
-                cap_clip_press_pad_projection_mm,
-                cap_clip_press_pad_height_mm
-            ]);
-
         cap_clip_hook();
-
-        translate([
-            -cap_clip_width_mm / 2,
-            0,
-            cap_roof_thickness_mm + cap_clip_root_fillet_radius_mm
-        ])
-            rotate([0, 90, 0])
-                cylinder(
-                    h = cap_clip_width_mm,
-                    r = cap_clip_root_fillet_radius_mm
-                );
     }
 }
 

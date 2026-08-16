@@ -2,7 +2,108 @@
 
 Status: Approved
 
+## Iteration: Calibrated Hook-Only Top-Cover Clamps (2026-08-16)
+
+### Purpose And Physical Evidence
+
+Correct the newly printed top cover so its four clamps align with and hook
+directly into the receiver holes of the already-good printed base. The supplied
+photos show the current cap-side clamp structures displaced along the capsule
+perimeter, vertically below or outside the usable receiver opening, and loading
+the base wall outward instead of presenting only a hook head through the hole.
+The complete base remains authoritative and immutable.
+
+### Corrected Cause And Calculated Offsets
+
+- The current cap uses a `2.4 mm`-thick cantilever body in the base wall volume,
+  a separate outward release-pad projection in the receiver opening, and a hook
+  ledge below the opening against an internal catch. This complicated stack
+  pushes the printed base wall outward and prevents the cap from settling at
+  the intended receiver positions.
+- The existing source places the installed hook retention ledge at
+  `Z 187.8 mm`. The immutable receiver opening spans `Z 190.2..195.8 mm`.
+  Placing the new hook ledge `0.3 mm` below the receiver top gives target
+  `Z 195.5 mm`, an exact upward correction of `7.7 mm`.
+- In the clearest straight-face photo, the visible tangential displacement is
+  approximately `19%` of the fixed `12.6 mm` receiver width. This yields
+  `12.6 * 0.19 = 2.394 mm`, rounded to the source's one-decimal design precision
+  as an exact `2.4 mm` physical-print compensation.
+- Apply that `2.4 mm` compensation consistently in one perimeter direction.
+  On the front/USB face the clamp moves left, as physically observed. Continuing
+  in the same direction around the capsule moves the left-end clamp rearward
+  and both rear-face clamps rightward.
+- The calculated installed tangential coordinates therefore become:
+  front/USB-face X `35.6 mm` instead of `38.0 mm`; left-end Y `2.4 mm` instead
+  of `0.0 mm`; rear-left X `-39.6 mm` instead of `-42.0 mm`; and rear-right X
+  `22.4 mm` instead of `20.0 mm`.
+
+### Required Hook-Only Clamp Behavior
+
+- Keep exactly four top-cover clamps and preserve their existing `12.0 mm`
+  width. Do not make the clamps wider or narrower.
+- Replace each current clamp assembly with one simple straight cantilever arm
+  and one hook head. Remove the cap-side release pad, press projection, wall-
+  loading clamp body placement, skirt pocket bypass, and any other cap-side
+  protrusion that presses the base wall.
+- Place each straight arm completely inside the base interior with at least
+  `0.3 mm` normal clearance from the unchanged inner wall. The arm must not
+  occupy, intersect, preload, or push the base wall in the nominal assembly.
+- Allow only the hook head to project outward from the arm into its receiver
+  opening. Preserve the current `0.8 mm` hook projection and do not increase the
+  hook size or interference.
+- Place the installed hook retention ledge at exact `Z 195.5 mm`. With the
+  existing `0.8 mm` hook-head ramp height, the complete head spans
+  `Z 194.7..195.5 mm` inside the unchanged `5.6 mm`-high receiver opening.
+- Derive the simplified source hook ledge at `Z 14.5 mm` and hook tip at
+  `Z 15.3 mm` before the rigid `180 deg` installed flip. The straight arm reach
+  from the `3.0 mm` roof underside to the hook tip is therefore `12.3 mm`.
+- Apply the exact `2.4 mm` signed tangential compensation to all four hook-only
+  clamps using receiver-local coordinates, so the correction follows the
+  capsule perimeter rather than treating every wall as the same global axis.
+- Keep the prior `0.3 mm` radial alignment correction. The new tangential
+  compensation is independent of the wall-normal arm clearance.
+- Keep the immutable base receiver holes at exactly `12.6 x 5.6 mm`, including
+  their positions, vertical spans, wall bridges, and existing internal catches.
+  The new cap hooks catch the receiver opening's upper edge; they do not rely on
+  or modify the existing internal catches.
+- Add assertions for all four compensated installed coordinates, exact vertical
+  hook span, arm-to-inner-wall clearance, hook-only wall penetration, unchanged
+  width and hook size, and complete absence of nominal arm/wall interference.
+
+### Preserved Behavior And Out Of Scope
+
+- Do not modify the case body, bottom structure, receiver holes, receiver
+  catches, exterior envelope, walls, floor, cable passages, USB opening,
+  ventilation, or any other base geometry.
+- Keep the cap roof, ventilation field, alignment skirt, installed orientation,
+  printable orientation, and overall exterior envelope unchanged.
+- USB-cap fit remains governed by the separately approved
+  `specs/SPEC-voomy-usb-cap-fit.md`.
+- Keep `render_mode = "printable_layout"`, OpenSCAD 2021.01 compatibility,
+  Bambu Lab P2S/AMS 2 Pro compatibility, and generated exports outside Git.
+
+### Validation And Delivery Boundary
+
+- Unit tests and conventional test-first work remain prohibited and not
+  applicable.
+- Run `git diff --check`, source/assertion evaluation, and bounded
+  reference-free `assembly` and `printable_layout` OpenSCAD renders or exports.
+- Inspect the cap-only diff, all four receiver-local `2.4 mm` tangential
+  compensations, exact `7.7 mm` upward hook correction, hook-head containment in
+  the receiver openings, arm clearance, cap seating, connectivity, and unchanged
+  base geometry.
+- Reprint only the top cover and fit it to the existing base. Confirm all four
+  hooks enter their openings without forcing or wall deflection, the cap seats
+  flush, each hook catches the opening's upper edge, the cap remains removable,
+  and at least 20 engagement/release cycles cause no whitening, cracking,
+  delamination, excessive force, wall damage, or loss of retention.
+- Delivery remains DRAFT until that physical fit and cycle validation passes.
+
 ## Iteration: Top-Cover Clamp-To-Receiver Alignment (2026-08-14)
+
+This iteration's centerline correction remains preserved, but its conclusion
+that exact centerline coincidence was sufficient for physical fit is superseded
+by the 2026-08-16 physical-fit iteration above.
 
 ### Purpose And Reported Defect
 
