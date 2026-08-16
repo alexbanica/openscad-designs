@@ -12,7 +12,17 @@ These instructions apply to this OpenSCAD design repository.
 - Design and printing guidance should maintain compatibility with the Bambu Lab P2S printer and AMS 2 Pro unless an approved spec explicitly narrows or changes printer support.
 - Printable versions must be Bambu Lab-friendly. Unless an approved spec explicitly allows a different layout, printable versions must not contain floating objects, every printable object should be separable and printable independently, and every printable object should be oriented with its broadest, most material-heavy, or most stable face downward on the printer plate.
 - Every new spec file must document manually entered dimensions when they are used, including PCB dimensions, dimensions between components, and component sizes.
-- If otherwise unspecified, committing and pushing directly to the `main` branch is acceptable for this repository.
+- Every implementation performed in a linked Git worktree must use `main` as
+  its delivery branch. After validation and final worktree reconciliation, the
+  main agent must automatically integrate the complete accepted change set into
+  local `main`, commit it there, and push it to `origin/main`. Detached HEADs and
+  task branches may be used only as temporary implementation mechanics; delivery
+  is not complete until `origin/main` contains the accepted commit. If `main`
+  cannot be updated or pushed safely, stop and report the blocker instead of
+  delivering the implementation on another branch.
+- For implementation performed without a linked worktree, committing and
+  pushing directly to the `main` branch remains acceptable when otherwise
+  unspecified.
 
 ## OpenSCAD Rules
 

@@ -109,14 +109,17 @@ skirt locates it before four calibrated hook-only cantilever clamps engage: one
 at the front-right straight region, one at the left semicircular end, and two on
 the rear wall on opposite sides of the rear slot. Each clamp applies exact
 `2.4 mm` receiver-local tangential compensation. Its straight arm remains at
-least `0.3 mm` inside the unchanged base inner wall, and only its `0.8 mm` hook
-head enters the receiver hole. The installed hook head spans
-`Z 194.7..195.5 mm` and catches the opening's upper edge. There are no cap-side
-release pads, skirt bypasses, or wall-loading features. Align the skirt, press
-the cap down evenly, and confirm all four hooks engage without forcing or wall
-deflection; do not pry one retained edge during removal. PETG or another
-material suited to repeated flexing is preferable; geometry cannot guarantee
-clamp force, fatigue life, or layer adhesion.
+least `0.3 mm` inside the unchanged base inner wall. Only its hook head enters
+the receiver hole: the strengthened head projects `1.6 mm` outward from the arm,
+producing `1.3 mm` effective penetration beyond the inner-wall datum. Its
+vertical root/ramp height is `1.2 mm`, spanning installed
+`Z 194.3..195.5 mm`, while the hook remains `12.0 mm` wide and catches the
+opening's upper edge. There are no cap-side release pads, skirt bypasses, or
+wall-loading features. Align the skirt, press the cap down evenly, and confirm
+all four hooks engage without forcing or wall deflection; do not pry one
+retained edge during removal. PETG or another material suited to repeated
+flexing is preferable; geometry cannot guarantee clamp force, fatigue life, or
+layer adhesion.
 
 Each cap clip is accessible through one minimal, closed body receiver hole. The
 four default holes are each exactly `12.6 mm x 5.6 mm`, remain bounded by solid
