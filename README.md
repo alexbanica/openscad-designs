@@ -77,13 +77,15 @@ or routing USB cables; do not install it over connected USB cables. It can be
 snapped back in without taking off the cap or moving the power strip, and its
 snap tabs and fit remain material- and printer-dependent. The unchanged body
 opening remains `36.0 mm x 60.0 mm`. The corrected cover retains all four tabs.
-The complete lower pair is shifted upward exactly `2.0 mm` and acts as the
-bottom-first locating pair; the upper pair remains unchanged and provides
+The complete lower pair is shifted upward exactly `1.0 mm`, leaving each lower
+hook tip `0.55 mm` inside the unchanged lower opening edge so that the pair acts
+as a bottom-first locator. The upper pair remains unchanged and provides
 positive snap retention. Install the cover by inserting the lower pair first,
 then rotating the rigid panel toward the wall until the upper pair enters and
-snaps without bending the panel. The `3.0 mm`-thick panel remains seated against
-the outside face of the front wall; it is not inserted into or overlapped with
-the unchanged wall volume.
+snaps without bending the panel. The lower shafts, hooks, lead-ins, and press
+features move together; the `3.0 mm`-thick panel remains seated against the
+outside face of the front wall and is not inserted into or overlapped with the
+unchanged wall volume.
 
 The visual-right curved wall and the straight rear wall each have one
 `20.0 mm`-wide passage running continuously from the wall top to the interior
@@ -110,11 +112,16 @@ at the front-right straight region, one at the left semicircular end, and two on
 the rear wall on opposite sides of the rear slot. Each clamp applies exact
 `2.4 mm` receiver-local tangential compensation. Its straight arm remains at
 least `0.3 mm` inside the unchanged base inner wall. Only its hook head enters
-the receiver hole: the strengthened head projects `1.6 mm` outward from the arm,
-producing `1.3 mm` effective penetration beyond the inner-wall datum. Its
-vertical root/ramp height is `1.2 mm`, spanning installed
-`Z 194.3..195.5 mm`, while the hook remains `12.0 mm` wide and catches the
-opening's upper edge. There are no cap-side release pads, skirt bypasses, or
+the receiver hole. Its retention ledge is `13.5 mm` below the seated base top,
+giving `2.0 mm` of positive capture below the receiver opening's measured upper
+edge. The hook height and outward projection are both `2.0 mm`; the hook tip is
+`15.5 mm` below the seated base top, while the straight-arm reach from the
+seated roof underside to that tip is `15.5 mm`. This leaves `1.6 mm` nominal
+clearance above the modeled receiver lower edge. With the unchanged `0.3 mm`
+arm-to-inner-wall clearance, the hook penetrates the receiver opening by
+`1.7 mm` and remains `1.85 mm` inside the measured exterior wall face. The
+`12.0 mm` hook width, `2.4 mm` arm thickness, and all four compensated clamp
+sites remain unchanged. There are no cap-side release pads, skirt bypasses, or
 wall-loading features. Align the skirt, press the cap down evenly, and confirm
 all four hooks engage without forcing or wall deflection; do not pry one
 retained edge during removal. PETG or another material suited to repeated
@@ -125,18 +132,23 @@ Each cap clip is accessible through one minimal, closed body receiver hole. The
 four default holes are each exactly `12.6 mm x 5.6 mm`, remain bounded by solid
 wall on all four sides, and do not reach the body top edge.
 
-The calibrated clamp and USB-tab corrections are cover-only. The complete case
-base, including its four fixed `12.6 mm x 5.6 mm` receiver holes and fixed
+The printed-base `11.5 mm` receiver-top margin and `3.55 mm` wall thickness are
+manual calibration inputs used only by the replacement top cover. They do not
+replace the source base's nominal dimensions. The complete source base,
+including its walls, four fixed `12.6 mm x 5.6 mm` receiver holes, and fixed
 `36.0 mm x 60.0 mm` USB opening, remains unchanged and should be reused. Reprint
 only the corrected top cover and USB cover. The top cover retains its `0.3 mm`
 per-side skirt clearance. Its fit remains **DRAFT** until all four hook heads
-enter without collision or wall deflection, catch the receiver openings' upper
-edges, the skirt seats fully, the cap remains flush and removable, and at least
-`20` engagement/release cycles complete without whitening, cracking,
-delamination, excessive force, wall damage, or loss of retention. The USB-cover
-fit also remains **DRAFT** until bottom-first insertion, upper-pair snap
-retention, seating, removal, and repeated cycling are physically validated
-without bending the panel or stressing the base.
+enter without collision or wall deflection, capture the receiver openings'
+upper edges by `2.0 mm`, remain clear of the lower edges, the skirt seats fully,
+the cap remains flush and removable, and at least `20` engagement/release
+cycles complete without whitening, cracking, delamination, excessive force,
+wall damage, or loss of retention. The USB-cover fit also remains **DRAFT**
+until bottom-first insertion, upper-pair snap retention, seating, removal, and
+repeated cycling are physically validated without bending the panel or
+stressing the base. Bambu Studio slicer inspection and test prints of both
+replacement covers remain required before this cover calibration is treated as
+validated.
 
 The front, rear, left, and right exterior walls are smooth and plain except for
 required functional openings. No body wall contains a ventilation grid. The

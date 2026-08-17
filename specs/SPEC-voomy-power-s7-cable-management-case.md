@@ -2,6 +2,73 @@
 
 Status: Approved
 
+## Iteration: Printed-Base USB And Top-Cover Fit Calibration (2026-08-17)
+
+### Purpose And Physical Evidence
+
+Correct only the two removable covers against the already-printed, authoritative
+base. The USB cover's lower tabs were moved too far toward the upper tabs. The
+top-cover clamp hooks currently reach the base wall at the receiver level but do
+not extend far enough below the receiver opening's upper edge to capture it.
+
+The user supplied these physical measurements and correction inputs:
+
+- printed-base top edge to receiver-opening upper edge: `11.5 mm`;
+- additional top-cover hook-ledge reach: `2.0 mm`;
+- printed-base wall thickness: `3.55 mm`;
+- revised lower USB-tab upward shift: `1.0 mm` instead of `2.0 mm`.
+
+These are cover-fit calibration inputs. They must not change the base source,
+receiver holes, wall thickness, or any other base geometry.
+
+### Required Final Behavior
+
+- Keep both upper USB tabs unchanged and move each complete lower USB tab
+  geometry exactly `1.0 mm` upward from its original unshifted position. Move
+  the shaft, hook, lead-in, and press feature together.
+- Preserve the four-tab USB-cover count, solid panel, outside-wall installation,
+  and unchanged `36.0 x 60.0 mm` base opening.
+- Place each installed top-cover hook retention ledge exactly `13.5 mm` below
+  the printed base top edge: the measured `11.5 mm` receiver-top margin plus
+  `2.0 mm` of positive vertical capture.
+- Increase the top-cover hook height from `1.2 mm` to `2.0 mm`. The hook tip is
+  therefore `15.5 mm` below the base top edge. Against the nominal unchanged
+  `5.6 mm` receiver height, the modeled lower-edge offset derives to `17.1 mm`
+  and leaves `1.6 mm` nominal vertical clearance above the lower edge. Physical
+  lower-edge clearance remains subject to the printed hole height.
+- Set each top-cover straight-arm reach to `15.5 mm` from the seated roof
+  underside to the hook tip. This is `2.8 mm` longer than the current `12.7 mm`
+  tip reach: `2.0 mm` moves the retention ledge below the receiver upper edge
+  and `0.8 mm` supplies the increased hook height.
+- Increase each hook's outward projection from `1.6 mm` to `2.0 mm`. With the
+  unchanged `0.3 mm` arm-to-inner-wall clearance, the hook engages `1.7 mm`
+  into the receiver opening and remains `1.85 mm` inside the measured `3.55 mm`
+  printed wall rather than protruding through its exterior face.
+- Preserve the `12.0 mm` hook width, `2.4 mm` arm thickness, four compensated
+  clamp coordinates, cap roof, ventilation, alignment skirt, and printable
+  orientation.
+- Add or update cover-side calibration derivations and assertions for the
+  measured offsets, exact vertical capture, complete hook containment, effective
+  wall penetration, and unchanged base contract. Do not revise base-generating
+  modules or dimensions to match the printed measurements.
+
+### Preserved Behavior And Scope Boundary
+
+- The complete base is immutable, including its walls, floor, receiver holes and
+  catches, USB opening, cable passages, ventilation behavior, and exterior
+  envelope.
+- Only the top cover and USB cover require reprinting. All other approved Voomy
+  behavior remains unchanged.
+- Unit tests and conventional test-first work remain prohibited and not
+  applicable.
+- Implementation must run `git diff --check`, source assertions, bounded
+  reference-free `assembly` and `printable_layout` OpenSCAD validation, and a
+  focused diff proving no base-generating geometry changed.
+- Delivery remains DRAFT until both corrected covers are sliced, printed, and
+  physically validated against the existing base for seating, retention,
+  removal, and at least 20 engagement/release cycles without damage or loss of
+  retention.
+
 ## Iteration: Calibrated Hook-Only Top-Cover Clamps (2026-08-16)
 
 ### Purpose And Physical Evidence

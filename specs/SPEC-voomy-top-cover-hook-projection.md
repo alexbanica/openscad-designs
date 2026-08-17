@@ -2,6 +2,63 @@
 
 Status: Approved
 
+## Iteration: Measured Clamp Reach And Hook Capture (2026-08-17)
+
+### Physical Evidence And Corrected Cause
+
+The printed base measures `11.5 mm` from its top edge to the receiver opening's
+upper edge, and its printed wall is `3.55 mm` thick. The current installed hook
+retention ledge is also `11.5 mm` below the seated base top, leaving it aligned
+with the opening edge instead of positively below it. The clamp reaches the base
+wall, but the hook therefore has no reliable vertical capture margin.
+
+These manually entered printed-part measurements calibrate only the replacement
+top cover. They do not authorize any base-source or receiver change.
+
+### Required Final Geometry
+
+- Extend each clamp so its installed retention ledge is exactly `13.5 mm` below
+  the printed base top: the measured `11.5 mm` receiver-top margin plus `2.0 mm`
+  positive capture.
+- Increase hook height from `1.2 mm` to `2.0 mm`, placing the installed hook tip
+  `15.5 mm` below the printed base top.
+- Preserve the nominal unchanged `5.6 mm` receiver height. Combined with the
+  measured upper-edge offset, it derives a modeled lower-edge offset of
+  `17.1 mm`, leaving `1.6 mm` nominal clearance between the enlarged hook tip
+  and receiver lower edge. The physical lower-edge clearance remains subject to
+  the printed hole height.
+- Set `cap_clip_arm_reach_mm` to `15.5`. Relative to the current `12.7 mm` tip
+  reach, the `2.8 mm` increase consists of the requested `2.0 mm` ledge extension
+  plus the `0.8 mm` hook-height increase.
+- Increase hook outward projection from `1.6 mm` to `2.0 mm`. With the unchanged
+  `0.3 mm` inward arm clearance, effective receiver penetration becomes
+  `1.7 mm`; the hook remains `1.85 mm` inside the measured `3.55 mm` printed
+  wall and must not protrude through the exterior face.
+- Keep hook width `12.0 mm`, arm thickness `2.4 mm`, arm position, compensated
+  clamp coordinates, roof, skirt, and all four clamp sites unchanged.
+- Derive the hook ledge, tip, arm reach, receiver clearances, and wall penetration
+  from named cover-calibration values and bind them with assertions.
+
+### Immutable Base And Validation
+
+- Do not modify the base, receiver holes or catches, wall or floor geometry,
+  cable passages, USB interface, ventilation, or exterior envelope. The source
+  base remains unchanged even though the printed wall measurement is `3.55 mm`.
+- Unit tests and conventional test-first work remain prohibited and not
+  applicable.
+- Run `git diff --check`, OpenSCAD assertions, bounded reference-free `assembly`
+  and `printable_layout` validation, and focused source/diff inspection proving
+  base-generating modules and dimensions did not change.
+- Reprint only the top cover. Physically verify that all four hooks enter the
+  existing holes, capture their upper edges by `2.0 mm`, remain clear of the
+  lower edges, seat without wall deflection, remain removable, and survive at
+  least 20 engagement/release cycles.
+- Delivery remains DRAFT until those physical checks pass.
+
+This iteration supersedes the prior `1.6 mm` projection, `1.2 mm` height,
+`12.7 mm` arm reach, and zero physical ledge-capture margin below. All other
+approved top-cover behavior remains unchanged.
+
 ## Purpose
 
 Strengthen the top-cover clamp hook and increase its projection because the

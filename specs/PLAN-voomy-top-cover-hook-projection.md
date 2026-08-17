@@ -1,75 +1,80 @@
-# PLAN: Voomy Top-Cover Hook Strength And Outward Projection Completed Work
+# PLAN: Voomy Measured Top-Cover Clamp Reach And Hook Capture
 
 Status: Approved
 
-Spec Reference: `specs/SPEC-voomy-top-cover-hook-projection.md`
+Approved Spec: `specs/SPEC-voomy-top-cover-hook-projection.md`
 
-## Affected Files
+Integrated Delivery Plan:
+`specs/PLAN-voomy-power-s7-cable-management-case.md`
 
-- `designs/voomy_power_s7_cable_management_case.scad`
-- `README.md`
-- `specs/SPEC-voomy-top-cover-hook-projection.md`
-- `specs/PLAN-voomy-top-cover-hook-projection.md`
+## Component Objective
 
-## Implementation Steps Performed
+Use the printed base's `11.5 mm` receiver-top margin and `3.55 mm` wall
+thickness to calibrate only the top cover. Place the hook ledge `13.5 mm`
+below the base top, use a `2.0 mm` hook height and projection, and derive a
+`15.5 mm` arm reach while preserving the complete base.
 
-1. Interpreted stronger hook geometry as a taller vertical root/ramp section
-   without widening the hook or changing the fixed receiver.
-2. Increased `cap_clip_hook_engagement_mm` from the committed `0.8 mm` value to
-   `1.6 mm`, superseding the intermediate uncommitted `1.2 mm` adjustment.
-3. Added `cap_clip_hook_height_mm = 1.2`, increasing the prior `0.8 mm` hook
-   height while keeping the installed retention ledge at `Z 195.5 mm`.
-4. Increased the supporting straight-arm reach from `12.3 mm` to `12.7 mm`.
-5. Preserved the `0.3 mm` arm clearance, deriving `1.3 mm` effective receiver
-   penetration.
-6. Updated assertions for exact projection, height, vertical span, arm reach,
-   and epsilon-bounded penetration.
-7. Preserved the `12.0 mm` hook width, compensated coordinates, receiver holes,
-   and complete base.
-8. Updated the Voomy README and matching auto-approved artifacts.
+Implementation must not repeat product, architecture, scope, planning, or
+plan-discovery research. This component executes only through the integrated
+delivery plan because both cover corrections share the SCAD source and commit.
 
-## Validation Run
+## Branch And Worktree Contract
 
-- `git diff --check` for the changed SCAD and README.
-- Reference-free OpenSCAD 2021.01 `assembly` CSG export.
-- Reference-free OpenSCAD 2021.01 `printable_layout` CSG export.
-- Bounded reference-free `printable_layout` STL export; OpenSCAD reported a
-  simple object and the expected exterior region plus three printable solids.
+- Delivery branch: existing `main` in the invoking checkout.
+- Expected base: `origin/main` at
+  `cd2d90e86491ef3e9d604536bf826916308049fc`.
+- Linked worktree: no; preserve the approved integrated direct-`main` choice.
+- Verify the refreshed base, branch, index, artifacts, and full path
+  classification before edits. Preserve and identify unrelated user changes.
 
-## Validation Skipped
+## Test-First Policy
 
-- Unit tests and conventional test-first work are prohibited and not applicable.
-- Longer or physical validation was outside the super-agent short-run boundary.
-- Bambu Studio inspection and physical print/fit/cycle checks were not run.
+Unit tests and conventional test-first work are prohibited and not applicable.
+No test-writer is used. Planned test-focused concurrency is `0`.
 
-## QA And Code Review
+## Component Development Unit T1
 
-- QA was skipped as required by the requested super-agent workflow.
-- Independent code review was skipped as required by the requested super-agent
-  workflow.
+- Type: development.
+- Boundary: implement only the approved top-cover calibration, derivations,
+  assertions, arm reach, and hook profile.
+- Owned file: `designs/voomy_power_s7_cable_management_case.scad`.
+- Dependencies: integrated-plan V0; T1 is integrated-plan D1.
+- Acceptance criteria: ledge offset `13.5 mm`; vertical capture `2.0 mm`;
+  hook height/projection `2.0 mm`; tip and arm reach `15.5 mm`; nominal
+  lower-edge clearance `1.6 mm`; effective wall penetration `1.7 mm`;
+  `12.0 mm` width, `2.4 mm` arm thickness, compensated coordinates, roof,
+  skirt, ventilation, and all base-generating geometry unchanged; assertions
+  prove all final calculations and containment.
+- Validation: assertions, immutable-base source comparison, focused diff,
+  installed-envelope inspection, and bounded reference-free `assembly`
+  evaluation.
+- Subagent assignment: one clean-context `developer`, at most five minutes,
+  owning only the top-cover calibration boundary.
 
-## Documentation Updates
+## Component Review Unit T2
 
-- README now documents `1.6 mm` outward projection, `1.3 mm` effective
-  penetration, and the strengthened `1.2 mm` vertical hook height.
+- Type: independent read-only code review.
+- Boundary: audit T1 and matching Voomy README guidance against the approved
+  top-cover specs.
+- Owned files: no writes; inspect the top-cover SCAD diff, Voomy README section,
+  approved specs, and plans.
+- Dependencies: T1 and integrated-plan D3.
+- Acceptance criteria: identify every calculation mismatch, base regression,
+  geometry/assertion gap, documentation mismatch, or printability risk; report
+  no findings explicitly when applicable.
+- Validation: artifact, source, documentation, and focused diff inspection.
+- Subagent assignment: one clean-context `code-reviewer`, at most five minutes;
+  this is integrated-plan R1 and may run concurrently with R2.
 
-## Staging Status
+## Main-Agent QA, Documentation, And Delivery
 
-- All four accepted in-scope paths are staged.
-- The pre-existing staged workflow-policy paths remain preserved and excluded
-  from this completed-work change.
-
-## Commit And Push Status
-
-- Commit status: not committed; super-agent does not commit unless explicitly
-  requested.
-- Push status: not pushed; super-agent does not push unless explicitly
-  requested.
-
-## Residual Risk
-
-- The larger, taller hook can increase insertion/removal force and receiver-edge
-  stress despite its stronger material section.
-- Physical fit, retention, removability, and repeated-cycle durability remain
-  unverified, so delivery is DRAFT and the default Definition of Done is not
-  fully satisfied.
+- The integrated plan owns main-agent QA, bounded `assembly` and
+  `printable_layout` validation, `git diff --check`, immutable-base
+  comparison, review resolution, staging, commit, push, and final acceptance.
+- README must distinguish printed-base calibration measurements from unchanged
+  source-base geometry and document reprinting only the top cover.
+- Physical acceptance requires seating, positive upper-edge capture, lower-edge
+  and exterior-wall clearance, safe removal, and at least 20 cycles.
+- Include this component's accepted source, README, approved spec, and plan in
+  the integrated DRAFT commit on `main`, push it to `origin/main`, and verify
+  no accepted top-cover change remains outside the pushed commit.

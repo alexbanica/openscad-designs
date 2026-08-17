@@ -2,6 +2,43 @@
 
 Status: Approved
 
+## Iteration: Reduce Lower USB-Tab Shift To 1 mm (2026-08-17)
+
+### Requested Delta
+
+- Replace the approved `2.0 mm` lower-tab upward shift with exactly `1.0 mm`.
+- Keep the complete upper tab pair at its current coordinates and geometry.
+- Move each complete lower shaft, hook, lead-in, and press feature together; do
+  not distort or independently reposition any subfeature.
+- Keep exactly four tabs, the `42.0 x 66.0 x 3.0 mm` solid panel, its installed
+  outside-wall placement, and the complete base unchanged.
+
+### Final Fit Semantics
+
+With the existing `0.45 mm` lower-hook engagement and the revised `1.0 mm`
+shift, each lower hook tip sits `0.55 mm` inside the unchanged lower opening
+edge. The lower pair remains a bottom-first locating pair while the unchanged
+upper pair provides positive snap retention. Assertions must prove the exact
+`1.0 mm` shift, unchanged upper pair, four-tab connectivity, and immutable
+`36.0 x 60.0 mm` base opening.
+
+### Validation And Delivery Boundary
+
+- Unit tests and conventional test-first work remain prohibited and not
+  applicable.
+- Run `git diff --check`, OpenSCAD assertions, and bounded reference-free
+  `assembly` and `printable_layout` renders or exports.
+- Inspect that only the complete lower tab pair moved, by exactly `1.0 mm`, and
+  no base-generating geometry changed.
+- Reprint only the USB cover and physically validate bottom-first insertion,
+  upper-pair snap retention, complete seating, removal, and repeated cycling.
+- Delivery remains DRAFT until those physical checks pass against the existing
+  base.
+
+This iteration supersedes only the `2.0 mm` lower-tab shift and its derived
+positions in the 2026-08-16 iteration below. All other approved USB-cap geometry
+and constraints remain in force.
+
 ## Iteration: Move Lower USB Tabs Upward For Bottom-First Insertion (2026-08-16)
 
 ### Purpose And Physical Evidence

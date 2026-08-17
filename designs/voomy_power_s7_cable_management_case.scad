@@ -59,9 +59,13 @@ usb_clip_tab_thickness_mm = 1.6;
 usb_clip_edge_clearance_mm = 0.5;
 usb_clip_hook_engagement_mm = 0.45;
 usb_clip_hook_lead_in_depth_mm = 1.0;
-usb_clip_lower_tab_shift_mm = 2.0;
+usb_clip_lower_tab_shift_mm = 1.0;
 
 // Plain cap alignment and retention (provisional)
+// Printed-base measurements calibrate only the replacement top cover.
+printed_base_receiver_top_margin_mm = 11.5;
+printed_base_wall_thickness_mm = 3.55;
+cap_clip_installed_capture_mm = 2.0;
 cap_skirt_clearance_mm = 0.3;
 cap_skirt_engagement_depth_mm = 6.0;
 cap_clip_count = 4;
@@ -71,7 +75,8 @@ cap_clip_thickness_mm = 2.4;
 cap_clip_root_fillet_radius_mm = 2.0;
 cap_clip_lead_in_angle_deg = 45.0;
 cap_clip_hook_engagement_mm = 1.6;
-cap_clip_hook_height_mm = 1.2;
+cap_clip_cover_hook_outward_projection_mm = 2.0;
+cap_clip_hook_height_mm = 2.0;
 cap_clip_interference_mm = 0.6;
 cap_clip_release_travel_mm = 1.2;
 cap_skirt_thickness_mm = 3.0;
@@ -80,7 +85,6 @@ cap_clip_press_pad_height_mm = 5.0;
 cap_clip_receiver_clearance_mm = 0.3;
 cap_clip_tangential_compensation_mm = 2.4;
 cap_clip_arm_wall_clearance_mm = 0.3;
-cap_clip_arm_reach_mm = 12.7;
 
 // Ventilation grid (provisional)
 grid_hex_across_flats_mm = 12.0;
@@ -224,6 +228,8 @@ usb_clip_lower_unshifted_hook_tip_y_mm = -usb_cutout_height_mm / 2
     - usb_clip_hook_engagement_mm;
 usb_clip_lower_hook_tip_y_mm = usb_clip_lower_unshifted_hook_tip_y_mm
     + usb_clip_lower_tab_offset_y_mm;
+usb_clip_lower_hook_inset_from_opening_edge_mm =
+    usb_clip_lower_hook_tip_y_mm + usb_cutout_height_mm / 2;
 usb_clip_hook_projection_from_tab_mm = usb_clip_edge_clearance_mm
     + usb_clip_hook_engagement_mm;
 usb_clip_tab_root_z_mm = usb_clip_panel_thickness_mm - eps_mm;
@@ -265,6 +271,18 @@ cap_clip_receiver_width_mm = cap_clip_width_mm
     + 2 * cap_clip_receiver_clearance_mm;
 cap_clip_receiver_height_mm = cap_clip_press_pad_height_mm
     + 2 * cap_clip_receiver_clearance_mm;
+cap_clip_hook_installed_ledge_offset_mm =
+    printed_base_receiver_top_margin_mm + cap_clip_installed_capture_mm;
+cap_clip_hook_installed_tip_offset_mm =
+    cap_clip_hook_installed_ledge_offset_mm + cap_clip_hook_height_mm;
+cap_clip_modeled_receiver_lower_edge_offset_mm =
+    printed_base_receiver_top_margin_mm + cap_clip_receiver_height_mm;
+cap_clip_hook_lower_edge_clearance_mm =
+    cap_clip_modeled_receiver_lower_edge_offset_mm
+        - cap_clip_hook_installed_tip_offset_mm;
+cap_clip_modeled_receiver_lower_edge_z_mm = body_height_mm
+    - cap_clip_modeled_receiver_lower_edge_offset_mm;
+cap_clip_arm_reach_mm = cap_clip_hook_installed_tip_offset_mm;
 cap_clip_hook_start_z_mm = cap_roof_thickness_mm
     + cap_clip_flexible_length_mm - cap_clip_hook_engagement_mm;
 cap_clip_catch_bottom_z_mm = body_height_mm
@@ -300,15 +318,18 @@ cap_clip_arm_source_tip_z_mm = cap_clip_arm_source_root_z_mm
 cap_clip_hook_arm_overlap_mm = eps_mm;
 cap_clip_hook_inner_y_mm = cap_clip_arm_outer_y_mm
     - cap_clip_hook_arm_overlap_mm;
-cap_clip_hook_source_ledge_z_mm = 14.5;
-cap_clip_hook_source_tip_z_mm = cap_clip_hook_source_ledge_z_mm
-    + cap_clip_hook_height_mm;
-cap_clip_hook_installed_ledge_z_mm = case_height_mm
-    - cap_clip_hook_source_ledge_z_mm;
-cap_clip_hook_installed_tip_z_mm = case_height_mm
-    - cap_clip_hook_source_tip_z_mm;
-cap_clip_hook_wall_penetration_mm = cap_clip_hook_engagement_mm
+cap_clip_hook_installed_ledge_z_mm = body_height_mm
+    - cap_clip_hook_installed_ledge_offset_mm;
+cap_clip_hook_installed_tip_z_mm = body_height_mm
+    - cap_clip_hook_installed_tip_offset_mm;
+cap_clip_hook_source_ledge_z_mm = case_height_mm
+    - cap_clip_hook_installed_ledge_z_mm;
+cap_clip_hook_source_tip_z_mm = case_height_mm
+    - cap_clip_hook_installed_tip_z_mm;
+cap_clip_hook_wall_penetration_mm = cap_clip_cover_hook_outward_projection_mm
     - cap_clip_arm_wall_clearance_mm;
+cap_clip_hook_remaining_inside_printed_wall_mm =
+    printed_base_wall_thickness_mm - cap_clip_hook_wall_penetration_mm;
 cap_installed_flip_x_deg = 180;
 cap_front_right_source_x_mm = cap_clip_front_right_x_mm
     - cap_clip_tangential_compensation_mm;
@@ -389,7 +410,7 @@ assert(usb_clip_upper_tab_offset_y_mm == 0.0
         - (usb_cutout_height_mm / 2
             + usb_clip_hook_engagement_mm)) < eps_mm,
     "The complete upper USB tab pair must retain its approved coordinates");
-assert(usb_clip_lower_tab_shift_mm == 2.0
+assert(usb_clip_lower_tab_shift_mm == 1.0
     && usb_clip_lower_tab_offset_y_mm == usb_clip_lower_tab_shift_mm
     && abs(usb_clip_lower_tab_outer_edge_y_mm
         - usb_clip_lower_unshifted_tab_outer_edge_y_mm
@@ -400,7 +421,7 @@ assert(usb_clip_lower_tab_shift_mm == 2.0
     && abs(usb_clip_lower_tab_inner_edge_y_mm
         - usb_clip_lower_tab_outer_edge_y_mm
         - usb_clip_tab_thickness_mm) < eps_mm,
-    "The complete lower USB tab pair must move upward exactly 2 mm without distortion");
+    "The complete lower USB tab pair must move upward exactly 1 mm without distortion");
 assert(usb_clip_edge_clearance_mm >= usb_clip_fit_clearance_mm
     && usb_clip_upper_tab_outer_edge_y_mm < usb_cutout_height_mm / 2
     && usb_clip_lower_tab_outer_edge_y_mm > -usb_cutout_height_mm / 2,
@@ -411,10 +432,11 @@ assert(usb_clip_upper_hook_tip_y_mm > usb_cutout_height_mm / 2
         - usb_clip_hook_projection_from_tab_mm) < eps_mm,
     "The unchanged upper USB tabs must retain positive snap engagement");
 assert(usb_clip_lower_hook_tip_y_mm > -usb_cutout_height_mm / 2
+    && abs(usb_clip_lower_hook_inset_from_opening_edge_mm - 0.55) < eps_mm
     && abs(usb_clip_lower_tab_outer_edge_y_mm
         - usb_clip_lower_hook_tip_y_mm
         - usb_clip_hook_projection_from_tab_mm) < eps_mm,
-    "The shifted lower USB tabs must remain locating-only inside the lower opening edge");
+    "The shifted lower USB hook tips must remain exactly 0.55 mm inside the lower opening edge");
 assert(usb_clip_tab_root_z_mm < usb_clip_panel_thickness_mm
     && usb_clip_tab_root_z_mm + usb_clip_retention_depth_mm + eps_mm
         > usb_clip_panel_thickness_mm
@@ -439,14 +461,20 @@ assert(cap_clip_receiver_width_mm == 12.6
 assert(cap_clip_receiver_top_bridge_mm >= wall_thickness_mm
     && cap_clip_receiver_bottom_z_mm > floor_thickness_mm,
     "Each receiver hole must retain continuous structural wall above and below");
+assert(printed_base_receiver_top_margin_mm == 11.5
+    && printed_base_wall_thickness_mm == 3.55
+    && wall_thickness_mm == 3.0,
+    "Printed-base measurements must remain cover-only calibration inputs");
 assert(cap_clip_width_mm == 12.0
+    && cap_clip_thickness_mm == 2.4
     && cap_clip_hook_engagement_mm == 1.6
-    && cap_clip_hook_height_mm == 1.2,
-    "Each hook-only cap clamp must preserve its 12.0 mm width and use a strengthened 1.6 x 1.2 mm hook profile");
-assert(cap_clip_arm_reach_mm == 12.7
+    && cap_clip_cover_hook_outward_projection_mm == 2.0
+    && cap_clip_hook_height_mm == 2.0,
+    "Each hook-only cap clamp must preserve its arm section and use a cover-only 2.0 x 2.0 mm hook profile");
+assert(cap_clip_arm_reach_mm == 15.5
     && cap_roof_thickness_mm + cap_clip_arm_reach_mm
         == cap_clip_hook_source_tip_z_mm,
-    "Each straight cap arm must reach exactly 12.7 mm from the roof underside");
+    "Each straight cap arm must reach exactly 15.5 mm from the roof underside");
 assert(cap_skirt_roof_overlap_mm > 0
     && cap_skirt_source_bottom_z_mm < cap_roof_thickness_mm
     && cap_skirt_source_top_z_mm == cap_roof_thickness_mm
@@ -634,11 +662,31 @@ assert(abs(cap_clip_front_right_x_mm - cap_front_right_source_x_mm - 2.4)
     && abs(cap_rear_right_source_x_mm - cap_clip_rear_right_x_mm - 2.4)
         < eps_mm,
     "All four clamps must apply exact receiver-local signed 2.4 mm compensation");
-assert(cap_clip_hook_source_ledge_z_mm == 14.5
-    && cap_clip_hook_source_tip_z_mm == 15.7
-    && cap_clip_hook_installed_tip_z_mm == 194.3
-    && cap_clip_hook_installed_ledge_z_mm == 195.5,
-    "Each strengthened hook head must span installed Z 194.3 through 195.5 mm");
+assert(cap_clip_hook_installed_ledge_offset_mm == 13.5
+    && cap_clip_hook_installed_tip_offset_mm == 15.5
+    && cap_clip_hook_installed_ledge_offset_mm
+        - printed_base_receiver_top_margin_mm == 2.0
+    && cap_clip_hook_installed_ledge_z_mm == 193.5
+    && cap_clip_hook_installed_tip_z_mm == 191.5
+    && cap_clip_hook_source_ledge_z_mm == 16.5
+    && cap_clip_hook_source_tip_z_mm == 18.5,
+    "Each hook must provide 2.0 mm capture with its tip 15.5 mm below the seated base top");
+assert(abs(cap_clip_modeled_receiver_lower_edge_offset_mm - 17.1) < eps_mm
+    && abs(cap_clip_hook_lower_edge_clearance_mm - 1.6) < eps_mm
+    && abs(cap_clip_hook_installed_tip_z_mm
+        - cap_clip_modeled_receiver_lower_edge_z_mm
+        - cap_clip_hook_lower_edge_clearance_mm) < eps_mm
+    && cap_clip_hook_lower_edge_clearance_mm > 0,
+    "Each hook tip must remain 1.6 mm clear of the modeled receiver lower edge");
+assert(abs(cap_clip_hook_start_z_mm - 21.4) < eps_mm
+    && abs(cap_clip_catch_bottom_z_mm - 188.6) < eps_mm
+    && abs(cap_clip_catch_top_z_mm - 191.0) < eps_mm
+    && abs(cap_clip_press_pad_installed_bottom_z_mm - 191.3) < eps_mm
+    && abs(cap_clip_press_pad_installed_top_z_mm - 196.3) < eps_mm
+    && abs(cap_clip_receiver_bottom_z_mm - 191.0) < eps_mm
+    && abs(cap_clip_receiver_top_z_mm - 196.6) < eps_mm
+    && abs(cap_clip_receiver_top_bridge_mm - 10.4) < eps_mm,
+    "Base receiver and catch Z geometry must remain at the exact legacy values");
 assert(cap_clip_hook_installed_tip_z_mm >= cap_clip_receiver_bottom_z_mm
     && cap_clip_hook_installed_ledge_z_mm <= cap_clip_receiver_top_z_mm,
     "Each hook head must remain vertically contained in its receiver opening");
@@ -648,10 +696,13 @@ assert(cap_clip_arm_wall_clearance_mm >= 0.3
     "Each straight arm must remain clear of the unchanged inner wall");
 assert(cap_clip_hook_wall_penetration_mm > 0
     && cap_clip_hook_wall_penetration_mm <= wall_thickness_mm
-    && abs(cap_clip_hook_wall_penetration_mm - 1.3) < eps_mm
-    && abs(cap_clip_arm_outer_y_mm + cap_clip_hook_engagement_mm
-        - cap_clip_hook_wall_penetration_mm) < eps_mm,
-    "Only the hook head may penetrate the receiver opening by exactly 1.3 mm");
+    && abs(cap_clip_hook_wall_penetration_mm - 1.7) < eps_mm
+    && abs(cap_clip_arm_outer_y_mm
+        + cap_clip_cover_hook_outward_projection_mm
+        - cap_clip_hook_wall_penetration_mm) < eps_mm
+    && abs(cap_clip_hook_remaining_inside_printed_wall_mm - 1.85) < eps_mm
+    && cap_clip_hook_remaining_inside_printed_wall_mm > 0,
+    "Each hook must penetrate 1.7 mm while remaining 1.85 mm inside the printed wall");
 assert(abs(cap_clip_receiver_bottom_z_mm - cap_clip_catch_top_z_mm) < eps_mm,
     "Receiver access and catch must meet without overlap");
 assert(printable_layout_cap_center_y_mm - capsule_outer_radius_mm
@@ -977,7 +1028,8 @@ module cap_clip_hook() {
             polygon(points = [
                 [cap_clip_hook_source_ledge_z_mm, cap_clip_hook_inner_y_mm],
                 [cap_clip_hook_source_ledge_z_mm,
-                    cap_clip_arm_outer_y_mm + cap_clip_hook_engagement_mm],
+                    cap_clip_arm_outer_y_mm
+                        + cap_clip_cover_hook_outward_projection_mm],
                 [cap_clip_hook_source_tip_z_mm, cap_clip_arm_outer_y_mm],
                 [cap_clip_hook_source_tip_z_mm, cap_clip_hook_inner_y_mm]
             ]);
