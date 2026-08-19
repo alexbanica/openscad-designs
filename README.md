@@ -17,6 +17,7 @@ This repository contains editable OpenSCAD designs.
 - `designs/pi_zero_usb_grove_ir_enclosure.scad`
 - `designs/rotating_kitchen_jar_tray.scad`
 - `designs/linksys_lgs105_cable_management_enclosure.scad`
+- `designs/voomy_power_s7_cable_management_case.scad`
 
 All files target OpenSCAD 2021.01 and have no external library dependencies.
 

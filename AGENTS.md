@@ -80,3 +80,18 @@ When a change affects printable geometry and OpenSCAD-based inspection is useful
 ## Documentation
 
 Update `README.md` when design behavior, render modes, parameters, printing guidance, or validation workflow changes, including when OpenSCAD-assisted validation guidance changes.
+
+After delivered SPEC/PLAN artifacts are reconciled and removed, current `.scad`
+source is the geometry authority and `README.md` is the durable usage,
+dimension, printing, and validation guide. Historical specifications remain in
+Git history. Never restore an older calibration merely because it appears in a
+historical artifact; verify current source values and the latest README fit
+notes first.
+
+Treat boundaries such as an unchanged printed base or a cover-only calibration
+as hard scope constraints. A replacement-cover adjustment must not alter base
+receiver, catch, opening, or wall geometry unless a separately approved change
+explicitly authorizes a base revision. OpenSCAD parsing, assertions, CSG/STL
+generation, and visual inspection validate only the modeled geometry; they do
+not prove slicer output, printer tolerances, material behavior, hardware fit,
+retention cycles, cable safety, airflow, or thermal safety.
