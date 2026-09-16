@@ -18,8 +18,56 @@ This repository contains editable OpenSCAD designs.
 - `designs/rotating_kitchen_jar_tray.scad`
 - `designs/linksys_lgs105_cable_management_enclosure.scad`
 - `designs/voomy_power_s7_cable_management_case.scad`
+- `designs/wardrobe_rod.scad`
 
 All files target OpenSCAD 2021.01 and have no external library dependencies.
+
+## One-Piece Wardrobe Rod
+
+`designs/wardrobe_rod.scad` models one continuous PLA tube with an open bore
+through both ends, without joints, connectors, caps, or modeled holders.
+All input dimensions were manually supplied by the user, not measured hardware.
+
+| Adjustable parameter | Default | Meaning |
+| --- | --- | --- |
+| `clear_span_mm` | 300 mm | Clear distance between holders |
+| `left_insertion_depth_mm` | 10 mm | Left holder engagement |
+| `right_insertion_depth_mm` | 10 mm | Right holder engagement |
+| `outside_diameter_mm` | 22 mm | Uniform outside diameter, including ends |
+| `wall_thickness_mm` | 4 mm | Radial CAD wall thickness |
+| `render_mode` | `"printable_layout"` | Diagonal print orientation; `"assembly"` also supported |
+
+Total length is the clear span plus both insertion depths: 320 mm by default,
+leaving 300 mm exposed with nominal engagement. The derived bore diameter is
+22 − 2 × 4 = 14 mm. Assertions require positive span, outside diameter and wall
+thickness, nonnegative insertion depths, a positive bore, and a supported mode.
+
+Open the source in OpenSCAD and adjust the parameters near its top. The default
+`printable_layout` centers the horizontal rod in XY, turns it 45 degrees on the
+plate, and places its lowest surface at Z=0. `assembly` shows the same complete
+horizontal rod without that XY rotation. For example, use
+`openscad -D 'render_mode="assembly"' -o /tmp/wardrobe-rod-assembly.csg designs/wardrobe_rod.scad`.
+The circular underside is preserved; the design adds no integrated supports.
+
+For the Bambu Lab P2S nominal 256 × 256 mm XY plate, the diagonal footprint is
+(320 + 22) / √2 = 241.83 mm per axis, leaving approximately 7.08 mm per side
+when centered. This is geometric fit only: check slicer reserved areas and the
+complete brim/support footprint, especially after changing parameters.
+
+Use PLA, compatible with AMS 2 Pro. Starting slicer settings are 0.20 mm layers,
+5–6 walls, and 20–30% infill. The 4 mm CAD wall is independent of slicer wall
+count; infill applies within material regions, and the modeled bore remains
+empty. Inspect bed adhesion, horizontal tube overhangs, bore bridging, and
+support removability in the slicer. Choose supports and adhesion settings there;
+support-free printing is not established.
+
+Bounded OpenSCAD renders and mesh inspection can validate continuity, open ends,
+orientation, dimensions and modeled plate fit. Keep previews under `/tmp`, stop
+renders exceeding 15 seconds, and use only `printable_layout` and `assembly`.
+These checks do not establish sliced printability, physical holder fit, secure
+retention at the user-selected 10 mm engagement, safe clothing load, or long-term
+PLA creep resistance. Holder dimensions remain unmeasured; slicer inspection,
+physical fit and loaded endurance require user validation.
 
 ## Voomy Power S7 Cable-Management Case
 
