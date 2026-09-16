@@ -31,13 +31,13 @@ All input dimensions were manually supplied by the user, not measured hardware.
 | Adjustable parameter | Default | Meaning |
 | --- | --- | --- |
 | `clear_span_mm` | 300 mm | Clear distance between holders |
-| `left_insertion_depth_mm` | 10 mm | Left holder engagement |
-| `right_insertion_depth_mm` | 10 mm | Right holder engagement |
+| `left_insertion_depth_mm` | 20 mm | Left holder engagement |
+| `right_insertion_depth_mm` | 20 mm | Right holder engagement |
 | `outside_diameter_mm` | 22 mm | Uniform outside diameter, including ends |
 | `wall_thickness_mm` | 4 mm | Radial CAD wall thickness |
 | `render_mode` | `"printable_layout"` | Diagonal print orientation; `"assembly"` also supported |
 
-Total length is the clear span plus both insertion depths: 320 mm by default,
+Total length is the clear span plus both insertion depths: 340 mm by default,
 leaving 300 mm exposed with nominal engagement. The derived bore diameter is
 22 − 2 × 4 = 14 mm. Assertions require positive span, outside diameter and wall
 thickness, nonnegative insertion depths, a positive bore, and a supported mode.
@@ -50,9 +50,10 @@ horizontal rod without that XY rotation. For example, use
 The circular underside is preserved; the design adds no integrated supports.
 
 For the Bambu Lab P2S nominal 256 × 256 mm XY plate, the diagonal footprint is
-(320 + 22) / √2 = 241.83 mm per axis, leaving approximately 7.08 mm per side
-when centered. This is geometric fit only: check slicer reserved areas and the
-complete brim/support footprint, especially after changing parameters.
+(340 + 22) / √2 = 255.973 mm per axis, leaving approximately 0.014 mm per side
+when centered. This is nominal geometric fit with essentially no usable margin.
+Supports, brim or slicer reserved areas may prevent slicing in this orientation.
+Check the complete sliced footprint, especially after changing parameters.
 
 Use PLA, compatible with AMS 2 Pro. Starting slicer settings are 0.20 mm layers,
 5–6 walls, and 20–30% infill. The 4 mm CAD wall is independent of slicer wall
@@ -65,7 +66,7 @@ Bounded OpenSCAD renders and mesh inspection can validate continuity, open ends,
 orientation, dimensions and modeled plate fit. Keep previews under `/tmp`, stop
 renders exceeding 15 seconds, and use only `printable_layout` and `assembly`.
 These checks do not establish sliced printability, physical holder fit, secure
-retention at the user-selected 10 mm engagement, safe clothing load, or long-term
+retention at the user-selected 20 mm engagement, safe clothing load, or long-term
 PLA creep resistance. Holder dimensions remain unmeasured; slicer inspection,
 physical fit and loaded endurance require user validation.
 

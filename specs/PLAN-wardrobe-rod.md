@@ -2,20 +2,22 @@
 
 Status: Approved
 
-Approval: User explicitly approved this implementation plan in the conversation.
+Iteration: 2026-09-16 — extend each insertion end by 10 mm.
+Approval: User explicitly approved this revised implementation plan in the
+conversation on 2026-09-16.
 
 ## Authority and scope
 
-Implement the approved `specs/SPEC-wardrobe-rod.md`: one 320 mm open-ended
-PLA tube, 22 mm OD, 14 mm ID, with 300 mm clear span and 10 mm insertion at each
+Implement the approved `specs/SPEC-wardrobe-rod.md`: one 340 mm open-ended
+PLA tube, 22 mm OD, 14 mm ID, with 300 mm clear span and 20 mm insertion at each
 end. No behavior changes beyond that specification. Source patterns are the
 repository's adjustable/derived parameter sections, named geometry modules,
 and render-mode dispatch; no further product research is needed.
 
 Owned paths:
 
-- `designs/wardrobe_rod.scad` (new)
-- `README.md` (design listing and wardrobe-rod usage section only)
+- `designs/wardrobe_rod.scad` (insertion-depth defaults only)
+- `README.md` (wardrobe-rod usage section only)
 - `specs/SPEC-wardrobe-rod.md` (approved authority and reconciliation)
 - `specs/PLAN-wardrobe-rod.md` (this plan and execution evidence)
 
@@ -24,7 +26,7 @@ Preserve all unrelated files and index state.
 ## Workspace, base, and delivery
 
 Research checkout: `/home/alexbanica/workspace/openscad-designs`, branch `main`.
-Research SHA: `a9ea1e434a9fd9ce76d9a35db5b1c6537e8ffc13`.
+Research SHA: `3a46df7265e57c677810ea556f96746d46ea0d5b`.
 Implementation worktree: `/home/alexbanica/.herdr/worktrees/openscad-designs/wardrobe-rod`.
 Final delivery branch and upstream: local `main` and `origin/main`.
 
@@ -60,8 +62,11 @@ plan amendment.
 
 Main performs development, documentation, validation, integration, and final
 acceptance. Explorer/developer delegation adds no useful independent work to
-this small change. One independent code-reviewer reviews the integrated diff
-against the approved artifacts and validation evidence. It is read-only, bounded
+this small change. One fresh independent generic worker configured with `gpt-5.6-luna` performs
+code review of the integrated diff
+against the approved artifacts and validation evidence, preserving the user
+choice `use luna` from the preceding delivery. Confirm its actual launched model.
+It is read-only, bounded
 to five minutes, with a frozen manifest/digests and no Git delivery authority.
 Main disposes findings and applies one consolidated accepted correction batch,
 then repeats affected validation. Distinct QA is unnecessary because the checks
@@ -77,17 +82,13 @@ Owner: main. Path: `designs/wardrobe_rod.scad`. Prerequisites: approved artifact
 verified execution base and transferred authority. Target one bounded five-minute
 work unit; report a checkpoint if unfinished rather than treating it as accepted.
 
-Expose `clear_span_mm`, `left_insertion_depth_mm`, `right_insertion_depth_mm`,
-`outside_diameter_mm`, `wall_thickness_mm`, and `render_mode` near the top.
-Derive length and bore diameter. Use a centered cylinder difference, orient its
-axis horizontally, and raise its center by its outer radius. Printable layout
-adds 45-degree XY rotation; assembly omits that rotation. Default to printable
-layout. Assert valid dimensions and supported render modes.
+Change only `left_insertion_depth_mm` and `right_insertion_depth_mm` defaults
+from 10 to 20. Derived total length becomes 340 mm. Preserve the 300 mm clear
+span, 22 mm outside diameter, 4 mm radial wall and 14 mm bore. Keep existing
+modules, assertions, render dispatch and printable-layout default unchanged.
 
-Reversible implementation defaults: 96 circumferential facets (a multiple of
-four preserving the lowest vertex at the bed plane), and a small axial
-subtraction overrun to guarantee open bore ends. Neither is an additional
-user-adjustable fit dimension.
+Retained reversible implementation defaults: 96 circumferential facets and
+0.1 mm axial bore overrun per end. No new adjustable parameter or geometry.
 
 Acceptance: approved dimensions, one continuous open tube, specified placement,
 both render modes, parameter assertions, no other geometry or dependencies.
@@ -95,16 +96,17 @@ both render modes, parameter assertions, no other geometry or dependencies.
 ### WR-2: Durable documentation
 
 Owner: main. Path: `README.md`. Depends on WR-1; serialized with model changes.
-Add the source to the design listing and document all parameters, modes,
-320/300/10 mm length interpretation, OD/ID, diagonal fit, slicer starting
-settings and validation limits from SPEC. Explain that a 4 mm CAD wall is not
-the slicer's wall count and that modeled bore space remains empty. Document
-adhesion, overhang, bore bridging and removable-support inspection. No generated
-documentation command applies. Target five minutes.
+Update length/engagement descriptions to 340/300/20 mm. Recalculate the
+45-degree footprint as (340 + 22) / sqrt(2) = 255.973 mm per axis, leaving
+approximately 0.014 mm per side on the specified 256 mm plate. Explicitly state
+that this is nominal geometric fit with essentially no usable margin and that
+supports, brim or reserved areas may prevent slicing in this orientation.
+Preserve all other usage, material, slicer and physical-validation guidance.
+No generated documentation command applies. Target five minutes.
 
 ### WR-3: Integrated review and delivery
 
-Owner: main, with one independent read-only code-reviewer. Depends on WR-1/WR-2.
+Owner: main, with the independent read-only Luna worker. Depends on WR-1/WR-2.
 Freeze source diff, artifact digests, acceptance criteria and evidence. Review
 geometry, parameters, print placement, scope and README consistency. Main
 handles the consolidated correction batch and affected checks, then records
@@ -124,11 +126,16 @@ timeout 15s openscad --render --autocenter --viewall --imgsize=1200,800 -D 'rend
 git diff --check
 ```
 
-Use `QT_QPA_PLATFORM=offscreen` for PNG commands if needed. Inspect both images
+Use a working X display for PNG commands. The previous delivery established
+that this installed OpenSCAD build requires X even with Qt offscreen mode.
+If needed, reuse the temporary Xvfb setup under `/tmp/wardrobe-rod-xvfb` after
+checking availability, exporting its library path and a local `DISPLAY`; stop
+the display after rendering. Bound each render to at most 15 seconds. Do not
+install system packages or treat unavailable rendering as success. Inspect both images
 for placement, connected geometry, open ends and unintended features. Inspect
 OFF geometry bounds and connectivity with a temporary read-only geometry
 inspection script, not a unit test: assembly bounds must correspond to
-320 × 22 × 22 mm and printable XY bounds to approximately 241.83 mm, Z=0–22 mm,
+340 × 22 × 22 mm and printable XY bounds to approximately 255.973 mm, Z=0–22 mm,
 within mesh numerical tolerance. Check the 14 mm bore against source and mesh
 end rings. Review assertion guards directly; do not add or run unit tests.
 
@@ -144,74 +151,52 @@ Only plan approval authorizes this implementation/delivery procedure. Implementa
 starts through `implement` in a new session, cleared context, or with explicit
 same-context consent. Main retains requirements, integration and acceptance.
 
-## Execution evidence
+## Iteration delta and preserved choices
 
-- Frozen execution base: `cf4476a6f7eecf575c5e3a04a108de7c019ee79f`, fetched
-  from origin/main; research SHA is its ancestor. The only intervening change
-  removes `.codex/agents/default.toml`; the plan uses main and code-reviewer,
-  so this unused role deletion has no impact on the planned scope or assurance.
-- Invoking main initially equals execution base; index is empty. Only the two
-  approved artifacts are untracked. Detached worktree HEAD was verified equal
-  to the execution base before source edits. Original artifacts remain in the
-  invoking checkout as recovery copies. Transfer SHA-256 digests match:
-  SPEC `d42de46418bac1d5f2da071afd2756c17e978315b691086a8f7a7931046e49c6`;
-  PLAN `f4992652e759d274c85ecb957e2342ef1e92384dc078f18756c43bfa915a3e4c`.
-- Development checks passed: both OFF exports (under one second each), one
-  connected mesh per mode, every mesh edge incident to two faces. Assembly
-  bounds are X=-160..160, Y=-11..11, Z=0..22 mm; layout bounds are
-  X/Y=-120.915..120.915, Z=0..22 mm. Both assembly end rings have inner/outer
-  vertex radii approximately 7/11 mm (OFF rounding within 0.00004 mm).
-- Both PNG renders passed and were visually inspected for continuous tube form,
-  horizontal placement, orientation and absence of extra geometry. End openings
-  are supplemented by source and mesh-ring inspection because of oblique views.
-- Conformance-only environment substitution: original PNG commands with
-  `QT_QPA_PLATFORM=offscreen` failed because this OpenSCAD build requires X.
-  The same OpenSCAD render options and image outputs succeeded with `DISPLAY=:92`
-  using a temporary Xvfb unpacked under `/tmp/wardrobe-rod-xvfb`, with its tool
-  directory redirected to `/tmp/wr`. No system packages were installed. Xvfb
-  was bounded to 14 seconds; each render to 12 seconds. Coverage, geometry,
-  assurance and outputs are unchanged; nonfatal keyboard keysym warnings do
-  not affect rendered geometry. Temporary display processes were terminated.
-- `git diff --check` passed. Assertion guards were reviewed directly. No unit
-  tests or conventional test-first work were performed, per repository policy.
-- WR-3 independent review is BLOCKED: native `code-reviewer` failed at startup
-  with HTTP 400: `gpt-5.3-codex-spark` is not supported with this ChatGPT account.
-  The skill-authorized single same-role retry requested `gpt-5.6-luna`, but the
-  native role still launched Spark and failed identically. Neither reviewer
-  inspected the change; no independent-review pass is claimed.
-- Main's bounded fallback inspection found no source/README conformance issue,
-  but does not satisfy the plan's independent-review criterion. No correction
-  batch was indicated by the completed checks. Distinct QA remains inapplicable
-  under the routine plan; the required independent evidence is still missing.
-- Status: DRAFT, implementation and development validation complete; independent
-  review, final reconciliation, commit/push and clean-worktree removal pending.
-  Original invoking artifacts and index remain unchanged. Preserve this detached
-  worktree for recovery. A working native reviewer or explicitly approved review
-  procedure amendment is required before acceptance and delivery.
+This plan replaces the completed 320 mm implementation plan; prior execution
+and review records remain in Git history at the research SHA. At approval, this iteration had no execution or validation results; completed
+evidence is recorded below. Only two source defaults and related
+README dimensions/fit guidance change. Preserve the existing construction,
+orientation, printer/material target, routine assurance, independent Luna review,
+main-owned documentation, linked-worktree delivery to main, and physical/slicer
+validation exclusions. No additional product research or agent discovery work
+is needed for this bounded parameter revision.
 
-## Approved review recovery amendment
+## Execution evidence — 2026-09-16
 
-The user replied `use luna` to the explicit request to use a fresh generic worker
-configured with `gpt-5.6-luna` for independent review and then finish delivery.
-This replaces only the unavailable native reviewer launch with an independent,
-read-only generic worker running that model. The frozen source, criteria,
-five-minute deadline, assurance independence, no-edit/no-Git authority, and main
-acceptance/delivery responsibilities remain unchanged. The worker checks the same
-SPEC/PLAN, full source and README diff, and development evidence. No review gate
-is bypassed. This supersedes the preceding review-blocked status once the review
-successfully completes; acceptance and delivery remain conditional on its result.
+Fresh-session entry verified. Fetched origin/main equals research and frozen
+execution SHA `3a46df7265e57c677810ea556f96746d46ea0d5b`; no intervening changes.
+Created the planned clean detached worktree at that SHA. Invoking main has only
+the two approved unstaged artifacts and an empty staged diff. Recovery bytes,
+original diff and index manifest retained under `/tmp/wardrobe-rod-recovery`.
+Transferred artifacts byte-verified: SPEC SHA-256
+`c2e7b3da378d45dbfcf9328c119c1457be52a8bb5f85aff3ebb09f91d03b7a44`;
+original approved PLAN SHA-256
+`59ed90a42ff012e62c0a579e22fa052fdffea23ea1bed60f6308e73f4edff1ad`.
 
-## Final acceptance assessment
+Development validation: both planned OFF exports and both PNG renders passed
+(exit 0; each under 15 seconds). Reused temporary Xvfb on :97 and stopped it
+following rendering. Images under `/tmp/wardrobe-rod-{layout,assembly}.png`
+show the expected single horizontal tube, changed XY orientation, visible open
+end and no unintended geometry. Source and both mesh end rings establish the
+through-bore where the camera obscures the far opening.
+Read-only OFF inspection found one connected mesh in each mode and all 1152
+edges incident to two faces. Assembly bounds: X -170..170, Y -11..11, Z 0..22 mm.
+Layout bounds: X/Y -127.986..127.986, Z 0..22 mm (255.972 mm XY extent,
+consistent with 255.973 mm after OFF coordinate rounding). Both assembly end
+rings have 192 vertices, radii approximately 7 and 11 mm (maximum rounding
+error below 0.00006 mm), confirming 14 mm bore and 22 mm OD. Guards and unchanged
+render dispatch inspected directly. `git diff --check` passed. Unit tests and
+conventional test-first phases skipped as prohibited/not applicable.
 
-- The approved recovery worker ran on `gpt-5.6-luna` (confirmed from its session
-  turn metadata) and completed independent WR-3 review within five minutes.
-  All four handoff digests matched. It inspected the source, README diff,
-  authority artifacts, existing OFF bounds and PNGs, and whitespace checks.
-  Result: no findings; no corrective source batch or repeated renders required.
-- Main accepts the modeled behavior and documentation against the approved
-  criteria. Development evidence plus independent review covers the routine
-  assurance scope; distinct QA is not required. Unit tests remain prohibited.
-- Definition of Done for geometry/documentation is satisfied. Physical holder
-  fit, retention, slicer output, load capacity and PLA creep remain unvalidated
-  as explicitly excluded from implementation evidence. Git delivery and guarded
-  cleanup are verified externally after this recorded pre-delivery assessment.
+WR-3 independent read-only review completed with no findings or blockers by
+fresh generic worker `wardrobe_review`. Actual `gpt-5.6-luna` launch verified
+from its session turn-context metadata. Reviewer verified all frozen digests,
+source scope, mesh bounds, both images, README consistency and diff hygiene;
+recommended acceptance. No correction batch was necessary. Routine-profile
+main assessment: development geometry evidence plus independent review covers
+all modeled criteria; distinct QA is not required. Documentation synchronized
+by main. No physical or slicer acceptance is claimed. Final reconciliation
+retains the approved SPEC and this PLAN in the four-path delivery; no generated
+exports are included. Commit/push and guarded cleanup are verified separately
+in the delivery report, rather than claimed before they occur.

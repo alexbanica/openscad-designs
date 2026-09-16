@@ -3,8 +3,8 @@
 // Adjustable Parameters
 // Holder spacing and engagement
 clear_span_mm = 300;
-left_insertion_depth_mm = 10;
-right_insertion_depth_mm = 10;
+left_insertion_depth_mm = 20;
+right_insertion_depth_mm = 20;
 
 // Circular cross-section
 outside_diameter_mm = 22;

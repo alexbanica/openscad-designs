@@ -2,7 +2,9 @@
 
 Status: Approved
 
-Approval: User explicitly approved this specification in the conversation.
+Iteration: 2026-09-16 — extend each insertion end by an additional 10 mm.
+Approval: User explicitly approved this revision in the conversation on
+2026-09-16. The prior approved version remains in Git history.
 
 ## Purpose and scope
 
@@ -18,9 +20,9 @@ All dimensions below are manually supplied by the user, not measured hardware:
 | Parameter | Value |
 | --- | --- |
 | Clear distance between holders | 300 mm |
-| Insertion into left holder | 10 mm |
-| Insertion into right holder | 10 mm |
-| Derived total rod length | 320 mm |
+| Insertion into left holder | 20 mm |
+| Insertion into right holder | 20 mm |
+| Derived total rod length | 340 mm |
 | Outside diameter, including ends | 22 mm |
 | Radial wall thickness | 4 mm |
 | Derived inside diameter | 14 mm |
@@ -28,8 +30,8 @@ All dimensions below are manually supplied by the user, not measured hardware:
 Use one continuous circular tube with an open bore through both ends. No center
 joint, reduced end diameter, end cap, adhesive connection, or retention feature
 is included. Holder dimensions have not been measured; this scope models the
-requested rod and does not establish socket fit or secure retention with 10 mm
-engagement. The 10 mm engagement at each end is an explicit user choice.
+requested rod and does not establish socket fit or secure retention with 20 mm
+engagement. The 20 mm engagement at each end is an explicit user choice.
 
 ## Geometry and render behavior
 
@@ -56,9 +58,13 @@ The P2S manufacturer specification lists a 256 × 256 mm XY build area:
 https://csm.bblcdn.com/hub/cb24b13a195541199f3f820270a7df3b.pdf
 
 At 45 degrees, the nominal rod's XY footprint is
-`(320 + 22) / sqrt(2) = 241.83 mm` on each axis. Centering leaves approximately
-7.08 mm on each side before slicer-generated supports, brim, and reserved areas.
-This establishes geometric plate fit, not a validated sliced print.
+`(340 + 22) / sqrt(2) = 255.973 mm` on each axis. Centering leaves only
+approximately 0.014 mm on each side before slicer-generated supports, brim, and
+reserved areas. This establishes nominal geometric plate fit only, with
+essentially no usable XY margin. Slicer-generated additions or reserved areas
+may prevent printing in this orientation. Do not claim validated P2S printability;
+check the complete sliced footprint before printing. No alternate orientation,
+split, or reduced dimension is introduced by this iteration.
 
 README guidance must require checking bed adhesion, horizontal tube overhangs,
 bore bridging, and support removability in the slicer. Supports and adhesion
@@ -68,7 +74,7 @@ long-term resistance to PLA creep based on CAD validation.
 
 ## Acceptance and validation
 
-- Nominal modeled rod is 320 mm long with 22 mm OD and 14 mm ID, without a seam
+- Nominal modeled rod is 340 mm long with 22 mm OD and 14 mm ID, without a seam
   or connector. Nominal insertion leaves the specified 300 mm exposed span.
 - Printable layout contains exactly one continuous part, horizontal at 45
   degrees and resting on the build plane, within the nominal plate dimensions.
@@ -82,3 +88,14 @@ long-term resistance to PLA creep based on CAD validation.
 - Do not commit generated mesh exports. Slicer checks, physical holder fit,
   retention, and loaded endurance remain physical/user validation, not results
   established by this implementation.
+
+## Iteration delta and preserved behavior
+
+Increase each insertion-depth default from 10 to 20 mm, adding 20 mm to the
+complete rod (320 to 340 mm). Preserve the 300 mm clear span, 22 mm outside
+diameter, 4 mm radial wall, 14 mm bore, continuous open-ended construction,
+render modes, 45-degree printable orientation, parameter guards, exclusions,
+and validation boundaries. Update README dimensions, engagement guidance, and
+plate-fit calculation with the near-zero margin explicitly stated. Acceptance
+requires assembly bounds of 340 × 22 × 22 mm and printable XY bounds of
+approximately 255.973 mm per axis with Z=0–22 mm, within mesh rounding tolerance.
