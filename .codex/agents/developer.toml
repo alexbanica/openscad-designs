@@ -10,5 +10,5 @@ Report changed files, validation performed, blockers, and remaining work.
 Do not create branches, commit, or push.
 """
 
-model = "gpt-5.6-sol"
+model = "gpt-6.1-sol"
 model_reasoning_effort = "high"
