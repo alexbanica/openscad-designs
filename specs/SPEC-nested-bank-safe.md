@@ -249,3 +249,141 @@ the nesting chain.
 Existing designs, specifications, plans, and their documented behavior remain
 unchanged.  This specification authorizes planning only; it does not authorize
 implementation, commits, pushes, mesh exports, or physical printing.
+
+
+## Amendment 1 — 2026-10-09 — Complete-set printable batch
+
+- Amendment ID: SPEC-nested-bank-safe-A1
+- Previous version: original approved specification, SHA-256
+  `b5bf72858bd4955f877c39256ba8bc61ea4ca403e9df23692479d05c4dd614eb`.
+- Approval: Explicitly approved by the user with "approve" on 2026-10-09.
+- Request and purpose: User explicitly invoked `$iterate and give the ability
+  to do that` after asking to print all five safes together. The user then
+  selected `Complete set, split into plates if needed (Recommended)` on
+  2026-10-09. Provide one complete-set preparation option, with separately
+  selectable physical plates when the entire inventory needs several plates.
+  This selection resolves the scope choice; it is not specification approval.
+
+### Changes against the previous version
+
+| Section / requirement | Before | After | Reason |
+| --- | --- | --- | --- |
+| Common construction: printable selection | One safe/group or individual item per printable invocation | Add opt-in `print_scope="complete_set"` within `render_mode="printable_layout"`; retain `print_scope="selected_group"` as the source default | Prepare the complete five-safe inventory without manually selecting twenty groups |
+| Printable inventory | Full set reachable through existing safe/group selections | Complete-set mode includes every quantity from all five existing inventories, currently 47/24/24/24/32 = 151 printed parts | No missing pins, clips, message plaques or duplicated inventory |
+| Printable plate selection | No complete-set plate count or selector | New `plate_index` default 1; positive indices select one generated plate; 0 shows a separated overview of all generated plates | Export physical plates individually while seeing the whole batch |
+| Plate fit and orientation | Independently validated groups on a P2S plate | Deterministically allocate the complete inventory across as many plates as needed; preserve every part's existing geometry and manufacturing orientation | Multiple plates are permitted; a single-plate or minimum-plate-count promise is excluded |
+| Documentation and acceptance | Per-safe/group usage and validation | Add complete-set activation, total plate count, overview, plate export instructions, full-inventory reconciliation and per-plate validation | Make the batch usable and verify coverage beyond the old group matrix |
+
+### Confirmed behavior, definitions and constraints
+
+1. A **complete-set batch** is the union of all quantities from Safes 1--5,
+   using the same existing printed parts. A **plate** is one physical P2S
+   256 x 256 mm XY build area. Batch preparation may require multiple print
+   runs and manual plate changes; it does not mean automatic unattended
+   printer operation or one simultaneous print of several physical plates.
+2. Keep `render_mode="printable_layout"`, `safe_index=1`, `print_group="body"`
+   and `part_id=""` as the existing source defaults. Add
+   `print_scope="selected_group"` and `plate_index=1`. The complete-set scope
+   is an explicit override. The printing-specific scope/plate controls do not
+   change assembly or individual-part mode behavior.
+3. In selected-group scope, current safe/group and single-copy `part_id`
+   outputs remain unchanged; `plate_index` has no filtering effect there.
+   In complete-set scope, valid `safe_index` and `print_group` values do not
+   filter the batch. Retain their legacy value validation, and require
+   `part_id=""`; reject a nonempty part filter rather than silently omitting
+   parts. Reject an unsupported printing scope.
+4. Complete-set placement is deterministic for identical source parameters.
+   Identify each inventory occurrence by safe number, part ID and copy number.
+   Each occurrence appears on exactly one plate. Preserve all geometry,
+   dimensions, clearances, separability, installed fit, and current stable
+   manufacturing orientations; translate parts on the plate without scaling
+   or modifying them. Component identity remains available for the existing
+   AMS colour-assignment guidance; no new colour palette is required.
+5. Use a 5 mm nominal physical plate edge margin (the inner 246 x 246 mm area,
+   XY 5..251 mm) and at least 3 mm clear separation between conservative XY
+   footprints of printable objects. Every selected physical plate has no
+   overlapping objects, no floating parts, every part resting at Z=0, and no
+   geometry outside that margin. Oversized parts fail an assertion rather
+   than shrinking, clipping or dropping inventory. The existing selected-group
+   positions and validation bounds remain unchanged.
+6. Compute and report a finite total plate count N and enough plate/inventory
+   information to select indices 1..N without guessing. The packing need not
+   minimize N. In complete-set scope, accept only integer `plate_index` values
+   in 0..N; reject negative, fractional or out-of-range selections. Index 1
+   must be a populated printable physical plate, not the all-plates overview.
+7. Index 0 is an explicit inspection-only overview: show all populated plate
+   layouts separated in XY, with each plate's actual part placement unchanged
+   relative to its own origin. All printable objects remain Z=0, distinct and
+   unscaled; no plate frames, labels or extra geometry become printed inventory.
+   Its combined XY bounds may exceed one physical plate. This is the narrow
+   exception to single-plate extent checking for overview only; every positive
+   plate selection still must satisfy its physical plate bounds. README must
+   clearly instruct the maker to select/export positive plate indices for
+   printing and not print the overview as a single plate.
+8. Preserve the one editable OpenSCAD 2021.01 source and no external-library
+   dependency. No slicer integration, automatic multi-plate 3MF creation,
+   checked-in STL/STEP/3MF files, new hardware, or printer control is added.
+   This amendment defines complete-set layout selection, not an export script.
+
+### Preserved behavior and impact
+
+The original five safe envelopes, nesting allowance, primary walls, hinge and
+closure mechanisms, finger recesses, messages, secret pocket/slide, all printed
+inventories and current calibrated nonprimary capture/retainer stock remain
+unchanged. Source at researched base `5f05c05f5489464c567f5d05df836d0a4d257e00`
+is authoritative for preserved geometry: SHA-256
+`a242ccb95a43674dbe24f57d8adf6543907bccfe75804ae9627e10f9e10c0205`.
+Do not restore earlier development geometry or repeat solved fit adjustments.
+Existing single-safe assembly, nested assembly/extraction, selected print groups,
+individual-part selectors and colour component separation are preserved.
+Bambu Lab P2S / AMS 2 Pro compatibility, 0.4 mm nozzle guidance, no-nonprinted
+hardware boundary and all original physical/slicer validation exclusions remain.
+
+Direct dependencies are existing inventory, manufacturing transforms, footprint
+records, printable dispatch and README instructions in this repository only.
+Current code exposes only one safe/group, so historical twenty-group checks do
+not validate a new complete-set allocation. Credible regressions are omitted or
+duplicated parts, selector conflicts, changes to old layouts, plate overflow,
+XY overlaps, floating objects, and unintentional changes to component geometry.
+The counterpart PLAN remains byte-identical while this SPEC amendment awaits
+approval; a separately proposed PLAN amendment must follow approved SPEC A1.
+No implementation, commit, push, worktree or printing authority is granted by
+this pending planning amendment.
+
+### Acceptance, regression, validation and documentation
+
+- At nominal parameters, reconcile the batch manifest across all selected
+  plates against the existing inventory: exactly 151 occurrences and the
+  47/24/24/24/32 per-safe counts, with no missing or repeated occurrence.
+- Verify deterministic allocation/plate count and that all 1..N selections
+  are populated. Check every plate's generated object bounds, stable bed
+  contact, object separation and quantity against its manifest. Inspect actual
+  printable-layout artifacts and the all-plates overview; arithmetic alone
+  does not establish the new complete layout's correctness.
+- Verify unsupported scope, nonempty complete-set `part_id`, negative,
+  fractional and out-of-range plate indices, and oversized items assert.
+  Verify existing selected-group/part behavior and assembly selectors remain
+  compatible, with printing-only controls ineffective outside printable mode.
+- Continue only allowed `printable_layout` and reference-free `assembly`
+  OpenSCAD validation, hard-limited to 15 seconds per render, temporary outputs
+  under /tmp. If a complete plate mesh exceeds that bound, validation may use
+  unchanged-coordinate actual-part subdivisions with explicit completeness
+  and equivalence evidence; no timeout is success, no manufacturing solidness,
+  quantity, placement or bed-contact criterion is removed. The subsequent PLAN
+  must specify those mechanics and required independent assurance.
+- Run `git diff --check`. Unit tests and conventional test-first work remain
+  prohibited and inapplicable. Slicer output, actual printing, print tolerances,
+  materials and cycle endurance remain outside modeled acceptance.
+- README documents activation, unchanged defaults, ignored legacy filters in
+  complete scope, empty `part_id` requirement, total plate count, index 0
+  overview warning, sequential positive-index exports and manual plate changes,
+  AMS component colouring, margins/spacing and slicer/test-print limitations.
+
+### Approval record
+
+The user explicitly approved the complete effective SPEC with "approve" on
+2026-10-09: the preserved original body plus SPEC-nested-bank-safe-A1.
+Reviewed proposal SHA-256:
+`d42786455ac599fdd08904795e55c8a7599593dde00ab73b309bc41c323042a3`.
+This approval is specific to the SPEC; PLAN A2 requires separate manual approval.
+It does not start implementation or authorize Git delivery during iteration.

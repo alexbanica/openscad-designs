@@ -2111,6 +2111,48 @@ Remove leaf clips and pins before sliding leaves sideways off the panel.
 Remove exterior detail clips and pins when needed for access. Reverse the
 assembly sequence without forcing a captive component through its retainer.
 
+For an opt-in complete-set batch, keep `render_mode="printable_layout"` and
+set `print_scope="complete_set"`. The source defaults remain
+`print_scope="selected_group"`, `safe_index=1`, `print_group="body"`,
+`plate_index=1`, and `part_id=""`, so the existing selected-group output is
+unchanged by default. Complete-set mode includes all 151 inventory occurrences
+(47/24/24/24/32 for Safes 1–5), regardless of valid `safe_index` or
+`print_group` filters; those legacy selectors are still validated. Leave
+`part_id` empty, since a part filter would omit required inventory.
+
+At the nominal settings the deterministic allocator reports 3 physical plates
+with 42, 53, and 56 parts. It preserves each part's manufacturing orientation
+and uses a nominal 5 mm edge margin and at least 3 mm between conservative part
+footprints. `plate_index` accepts populated physical plates 1 through the echoed total
+(currently 3). Generate bounded previews separately, changing the index and
+output filename for each run:
+
+```sh
+timeout 15s openscad -D 'print_scope="complete_set"' -D 'plate_index=1' -o /tmp/nested-safe-plate-1.csg designs/nested_bank_safe.scad
+timeout 15s openscad -D 'print_scope="complete_set"' -D 'plate_index=2' -o /tmp/nested-safe-plate-2.csg designs/nested_bank_safe.scad
+timeout 15s openscad -D 'print_scope="complete_set"' -D 'plate_index=3' -o /tmp/nested-safe-plate-3.csg designs/nested_bank_safe.scad
+```
+
+Use `plate_index=0` only to inspect an overview of all plates. For example,
+export a temporary CSG preview with:
+
+```sh
+timeout 15s openscad -D 'print_scope="complete_set"' -D 'plate_index=0' -o /tmp/nested-safe-overview.csg designs/nested_bank_safe.scad
+```
+
+It arranges plates in two columns separated by 276 mm; the combined overview
+exceeds the physical plate size and must not be exported or printed as one
+plate. The source echoes the total plate and occurrence counts and a manifest
+record for each safe, part ID, copy, plate, position, and footprint. Check those records
+against the inventory. For printing, select a positive plate index in OpenSCAD,
+export that single layout, and import its mesh into Bambu Studio. The commands
+above produce CSG previews, not printable meshes; whole-plate command-line STL
+exports exceeded the repository's 15-second validation limit.
+The allocator prepares layouts only; change plates manually between print
+runs. Review actual margins, gaps, brim/support allowances, first layers, and
+object separation in the slicer. AMS colours remain assigned by separate
+components using the existing body/detail suggestions above.
+
 ### Validation and limits
 
 Only `printable_layout` and reference-free `assembly` are used for repository
@@ -2136,11 +2178,21 @@ groups, whose manufacturing meshes were clean.
 The source assertions check supported selectors, key clearance and envelope
 allocations, Safe 1 travel, and each named group's
 plate bounds. Unit tests are prohibited in this repository. Run
-`git diff --check` for source/documentation changes. Changing coupled dimensions can trip those budgets (for example,
-raising moving clearance to 0.4 mm makes the Safe 3 chamber check fail); the
+`git diff --check` for source/documentation changes. Changing coupled dimensions
+can trip those budgets (for example, raising moving clearance to 0.4 mm makes
+the Safe 3 chamber check fail); the
 assertions do not promise that every combination of adjustable parameters is
 valid. The final accepted correction restored the Safe 1 keyed axle path through
 the rotor and handle bores.
+
+Complete-set modeled checks reconciled all 151 occurrences and per-safe
+counts, confirmed the existing group layouts remain unchanged, and checked
+plate bounds, separation, bed contact, quantity, and geometry using
+unchanged-coordinate subdivisions after whole-plate mesh exports exceeded the
+render limit. These checks do not establish Bambu Studio slicing, physical
+fit, material behavior, retention cycles, or safe operation. Inspect every
+selected plate in the slicer and test-print the mechanisms before relying on
+fit or repeated use.
 
 The available CAD and bounded visual evidence do not establish slicer output,
 physical fit, clip/retention strength, material behavior, door-cycle life,

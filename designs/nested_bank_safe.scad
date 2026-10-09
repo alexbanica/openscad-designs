@@ -5,6 +5,8 @@
 render_mode = "printable_layout";
 safe_index = 1;
 print_group = "body";
+print_scope = "selected_group"; // Opt in to complete_set for all five inventories.
+plate_index = 1; // Complete-set physical plate; 0 is inspection-only overview.
 part_id = "";
 assembly_view = "single";
 show_guide_plate = true; // Assembly inspection only; manufacturing retains the guide.
@@ -112,6 +114,8 @@ assert(primary_wall_mm>=2,"Primary shell walls must be at least 2 mm");
 assert(nest_clearance_mm>=0.5 && moving_clearance_mm>=0.3 && moving_clearance_mm<=0.4,"Clearance budget");
 assert(safe_index>=1 && safe_index<=5 && floor(safe_index)==safe_index,"Unsupported safe index");
 assert(render_mode=="printable_layout" || render_mode=="assembly" || render_mode=="individual_part","Unsupported render mode");
+assert(render_mode!="printable_layout" || print_scope=="selected_group" || print_scope=="complete_set","Unsupported print scope");
+assert(render_mode!="printable_layout" || print_scope!="complete_set" || part_id=="","Complete-set printing requires empty part_id");
 assert(print_group=="body" || print_group=="door" || print_group=="mechanism" || print_group=="details","Unsupported print group");
 assert(part_id=="" || len([for(r=printed_inventory(safe_index)) if(r[0]==part_id) r])==1,"Part unavailable for selected safe");
 assert(assembly_view=="single" || assembly_view=="nested","Unsupported assembly view");
@@ -969,10 +973,44 @@ module printable_group(i,g) {
   translate([p[0],p[1],0]) u1_print_part(i,ids[k]);
  }
 }
+// Complete-set occurrences retain inventory order and copy identity.
+// Occurrence: [safe, part ID, copy]. Placement: [safe, part ID, copy,
+// plate, x, y, width, height]. Existing manufacturing helpers stay unchanged.
+function complete_set_occurrences() = [for(i=[1:5]) for(r=printed_inventory(i)) for(copy=[1:r[1]]) [i,r[0],copy]];
+function complete_set_placements(occurrences,k=0,plate=1,x=5,y=5,row_height=0) =
+ k>=len(occurrences) ? [] :
+ let(o=occurrences[k],f=part_footprint_mm(o[0],o[1]))
+ assert(is_num(f[0]) && is_num(f[1]) && f[0]>0 && f[1]>0 && f[0]<=246 && f[1]<=246,
+        str("Invalid or oversized complete-set footprint: ",o," ",f))
+ let(wrap=x+f[0]>251,
+     row_x=wrap?5:x,row_y=wrap?y+row_height+3:y,
+     next_plate=row_y+f[1]>251,
+     px=next_plate?5:row_x,py=next_plate?5:row_y,
+     pp=next_plate?plate+1:plate,
+     rh=next_plate || wrap ? f[1] : max(row_height,f[1]))
+ concat([[o[0],o[1],o[2],pp,px,py,f[0],f[1]]],
+        complete_set_placements(occurrences,k+1,pp,px+f[0]+3,py,rh));
+function complete_set_plate_count(placements) = placements[len(placements)-1][3];
+function complete_set_overview_offset_mm(plate) = [((plate-1)%2)*276,floor((plate-1)/2)*276,0];
+module printable_complete_set() {
+ placements=complete_set_placements(complete_set_occurrences());
+ plate_count=complete_set_plate_count(placements);
+ assert(is_num(plate_index) && floor(plate_index)==plate_index && plate_index>=0 && plate_index<=plate_count,
+        str("Complete-set plate_index must be an integer in 0..",plate_count));
+ echo(complete_set_plate_count=plate_count,complete_set_occurrence_count=len(placements));
+ for(p=placements) {
+  echo(complete_set_placement=p);
+  assert(p[4]>=5 && p[5]>=5 && p[4]+p[6]<=251 && p[5]+p[7]<=251,"Complete-set plate margin exceeded");
+  if(plate_index==0 || p[3]==plate_index)
+   translate([p[4],p[5],0]+(plate_index==0?complete_set_overview_offset_mm(p[3]):[0,0,0]))
+    u1_print_part(p[0],p[1]);
+ }
+}
 // Output dispatch
 if(render_mode=="assembly") {
  if(assembly_view=="nested") nested_assembly(safe_index); else safe_assembly(safe_index);
 } else if(render_mode=="individual_part") {
  assert(part_id!="","Select an individual part"); u1_print_part(safe_index,part_id);
-} else if(part_id!="") u1_print_part(safe_index,part_id);
+} else if(print_scope=="complete_set") printable_complete_set();
+else if(part_id!="") u1_print_part(safe_index,part_id);
 else printable_group(safe_index,print_group);

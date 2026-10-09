@@ -833,3 +833,348 @@ not invent a future commit SHA or claim an unperformed push/cleanup.
 Final pre-commit documentation check explicitly names the approved P2S
 0.4 mm nozzle target. This is requirement synchronization only. Final accepted
 README SHA-256: `b96c5309c467943f0821f0f52a9966eb3b30a543e011a9bc30512398e9c131e6`. No geometry or prior record changed.
+
+## Amendment 2 — 2026-10-09 — Complete-set printable batch
+
+Amendment ID: PLAN-nested-bank-safe-A2
+Approval: Explicitly approved by the user with "approve" on 2026-10-09;
+complete effective PLAN (original plus A1 plus A2).
+
+### Authority, delta and evidence boundary
+
+Implement the original SPEC plus explicitly approved SPEC-nested-bank-safe-A1,
+complete approved file SHA-256
+`49993eff109e8005a0577c6bb7a9d264d53f80ec784c7f88595417c5f9959272`.
+The user selected a complete set split into plates as needed and approved that
+SPEC with "approve" on 2026-10-09. This proposed PLAN adds the implementation
+units below; original PLAN text, execution history and automatic A1 remain intact.
+Their historical implementation is already delivered; do not redo it. Where
+this amendment changes printable selection and allocation, its explicit delta
+supersedes the old selected-group-only implementation instructions. All geometry,
+manufacturing transforms, inventory quantities, messages and mechanism behavior
+remain the current delivered source's authority.
+
+Research snapshot: local main and cached origin/main at
+`5f05c05f5489464c567f5d05df836d0a4d257e00`; no live remote refresh during iteration.
+Source baseline SHA-256:
+`a242ccb95a43674dbe24f57d8adf6543907bccfe75804ae9627e10f9e10c0205`.
+README baseline SHA-256:
+`b96c5309c467943f0821f0f52a9966eb3b30a543e011a9bc30512398e9c131e6`.
+Prior complete PLAN SHA-256:
+`8c10e76e262749f17b1e7b28311db40ab46317cb435de7e71b53bcfcd472e703`.
+Limit implementation evidence to current inventory, footprints, manufacturing
+transforms, dispatch, and printing guide; no new product or mechanism research.
+
+### Deterministic implementation decisions
+
+Add top-level adjustable `print_scope="selected_group"` and `plate_index=1`.
+Keep `render_mode="printable_layout"` and all other existing defaults unchanged.
+New scope/index validation applies only to printable_layout; assembly and
+individual-part dispatch ignore these controls. Preserve legacy selector
+validation. Complete-set printing requires empty part_id and ignores valid
+safe_index/print_group as filters; selected_group retains its current dispatch,
+including explicit printable part selection, and ignores plate_index.
+
+Flatten printed_inventory for safes 1 through 5 into occurrence records ordered
+by safe, existing inventory row, then ascending copy number. Reuse existing
+part_footprint_mm and u1_print_part without modifying part geometry or orientation.
+Each output placement contains safe, part ID, copy number, plate, x and y.
+
+Use translation-only shelf packing, starting plate 1 at x=5,y=5,row_height=0.
+Require positive finite footprint dimensions at most 246 mm in each direction.
+For each occurrence, wrap to x=5,y=y+row_height+3,row_height=0 when x+width>251.
+If y+height>251, start the next plate at x=5,y=5,row_height=0. Place the
+occurrence, advance x by width+3 and update row height. Never create empty
+plates or silently omit oversized parts. Derive N from the completed placements.
+This ordering and allocation are deterministic; no rotation, scaling or plate
+count optimization is included.
+
+Echo total plate count and an inventory manifest containing every placement and
+its identity/footprint. Require integral complete-set plate_index in 0..N.
+Positive indices render only that populated physical plate in its own XY frame.
+Index 0 renders every plate in a two-column overview grid with 276 mm stride
+(256 mm plate plus 20 mm separation). Retain plate-relative placement, Z=0,
+and no plate outlines, text labels or extra printable geometry. README explicitly
+identifies this overview as exceeding one physical plate and instructs positive
+indices for export. Unsupported scope/nonempty complete-set part_id/invalid
+index/oversized footprint assert visibly.
+
+### Units, ownership and sequencing
+
+| Unit | Role and immutable ownership | Prerequisite | Completion and next step |
+| --- | --- | --- | --- |
+| B0 | Parent: artifacts, baseline and isolated workspace | Valid implement entry after PLAN approval | Refresh/verify origin/main, preserve invoking HEAD/index/content, copy approved artifacts byte-for-byte, archive current source/legacy outputs under /tmp; dispatch B1 |
+| B1 | Developer: designs/nested_bank_safe.scad only | B0 verified hashes | Add occurrence allocation and scoped dispatch; preserve geometry/defaults; development checks and manifest evidence complete; freeze integrated diff for B2 |
+| B2 | Code-reviewer read-only; bounded developer owns accepted SCAD corrections; qa-agent read-only | B1 evidence and frozen diff | One integrated review wave, consolidated corrections and affected checks, then independent full QA; supported failures resolved before B3 |
+| B3 | Documentation-writer: README.md only | B2 passed | Synchronize complete-set usage, plate count/indices, margins and export/AMS guidance; parent verifies semantic agreement, then B4 |
+| B4 | Parent: SPEC/PLAN execution records and Git integration/delivery | B3 and all acceptance evidence | Reconcile only four owned paths, commit on main, push origin/main, verify remote containment/upstream and clean worktree removal |
+
+All source mutations and repository checks serialize. Parent gives each fresh
+native assignment exact current artifact/source hashes, ownership, criteria,
+allowed effects and verified prerequisite evidence. Aim three minutes; interrupt
+at five minutes and preserve evidence for a narrower successor. Children never
+create worktrees, mutate Git, commit, push or deliver. Handoffs/checkpoints do not
+pause execution or create continuation gates.
+
+### Validation and assurance
+
+Retain the original full profile: independent integrated code-review wave,
+one consolidated accepted correction batch, affected validation, final independent
+QA and one documentation-writer pass. Contract/security reviews are inapplicable:
+this delta changes no shared software contract, trust boundary, executable
+dependency or deployment behavior. No unit tests or conventional test-first phase,
+prohibited by repository policy. No printer/slicer or physical acceptance claim.
+
+Use OpenSCAD 2021.01-compatible syntax, no external dependency or tracked exports.
+Every OpenSCAD command uses `timeout 15s`, outputs under /tmp, and only
+printable_layout or assembly without electronics. Initial checks:
+
+```sh
+git diff --check
+timeout 15s openscad -o /tmp/nested-complete-default.csg designs/nested_bank_safe.scad
+timeout 15s openscad -D 'print_scope="complete_set"' -D 'plate_index=0' -o /tmp/nested-complete-overview.csg designs/nested_bank_safe.scad
+timeout 15s openscad -D 'print_scope="complete_set"' -D 'plate_index=1' -o /tmp/nested-complete-plate-1.csg designs/nested_bank_safe.scad
+```
+
+Read N from the manifest, then run the same positive-index CSG command for every
+index 1..N, substituting its index and unique output path. Generate actual mesh
+and visual inspection evidence for every plate and the overview. Attempt bounded
+whole-plate STL export first. If it exceeds 15 seconds, inspect actual parts in
+subdivisions using temporary wrappers containing unchanged production definitions
+and recorded occurrence translations. These wrappers set printable_layout and
+invoke existing u1_print_part at the exact recorded coordinates; they do not
+alter geometry definitions. Combine only those generated meshes for software
+rasterized plate/overview inspection and actual triangle bounds. Verify the
+wrapper definitions against source, all occurrence identities exactly once,
+equivalence to each plate CSG's occurrence/transforms, and manifest totals.
+No generated validation utilities enter Git. A timeout alone is missing evidence;
+if subdivisions cannot cover every occurrence, acceptance remains blocked DRAFT.
+
+Check generated triangle bounds per occurrence: contact at Z=0, XY within 5..251,
+no overlapping conservative footprints and at least 3 mm separation; inspect all
+plate and overview images for actual placement/orientation/separability. Verify
+all 151 occurrence identities exactly once, totals 47/24/24/24/32, plate indices
+contiguous and populated, and repeated identical parameters yield identical
+placement/count manifests. Inventory arithmetic alone does not prove geometry.
+
+Compare all 20 legacy safe/group CSG outputs and the default output against the
+B0 baseline under identical parameters. If differing CSG formatting prevents
+byte comparison, compare actual geometry/transforms with explicit evidence;
+do not dismiss geometric differences. Check assembly and individual-part dispatch
+statically plus allowed assembly renders with new controls overridden, proving
+those controls have no effect there. No forbidden individual-part render.
+
+Exercise assertions with unsupported printable scope, nonempty complete-set
+part_id, negative/fractional/out-of-range complete-set index, and oversized
+parameter footprint; inspect OpenSCAD diagnostics, since process exit status alone
+may not signal an assertion. Also verify selected_group ignores plate_index and
+complete_set ignores valid legacy filters while retaining invalid-selector errors.
+Compare manufacturing module/transform bodies to the archived baseline; any
+geometry change is outside this amendment. Rerun affected checks after corrections.
+Parent verifies git diff --check and accepted staging. Full QA concerns record
+evidence, impact and disposition; repeat a cycle only for confirmed required-check
+failure, regression or blocked approved behavior.
+
+### Requirement-to-delivery trace
+
+| Approved SPEC A1 anchor | Unit/path or preserved outcome | Terminal evidence |
+| --- | --- | --- |
+| Confirmed behavior 1; inventory acceptance | B1 SCAD; B3 README | Exact 151 identities, per-safe counts, finite populated plates; manual batch guidance |
+| Confirmed behavior 2 | B1 SCAD | Defaults/legacy CSG comparisons; assembly dispatch and allowed render invariance |
+| Confirmed behavior 3 | B1 SCAD | Filter and part_id assertion checks, retained legacy validation |
+| Confirmed behavior 4; preserved geometry/mechanisms | B1 SCAD, existing modules unchanged | Baseline manufacturing-body comparison, occurrence mesh orientations and deterministic manifest |
+| Confirmed behavior 5 | B1 SCAD | Actual per-occurrence bounds/contact and conservative separation on every plate; legacy layout comparison |
+| Confirmed behavior 6 | B1 SCAD | Manifest N, contiguous nonempty plates, invalid-index and oversize diagnostics |
+| Confirmed behavior 7 | B1 SCAD; B3 README | Complete overview images/CSG equivalence, no extra geometry, positive-export warning |
+| Confirmed behavior 8; direct dependency boundary | B1 SCAD; B4 parent | One source, compatible parsing, no dependency/export/slicer/printer-control additions |
+| Acceptance: generated geometry, bounded renders/subdivisions | B1/B2 temporary evidence only | Every occurrence covered, actual bounds and visual images; no timeout accepted as success |
+| Acceptance: git diff and unit/physical exclusions | B2/B4 | diff checks; no unit tests, explicit physical/slicer evidence limits |
+| Acceptance: README workflow, count, index 0, positive exports, AMS | B3 README | Documentation inspection against validated source and manifest |
+
+### Workspace, delivery and Definition of Done
+
+Preserve the original exact detached implementation worktree path
+`/tmp/agent-worktrees/openscad-designs/nested-bank-safe` and main delivery mechanics.
+Refresh origin/main before creation; record its SHA. The snapshot above is not an
+execution pin. Stop on failed refresh, unsafe worktree/registration, conflicting
+source dependency changes or inability to preserve unrelated state. Reuse only
+verified clean state; absent but registered exact path permits guarded non-forced
+registration removal and recreation, never unrelated worktree cleanup.
+
+Only designs/nested_bank_safe.scad, README.md and the two nested-safe artifacts
+are owned accepted delivery paths. Preserve prior artifact bodies and append
+execution evidence. Transfer/reconcile approved artifacts with retained invoking
+HEAD/index/content recovery state, never overwrite independent edits. Integrate
+the accepted result into local main, inspect staged contents, run
+`git diff --cached --check`, commit and `git push origin main`. Verify origin/main
+contains the accepted commit and configured upstream is origin/main; remove only
+the clean reconciled temporary worktree without force. No PR/task-branch delivery,
+force push or administrative bypass is authorized. Unsafe integration/push or
+missing evidence retains a recoverable blocked DRAFT with exact unmet criteria.
+
+Done requires every trace row satisfied, all supported findings disposed, QA and
+documentation complete, legacy geometry/defaults preserved, all 151 parts evidenced
+across selectable physical plates, and verified main commit/push/cleanup. Physical
+printing, slicer outcomes and unattended printer execution are excluded as the
+approved SPEC states. PLAN approval plus valid implement entry authorizes the
+whole remaining lifecycle without routine continuation questions; iteration
+itself implements nothing and performs no commit or push.
+
+### Approval record
+
+The user explicitly approved the complete effective PLAN with "approve" on
+2026-10-09: preserved original plus A1 plus PLAN-nested-bank-safe-A2, including
+the reconciled plan-assurance clarification below. Reviewed proposal SHA-256:
+`d062745bd6e85bc6798d5ec27f511b76bfca7acabdee655a92b1415abe644266`.
+The paired approved effective SPEC is SPEC-nested-bank-safe-A1 at the SHA-256
+recorded above. Document Status and all earlier approval history remain intact.
+This records PLAN approval, not implementation entry; implementation requires
+new-session/cleared-context entry or explicit same-context consent with implement.
+
+### Plan-assurance evidence and reconciled validation clarification
+
+On 2026-10-09, fresh read-only explorer and architect assignments independently
+verified the approved SPEC hash above, proposed complete PLAN hash
+`4d7c6ff1ca51ddad5e188743d170afd5decbca3e3c3419de61e18db13d48edc1`,
+and both production baseline hashes above. Neither assignment implemented,
+rendered, changed files or performed Git effects.
+
+Explorer traced inventory/normalized manufacturing dispatch/analytic footprints
+(source lines 913–959) and current per-group README guidance (lines 1987–2009)
+to B1/B3. Architect checked the scoped selectors, deterministic translation-only
+allocation, subdivision validation, ownership, full assurance and main delivery.
+Both found that plate bounds and conservative-rectangle separation alone do not
+prove that actual geometry fits its claimed footprint. Architect also identified
+the need to explicitly preserve per-part manufacturing solidness during mesh
+subdivision. These are supported validation gaps, resolved as follows.
+
+B1 development evidence and B2 independent QA must establish for every generated
+occurrence mesh that its actual transformed triangle XY bounds are contained
+within the manifest rectangle [x,x+width] × [y,y+height], with only a recorded
+small numerical comparison tolerance (at most 0.01 mm), never clearance reduction.
+Retain the specified 3 mm conservative rectangle separation. If containment
+fails, acceptance is blocked until an in-scope correction of the analytic
+footprint/allocation is validated; never change manufacturing geometry to fit.
+Every manufacturing mesh must be nonempty, contain no degenerate solid components,
+and pass applicable OpenSCAD valid-solid diagnostics and mesh closure/manifold
+inspection, including expected connected-component counts from the unchanged
+manufacturing baseline. Record any limitations explicitly; concatenating occurrence meshes
+is for inspection only and does not establish individual solidness. Check those
+properties before composing plate/overview inspection meshes. This clarification
+completes the behavior-4/5 and generated-geometry trace evidence without changing
+the approved SPEC, ownership, timeout limit, physical exclusions or delivery.
+
+No other supported planning contradiction or missing implementation decision was
+reported. Main verified the original committed artifact bodies remain byte-for-byte
+prefixes and git diff --check passes. Planning assurance is advisory evidence,
+not user approval or proof of generated geometry, slicer behavior or physical fit.
+
+
+## Amendment A2 implementation execution evidence — 2026-10-09
+
+The originating user request was `$implement specs/PLAN-nested-bank-safe.md`
+in a fresh implementation session. Effective entry was the preserved original
+SPEC plus explicitly approved SPEC-A1, and the preserved PLAN plus A1 and
+explicitly approved PLAN-A2. This execution implemented only the complete-set
+layout delta; it did not rebuild or recalibrate the delivered mechanisms.
+No new automatically approved SPEC/PLAN amendments were required.
+
+### B0 verified entry and workspace
+
+Refreshed origin/main and local main both resolved to
+`5f05c05f5489464c567f5d05df836d0a4d257e00`. Created the exact detached worktree
+`/tmp/agent-worktrees/openscad-designs/nested-bank-safe` at that base.
+Invoking HEAD/index/artifact bytes were retained under
+`/tmp/nested-complete-evidence`; both approved artifact copies were byte-verified.
+The only invoking changes were the approved nested-safe artifact amendments.
+Entry SHA-256 digests:
+
+- SPEC: `49993eff109e8005a0577c6bb7a9d264d53f80ec784c7f88595417c5f9959272`.
+- PLAN: `d3499b42ea3ba02bb669609664de85a875be2ed18ea05c31600f57fb4ed2fc4a`.
+- Source baseline: `a242ccb95a43674dbe24f57d8adf6543907bccfe75804ae9627e10f9e10c0205`.
+- README baseline: `b96c5309c467943f0821f0f52a9966eb3b30a543e011a9bc30512398e9c131e6`.
+
+### B1 implemented behavior and development evidence
+
+A bounded developer added only selection controls, ordered occurrence records,
+translation-only shelf allocation, manifest echoes, assertions and batch dispatch.
+Source SHA-256 is
+`bc7bea006b66e5a770e5fbb6c916b218df12bbc278c94c3212640ee7159a95bf`.
+Nominal result: three populated plates, 151 distinct safe/part/copy identities.
+
+| Physical plate | Occurrences | Generated/inspected evidence |
+| --- | --- | --- |
+| 1 | 42 | Positive-index CSG; composed mesh; XY and oblique previews |
+| 2 | 53 | Positive-index CSG; composed mesh; XY and oblique previews |
+| 3 | 56 | Positive-index CSG; composed mesh; XY and oblique previews |
+| Overview 0 | All 151 | Production-equivalent CSG; composed mesh; XY and oblique previews |
+
+Per-safe counts are 47/24/24/24/32. All 20 legacy safe/group CSGs retain
+exact Boolean geometry/transforms after removing only identity group nodes;
+assembly checks and source dispatch inspection preserve assembly/individual-part
+behavior. All manufacturing definitions and transforms remain unchanged.
+
+Whole-plate STL attempts for plates 1–3 each stopped at the 15-second limit
+(exit 124); none was accepted as a completed mesh. The approved subdivision
+route rendered all 96 unique manufacturing parts plus the same 96 baseline
+parts with every OpenSCAD invocation limited by `timeout 15s`. Repeated inventory
+copies reuse identical verified manufacturing geometry with recorded translations.
+All 151 occurrence wrappers contain the exact production definition prefix and
+use exact allocator-index placement. The composed meshes match all three
+production plate CSGs and overview after removing identity group nodes only.
+
+All 96 current/baseline canonical triangle multisets match. Each has one
+connected nonzero-volume component, exact edge multiplicity two and single-cycle
+vertex links. All components contact Z=0. Actual occurrence bounds are contained
+within footprints and XY 5..251 using the declared 0.01 mm numerical tolerance.
+All 3,779 same-plate rectangle pairs retain the nominal 3 mm separation.
+The serialization utility rounds once to eight decimal places (maximum error
+0.000000005 mm); production wrappers use exact source values. Parent and
+specialists inspected all plate/overview images. Validation files are temporary
+under `/tmp/nested-complete-evidence/mesh-dev`, notably `summary.json`,
+`mesh-statistics.json`, `vertex-link-statistics.json`, `occurrence-statistics.json`,
+`equivalence.json` and `validation-notes.json`; none enters source control.
+
+### B2 independent assurance and finding dispositions
+
+One independent integrated code-review wave found no supported source defect
+or required correction. Independent final QA then verified inventory identities,
+all 96 actual part meshes, all 151 placements, topology, footprint containment,
+contact, all rectangle pairs, production CSG equivalence and eight images.
+Fresh parameter checks confirmed deterministic manifests, all positive plates,
+overview, ignored valid legacy filters, selected-group ignored plate index,
+and assembly ignored printing controls. Unsupported scope, nonempty batch filter,
+negative/fractional/out-of-range indices, invalid legacy safe/group and oversized
+body inputs all produced expected assertion diagnostics. OpenSCAD assertion
+errors were inspected directly, not inferred from exit codes.
+
+Two informational QA concerns were accepted as unchanged baseline behavior:
+72 collinear triangles remain, with no disconnected or zero-volume solid
+component or edge/vertex-manifold failure; 24 direct-export part logs omit CGAL's
+Simple field, but actual independent topology checks pass. These concerns do not
+justify geometry changes. No correction cycle or validation weakening occurred.
+QA evidence is under `/tmp/nested-complete-evidence/qa`, including
+`parameter-results.json`, `independent-mesh-results.json`,
+`provenance-results.json` and `inventory-results.json`.
+Contract/security review remains inapplicable for the reasons in approved A2.
+Unit tests/test-first were prohibited and skipped. Physical printing, slicing,
+material behavior, fit, retention cycles and endurance remain excluded/unverified.
+
+### B3 documentation and B4 acceptance/reconciliation
+
+The documentation-writer synchronized only README guidance. Parent inspected
+it against accepted source and corrected examples to verified bounded CSG
+previews, with explicit single-positive-plate mesh export/import instructions
+and disclosure of whole-plate STL timeouts. Defaults, all parts/mechanisms,
+AMS guidance, manual plate changes, margins, overview warning and physical
+limitations are documented. Accepted README SHA-256:
+`fbbf1a0e908649da7fde0936a271f70d25759201b4fc9c39b9cb0bc9dfdab7c7`.
+
+Every A2 requirement-to-delivery row is satisfied within modeled acceptance;
+code review and final QA have no blocking findings. Parent git diff --check
+passes. Final delivery owns only README.md, designs/nested_bank_safe.scad and
+the two nested-safe artifacts; all preceding artifact bodies are preserved.
+The final commit/push, origin/main containment and guarded cleanup are verified
+in the terminal delivery report, rather than inventing this record's future
+commit identifier. No temporary utility, mesh or preview is an implementation
+output. Acceptance is CAD/layout acceptance only, not physical validation.
