@@ -1178,3 +1178,769 @@ The final commit/push, origin/main containment and guarded cleanup are verified
 in the terminal delivery report, rather than inventing this record's future
 commit identifier. No temporary utility, mesh or preview is an implementation
 output. Acceptance is CAD/layout acceptance only, not physical validation.
+
+
+## Amendment 3 — 2026-10-10 — Simplified five-safe implementation
+
+- Amendment ID: PLAN-nested-bank-safe-A3
+- Previous version: original PLAN, automatic A1, approved A2 and delivered
+  execution evidence; complete preceding SHA-256
+  `827035fa145db8d68c83ab2da2aac578f7402416c64fa8db1dd0355f81dc2dc0`.
+- Approval: Explicitly approved by the user with "approve" on 2026-10-10;
+  complete effective PLAN (original plus A1 plus A2 plus A3).
+- Request and purpose: User invoked `$iterate and simplify it`, selected full
+  simplification, then approved complete effective SPEC-A2 with `approve` on
+  2026-10-10. Implement that behavior only after separate PLAN approval and
+  valid implement entry. Historical PLAN bodies/approval evidence are preserved.
+
+### Authority, scope delta and current evidence
+
+Authoritative effective SPEC is original plus A1 plus explicitly approved
+SPEC-nested-bank-safe-A2, SHA-256
+`c2263aa95f62d924b82616c9a84eab78287dfa8dd319d5fcd377d1d058665257`.
+Its <=50-occurrence cap, full simplification, exact five envelopes, all messages,
+secret-pocket dimensions and modeled acceptance boundaries supersede the older
+mechanism/inventory clauses expressly listed in SPEC-A2.
+
+Planning checkout is /home/alexbanica/workspace/openscad-designs on main;
+observed HEAD and cached origin/main are
+`bc3e9ecc7cb472b6aa6791160e800f5e24ee0e6a`. Remote was not refreshed during
+planning. This is a source research snapshot, not an execution pin. Current source
+SHA-256 is `bc7bea006b66e5a770e5fbb6c916b218df12bbc278c94c3212640ee7159a95bf`.
+Read only approved artifacts, named source inventory/hinge/cam/secret/text/layout
+modules and README's nested-safe guide; do not reopen product research or touch
+unrelated designs. Prior complete-set allocation and validation methods may be
+reused, but their old 151-part/three-plate evidence does not validate new geometry.
+
+| Previous effective outcome | Final outcome | Preserved boundary |
+| --- | --- | --- |
+| Separate leaves and attachment hardware | Integral alternating barrels; one hinge pin and clip per safe | Opening, coaxiality, tool-free retention and extraction |
+| Safe 1 linked bolt/catch drive and rotating dial | One directly driven cam, three-spoke handle, integral fixed dial | Functional closure and vault appearance |
+| Separate axle/knob for smaller cams | Combined handle/axle, separate keyed cam and clip | Quarter-turn operation and positive retention |
+| Separate exterior plaques/trim/mounts | Integral door lettering and relief | Exact strings, glyph metrics and envelope |
+| Captive first-message slide/cleat/stop assembly | Removable cover with integral rail engagement and intentional release | Two reveals, hidden second message, pocket clearance |
+| 151-item inventory/legacy part IDs | New explicit 36-occurrence allocation, <=50 hard cap | Complete inventory, safe/group selectors and batch packing |
+
+### Deterministic design and source decisions
+
+**Inventory/defaults.** Allocate per safe body 1, door 1, hinge_pin 1,
+hinge_clip 1, handle_axle 1, cam 1 and cam_clip 1, plus Safe 5 secret_cover 1:
+nominal counts 7/7/7/7/8 = 36. Integral second lettering, dial, trim, hinge roots,
+rail surfaces and any cover release feature are features of the corresponding
+solid, not extra disconnected objects. This is a planned BOM, not established
+fit. In-scope retainers may increase quantities only with complete inventory,
+assembly/print validation and <=50 cap; no hidden manufactured pieces. Source
+parameters/default render modes and general selectors follow SPEC S8. Keep
+all four print groups: body owns body; door owns door; mechanism owns the five
+loose hinge/latch components; details owns Safe 5 secret_cover and is explicitly
+empty for Safes 1–4. Avoid empty OpenSCAD ranges/phantom geometry. The complete
+batch uses the existing deterministic shelf allocator against new footprints;
+recompute N, never preserve old nominal plate counts as acceptance evidence.
+
+**Integral hinge and print gate.** Retain independent envelope/chamber records
+and rear-face-down body. Change only required front mechanisms/hinge reliefs.
+Start with hinge radii [3,3,3,2,2] mm, pin diameter 1 mm and original per-safe
+lateral axis positions. Place each new hinge axis at door_back_mm(i)+radius so
+its rear barrel tangent is coplanar with the door's broad rear face. For the
+current door back depths this produces front bounds 69.6/50.35/38.35/26.35/14.85
+mm, within the corresponding 75/54/39/27/17 depths. These scalar values are
+candidate allocations, not swept fit proof. Make fixed/moving barrel segments
+alternating with 0.35 mm axial running clearance; join moving barrels to the
+door with connected integral roots, no leaf mounts. Rebuild front panel pockets
+and swept relief from these actual solids; do not retain old radial-corner
+assertions or cutouts unless they still describe the new geometry. Pin heads,
+clips and removal accesses stay inside complete bounds and outside extraction.
+Use existing printed pin/clip shoulder and named snap-clearance patterns only
+where dimensionally equivalent; state any adjusted new interface exception.
+Doors print broad rear-face-down with text facing upward; major geometry and
+manufacturing transforms change together. Integral roots may not bridge a gap
+or protrude below the rear datum and make the door float. Inspect actual barrel
+openings and support/contact, including 1 mm pin printability at the planned
+nozzle. No bridge/overhang claim follows from the tangent formula.
+
+**Direct cams.** Adapt the existing single-cam geometry for all five safes.
+Safe 1's operating center stays at [48,36] mm; other centers use the delivered
+cam records. The tongue reaches the existing right-hand frame region in its
+0-degree latched position and rotates clear at 90 degrees. Rebuild Safe 1
+receiver and swept relief for this tongue instead of the old pair of bolts.
+Combine the knob/three-spoke handle and keyed axle as one connected component,
+printed broad handle-face-down with the shaft growing upward. The separate cam
+fits the rear keyed shaft and a separate printed neck clip retains it; print
+cam/clip flat. Reserve a recessed rear clip/shaft-shoulder stack inside the cam
+hub, rather than appending the old clip behind its rear face. For Safe 5 every
+retained rotating surface, including shaft end, clip and collar, must remain at
+Z>=8.5 mm, preserving 0.35 mm clearance from first-cover relief ending at 8.15.
+Allocate 0.60 mm of rear hub depth for the existing 0.50 mm clip and 0.05 mm
+static axial allowance on each side; verify the remaining 1.40 mm hub/key path,
+positive retaining shoulders and side insertion/release access. This is a
+candidate reservation, not a strength or fit claim. C1 records this actual
+stack before interfaces freeze; C2/C3 validate full retained geometry/sweeps.
+If it cannot retain torque and clear the cover, pause for a required amendment,
+never project the clip into reserved pocket/cover space. Head/shoulder/clip
+make a positively retained stack with accessible clip before nesting. Retain
+0.35 mm bearing clearance and the documented static shoulder allowance; verify
+the actual cam/door stack, not a sum of lengths.
+Integral stops bound 0..90; the latch must remain frame-engaged at 0 and clear
+at 90 without a separate manual catch. Fixed dial relief occupies the former
+upper dial region and counts in front bounds; it must not interfere with the
+handle or cover extraction. Remove obsolete drive/guide/catch/dial-moving
+modules and their bores/cutters, not just their dispatch.
+
+**Lettering/relief.** Reuse exact connected vector glyph geometry and wording;
+union text and restrained frame/panel/dial relief into doors, deleting separate
+exterior mounts and plaque hardware. Preserve 4 mm cap height, >=0.8 mm strokes
+and >=0.6 mm relief targets. Reposition only within approved door/envelope and
+retrieval/sweep reservations. No auto shrinking and no false claim that integral
+lettering remains independently AMS colourable. Keep first-message cover at
+34 x 55 mm reservation and second-message relief integral to body/backing; all
+strings remain exact with documented wrapping. Match source glyph dimensions
+with generated bounds and inspect connection to backing/door.
+
+**Removable cover.** Start from the delivered Safe 5 depth stack: rear wall
+0..2 mm, fixed second backing/text 2..3.4, clear pocket above relief 3.4..6.4,
+cover backing 6.75..7.55 and first relief 7.55..8.15, cam 8.5..10.5, door rear
+10.85 mm. Integrate the fixed second backing/text into body and replace separate
+cleats with body rails. Set secret_cover_rail_clearance_mm=0.35 per mating
+rail surface. Rails capture cover edges against front/back displacement and
+have an integral seated bottom stop; eliminate transverse pin/clip and separate
+rail hardware. Open rail exits
+allow cover removal after roughly 60 mm upward travel, clearing a roughly 55 mm
+cover; derive exact travel from actual rail/cover bounds. Preserve a clear top
+passage and finger/retrieval beam without narrowing the specified recess. Model
+an intentional positive seated detent on a localized cover edge release feature,
+operable through a non-text finger notch with the door open. The release feature
+is integral to the cover, and its seat is integral to the body rail; neither
+adds a disconnected item to the 36-part BOM. Start with named
+secret_cover_detent_clearance_mm=0.15 per mating snap surface,
+secret_cover_detent_engagement_mm=0.30 and
+secret_cover_release_travel_mm=0.45. The latter exceeds nominal engagement by
+the snap clearance; verify real available movement and rail stock, not just
+this subtraction. Any snap engagement is localized cover-retainer stock, not
+flexing shell or a living hinge; disclose its fit/material uncertainty. The
+unreleased detent itself positively blocks upward cover travel. The closed door
+blocks finger access to its front-only release notch; it is not assumed to
+obstruct upward translation through the top rail exits merely because it is
+in front of the cover. Verify closed-door/unreleased obstruction separately
+from open-door/released removal clearance. SPEC's open-front access describes
+access to the intentional release and cover handling; upward translation then
+exits the top passage. Actual printed retention, release, rail exit and cover
+removal/reinsertion must be inspected before acceptance; gravity/friction alone
+is insufficient. If these named allowances/engagement cannot fit without
+weakening approved dimensions, pause for an amendment before downstream freeze. Preview removed state
+places the same cover aside without changing its manufactured geometry.
+
+**Controls.** Preserve safe_index, print_group, part_id, assembly_view,
+door_angle_deg, latch_angle_deg and extraction_distance_mm semantics in S8.
+Set secret_cover_removed=false and allow true only with active Safe 5's door
+open and latch released; the cover then appears aside in assembly. Remove
+secret_slide_mm, safe1 catch controls, dial_angle_deg and show_guide_plate from
+adjustable sections and dispatch. Deleted part IDs assert unsupported. Arbitrary
+OpenSCAD -D values for removed variable names cannot be promised to reject;
+README explicitly identifies removed controls as unsupported, with no aliases.
+Source assertions cover supported modes/groups/parts, hard part cap, clearances,
+complete bounds, nesting, invalid motion combinations and all populated plates.
+
+### Execution units and ownership
+
+All production SCAD edits serialize. Parent supplies verified artifact/source
+hashes, exact ownership and prerequisites in each fresh native manifest. Aim
+three minutes per launched assignment; interrupt at five, reconcile inspected
+partial output, then assign a narrower successor, never retry unchanged work.
+Temporary native capacity queues assignments; it never waives required roles.
+Children preserve others' edits and perform no Git/worktree/commit/push effects.
+
+| Unit | Owner / boundary | Prerequisite | Completion and next obligation |
+| --- | --- | --- | --- |
+| C0 | Parent: workspace, artifacts, baseline archive | Valid approved pair/implement entry | Refresh origin/main, verify state/hashes, exact worktree, copy bytes, capture baseline and recovery state; C1 |
+| C1 | Developer: SCAD hinge/body/door skeleton only | C0 | Dimensioned Safe 4/5 cross-section and all-safe hinge/print gate; complete envelopes, connected integral hinges and positive pin retention; C2 |
+| C2 | Developer: SCAD direct cam/handle/retention/fixed dial only | C1 frozen handoff | All five working closures, full travel and assembly accesses; C3 |
+| C3 | Developer: SCAD integrated lettering/removable cover only | C2 | Actual glyph/pocket bounds, intentional cover retention and full removal/reinsertion; C4 |
+| C4 | Developer: SCAD inventory/footprints/modes/batch integration only | C3 | Exact final <=50 inventory, groups, stable layouts, full development evidence and frozen integrated diff; C5 |
+| C5 | Code-reviewer read-only; developer owns consolidated source fixes | C4 | One full integrated independent review wave, all supported findings disposed, corrected batch and affected checks; C6 |
+| C6 | QA-agent read-only | C5 | Independent full final geometry/selector/batch QA and parent acceptance; qualifying failure returns through correction/assurance cycle, otherwise C7 |
+| C7 | Documentation-writer: README only | Accepted C6 | New BOM/assembly/controls/colours/plate guide agrees with source; C8 |
+| C8 | Parent: artifacts and Git delivery | C7 / all criteria | Reconcile four paths, main commit/push/remote verification and clean worktree removal |
+
+Before downstream mechanisms, C1 must record actual sections for Safe 4/5:
+parent front depth, retrieval feature, child full envelope, changed barrel sweep,
+cover/rail/top exit and Safe 5 cam/pocket stack, including recessed rear
+retainer envelope, remaining torque-bearing hub and closed-door release-access
+obstruction. Generate bounded geometry for the proposed interfaces and broad
+door bed contact. Positive scalar budgets
+alone do not pass. Unresolved fit pauses downstream units for required amendment;
+never thin primary walls, reduce pocket/glyphs or discard retention to meet count.
+
+### Assurance, checks and coverage
+
+Profile full: hinge/door/closure/reveal redesign has interacting mechanical
+interfaces and changed manufacturing orientations, requiring independent final
+QA. Independent code-reviewer covers the full integrated source, approved SPEC
+and all development artifacts, followed by one consolidated accepted correction
+batch. Independent QA checks actual geometry and source requirements after
+correction. Contract/security reviewers are inapplicable: no shared software
+contract, executable dependency, trust boundary, deployment or security behavior
+changes; this remains a toy. Documentation-writer runs once after assurance.
+Parent retains integration, findings, requirements and final acceptance. Repeat
+a complete cycle only for a confirmed required-check/acceptance failure,
+regression or blocked behavior, not speculative preferences. Unit tests and
+conventional test-first are prohibited and skipped.
+
+All OpenSCAD validation is timeout 15s, temporary outputs under /tmp, only
+printable_layout or reference-free assembly. No system packages or external
+libraries, tracked utility or generated mesh is added. Use existing standard-
+library rasterization/mesh-inspection patterns as temporary tools; inspect
+utility behavior on known bounds, retain provenance and show actual artifacts.
+
+```sh
+git diff --check
+timeout 15s openscad -o /tmp/nested-simple-default.csg designs/nested_bank_safe.scad
+timeout 15s openscad -D 'render_mode="assembly"' -D 'assembly_view="nested"' -o /tmp/nested-simple-nested.csg designs/nested_bank_safe.scad
+timeout 15s openscad -D 'print_scope="complete_set"' -D 'plate_index=0' -o /tmp/nested-simple-overview.csg designs/nested_bank_safe.scad
+```
+
+Record complete matrix commands, exit status, diagnostics, file paths and visual
+findings in PLAN execution evidence:
+
+- All 20 safe/group combinations: CSG checks and documented empties. Every
+  nonempty group/part has actual generated mesh and visual/bed-contact evidence.
+  Verify revised inventory counts, single solid components except explicitly
+  justified actual part geometry, no zero-volume/degenerate solid components,
+  exact edge closure and vertex-manifold checks, applicable OpenSCAD solid
+  diagnostics, no unknown/missing glyph/assertion/invalid geometry warnings.
+- Per safe closed latched, closed released, partly and fully open, and latch
+  at 0/15/30/45/60/75/90 degrees. Supplement sampling with analytic swept
+  bounds or actual swept union derived from the same manufactured parts.
+  Establish latch engagement at closed state; verify no unintended contact
+  in released/open states. Inspect axle/pin alignment, positive retention,
+  travel stops, insertion/removal access and reverse disassembly.
+- Four nesting transitions: full stack, partial and complete straight extraction
+  with active parent at 110 degrees; check whole child-subtree envelopes,
+  throat/sweeps, retained primary walls, hinge/handle/dial/trim boundaries,
+  retrieval access and contact clearance between samples.
+- Safe 5 closed/seated, open/first reveal and cover removed/second reveal;
+  actual intermediate removal path and reinsertion, positive seated release,
+  rail/top/door/hinge/cam interference, full cover access and pocket above text.
+  Inspect exact glyph width/cap height/strokes/relief for all six messages.
+- Revised complete-set N from manifest: direct CSG for 0 and each 1..N,
+  repeated identical manifests, exact identity reconciliation and per-safe
+  totals <=50. Attempt each whole physical-plate STL under timeout15s first.
+  On timeout subdivide using byte-verified production definition prefixes and
+  exact allocator-index translations, render each unique actual manufacturing
+  part and account for every repeated occurrence. Verify individual solidness
+  before composing plate/overview meshes, prove canonical CSG geometry and
+  transform equivalence to production dispatch, and inspect all plate/overview
+  XY/oblique views. Check actual occurrence bounds within manifest rectangles
+  and physical margin with numerical tolerance <=0.01 mm, never reducing the
+  nominal 3 mm rectangle gap. Do not claim new geometry matches obsolete
+  part meshes. Baseline comparison is limited to expressly preserved numeric
+  envelopes/clearances, text strings, stable interfaces and packing semantics.
+- Direct parameter checks: invalid safe/group/mode/part IDs, removed part IDs,
+  negative wall/clearance, oversize envelope, invalid latch/door/reveal/extraction
+  combinations, unsupported scope/nonempty batch filter, negative/fractional/
+  out-of-range plate index. Inspect assertion text, not just process exit.
+  Selected-group ignores plate_index; complete-set ignores valid safe/group
+  filters; assembly ignores printing-only controls. No individual_part render.
+- Physical printing, Bambu slicing, fit, snap fatigue, material/thermal safety
+  and cycle endurance remain unperformed/unclaimed. This is geometry acceptance,
+  not a functional hardware or security-device certification.
+
+### Requirement-to-delivery trace
+
+| Approved SPEC-A2 requirement | Units / paths | Terminal evidence |
+| --- | --- | --- |
+| S1 and V1: five safes, <=50 inventory, no hidden pieces | C1–C4 SCAD; C7 README | Complete BOM, counts/manifests, all repeated identities and accessible assembly |
+| S2 and V2: integral hinges and positive retained pins | C1 SCAD; C5/C6 | Generated connected geometry, bed contact, coaxiality/sweeps, retention and tool-free disassembly |
+| S3 and V2: direct single cams, fixed dial and appearance | C2 SCAD; C5/C6; C7 README | Travel/engagement/release/stops, full envelope, actual handle/shaft/clip stack; no removed bolt/catch requirements |
+| S4 and V4: exact integral lettering, glyph metrics, colour delta | C3 SCAD; C6; C7 README | Connected actual glyph geometry and dimensions, all four outer strings, documented AMS limits |
+| S5 and V4: intentional removable-cover reveal and clear pocket | C3 SCAD; C5/C6; C7 README | Both messages, seated/release/path/reinsert views, 34x55 and 30x40x3 clear measurements, blank exterior |
+| S6 and V3: five dimensions, walls, nesting and retrieval | C1–C3 SCAD; C6; C7 README | Dimensioned coupled sections, all four extraction prisms and complete sweeps; no weakened clearances |
+| S7 and V5/V6: one source, printable solid independent parts | C1–C4 SCAD; C5/C6 | All parts/groups/plates contact/solidness/visual evidence, no dependencies/exports/unit tests, timeout coverage |
+| S8 and V5: controls, removed IDs, groups, batch/overview | C4 SCAD; C6; C7 README | Source defaults/assertions, ignored filters, empty groups, deterministic finite populated plates and all occurrence bounds |
+| V7 and preserved exclusions/regression | C7 README; C8 parent | Matched-set migration warning, new assembly/controls/colours/printing limits; only four accepted paths |
+
+### Workspace, delivery, recovery and Definition of Done
+
+Keep the selected exact detached worktree
+/tmp/agent-worktrees/openscad-designs/nested-bank-safe. Before preparation refresh
+origin/main and verify local main against it; record live base SHA and hashes.
+Stop on divergence, overlapping source/artifact changes or failed refresh.
+Preserve invoking HEAD/index/content state and copy approved SPEC/PLAN byte-for-
+byte into the verified workspace; retain recovery bytes until terminal cleanup.
+Absent exact path is expected; registered-but-missing exact path allows only
+non-forced deregistration and verification. Unexpected existing/dirty states
+require safe reconciliation, never deletion of unrelated worktrees.
+
+Owned accepted paths are designs/nested_bank_safe.scad, README.md and the two
+nested-safe artifacts. No production additions/splits/export scripts/dependencies.
+Parent alone appends execution evidence and reconciles accepted paths to local
+main. Delivery is main -> origin/main as repository policy requires, with no
+replacement task branch or PR. If main advanced, reconcile only demonstrated
+disjoint changes and rerun affected checks; overlap or dependency drift blocks.
+Inspect accepted staging, git diff --cached --check, Conventional Commit on main,
+and git push origin main. Verify accepted bytes in the commit, refreshed remote
+main containment, independently read remote SHA and origin/main upstream. Do not
+change/bypass protection settings or force push; if direct main delivery is
+rejected, preserve work and report the missing prerequisite instead of switching
+delivery branch. No merge or deploy beyond specified main delivery.
+
+After verified delivery and acceptance, compare every temporary changed/untracked
+path against accepted bytes; reconcile detached worktree to the exact delivered
+commit only after proving no unrelated/unaccepted bytes would be lost. Remove
+only the clean exact worktree without force. Preserve all recovery evidence on
+failures. Incomplete geometry is not committed/pushed to main as an accepted
+feature; retain blocked DRAFT in the worktree with exact unmet criteria and the
+smallest missing prerequisite. Finish safe independent work first. A unit or
+handoff/checkpoint never satisfies terminal delivery or requests continuation.
+
+Done requires all S1–S8/V1–V7 rows satisfied, every supported finding disposed,
+full final QA and documentation accepted, <=50 actual inventory, verified main
+commit/push/upstream/remote bytes, no accepted dirty paths and guarded cleanup.
+Printing and slicing remain excluded, not passed. PLAN approval plus valid
+implement entry obliges the complete lifecycle without routine stage confirmations.
+This iteration performs no source changes, renders, worktree creation or Git
+delivery. After PLAN approval use a new session, cleared context or explicit
+same-context implementation consent with the implement skill.
+
+### Plan-assurance evidence
+
+On 2026-10-10 fresh read-only explorer and architect assignments independently
+reviewed approved SPEC-A2 digest
+`c2263aa95f62d924b82616c9a84eab78287dfa8dd319d5fcd377d1d058665257`
+and initial complete proposed PLAN digest
+`8b240ceeca8ec03cb8043029359794c5989725d2c6d77737072c6bc44fb8df76`,
+against current source/README, HEAD and applicable instructions. Neither
+implemented, rendered, edited artifacts or performed Git effects. The explorer
+confirmed four-path ownership, exact conceptual count, current baseline,
+selector/batch migration and S1–S8/V1–V7 coverage; the architect confirmed
+sequencing, mechanical boundaries, assurance, inventory and guarded delivery.
+
+All three supported planning findings were accepted and reconciled:
+
+1. Explorer: new cover rails/detent lacked named numeric allowances and explicit
+   BOM ownership. The design section now pins 0.35 mm rail running allowance,
+   0.15 mm detent fit allowance, 0.30 mm engagement and 0.45 mm release travel,
+   with an integral cover release feature/integral body seat and an actual fit
+   gate. No extra hardware or proven snap/material behavior is implied.
+2. Architect: the rear-retained combined axle could place its existing 0.5 mm
+   clip inside the Safe 5 cover clearance. The plan now allocates a 0.60 mm rear
+   hub recess and requires all retained rotating surfaces to remain Z>=8.5,
+   records the remaining 1.40 mm key-bearing hub/retaining shoulder/insertion
+   checks, and makes this an early C1 coupled allocation and C2/C3 geometry gate.
+3. Architect: a front door does not inherently block top-exit cover translation.
+   The plan now separates positive unreleased detent obstruction from closed-
+   door finger access blocking, and requires distinct closed/unreleased and
+   open/released path inspections. Front access and top translation are explicit.
+
+These are implementation decisions within approved SPEC-A2, not new behavior
+or physical evidence. No other supported planning contradiction was reported.
+Candidate hinge tangency, hub stock, snap retention and the 36-part allocation
+remain implementation fit/printing risks addressed by the explicit generated-
+geometry gates and <=50 cap. Advisory planning assurance does not approve the
+PLAN or establish CAD/physical performance. Parent verifies prior artifact
+bodies remain byte-for-byte prefixes and git diff --check passes before
+presenting this reconciled complete effective PLAN for manual approval.
+
+### Approval record
+
+The user explicitly approved the complete effective PLAN with "approve" on
+2026-10-10: preserved original/A1/A2 history plus PLAN-nested-bank-safe-A3,
+including its reconciled explorer/architect assurance dispositions.
+Reviewed proposal SHA-256:
+`48ccd85300f176a6e15de13bcac1004df27f6d0f97fbca3763e9e816d9c6c0db`.
+The paired approved effective SPEC is SPEC-nested-bank-safe-A2, SHA-256
+`c2263aa95f62d924b82616c9a84eab78287dfa8dd319d5fcd377d1d058665257`.
+Document Status and all previous content/approval history remain unchanged.
+This records PLAN approval only; iteration implements nothing and performs no
+commit/push. Implementation requires a new session, cleared context or explicit
+same-context consent with the implement skill.
+
+## Amendment 4 — 2026-10-11 — Flat-door cam stops and coupled candidate gate
+
+- Amendment ID: PLAN-nested-bank-safe-A4
+- Previous version: approved complete effective PLAN through A3; entry SHA-256 `2912fb43ff71302bbaf9460b56afc81270ba702bac0a6219dbac9830979fa500`.
+- Approval: Pending automatic implementation approval after planning assurance.
+- Request and purpose: Required recovery under the originating `$implement specs/PLAN-nested-bank-safe.md` request on 2026-10-11. Actual rear-face-down door meshes exposed the legacy rear cam stop extending 2.25 mm below the printing datum. This amendment preserves approved SPEC-A2 unchanged and replaces only conflicting implementation allocation and prerequisite mechanics.
+
+### Changes against the previous version
+
+| Section / requirement | Before | After | Reason |
+| --- | --- | --- | --- |
+| A3 C2 direct-cam stops | Reuse rear door stop engaging cam's rear slot | Door-front integral peg engages a rear-open quadrant recess in combined handle/axle; delete rear stop and obsolete cam stop slot | Rear stop prevents broad rear-face-down door printing |
+| A3 Safe 4 knob | Existing 1.2 mm thickness | 2.0 mm thickness; front 26.70 mm remains within 27 mm complete depth | Preserve >=0.85 mm uninterrupted front disk above 1.15 mm stop recess |
+| A3 C1 coupled gate / C2–C3 prerequisites | Complete new mechanism/cover geometry gate before downstream production mechanisms exist | Finish initial hinge/body/door gate, construct temporary production-equivalent C2/C3 candidates, inspect complete coupled sections/sweeps, then integrate/freeze accepted candidates | Gate requires actual new cam retention and cover geometry; prospective scalar reservations cannot establish it |
+
+### Deterministic replacement allocation
+
+For each safe let F be the door front and B=F+0.35 mm the handle back.
+Door peg diameter 1.6 mm, center at operating axis +[-2.75,0], extends F..F+1.15.
+The handle's rear-open recess extends B..B+1.15, excludes a central radius-1.60 mm core, and occupies x<=0.80/y>=-0.80 through the handle's outer radius.
+The peg has nominal 0.35 mm radial/core and roof clearance, 0.80 mm axial engagement, and tangent stop faces at handle angles 0 and 90 degrees. Actual intersection/swept checks must establish unobstructed permitted travel and interference beyond both endpoints, including when the door is open.
+Every handle is at least 2.0 mm thick; its uninterrupted front disk is at least 0.85 mm thick and prints broad face down before recess walls, core and axle. This mechanical disk is not a primary shell wall. Safe 4 front becomes 26.70 mm; Safe 5 front remains 15.20 mm. Safe 1 keeps its three-spoke handle and all handle/peg/axle bounds are inspected.
+The keyed cam and rear recessed retainer remain required, with all Safe 5 retained rotating surfaces Z>=8.5 mm. No rear door projection, extra manufactured part, body-only stop, friction-only retention or loss of travel limit is permitted.
+
+Temporary candidates use byte-verified production definition prefixes and the same prospective manufacture/assembly geometry. They remain under /tmp, use only permitted printable_layout/reference-free assembly and 15-second renders. Candidate units serialize source ownership. No downstream interface is accepted or frozen until full C1 coupled geometry, door bed contact, retained cam, cover rails/removal, primary walls and extraction criteria pass. Failed candidate evidence requires correction or a further amendment. There is no waiver of the original fit gate or final development/review/QA coverage.
+
+### Preserved behavior and impact
+
+SPEC-nested-bank-safe-A2 remains unchanged, SHA-256 `c2263aa95f62d924b82616c9a84eab78287dfa8dd319d5fcd377d1d058665257`.
+Preserve S1–S8/V1–V7, all five envelopes, >=2 mm primary walls, 0.5 mm nesting, nominal 0.35 mm moving clearance, exact glyphs and pocket, positive tool-free retention, intended reveals, <=50 inventory, selectors and deterministic packing. C1–C4 remain serialized developer units; C5 full independent code review, C6 independent final QA, C7 documentation writer and C8 verified main delivery/cleanup remain mandatory. Contract/security reviews and unit tests remain inapplicable as approved. Physical printing/slicing remain excluded and unclaimed. Ownership remains the same four paths; no new Git/delivery authority or dependencies.
+
+### Requirement-to-delivery trace
+
+| Approved requirement | Unit / owned path | Required terminal evidence |
+| --- | --- | --- |
+| S3/V2 quarter-turn stops, direct handle/cam and retention | C2 source; C5/C6 | Actual stop engagement and unobstructed 0..90 sweep in closed/open door states; recessed rear stack and reverse assembly |
+| S6/S7/V3/V5 stable broad-face printing, fixed envelopes/walls | C1/C2 candidates and source; C5/C6 | All door and handle meshes connected, Z=0 contact, bounds and unchanged nesting/extraction |
+| S5/V4 and early coupled fit | C1–C3 candidate gate before interface freeze; C5/C6 | Actual Safe 4/5 section, cam/cover clearance, rail exit/reinsertion and intentional detent; no scalar-only acceptance |
+| All remaining S1–S8/V1–V7 | Unchanged A3 trace C1–C8 | Entire original coverage, assurance, documentation and verified origin/main delivery |
+
+### Planning assurance and approval record
+
+Pending bounded independent explorer and architect review of this complete effective PLAN and unchanged approved SPEC; supported findings must be reconciled before automatic approval. This is required implementation recovery, never a claim of manual user approval or successful geometry acceptance.
+
+### Reconciled candidate sequence and gate coverage
+
+The replacement front peg/recess applies to **all five safes**, including Safe 1's new directly driven single cam and combined three-spoke handle/axle. A3 explicitly supersedes Safe 1's linked bolt/catch/guide drive; those older original-plan clauses do not remain effective. Delete their obsolete stops along with that mechanism.
+
+Candidate ownership and sequence replace only the conflicting C1–C3 prerequisites:
+
+1. C1 developer freezes the initial hinge/body/door skeleton and its verified source hash; parent reconciles its evidence and releases source ownership. The full coupled gate remains pending.
+2. C2-candidate developer exclusively owns temporary cam/handle/stop/retainer definitions under /tmp, based on a byte-verified frozen production prefix; no production SCAD mutation. Record definitions, source/prefix digests, exact prospective integration delta and actual mesh/section/sweep checks. Parent freezes this candidate and releases its owner.
+3. C3-candidate developer exclusively owns temporary cover/rails/detent/lettering candidates under /tmp built from the same frozen production prefix and the verified C2 candidate definitions. No production mutation or copied alternate approximation. Parent reconciles ownership and checks the combined candidate gate.
+4. Parent accepts the complete actual coupled gate only after dimensioned Safe 4/5 sections prove the full retained cam stack, remaining torque-bearing hub/key/shoulders and insertion/release access; full door/hinge/cam sweeps; child-subtree extraction and retrieval; both Safe 5 reveal states; positively retained cover with intentional release; full intermediate top-exit removal and reverse reinsertion; clear 34x55 first-message reservation and 30x40x3 pocket above exact second-letter relief; blank exterior and unblocked 12x6 retrieval beam.
+5. After that gate, bounded C2/C3 production developers serialize promotion of their verified candidate definitions into the sole source. Parent proves candidate/source correspondence and reruns affected actual meshes/sweeps before interface freeze. A change during promotion invalidates affected candidate evidence until regenerated; failed coupled outcomes require correction/amendment, never downstream acceptance.
+6. C4 inventory/controls/layout, C5 review, C6 QA, C7 docs and C8 main delivery proceed only from the accepted integrated interfaces. Temporary candidates remain evidence under /tmp and are not implementation outputs or source dependencies.
+
+This clarifies the explorer's supported sequencing and coupled-outcome findings. Its Safe 1 coverage concern is resolved by the explicit all-five replacement statement and A3's already approved direct-cam replacement. No obsolete linked-drive criterion is restored.
+
+### Complete effective A4 automatic approval — 2026-10-11
+
+Required independent explorer and architect reviewed the proposed complete PLAN digest `f1de47c1ccc0fa290d6fc7a36c51f47f06f9b1a6e36a5c22ed934b4ab4196662` with unchanged approved SPEC-A2. Architect found no blocking allocation/sequence conflict and retained actual geometry gates. Explorer's candidate ownership/sequence, all-five stop coverage and explicit coupled-outcome findings are resolved in the clarification above. Parent assessed these clarifications as preserving every behavior, boundary, criterion and assurance requirement; reconciled proposal digest before this approval record was `5e65673fe5a38fb118b030ab0952e4927bdc2bba847417043cd6a4030fddd351`.
+
+Approval: **Automatically approved complete effective PLAN through PLAN-nested-bank-safe-A4**, under the originating 2026-10-11 implementation request and implement's required automatic-amendment procedure. This replaces A4's pending fields above; no manual user review/approval is claimed. Earlier approved bodies and document Status remain unchanged. SPEC-A2 is unaffected. Effective scope is the same S1–S8/V1–V7 simplified matched set, with the replacement stop allocation and clarified candidate gate only. Actual coupled fit, independent implementation review/QA, documentation and verified main delivery remain uncompleted obligations, not approval evidence.
+
+## Amendment 5 — 2026-10-11 — Printable rear retention and torque-bearing key fit
+
+- Amendment ID: PLAN-nested-bank-safe-A5
+- Previous version: automatically approved complete effective PLAN through A4, SHA-256 `1dfa0c49a6f6e8efe577efea4e610fb29805acee8b41aca660b7e90cb347116d`.
+- Approval: Pending automatic implementation approval after planning assurance.
+- Request and purpose: Required recovery under the originating 2026-10-11 `$implement specs/PLAN-nested-bank-safe.md` request. C2 allocation exposed a rear collar limited to at most 0.05 mm by A3's recess. Independent architecture analysis also established that the inherited 0.35 mm keyed bore contains the shaft's entire radius-1 disk, permitting full spin instead of transmitting torque. Correct these implementation allocations while preserving approved SPEC-A2 behavior.
+
+### Changes against the previous version
+
+| Section / requirement | Before | After | Reason |
+| --- | --- | --- | --- |
+| A3 rear cam hub recess and key path | 0.60 mm recess, 0.50 clip with 0.05 gaps, 1.40 mm remaining path | 1.00 mm rear recess, 0.40 mm D-shaped terminal collar, 0.50 mm clip with 0.05 axial gaps, 1.00 mm remaining keyed hub | Provide actual positive printable collar stock without projecting behind Safe 5 Z=8.5 |
+| Keyed cam/shaft interface | Inherited moving-clearance 0.35 applied to keyed bore | Named `cam_key_fit_clearance_mm=0.05` per static keyed mating surface; bearing clearance remains 0.35 | Inherited flat bore y=1.00 admits full radius-1 shaft rotation, eliminating drive |
+| Cam manufacturing | Legacy rear-face-down cam | Broad front-flat-face-down cam, recessed rear face upward | Build solid hub first and avoid printing an unsupported recessed hub roof |
+
+### Deterministic replacement allocation and validation
+
+All five cams use the same relative rear stack. Let C be cam back, Safe 5 C=8.5 mm. Cam remains C..C+2.00 mm. Shaft's D-shaped terminal collar is C..C+0.40; neck diameter 1.20 is C+0.40..C+1.00. The 0.50 mm C-clip occupies C+0.45..C+0.95, leaving nominal 0.05 axial allowances to collar and the keyed cam shoulder at C+1.00. Rear hub recess depth is 1.00 mm and opens rearward and radially for intentional clip insertion/removal; required geometry must establish side access before nesting. The remaining keyed hub is C+1.00..C+2.00, length 1.00 mm, with the original radius-4.8 hub stock around its bore. This is secondary mechanical stock, not a reduced primary shell wall. Physical strength/endurance remain unproven; do not claim those from modeled contact.
+
+Key shaft and terminal collar retain diameter 2.00 mm and flat y=0.65 mm in local coordinates. The static keyed bore uses diameter 2.10 mm and flat y=0.70 mm. The D collar passes through the matching cam opening and the separate circular running door bearing, then the clip positively retains the cam; no circular collar that cannot pass the D bore is substituted. Shaft and cam rotate together; the 0.05 static key-fit exception replaces the inappropriate bearing allowance only there. Cam/door bearing and other free-running surfaces retain nominal 0.35 mm, clip radial snap clearance remains 0.15 mm, and static axial allowance remains 0.05 mm. Prove actual insertion and retained shoulders, cam-to-shaft torque contact under angular displacement, inability to rotate the keyed shaft freely through 360 degrees, full reverse disassembly and modeled engagement/release/stops. Inspect finite-volume collar/key/clip components and actual clearance; no acceptance from arithmetic alone.
+
+The cam prints front face down with its 1.00 mm uninterrupted keyed hub stock on the bed and rear recess opening upward. The combined handle prints front face down with shaft/neck/D-collar growing upward. Verify broad contact, connected nondegenerate solids and accessible snap interface for every safe. All retained Safe 5 rotating surfaces remain Z>=8.5, >=0.35 above first-message relief ending at8.15. A4 front door/handle stops and all coupled candidate gating remain unchanged.
+
+### Preserved behavior and impact
+
+SPEC-A2 remains byte-for-byte unchanged, digest `c2263aa95f62d924b82616c9a84eab78287dfa8dd319d5fcd377d1d058665257`. This changes implementation secondary hub allocation and introduces the explicitly allowed documented named static-fit exception; it does not weaken primary walls, enlarge envelopes, narrow extraction, reduce pocket/glyph dimensions, remove positive retention, add parts or replace a functioning cam with decoration. S1–S8/V1–V7, <=50 cap, print/batch semantics, all physical exclusions, four-path ownership, full assurance and parent-only verified main delivery remain unchanged.
+
+C2 temporary candidate owns these changes; C3 candidate and complete pre-promotion coupled gate must use its frozen verified geometry. Failed fit/torque/retention remains a correction/amendment gate. C5 independent review/C6 final QA cover the changed key, recess, collar, clip access, whole moving sweeps and manufacturing orientation. C7 README documents the new named static exception and modeled/physical limits. No new dependencies or production files.
+
+### Requirement-to-delivery trace
+
+| Approved requirement | Unit / path | Terminal evidence |
+| --- | --- | --- |
+| S3/V2 working directly keyed cam and positive retention | C2 candidate/source; C5/C6 | Actual torque contact, collar/clip capture, insertion/removal and all-state sweeps |
+| S5/S6/V3/V4 cover clearance and hard boundaries | C2/C3 pre-promotion coupled gate; C5/C6 | Safe 5 rotating bounds >=8.5; clear pocket/cover path and unchanged complete envelopes/walls |
+| S7/V5 manufacturing | C2 candidate/source; C4/C6 | Front-face-down cam and handle actual bed contact/solidness, all repeated occurrences |
+| V7 named fit documentation; other S1–S8/V1–V7 | C7 README; unchanged C1–C8 A3/A4 traces | Actual tolerances and candid physical limits; complete original acceptance and origin/main verification |
+
+### Planning assurance and approval record
+
+Pending independent explorer and architect assurance of the complete effective proposal with unchanged approved SPEC. The dimensions above are candidate allocations, not geometry or physical acceptance. Automatic authorization follows only after supported findings are reconciled.
+
+### Reconciled manufacturing clarification and complete A5 automatic approval
+
+Both independent explorer and architect verified proposed complete PLAN digest `44bd29f640c119ba42741c1480ee8b0ae68768edb6021490fb9ff1461f42d86d` and unchanged approved SPEC-A2. They found the recess/collar/key allocation consistent and retained the actual retention/torque/access/coupled gates. Their one supported manufacturing finding is incorporated explicitly: inspect the terminal collar's **0.40 mm radial step above the 1.20 mm neck in actual front-face-down handle manufacturing geometry**. Bed contact and mesh connectedness do not establish that transition's support. Any correction must preserve positive shoulder overlap, D-bore passage, actual collar stock and axial gaps; do not silently chamfer away capture or claim support-free printing from thickness. Failed modeled printability requires correction/amendment before promotion; slicer/material/physical results remain excluded and unclaimed.
+
+Approval: **Automatically approved complete effective PLAN through PLAN-nested-bank-safe-A5 on 2026-10-11**, under the originating implementation request and implement's automatic required-amendment authorization. This replaces A5's pending fields, preserves prior bodies and document Status, and does not claim manual user approval. SPEC-A2 remains unchanged. Complete effective scope remains all S1–S8/V1–V7 with A4 stops/candidate gate and A5 retained/keyed stack/fit/manufacturing allocation. Supported planning findings are resolved; source/candidate geometry acceptance, implementation review/QA, documentation and main commit/push remain required.
+
+## Amendment 6 — 2026-10-11 — Safe 4 released-hub opening clearance
+
+- Amendment ID: PLAN-nested-bank-safe-A6
+- Previous version: automatically approved complete effective PLAN through A5, SHA-256 `cc8720e31adebfeddb08e112b0f10def7994c01420a3e2ba9f0a5e3125773110`.
+- Approval: Pending automatic implementation approval after planning assurance.
+- Request and purpose: Required correction under originating `$implement specs/PLAN-nested-bank-safe.md`. Actual C2 candidate Safe 4 released closure at door angle 5 degrees intersects its body by `0.0000751045 mm3`, X47..47.0124/Y33.8732..34.1268/Z23.8329..23.9762. Correct opening clearance without thinning primary frame or cam hub.
+
+### Changes against the previous version
+
+| Section / requirement | Before | After | Reason |
+| --- | --- | --- | --- |
+| A3 inherited Safe 4 cam axis | [42,34] mm | [41.6,34] mm, 0.40 mm left shift | Rear hub corner exceeds the right frame during initial opening |
+| Receiver and dependent geometry | Derived from prior center | Regenerate from corrected axis; preserve receiver algorithm/Z allocation and fixed tip X47.65, not byte-identical receiver void | Longer tongue needs actual regenerated sweep clearance |
+| Receiver sweep approximation | Convex hulls of 5-degree samples with nominal offset only | Add a derived maximum 2.5-degree chord/arc allowance to nominal offset | Maintain >=0.35 continuous clearance between samples instead of claiming hull chords are exact arcs |
+
+### Deterministic correction and preserved boundaries
+
+Safe 4 retains hub radius 4.8 mm, cam Z20..22, hinge X3/Z24.35, and latch tip X47.65. Tongue length increases 5.65..6.05 mm; latched frame overlap remains 0.65 mm. Conservative released-hub maximum X becomes `3+sqrt((41.6-3+4.8)^2+(24.35-20)^2)=46.617456`, near 5.723664 degrees; gap to X47 is0.382544. This analytic result informs the candidate, not actual full assembly acceptance. Bearing, door-front stop, handle/axle, receiver and any related bounds derive from the same corrected axis. No primary wall/frame thinning, hub-radius reduction or latch-engagement removal is substituted.
+
+For receiver sampled hulls, derive an allowance from the largest actual profile radius plus nominal clearance and the 2.5-degree half-step, using a conservative secant-based bound (or a demonstrated stronger exact sweep). Add it to nominal moving clearance in the cutter only. Verify actual swept source geometry/remaining frame stock and all 0..90 angles; no physical clearance is reduced. Preserve 2 mm stock ahead of the receiver's unchanged Z allocation.
+
+C2/C3 candidate reconciliation owns the correction before promotion. Validate actual released opening sweep0..110, explicit worst-angle probe around5.724, closed engagement/release, all latch-angle sweeps, handle/stop/text/retrieval clearance and full Safe5 child-subtree extraction. Refresh hashes and combined coupled sections. Previously generated changed Safe4 cam/body/door/handle meshes are superseded; unaffected evidence remains tied to exact unchanged definitions.
+
+SPEC-A2 remains unchanged, SHA-256 `c2263aa95f62d924b82616c9a84eab78287dfa8dd319d5fcd377d1d058665257`. Preserve all S1–S8/V1–V7, dimensions/walls/pocket/glyphs, positive retention, A4 stops and A5 key/clip geometry, <=50 count, selectors/packing, full code review and final QA, documentation, four-path ownership and verified main delivery. Physical/slicer evidence remains excluded. No extra dependency, part or Git authority.
+
+### Requirement-to-delivery trace
+
+| Approved requirement | Unit / path | Terminal evidence |
+| --- | --- | --- |
+| S3/V2 clearance, engagement and stops | C2 candidate/source; C5/C6 | Actual full released-door and latch sweeps, analytic worst angle, fixed-tip frame engagement |
+| S6/V3 walls, dimensions, retrieval/extraction | C1–C3 combined candidate; C5/C6 | Unchanged primary walls/frame Z stock and five envelopes, Safe4 retrieval and full child-subtree extraction |
+| All other S1–S8/V1–V7 | Preserved A3–A5 C1–C8 trace | Complete original validation/assurance/documentation and verified origin/main delivery |
+
+### Planning assurance and approval record
+
+Pending independent explorer and architect assurance of this complete effective proposal and unchanged approved SPEC. The confirmed original collision is a required-check failure, not a preference; no failed geometry is accepted or pushed.
+
+### Complete effective A6 automatic approval — 2026-10-11
+
+Independent explorer and architect verified proposed complete PLAN digest `291313ce11d272a4e538e2470caba11d0fdf4c0709ac059e0c63e6df8cff40ed` with unchanged SPEC-A2. Both confirmed the recorded finite Safe4 collision, the coherent axis/tip/receiver dependency correction, conservative continuous chord allowance and preserved criteria/ownership. No supported blocking planning finding remained. Corrected geometry is still required, not established by these reviews.
+
+Approval: **Automatically approved complete effective PLAN through PLAN-nested-bank-safe-A6** under the originating 2026-10-11 implementation request and implement's required automatic-amendment procedure. This replaces A6 pending fields; no manual user approval is claimed. Prior bodies and Status remain unchanged. All S1–S8/V1–V7 and A4/A5 fit/manufacturing/assurance/main delivery obligations remain effective.
+
+
+## Implementation execution — 2026-10-11 (C0–C4 progress)
+
+Originating authority: `$implement specs/PLAN-nested-bank-safe.md`, fresh entry
+against effective approved SPEC-A2/PLAN-A3, followed by automatically approved
+required amendments A4–A6 above. Earlier approved content is preserved verbatim.
+This section records execution evidence; it does not redefine behavior.
+
+C0 verified invoking local main and refreshed origin/main at
+`bc3e9ecc7cb472b6aa6791160e800f5e24ee0e6a`; preserved the two pre-existing
+approved artifact edits and recreated only the exact missing detached worktree
+`/tmp/agent-worktrees/openscad-designs/nested-bank-safe`. Baseline/approved-entry
+bytes and recovery records are under `/tmp/nested-safe-recovery`. Four-path
+ownership remains source, README, SPEC and PLAN. Entry SPEC SHA256 was
+`c2263aa95f62d924b82616c9a84eab78287dfa8dd319d5fcd377d1d058665257`;
+entry PLAN was `2912fb43ff71302bbaf9460b56afc81270ba702bac0a6219dbac9830979fa500`.
+
+Native developer units C1–C3 were serialized through temporary candidates.
+Supported failures were corrected, not waived: shell unions refilling hinge
+bores, Safe 5 tangent barrel contact, rear stop below the door print datum,
+non-retaining keyed stack, Safe 4 released cam/body sweep, panel rear-corner
+running clearance, unsupported cover rails/bottom seat and cover normalization.
+The required stop/key/axis changes received the exact A4/A5/A6 explorer and
+architect assurance and automatic approval records above. Original manual SPEC
+approval was not replaced or inferred from a passing render.
+
+Final coupled candidate SHA256
+`94ee11af08d17039823097af4378646b90ff7e38b19b75a9d1e834979b06d431`
+was promoted only after the combined gate passed. Exact candidate/delta
+provenance and fresh commands/results are in
+`/tmp/nested-simple-evidence/coupled-gate/HANDOFF.md`, `results.json`,
+`extra-results.json`, `section-evidence.json`, `seat-slope.json` and
+`plate-contact.json`. Body/cover are single connected edge- and vertex-manifold
+meshes; the seat underside has actual 45-degree supported facets. Positive
+unreleased cover interference is 0.0612846 mm³; released lift and continuous
+release/removal/reinsertion envelopes are clear. At the starting seat only,
+intersection is the intended y=5 zero-volume boundary, separately distinguished
+from positive-travel clearance. Pocket/glyph bounds, 3×6 mm front grip access,
+Safe 4 critical 5.723664-degree position, complete Safe 4/5 bounds and all four
+fresh complete child-extraction prisms pass. Parent inspected generated cover
+and body views; exact first and second messages are visible. No predecessor
+mesh was substituted for these changed interfaces.
+
+C4 froze production source SHA256
+`87e126ac5ad22c1bc0185ee8bcb8eb219ed6cb26930032062bb7b1bede46f4c3`.
+`/tmp/nested-simple-evidence/c4/HANDOFF.md`, `correction.patch` and
+`geometry-preservation.json` record unchanged accepted geometry, same-value
+named 0.05 mm key fit, removal of obsolete helpers and final dispatch/inventory.
+The inventory is 36 occurrences (7/7/7/7/8), two populated physical plates
+(14/22), five mechanism objects per safe and genuinely empty details groups
+for Safes 1–4. Forty-seven direct production CSG/selector checks passed.
+High-precision actual allocator assertions establish nominal 3 mm gaps and
+5 mm margins; rounded conventional echo numbers are not accepted as reduced
+nominal separation. Definitions prefix SHA256 is
+`49e8c7ecb75d860ad191a2f06bfc9e42196834ef4ba7d6f602ccf1c50f5a9ef5`.
+
+Parent supplementary production checks in
+`/tmp/nested-simple-evidence/final-motion/run.py` and `results.json` passed all
+69 cases: every safe at latch 0/15/30/45/60/75/90 degrees, doors 5/45/110 degrees,
+all four partial/complete extractions, first/second reveals and negative motion,
+clearance and oversized-depth assertions. These CSG checks prove evaluated
+selection/assertions; actual collision/manufacturing evidence is separate.
+All OpenSCAD invocations are timeout 15s, permitted reference-free modes and
+/tmp artifacts. Unit tests and conventional test-first are not applicable and
+were not run. Contract/security reviews remain inapplicable for the approved
+toy geometry scope. Physical prints, slicing, force/material fit and endurance
+are excluded and unclaimed.
+
+At this progress record, full manufacturing evidence, independent code review,
+final independent QA, documentation and main commit/push/reconciliation are
+still required. Checkpoints 01–07 reported not committed and not pushed.
+This is progress, not implementation completion or delivery acceptance.
+
+
+### C4 manufacturing completion — 2026-10-11
+
+`/tmp/nested-simple-evidence/c4-manufacture/HANDOFF.md`, `results.json`,
+`render-results.json`, `group-mesh-results.json` and `artifact-sha256.json`
+record fresh meshes for all 36 exact allocator-index occurrences and all 16
+nonempty groups. Every individual has one connected positive-volume mesh,
+zero edge errors, zero vertex-link errors, finite broad-face bed contact and
+actual bounds inside its declared rectangle and physical margin within the
+approved 0.01 mm numerical tolerance. Mechanism groups have five intended
+separate solids; other nonempty groups have one. Four empty groups were checked
+by direct CSG. All exact indexed physical-plate and group canonical CSG
+correspondence checks passed. Plate 1 direct STL completed in 11.03 seconds;
+plate 2 hit timeout15s and uses the explicitly approved subdivision fallback.
+Its composition includes all 22 fresh actual source/indexed occurrence meshes;
+there is no obsolete-part substitution or rounded-echo placement.
+
+The initial worker overview comparison was unproven because it added the
+276 mm offset to already rounded CSG matrices. Parent completed the remaining
+proof in `/tmp/nested-simple-evidence/c4-overview-proof/run.py` and
+`results.json`: 36 exact indexed source expressions apply the overview offset
+before CSG export, and their geometry-aware canonical union matches the direct
+production overview (63 canonical geometry roots). All checks preserve source
+SHA256 `87e126ac5ad22c1bc0185ee8bcb8eb219ed6cb26930032062bb7b1bede46f4c3`
+and definitions-prefix SHA256 above. This resolves the worker remainder; it
+does not silently relabel the earlier failed comparison as passing.
+
+Parent visually inspected both physical plate XY/oblique views, overview,
+all 16 actual group previews and the four exterior door XY views. Parts are
+separate, broad manufacturing faces are down, body/door integral geometry is
+connected and the exact four outer messages are visible. Worker inspected the
+all-36 montage and detailed retention/cover views. Thin 1 mm upright hinge pins
+(heights up to 91 mm), small snaps and the secondary tapered retention collar
+remain explicit slicer/material/physical-print risks, not validated physical
+results. No additional manufactured parts or generated artifacts are tracked.
+C4 development validation is complete; C5 full independent review, C6 final QA,
+C7 README and C8 main delivery remain required. Checkpoint 08 reports not
+committed and not pushed.
+
+
+### C5 consolidated full-review disposition — 2026-10-11
+
+Independent code-reviewer `/root/full_review` completed the full C1–C4 review
+wave against source `87e126ac5ad22c1bc0185ee8bcb8eb219ed6cb26930032062bb7b1bede46f4c3`
+and effective SPEC-A2/PLAN-A3+A4–A6. Report and fresh diagnostic meshes/commands
+are in `/tmp/nested-simple-evidence/full-review/REVIEW.md` and its three hinge
+access result matrices. One supported finding R1 (P2, mandatory acceptance
+blocker) was accepted: installed hinge clips are clear but actual side/axial
+approach poses collide with rigid stock on all five safes. There were no other
+supported defects in the full source, selector, mechanical, manufacturing,
+continuous-motion or batch review. Documentation remains scheduled after QA.
+
+Parent assigned one consolidated in-scope correction batch to a developer:
+open a front retainer access corridor confined to secondary barrel stock and
+orient the clip mouth for the demonstrated approach. The same approved assembly
+criterion requires actual pin insertion/removal, not only a seated bore check.
+Fresh actual pin poses shifted -1 mm axially also collide on all five
+(`hinge-access-fix/before-results.json`), with volumes
+0.104774/0.104774/0.104774/1.465515/0.732758 mm³. Therefore this correction batch
+also includes the directly dependent lower head approach in secondary front
+allocation. It is not a new requirement or a primary-wall relaxation.
+
+The proposed lower approach uses the existing 3.1 mm head-recess diameter and
+ends at hinge_start+0.95 mm, retaining its bearing shoulder. Its rear Z limits
+65.05/45.8/33.8/22.8/11.3 mm all exceed complete primary chamber front limits
+57/42/30/20/10.85 mm. Parent requires actual primary-region preservation,
+all-five insertion/reverse paths and positive capture, connected manufacture,
+unchanged closed bounds/motion/extraction and batch correspondence before
+acceptance. No hinge-axis/radius, envelopes, walls, pocket, inventory, default
+controls or packing changes are authorized by this correction batch. In-scope
+correction and affected validation continue under originating implement authority;
+independent final QA will assess the corrected actual geometry. No new manual
+approval or speculative extra review wave is introduced.
+
+Checkpoint 09 reports the supported blocker and correction in progress, not
+committed and not pushed. The current correction remains unaccepted until its
+required evidence and final QA are complete.
+
+
+### C5 correction and affected validation completion — 2026-10-11
+
+Developer `/root/hinge_access_fix` completed the consolidated R1 batch. Final
+production source SHA256 is
+`1984fae9271fa8d037871d2315b3eadbc71e5458696cf07dfaf60374fff3fd42`.
+`/tmp/nested-simple-evidence/hinge-access-fix/HANDOFF.md`, `correction.patch`,
+`correspondence.json`, `before-results.json`, `results.json`,
+`extra-results.json` and `localized-results.json` record actual geometry and
+60 bounded commands without timeout. Only hinge_head_recess and hinge_clip
+changed. All axes, radii, envelopes, door/cam/cover geometry, inventory,
+footprints, manufacturing transforms and packing functions remain unchanged.
+
+The lower Ø3.1 approach extends through secondary front stock to
+hinge_start+0.95 mm; actual cutter intersections with complete primary chamber
+regions are empty on all five. A localized front end-slot and rear-facing clip
+mouth provide the explicit radial clip route. Continuous conservative actual
+pin head/shaft sweeps and clip route envelopes against actual body+door are
+empty on every safe; reverse assembly follows the same paths. Actual approach
+poses additionally pass. Positive terminal-collar capture is 0.00638385 mm³
+per safe; lower head bearing-stop capture is about 0.33595 mm³. Intended snap
+interference is isolated to two local jaw patches at the 0.6 mm neck; it is
+not a collision with rigid stock. Earlier coincident whole-pin diagnostic
+surfaces are explicitly superseded by the isolated neck-jaw diagnostic.
+
+All five changed bodies and clips are connected edge/vertex-manifold actual
+manufacturing meshes with broad bed contact and unchanged declared bounds.
+Body changes remove secondary stock, so earlier whole-body door/cam/cover/
+extraction collision-free containment remains valid; the retainer allocation
+is separated from moving hinge segments. Primary chamber walls are unchanged.
+The parent accepts R1 as corrected at the modeled-geometry level, subject to
+independent final QA. Printed flex, forces, wear and small-feature fabrication
+remain excluded, not inferred from these positive capture volumes.
+
+Parent regenerated final-source evidence rather than relabeling old source
+checks: `post-review-c4` contains all47 direct CSG/selector cases and exact
+allocator assertions; `post-review-motion` all69 motion/negative cases;
+`post-review-manufacture` all36 actual exact-index meshes, all16 direct group
+meshes, physical plate attempts, composition and geometry-aware CSG equivalence.
+All pass. Final plate1 direct render completed in11.22s; plate2 timed out15.02s
+and uses the approved fresh22-occurrence fallback. Parent inspected changed
+body/mechanism previews. `post-review-overview-proof/results.json` confirms
+fresh final-source exact indexed overview canonical correspondence (63 roots).
+Definitions-prefix SHA256 is
+`a8e1b53a820f4f4dfdca889b6aa551f7d298bb673a1a91c50212a772ced0e50b`.
+No outputs were added to source control. C6 final independent QA, C7 README and
+C8 verified main delivery/cleanup remain required; no commit/push yet.
+
+
+### C6–C7 final acceptance and C8 delivery readiness — 2026-10-11
+
+Independent QA `/root/final_qa` completed
+`/tmp/nested-simple-evidence/final-qa/REPORT.md`: modeled S1–S8 and V1–V6
+pass, with no acceptance blocker. It independently recomputed the 36 actual
+mesh hashes and topology, layout counts and margins, positive head/collar
+capture, primary-region preservation, and performed 25 fresh bounded checks
+including all-five continuous hinge insertion routes. The parent accepts the
+corrected geometry and the single consolidated review-correction batch.
+
+Documentation writer `/root/final_docs` synchronized the final README section.
+Parent integration corrected localized cover release wording, exact cam-first
+assembly order, hinge allowances and individual-mesh topology wording, and
+added matched-set migration, removed controls and assembly examples. Earlier
+README sections are byte-preserved. V7 now passes. Final README SHA256 is
+`7dd54ea085b78b8efbadb4ceba2d6deb77ad65aee37a3022fc566cd4dc9497d7`;
+source remains `1984fae9271fa8d037871d2315b3eadbc71e5458696cf07dfaf60374fff3fd42`.
+
+All still-required modeled geometry, review, affected validation, independent
+QA and documentation criteria are accepted. Unit tests and conventional
+test-first phases are not applicable under repository instructions and were
+not run. Security and external-contract reviews are not applicable to this
+local toy geometry. No physical measurement, slicer result, test print,
+material flex/force, durability or security qualification is claimed.
+Plate 2 uses the approved fresh 22-object subdivision/equivalence route after
+the bounded direct render timed out. Generated evidence remains outside Git.
+
+A4–A6 retain their automatic implementation approval and specialist assurance
+records above; the earlier approved SPEC and PLAN content is preserved. C8
+now requires parent-only integration of these four owned paths into local
+main, commit, push to origin/main, independent remote SHA verification, and
+guarded reconciliation/removal of the exact temporary worktree. This record
+is delivery readiness, not a claim that those Git actions have occurred.
+The unrelated invoking-checkout SPEC-shed-ventilation.md must be preserved.
