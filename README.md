@@ -69,7 +69,10 @@ geometry. Measure the actual opening and fasteners before installation.
 At defaults the hinge axis is Y=-54, Z=8 mm. The axis height has an 8 mm
 minimum. The faceted bore radius is 2.903497 mm with a 45-degree roof; housing
 top is Z=14.934593 mm. Moving collars prevent axial escape through the smaller
-bores. Forward-only hinge feet contact the bed. The symmetric recessed core is
+bores. Six forward-only hinge feet contact the bed, each 9.727273 × 8 mm
+(77.818182 mm²). The 135/120 mm mounting variation increases each area to
+85.090909 mm². These are selected dimensions, not measured adhesion limits.
+The symmetric recessed core is
 approximately 104.2 × 63.4551 mm; its inset clears the top frame during rotation.
 The overlap underside/top are Z=4/7 mm. Upper/lower corner reliefs run through
 the panel and louvers, exposing local corner gaps while preserving straight-edge
@@ -77,10 +80,12 @@ overlap. These corners have greater rain-entry exposure. Lower hinge openings
 remain unsealed for drainage. No watertightness, insect-proofing, rated airflow
 or proven weather-life claim is made.
 
-The rigid latch uses a 16 × 16 × 3 mm captive flange, a 12 × 3 mm offset bed
+The rigid latch uses a 16 × 16 × 3 mm captive flange, a 15 × 4 mm offset bed
 foot, a 3 × 3 mm stem, a 6 × 17 × 3 mm tongue and an 8 × 6 × 3 mm finger pad.
 The fixed guide has 2.4 mm walls/roof, two bottom retaining rails and enclosed
 end pockets. It retains the flange without the shed wall acting as a retainer.
+The rear foot opening spans Y=50.1..57.9 mm (7.8 mm), allowing the enlarged
+foot through its full lift while preserving opposed retaining sections.
 Locked and retracted centres are X=0/-16, Y=53 mm; lifting moves the centre to
 Y=56 mm. A door-mounted 10 mm wide receiver shelf engages the tongue without
 intentional flexing. Neither the guide nor receiver obstructs the clear passage.
@@ -109,15 +114,18 @@ rear plane and reliefs that remove essential material. The selected latch
 allocation is guarded by its reachable-motion proof; a
 clearance above 0.4 mm needs a new allocation and proof. Assertions do not
 certify arbitrary parameter combinations or a successful unfused print.
+The seven small soles must each retain at least 60 mm² contact area and a
+4 mm short dimension; assertions reject smaller unsupported allocations. These
+are provisional model floors and do not guarantee adhesion.
 
 Inspect the slicer layer by layer, including bed feet, collar lower overhangs,
 shaft intervals bridging about 10.5273 mm, six 2.4 mm wide door bridges with
-about 18.479 mm support-free spans, louver roofs and overlap lips. The guide's
+about 14.272 mm support-free spans, louver roofs and overlap lips. The guide's
 first flat roof spans a 19.8 mm deep chamber interrupted by the stem slot;
 inspect bridge directions and exposed slot edges. The front central roof strip
 is a 9.5 mm one-sided flat cantilever; other front/rear strips overhang 6.5 mm.
 Connected modeled growth does not prove these layers print accurately without
-sag or fusion. The flange overhangs its foot by 5.5/7.5 mm in Y and 2 mm in X;
+sag or fusion. The flange overhangs its foot by 5.5/6.5 mm in Y and 0.5 mm in X;
 internal supports are inaccessible and prohibited.
 
 Provide accessible exterior slicer support under the retracted tongue at
@@ -161,9 +169,9 @@ uses the closed/retracted/seated pose independently of inspection overrides.
 For example:
 
 ```sh
-mkdir -p /tmp/shed-ventilation-validation/A6
-timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/A6/layout.csg -D 'render_mode="printable_layout"' designs/shed_ventilation.scad
-timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/A6/open.csg -D 'render_mode="assembly"' -D 'door_angle_deg=180' -D 'latch_slide_mm=16' -D 'latch_lift_mm=0' designs/shed_ventilation.scad
+mkdir -p /tmp/shed-ventilation-validation/A7
+timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/A7/layout.csg -D 'render_mode="printable_layout"' designs/shed_ventilation.scad
+timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/A7/open.csg -D 'render_mode="assembly"' -D 'door_angle_deg=180' -D 'latch_slide_mm=16' -D 'latch_lift_mm=0' designs/shed_ventilation.scad
 ```
 
 Use an available display for PNG inspection with
@@ -174,19 +182,51 @@ within 15 seconds and keep generated artifacts under `/tmp`. OpenSCAD can return
 zero after an assertion failure: read diagnostics as well as the exit code.
 No repository unit tests or conventional test-first checks are applicable.
 
-CAD validation on 2026-10-12 passed independent integrated review and motion/
-capture and print-geometry QA. Continuous bounds establish captive hinge and
-bolt retention, engaged receiver obstruction, retracted clearance through the
-complete 0–180-degree door sweep and no nominal wall penetration. All sixteen
-required pose/detail previews were generated within the bounded limit and
-inspected. Fresh default, 135 mm width / 120 mm screw-spacing and 0.1 mm
-clearance meshes contain exactly three finite closed bodies, each with actual
-Z=0 contact and centre of mass inside its bed support polygon. At defaults the
-bolt bed area is 36 mm² and its centre of mass projects to Y=51.3330 mm within
-the Y=50.5..53.5 mm footprint. Eight real passages and connected growth were
-reconciled against the final geometry. All 44 negative guards rejected their
-intended inputs; `git diff --check` passed. This is modeled evidence, with no
-slicer or physical-print result.
+CAD validation on 2026-10-12 passed independent integrated review and renewed
+continuous capture/motion analysis. Fresh default, 135 mm width / 120 mm screw
+spacing and 0.01 mm clearance meshes each contain exactly three finite closed
+bodies and nine separate Z=0 patches. The default envelope remains
+125 × 128.6785 × 15 mm; the width variation is 135 × 128.6785 × 15 mm.
+The continuous proof retains the full hinge sweep, screw clearance, positive
+receiver obstruction, retracted latch clearance and two deliberate 180-degree
+stop contacts. Endpoint mesh exports can merge contacting stop faces; this is
+separate from the three closed bodies in the printable pose.
+
+The default bed-contact islands are:
+
+| Island | Modeled footprint and area | Initial growth / connection |
+| --- | --- | --- |
+| Fixed frame | Rounded mounting ring, four screw holes, hinge housings/ribs and guide rails; 5262.858 mm² | Connected fixed footprint grows from Z0 |
+| Door core | Rounded relieved panel with eight slot holes; 4400.423 mm² | Connected panel grows from Z0 |
+| Six hinge feet | Separate rectangles, each 9.727273 × 8 mm, 77.818182 mm² | Individual collar/foot growth until bridges make positive-volume connections to the core immediately above Z4 |
+| Bolt foot | Rectangle 15 × 4 mm, 60 mm², X=-23.5..-8.5 / Y=50.5..54.5 | Broader flange starts immediately above Z2.4, with 0.4 mm positive foot overlap |
+
+The seven rectangular soles have no thin neck in their bed footprints. Frame
+and door holes/reliefs remain intentional. Door webs are 7 mm between rows
+and 5 mm between columns; the perimeter rib is 1.2 mm and guide walls are
+2.4 mm. The frame screw-hole/inner-corner neck has a conservative modeled
+lower bound of 1.2855 mm, separate from the 10 mm border. These local sections
+need slicer inspection; no exhaustive minimum-neck certificate is claimed.
+Minimum inter-island gap is 0.4 mm at defaults. The enlarged soles
+preserve nine initial islands; final door connectivity does not make its six
+feet one first-layer island.
+
+Independent mesh clipping inspected Z0.2, 1, 2, 2.39, 2.6, 3.9 and 4.1 mm,
+with additional samples immediately below/above flange and bridge transitions.
+Every accepted clipped solid was closed; each early component's COM projects
+inside its own bed support polygon. At 0.01 mm clearance, the derived flange
+and bridge starts move to Z2.01 and Z3.61; those transitions were also inspected.
+These are modeled inspection heights, not an assumed Bambu Studio layer profile.
+Global final-body COM was checked separately. The default bolt COM projects to
+Y=51.4122 mm inside its Y=50.5..54.5 mm sole. Numerical STL precision was
+1e-4 mm / 1e-3 mm²; source assertions retain the exact 60 mm² floor.
+
+Current allowed pose/detail previews were inspected and representative invalid
+parameters rejected their intended assertions. CAD contact, connectivity and
+COM results do not establish actual plate adhesion. Slicer first-layer/toolpath
+review and a successful physical first layer remain pending. The reported
+spaghetti failure has not been demonstrated resolved. Later bridging, roof,
+flange, support-cleanup and unfused-motion risks also remain unprinted.
 
 Before installation, measure the wood opening, all four screw positions,
 shanks, head diameters/heights and mounting coverage. Inspect the sliced

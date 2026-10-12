@@ -403,3 +403,98 @@ The new cantilevers/bridges have connected modeled growth; success without sag, 
 ### Approval record
 
 Automatically approved on 2026-10-12 under the originating explicit implement request and the implement skill's automatic-amendment rule after valid approved entry. Approval covers the complete effective SPEC through SPEC-shed-ventilation-A6, including the revised manually entered latch allocation, supported clearance domain and preserved boundaries above. This is automatic implementation authorization, not a claim that the user manually reviewed this amendment. Original status, bodies and earlier approval records remain unchanged. Required final-state PLAN assurance, source implementation, independent review and QA, documentation and verified main/origin/main delivery remain obligations.
+
+## Amendment 7 — 2026-10-12 — larger first-layer feet and independent island validation
+
+- Amendment ID: SPEC-shed-ventilation-A7
+- Previous version: complete effective specification through SPEC-shed-ventilation-A6
+- Approval: Approved on 2026-10-12 by the user’s explicit “approve” reply
+- Request and purpose: the user confirmed spaghetti occurs on the actual first layer against the plate, then explicitly requested `$iterate` to fix this and add an AGENTS.md rule preventing connected geometry and overall stability from being mistaken for first-layer adhesion robustness. This user-invoked iteration retains separate manual SPEC and PLAN approval gates. It does not authorize implementation through an automatic amendment.
+
+### Evidence, scope and definitions
+
+Current source is designs/shed_ventilation.scad at commit0d2763e69590053f524c0e942003666d8002bb59, SHA-2566700b9868b581ab85150410c0dd005bfc51cbfdb446f6be2150339c0413add32. The invoking checkout was clean before drafting this amendment. The current source-derived bed layout has nine separate contact patches before optional slicer supports: fixed frame, door core, six moving hinge feet and one bolt foot. The six hinge feet and door core belong to one final connected moving body, but they do not form one connected first-layer island. Their elevated bridges start at Z4. Each hinge foot contacts the bed over approximately9.727273×3 mm, area29.181818 mm²; the bolt foot is12×3 mm, area36 mm². Successful final-body connectivity and global COM/support-polygon checks therefore do not establish the early islands' independent stability or adhesion robustness.
+
+The user has printed PLA successfully and reports correctly configured Bambu Studio slicing. The first patch that failed, sliced toolpaths, plate/profile settings and a failure photograph have not been inspected. Small isolated contact patches are a credible design vulnerability, not a proven exclusive cause of the reported failure. No printer-setting fault or successful revised print is asserted. Elevated flange/bridge/roof/tongue features are later-layer risks and cannot explain extrusion failing while literal layer1 is being deposited.
+
+The requested correction is limited to enlarging the existing seven small first-layer soles, the corresponding bolt-foot clearance opening and capture/parameter checks, durable README guidance, and a new first-layer validation section in repository AGENTS.md. The allowed future implementation paths are designs/shed_ventilation.scad, README.md's shed section, AGENTS.md, and this existing SPEC/PLAN pair. Unrelated designs, previous artifact bodies/status/approval records and other README sections remain unchanged. First-layer robustness means improved modeled footprints and independent early-island validation; actual plate adhesion remains a separate slicer/physical outcome.
+
+### Changes against the previous version
+
+Every dimension below is a manually entered selected design default or a value derived from it. They are not new physical measurements, empirical adhesion limits or successful-print results.
+
+| Section / requirement | Before | After | Reason |
+| --- | --- | --- | --- |
+| Moving hinge bed feet | Six forward-only feet, each axial length9.727273 and forward depth3 mm at defaults | Preserve six feet in their moving-knuckle X bands; increase forward depth to8 mm. Each default sole is approximately9.727273×8 mm, area77.818182 mm² | Increase each independent starting footprint by approximately2.67 times without crossing the moving gaps or adding assembly |
+| Captive bolt bed foot | Width12, depth3, localY-2.5..0.5,Z0..2.8 mm; bed area36 mm² | Width15, depth4, localY-2.5..1.5,Z0..2.8 mm; bed area60 mm² | Increase contact by approximately1.67 times while retaining direct bed support and positive flange overlap |
+| Guide rear foot opening | WorldY50.1..56.9 at defaults; width6.8 mm | WorldY50.1..57.9; width7.8 mm, derived from the revised foot and the same3 mm lift/0.4 side gaps | Admit the wider foot throughout lift/slide while preserving opposed retaining sections; renew the full capture proof rather than changing only a cube size |
+| First-layer parameter acceptance | Positive dimensions, final three-body contact/COM and capture guards | The seven isolated hinge/latch soles must each have modeled Z0 contact area at least60 mm² and rectangular sole short dimension at least4 mm throughout supported dimensional choices; retain all other guards | Establish explicit provisional design floors for these vulnerable feet. These floors address this model, not all repository parts or guaranteed adhesion |
+| Geometry validation | Final connected geometry, actual Z0 body contacts, global COM and connected growth | Additionally identify and evaluate every independent bed-contact island, its own footprint/initial growth and stability until substantial connections form | A global convex support hull can conceal fragile separately printed islands |
+| Repository instructions | No explicit per-island first-layer assurance requirement | Add the exact proposed First-Layer Robustness section below to AGENTS.md | Carry the lesson into future geometry changes without claiming that CAD prevents every adhesion failure |
+| Documentation and outcome | General slicer/physical limits and tiny-foot dimensions | Current enlarged feet, independent island evidence, joining heights, revised bridge/overhangs and separate CAD/slicer/physical status | Explain what was improved and what remains unverified |
+
+The mandatory135 mm plate-width/120 mm screw-spacing variation remains supported. Its hinge segment length is approximately10.636364 mm, giving approximately85.090909 mm² per8 mm-deep sole. Other parameter combinations must be rejected when they violate the selected small-sole floors, continuous motion, capture or moving-clearance requirements; do not bypass assertions to force an unsupported print.
+
+### Preserved behavior and geometry boundaries
+
+Preserve the full replacement vent,125×85 mounting plate,110×70 screw centres,4.5 shank/9×4 head allowances,105×65 nominal passage, reinforced frame/door/perimeter/louver sections, eight passages, straight-edge overlap and existing local screw reliefs. Preserve one print with exactly three captive permanent bodies, no inserted parts, hardware, assembly or intentional moving-part flexure, eleven full-width knuckles/111 mm default span, outward/downward0..180 travel and two independent positive180 stops. Preserve3 mm lift/16 mm withdrawal, seated/lifted centresY53/56,16×16×3 flange, guide roof/sidewalls, stem/tongue/pad and unchanged receiver geometry; only the bolt-foot sole and its rear opening/retaining-rail boundary change. Preserve the0.4 default mating gap and supported0<g<=0.4 domain.
+
+The enlarged hinge feet remain forward-only, directly bed-supported and confined to the existing moving X bands. Their additional material must not crossZ<0 during the full sweep, obstruct the passage, strike screws/frame/ribs, contact stops early or require a different print pose. The broader bolt sole remains inside the flange XY footprint, with positive volumetric flange overlap. The revised rear opening must retain the complete A6 first-contact/capture and operating-clearance proof; no wall-dependent retention, forced snapping or weakened assurance is allowed.
+
+Nine bed-contact islands are expected to remain. This revision makes their seven small soles broader; it does not claim that all first-layer geometry becomes connected. Do not fuse first-layer islands or captive moving gaps with automatic brim, bridges or supports. No sacrificial connectors, feet requiring removal, altered wall mounting or additional preparation/assembly steps are introduced. Exterior supports and their accessible removal remain as already specified. Retain the rear-down closed/retracted/seated printable pose, only printable_layout and assembly modes, OpenSCAD2021.01 syntax, one editable source and Bambu P2S/AMS2 Pro compatibility. Expected outer bounds are unchanged, but must be recomputed from final geometry.
+
+### Bounded advisory geometry evidence
+
+A read-only architect independently assessed the selected defaults against current source/approved artifacts. At the default axisY-54/Z8, the enlarged hinge foot radius bound is sqrt(8²+8²)=11.313708; the nearest lower-frame radius is12.313001, leaving approximately0.999293 mm conservative radial separation, above0.4. Added forward material hasu>=0,v>=-8; its endpoint heights and continuousZ(theta)=8+u*sin(theta)+v*cos(theta) are nonnegative. Its swept angular sector remains outside the fixed rear stop support sector beginning190degrees. The A6 opposed-section Y bounds49.959631/59.040369 remain outside the revised rear opening50.1..57.9, with approximately1.140369 mm rear-section margin. Nominal bolt-foot X-end clearance is0.9 mm; enlarged-sole flange overhangs become0.5 mm per X side and5.5/6.5 mm in Y. AtZ4 the hinge-foot extension is expected to shorten the first unsupported door-bridge span from approximately18.479 to14.272 mm.
+
+These are source-derived feasibility bounds, not new renders, complete implementation QA, sliced-toolpath inspection or physical adhesion evidence. Fresh independent source and geometry assurance remains necessary; no prior render or global-COM report substitutes for per-island first-layer analysis. The still-unprinted guide roof/cantilevers, shaft spans and exterior tongue support remain later-layer obligations and limitations; this first-layer correction does not certify their physical success.
+
+### Acceptance, regression and validation delta
+
+1. At default and135/120 dimensions, independently establish all bed-contact islands from the revised geometry; report each footprint's shape, area, characteristic width and thin necks. Confirm all seven isolated soles meet the selected60 mm²/4 mm design floors and increased footprints, with positive gaps and no new floating or unintended contacting island.
+2. Inspect the first-layer geometry and each island's initial growth until it joins substantial connected geometry. Evaluate each small island's modeled support/COM against its own support polygon where applicable, using geometry clipped before its joining height rather than the completed body's global COM. Explicitly identify the hinge feet's bridge connection height and the bolt's flange growth. Record modeled sample heights and limitations; do not invent a user's slicer layer height or profile. Full-body and per-island evidence are separate acceptance items.
+3. Revalidate exactly three finite closed connected permanent bodies, bed contacts/positive material unions, complete hinge/wall/frame/head/stop motion, unobstructed90/180 passage, revised latch-foot/rail travel and the full A6 reachable capture/engagement/retracted-clearance envelope. Verify the supported clearance/width variation and negative guards, including loss of the small-sole floors. Any unsupported geometry or proof failure blocks modeled acceptance.
+4. Inspect current printable/assembly previews, necessary first-layer sections and bounded mesh/geometry outputs. Preserve the15-second OpenSCAD limit, permitted modes, temporary outputs and prohibition on repository unit tests/test-first phases. Run git diff --check. Update actual bridge/overhang/support guidance and retain no internal support or brim joining captive gaps.
+5. Apply the exact repository rule below and update only the shed README section with current dimensions/provenance, individual footprint/growth evidence, print orientation, supported parameter limits and slicer/physical status. Distinguish robust-looking modeled footprints, a reviewed slicer first layer and a physically successful first layer.
+6. No new physical print or actual Bambu Studio profile/toolpath result exists at this planning stage. Where unavailable, these remain explicitly pending and are not fabricated as CAD acceptance evidence. A modeled correction may be delivered after its approved model/review/QA lifecycle; describing the user's actual spaghetti problem as resolved requires an observed successful first-layer print. Neither these selected footprint floors nor AGENTS guidance guarantees adhesion on every printer/plate/material/profile.
+
+### Exact proposed AGENTS.md addition
+
+Insert this new section after OpenSCAD Rules and before Validation. Preserve all other instructions, including approval/delegation/delivery rules, permitted renders and the no-unit-tests prohibition:
+
+```markdown
+## First-Layer Robustness
+
+When creating or changing printable geometry, assess each independently printed
+first-layer island, even when those islands belong to one connected completed
+part. Connected final geometry and overall stability do not establish
+first-layer adhesion robustness.
+
+- Identify every separate bed-contact island in the printable pose. Report its
+  modeled footprint shape, contact area, characteristic/narrow dimensions and
+  thin necks; identify the height where it joins substantial geometry.
+- Inspect initial growth and assess each small island's modeled stability
+  against its own contact/support polygon until those connections form. Do not
+  substitute the completed body's total bed area or global centre of mass for
+  independently printed islands. Document the analyzed heights and limitations.
+- Prefer broader, stable starting footprints. Resolve fragile small/narrow
+  contacts through scoped geometry changes or a documented, accessible printing
+  strategy while preserving fit, motion and captive clearances. Do not add
+  indiscriminate brim, support or connections that fuse moving bodies or gaps.
+- Report CAD geometry/initial-island checks, slicer first-layer/toolpath review
+  and physical adhesion/print results separately. Inspect slicer evidence when
+  available; if unavailable, state that it is pending. CAD connectivity, Z0
+  contact, renders and COM checks do not prove adhesion or a successful print.
+- Do not claim an actual first-layer failure is fixed without a successful
+  physical first-layer result. Record any remaining printer, plate, filament,
+  profile or later-layer risks without inventing a cause or evidence.
+
+Use the repository's permitted bounded geometry/render validation. Unit tests
+and conventional test-first phases remain prohibited. This rule adds no
+unrelated audit, printer operation or requirement to fabricate unavailable
+slicer/physical evidence as a condition of modeled delivery.
+```
+
+### Approval record
+
+Manually approved on 2026-10-12 by the user’s exact reply “approve” to the complete SPEC A7 proposal (reviewed proposal SHA-25625314230a155cf13e70204928af43080766c8b75215ba775f5efec1f8cfea3c8). Approval covers the complete effective SPEC through SPEC-shed-ventilation-A7, including the selected sole dimensions/floors, rear-opening revision, preserved mechanism, validation boundaries, README scope and exact AGENTS addition. Document-level Status: Approved and all earlier bodies and approvals remain unchanged. A separately drafted and independently assured PLAN A7 requires separate manual approval; implementation requires valid implement entry. This iterate turn performs no source, README or AGENTS implementation, worktree creation, commit or push.

@@ -41,6 +41,37 @@ These instructions apply to this OpenSCAD design repository.
 - Future `.scad` files that require Raspberry Pi 5 board geometry should use `designs/rpi5.scad` as the fit and clearance reference instead of duplicating board models.
 - Dependent cases, supports, enclosures, and accessories should keep these Raspberry Pi reference models toggleable from child designs.
 
+## First-Layer Robustness
+
+When creating or changing printable geometry, assess each independently printed
+first-layer island, even when those islands belong to one connected completed
+part. Connected final geometry and overall stability do not establish
+first-layer adhesion robustness.
+
+- Identify every separate bed-contact island in the printable pose. Report its
+  modeled footprint shape, contact area, characteristic/narrow dimensions and
+  thin necks; identify the height where it joins substantial geometry.
+- Inspect initial growth and assess each small island's modeled stability
+  against its own contact/support polygon until those connections form. Do not
+  substitute the completed body's total bed area or global centre of mass for
+  independently printed islands. Document the analyzed heights and limitations.
+- Prefer broader, stable starting footprints. Resolve fragile small/narrow
+  contacts through scoped geometry changes or a documented, accessible printing
+  strategy while preserving fit, motion and captive clearances. Do not add
+  indiscriminate brim, support or connections that fuse moving bodies or gaps.
+- Report CAD geometry/initial-island checks, slicer first-layer/toolpath review
+  and physical adhesion/print results separately. Inspect slicer evidence when
+  available; if unavailable, state that it is pending. CAD connectivity, Z0
+  contact, renders and COM checks do not prove adhesion or a successful print.
+- Do not claim an actual first-layer failure is fixed without a successful
+  physical first-layer result. Record any remaining printer, plate, filament,
+  profile or later-layer risks without inventing a cause or evidence.
+
+Use the repository's permitted bounded geometry/render validation. Unit tests
+and conventional test-first phases remain prohibited. This rule adds no
+unrelated audit, printer operation or requirement to fabricate unavailable
+slicer/physical evidence as a condition of modeled delivery.
+
 ## Validation
 
 Unit tests are not allowed in this repository. Do not create or run unit tests,

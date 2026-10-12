@@ -65,7 +65,7 @@ housing_roof_v_mm = sqrt(2)*(bore_radius_mm+bearing_wall_mm);
 housing_shoulder_v_mm = housing_roof_v_mm-housing_half_depth_mm;
 housing_top_mm = hinge_z_mm+housing_roof_v_mm;
 fixed_rib_end_y_mm = -plate_height_mm/2+0.2;
-hinge_foot_forward_mm = 3;
+hinge_foot_forward_mm = 8;
 hinge_foot_sweep_radius_mm = sqrt(pow(hinge_z_mm,2)+pow(hinge_foot_forward_mm,2));
 lower_plate_edge_distance_mm = -plate_height_mm/2-hinge_y_mm;
 lower_frame_nearest_distance_mm = sqrt(pow(lower_plate_edge_distance_mm,2)+pow(max(hinge_z_mm-frame_thickness_mm,0),2));
@@ -82,7 +82,7 @@ slot_x_pitch_mm = slot_width_mm + 5;
 // Full roof/slot footprint, including the inclined roof's upper connector.
 louver_outer_x_mm = (louver_columns-1)*slot_x_pitch_mm/2+slot_width_mm/2+1;
 louver_outer_y_mm = (louver_rows-1)*row_pitch_mm/2+slot_height_mm/2+1;
-// A6 rigid latch allocations. Fixed centres are measured in the mounting plane.
+// A6 rigid latch allocations, with the A7 enlarged first-layer foot. Fixed centres are measured in the mounting plane.
 latch_stroke_mm = 16;
 latch_travel_lift_mm = 3;
 latch_seated_y_mm = 53;
@@ -92,6 +92,12 @@ flange_thickness_mm = 3;
 bolt_stem_width_mm = 3;
 guide_wall_mm = 2.4;
 guide_rail_top_mm = 2;
+// A7 selected sole: preserve its offset and positive flange overlap.
+foot_width_mm = 15;
+foot_depth_mm = 4;
+foot_y_min_mm = -2.5;
+foot_y_max_mm = foot_y_min_mm+foot_depth_mm;
+foot_top_mm = 2.8;
 flange_bottom_mm = guide_rail_top_mm+moving_clearance_mm;
 flange_top_mm = flange_bottom_mm+flange_thickness_mm;
 guide_roof_bottom_mm = flange_top_mm+moving_clearance_mm;
@@ -101,8 +107,8 @@ guide_x_min_mm = -latch_stroke_mm-flange_width_mm/2-moving_clearance_mm;
 guide_x_max_mm = flange_width_mm/2+moving_clearance_mm;
 guide_y_min_mm = latch_seated_y_mm-flange_depth_mm/2-moving_clearance_mm;
 guide_y_max_mm = latch_seated_y_mm+latch_travel_lift_mm+flange_depth_mm/2+moving_clearance_mm;
-rear_slot_y_min_mm = latch_seated_y_mm-2.5-moving_clearance_mm;
-rear_slot_y_max_mm = latch_seated_y_mm+latch_travel_lift_mm+0.5+moving_clearance_mm;
+rear_slot_y_min_mm = latch_seated_y_mm+foot_y_min_mm-moving_clearance_mm;
+rear_slot_y_max_mm = latch_seated_y_mm+latch_travel_lift_mm+foot_y_max_mm+moving_clearance_mm;
 rear_slot_width_mm = rear_slot_y_max_mm-rear_slot_y_min_mm;
 receiver_root_y_mm = 33;
 receiver_top_y_mm = 41.6;
@@ -113,10 +119,6 @@ receiver_sweep_y_mm = hinge_y_mm+sqrt(pow(receiver_top_y_mm-hinge_y_mm,2)+pow(ma
 lip_sweep_y_mm = hinge_y_mm+sqrt(pow(door_height_mm/2-hinge_y_mm,2)+pow(max(abs(lip_z_mm-hinge_z_mm),abs(lip_z_mm+door_thickness_mm-hinge_z_mm)),2));
 // Selected A6 proof constants: four opposed sections close the FIRST-departure
 // envelope independently of pad sidedness or continued stem engagement.
-foot_width_mm = 12;
-foot_depth_mm = 3;
-foot_y_min_mm = -2.5;
-foot_top_mm = 2.8;
 tongue_width_mm = 6;
 tongue_front_local_y_mm = -15.5;
 tongue_length_mm = 17;
@@ -163,6 +165,9 @@ function receiver_rotated_y_mm(y,z) = hinge_y_mm+(y-hinge_y_mm)*cos(2)-(z-hinge_
 function receiver_rotated_z_mm(y,z) = hinge_z_mm+(y-hinge_y_mm)*sin(2)+(z-hinge_z_mm)*cos(2);
 proof_foot_lever_mm = max(flange_centre_z_mm,abs(foot_top_mm-flange_centre_z_mm));
 proof_pad_top_lever_mm = bolt_top_mm+3-flange_centre_z_mm;
+// Coupled chamber-sidewall bound also supplies the nonnegative term
+// (flange_width_mm-foot_width_mm)/2*abs(Ryx). Discard it conservatively;
+// the A7 foot-containment guard below keeps it nonnegative for the wider sole.
 proof_foot_y_min_mm = guide_y_min_mm+(flange_depth_mm/2+foot_y_min_mm)*proof_yaw_b_min-(proof_foot_lever_mm-flange_thickness_mm/2)*proof_slope_y_max;
 proof_stem_y_min_mm = guide_y_min_mm+(flange_depth_mm/2-bolt_stem_width_mm/2)*proof_yaw_b_min-(proof_tongue_top_lever_mm-flange_thickness_mm/2)*proof_slope_y_max;
 proof_pad_y_min_mm = guide_y_min_mm+(flange_depth_mm/2-3)*proof_yaw_b_min-(proof_pad_top_lever_mm-flange_thickness_mm/2)*proof_slope_y_max;
@@ -234,7 +239,12 @@ assert(latch_slide_mm>=0 && latch_slide_mm<=latch_stroke_mm && latch_lift_mm>=0 
 assert(render_mode=="printable_layout" || latch_slide_mm==0 || latch_slide_mm==latch_stroke_mm || latch_lift_mm==latch_travel_lift_mm, "Lift fully before lateral travel");
 assert(render_mode=="printable_layout" || door_angle_deg==0 || (latch_slide_mm==latch_stroke_mm && latch_lift_mm==0), "Retract and seat bolt before opening door");
 assert(flange_depth_mm-stem_slot_width_mm>0 && flange_width_mm-stem_slot_width_mm>0 && flange_depth_mm-rear_slot_width_mm>=2*moving_clearance_mm, "Lost roof or bottom flange capture");
-assert(latch_stroke_mm==16 && latch_travel_lift_mm==3 && latch_seated_y_mm==53 && flange_width_mm==16 && flange_depth_mm==16 && flange_thickness_mm==3 && bolt_stem_width_mm==3 && guide_wall_mm==2.4 && guide_rail_top_mm==2 && foot_width_mm==12 && foot_depth_mm==3 && foot_y_min_mm==-2.5 && foot_top_mm==2.8 && tongue_width_mm==6 && tongue_front_local_y_mm==-15.5 && tongue_length_mm==17 && tongue_thickness_mm==3, "A6 selected mechanism allocation is fixed");
+// Exact source floors apply to each of the six hinge soles and the bolt sole.
+assert(hinge_segment_length_mm*hinge_foot_forward_mm>=60 && min(hinge_segment_length_mm,hinge_foot_forward_mm)>=4, "A7 hinge sole below 60 mm2 area or 4 mm short dimension");
+assert(foot_width_mm*foot_depth_mm>=60 && min(foot_width_mm,foot_depth_mm)>=4, "A7 bolt sole below 60 mm2 area or 4 mm short dimension");
+assert(hinge_foot_forward_mm==8, "A7 selected hinge sole depth is fixed");
+assert(foot_width_mm<flange_width_mm && foot_y_min_mm>-flange_depth_mm/2 && foot_y_max_mm<flange_depth_mm/2 && foot_top_mm>flange_bottom_mm && foot_top_mm<=flange_top_mm, "A7 foot escapes flange footprint or loses positive union");
+assert(latch_stroke_mm==16 && latch_travel_lift_mm==3 && latch_seated_y_mm==53 && flange_width_mm==16 && flange_depth_mm==16 && flange_thickness_mm==3 && bolt_stem_width_mm==3 && guide_wall_mm==2.4 && guide_rail_top_mm==2 && foot_width_mm==15 && foot_depth_mm==4 && foot_y_min_mm==-2.5 && foot_top_mm==2.8 && tongue_width_mm==6 && tongue_front_local_y_mm==-15.5 && tongue_length_mm==17 && tongue_thickness_mm==3, "A6/A7 selected mechanism allocation is fixed");
 assert(proof_enclosing_z_min_mm==3 && proof_enclosing_z_max_mm==4.4+2*moving_clearance_mm && proof_inclination_deg==7 && proof_section_x_mm==3.5 && proof_section_y_mm==6.5 && proof_roof_plane_mm==7 && proof_slope_x_max==0.8/7 && proof_slope_y_max==0.8/13 && proof_yaw_a_max==0.279259 && proof_yaw_b_min==0.958241 && proof_rxy_max==0.298770 && proof_rxx_min==0.947 && proof_rzx_max==0.13148 && proof_rzy_max==0.09569, "A6 proof constants are fixed");
 assert(proof_section_radius_mm<min(flange_width_mm,flange_depth_mm)/2 && proof_enclosing_z_min_mm>proof_vertical_half_extent_mm && proof_enclosing_z_max_mm+proof_vertical_half_extent_mm<guide_roof_top_mm, "A6 section radius or sidewall-height margin lost");
 assert(proof_centre_y_max_mm-proof_section_y_mm<rear_slot_y_min_mm && proof_centre_y_min_mm+proof_section_y_mm>max(rear_slot_y_max_mm,proof_aperture_y_max_mm) && proof_section_y_mm<proof_disc_projection_mm && proof_section_x_mm<proof_disc_projection_mm, "A6 opposed sections intersect aperture or chamber boundary");
@@ -340,7 +350,7 @@ module moving_hinge() {
             translate([0,-hinge_z_mm]) square([hinge_foot_forward_mm,hinge_z_mm]);
         }
         // A5 rear-plane exceptions: core/perimeter and these forward bed feet.
-        // First bridge layers span support-free from foot to core, about 18.479 mm.
+        // A7 first bridge layers span support-free from foot to core, about 14.272 mm.
         translate([bridge_center_mm(i)-hinge_arm_width_mm/2,hinge_y_mm,lip_z_mm])
             cube([hinge_arm_width_mm,-core_height_mm/2-hinge_y_mm+2,door_thickness_mm]);
     }
@@ -428,6 +438,7 @@ module vent_assembly(angle_deg,slide_mm,lift_mm) {
     color("darkorange") bolt_at_pose(slide_mm,lift_mm);
 }
 echo(proof_operating_bounds_mm=[proof_engaged_y_max_mm,proof_leading_mid_x_max_mm,proof_tongue_bottom_z_max_mm,proof_tongue_top_z_min_mm],proof_remaining_y_min_mm=[proof_foot_y_min_mm,proof_stem_y_min_mm,proof_pad_y_min_mm]);
+echo(first_layer_soles_mm=[hinge_segment_length_mm,hinge_foot_forward_mm,foot_width_mm,foot_depth_mm],sole_areas_mm2=[hinge_segment_length_mm*hinge_foot_forward_mm,foot_width_mm*foot_depth_mm],rear_slot_y_mm=[rear_slot_y_min_mm,rear_slot_y_max_mm]);
 echo(latch_capture_mm=[(flange_depth_mm-stem_slot_width_mm)/2,flange_depth_mm-rear_slot_width_mm],proof_section_radius_mm=proof_section_radius_mm,proof_confinement_mm=proof_confinement_mm,proof_tongue_y_min_mm=proof_tongue_y_min_mm,proof_retracted_x_max_mm=proof_retracted_x_max_mm,receiver_sweep_y_mm=receiver_sweep_y_mm,lip_sweep_y_mm=lip_sweep_y_mm);
 // Ignore all inspection pose overrides for the printable closed/retracted pose.
 vent_assembly(render_mode=="printable_layout" ? 0 : door_angle_deg,
