@@ -238,3 +238,49 @@ Complete effective SPEC, including ordered A1 and these overriding A2 changes, i
 On 2026-10-12 independent explorer verified artifact hashes, base and source evidence; independent architect confirmed the initial 0.5-degree head collision and found A2 coherent without a blocking finding. The parent accepted their dispositions: A2 supersedes every A1 core-preservation statement/trace; U2 explicitly uses full-depth local relief and positive adjustable head height, guards actual screw shank/head/catch/hinge envelopes and journal/bridge connection. U3 explicitly evaluates 9 mm diameter, 4 mm default height heads at Z=3..7, initial 0..3-degree motion and full sweep, retains connected core/door apart from authorized corner gaps, and runs all original QA criteria. Tools are inspected at mounting poses only. No unsupported lower-head collision is claimed. Documentation carries the new provisional input and local-weather exception.
 
 The parent confirms automatic approval of the complete effective revision including A1 as overridden by A2 under the originating implement request, after required planning assurance. Implementation resumes in the same session. Original artifact contents/status and prior approvals are preserved.
+
+## Amendment 3 — 2026-10-12 — modest durability reinforcement
+
+- Amendment ID: SPEC-shed-ventilation-A3
+- Previous version: complete approved effective SPEC through SPEC-shed-ventilation-A2
+- Approval: Approved by user on 2026-10-12
+- Request and purpose: user explicitly invoked iterate: "make the elements a little bit thicker, specially the elements which are movable and which support the fix in place", then clarified "reason is durability". Increase selected structural sections of the complete vent, prioritizing moving hinge features and the fixed features that retain/support them.
+
+### Changes against the previous version
+
+All proposed values are manually entered design selections, not measured hardware or validated strength results. Current hard-coded feature sizes become named adjustable inputs where appropriate; bearing/hinge connection and stop-contact dimensions may be derived to preserve the specified behavior.
+
+| Section / feature | Before: current delivered source | After: proposed default / requirement | Reason |
+| --- | --- | --- | --- |
+| Mounting frame thickness | 3 mm | 3.6 mm | Modest increase in fixed mounting/support section |
+| Moving door panel and overlap thickness | 2.4 mm | 3.0 mm | Increase moving-panel section |
+| Moving perimeter connecting wall | 1.0 mm | 1.2 mm | Reinforce the connection from bed-contact core to overlap |
+| Integral journal diameter | 3.0 mm | 3.6 mm | Increase hinge journal section |
+| Hinge arm / bridge width | 2.0 mm | 2.4 mm | Reinforce moving hinge connection |
+| Captive head axial thickness | 1.6 mm | 2.0 mm | Reinforce printed axial retention |
+| Bed-reaching captive-head toe width | 0.6 mm | 0.8 mm | Reinforce the slender retained toe while maintaining bed support |
+| Bearing outer material around chamber and roof | Approximately 1.6 mm selected roof/side allowance at defaults | At least 2.0 mm minimum external wall/roof material, excluding intentional journal throats and drainage opening | Reinforce fixed journal support; enlarge its exterior rather than consume moving gaps |
+| Moving stop lug X/Z section | 1.0 × 1.0 mm | 1.4 × 1.4 mm | Reinforce the small stop feature |
+| Fixed stop height / Y contact depth | 1.0 / 1.4 mm | 1.4 / 1.8 mm | Reinforce fixed stop support; recalculate moving radial reach so contact remains at 90 degrees |
+| Louver roof nominal thickness | 1.2 mm | 1.6 mm | Reinforce exposed moving-door louver edges while retaining eight real passages |
+| Catch rigid anchor, hook and finger grip | Catch width12 mm, hook thickness1.2 mm; grip width10 mm and height2 mm | Local fixed anchor width14 mm, rigid hook thickness1.6 mm, grip width12 mm and height2.4 mm; preserve accessible finger release | Strengthen retention attachments and handling features |
+| Catch flexible beam | 1.2 mm section, approximately4.6 mm exposed length at current defaults | Preserve 1.2 mm flexure section and 12 mm flexure width; provide at least the previous effective free length and retain the required outward release displacement through clearanced geometry | Blind thickening would increase release stiffness; durability must retain finger operation |
+| Claimed outcome | No strength/endurance proof | Increased modeled material sections intended for durability; no quantified strength, endurance or material-elasticity claim | CAD thickness alone does not establish durability |
+
+### Preserved behavior and impact
+
+Preserve plate footprint125×85 mm, screw centres110×70 mm, shank clearance4.5 mm and selected head diameter/height9×4 mm, border10 mm and nominal rounded105×65 mm unobstructed open passage. Preserve eight downward-facing airflow passages, louver projection5 mm, 3 mm straight-edge seam overlap and the authorized four local full-depth screw-access reliefs/weather limitations. Keep moving clearances at0.4 mm per mating side; strengthen solid features rather than reduce those clearances. Preserve one print with two captive bed-supported bodies, no loose parts or assembly, flat rear mounting face, full-panel outward/downward0–90-degree operation, retained closed pose, finger catch/grip and positive90-degree stop. Preserve screw/tool access and all existing cable-use/removal instructions.
+
+The thicker frame/panel/journals/retainers require coordinated derived hinge-axis placement, chamber dimensions, bridge connections, catch placement and stop-contact reach. Implementation planning must allocate their numeric envelopes before approval; simply replacing thickness literals is insufficient. Local reinforcement must stay outside the clear passage and screw keepouts. Overall projecting envelope may grow modestly; recompute it and retain Bambu Lab P2S/AMS2 Pro compatibility. No edits to other designs or nested-bank-safe artifacts; no hidden wall dimensions, hardware measurements or physical results are introduced.
+
+Acceptance adds explicit before/after section inspection for the reinforced frame, panel/perimeter, hinge arms/journals/heads/toes/bearing walls, stop, louver roofs, rigid catch anchor/hook and grip. Revalidate two connected bed-supported bodies, positive as-printed separation, captive retention, early0–3-degree screw-head clearance and full sweep, unobstructed passage, finger-release envelope, exact90-degree stop, eight noncollapsed passages, drainage and accessible support cleanup. Bounded allowed-mode OpenSCAD assertions, layout and0/30/60/90-degree previews, mesh/geometry inspection and git diff --check remain required; no unit tests. Physical fit, slicer results, actual unfused print, catch elasticity, wear, retention cycles, weather and endurance remain pending user checks. Record any changed required release deflection and exterior footprint without claiming successful physical operation.
+
+README must update dimension provenance, new adjustment inputs, reinforced-feature dimensions, printing/support/clearance guidance, catch release and renewed physical durability checks. PLAN amendment is not yet drafted: the existing approved PLAN applies only through A2 and cannot authorize A3 implementation until separately revised and approved.
+
+### Evidence and limitations
+
+Read-only native explorer traced current source and README: panel2.4, journal3, arms2, head1.6, toe0.6, stops1 and flexible catch1.2 are slender selected sections. It identified dependencies between thickness, captive chambers, connection overlap, sweep, screw keepouts and stop timing, and warned against indiscriminate flexure thickening. Parent selected the concrete proposed increases above within the user's modest reinforcement request. No render, material calculation, slicer work or physical test was performed for this amendment; proposal values are not validated durability evidence.
+
+### Approval record
+
+Approved on 2026-10-12 by user reply "approve the new iteration" following presentation of SPEC-shed-ventilation-A3 and confirmation that the current panel opens outside/downward. Approval covers the complete effective SPEC through A3, including the proposed dimensions and preserved outward-opening/one-print boundaries. The reviewed proposal SHA-256 was 20c5be1ddcb2776dba87a516de9e09ecbb21c1b93ed4a6236ad9af585e6c14a2. Original document status, original body and A1/A2 approval history remain unchanged. Separate PLAN amendment approval and valid implement entry remain required; this approval authorizes no source implementation, commit or push at this stage.

@@ -43,21 +43,51 @@ design allowances. Measure the actual opening and fasteners before installation.
 | `screw_spacing_x_mm`, `screw_spacing_y_mm` | 110 × 70 | Rounded photo-derived screw-centre estimates |
 | `screw_clearance_diameter_mm` | 4.5 | Selected shank clearance; actual screws unknown |
 | `screw_head_diameter_mm`, `screw_head_height_mm` | 9 × 4 | Selected cylindrical head envelope; actual heads unknown |
-| `frame_border_mm`, `frame_thickness_mm` | 10, 3 | Selected frame border and thickness |
+| `frame_border_mm`, `frame_thickness_mm` | 10, 3.6 | Selected frame border and thickness |
 | Clear frame passage | 105 × 65 | Derived plate minus two borders; rounded corners, not measured wall opening |
-| `door_thickness_mm` | 2.4 | Selected panel thickness, excluding louvers/overlap/hinge |
+| `door_thickness_mm` | 3.0 | Selected panel thickness, excluding louvers/overlap/hinge |
 | `door_overlap_mm` | 3 | Straight-edge seam overlap; interrupted at screw-access corners |
 | `moving_clearance_mm` | 0.4 per side | Provisional moving-fit allowance |
-| `journal_diameter_mm` | 3 | Integral printed journal diameter; no separate pin |
+| `journal_diameter_mm` | 3.6 | Integral printed journal diameter; no separate pin |
 | `louver_projection_mm` | 5 | Selected outward louver projection |
 | `louver_rows`, `louver_columns` | 4 × 2 | Visible photographic arrangement; eight actual airflow passages |
 | `render_mode` | `"printable_layout"` | Complete captive mechanism in closed printing pose |
 | `door_angle_deg` | 0 | Assembly inspection angle, 0–90 degrees |
 
-The full default printable envelope is approximately **125 × 97 × 14.25 mm**,
+The durability revision increases selected modeled sections; it does not establish
+strength or service life. These adjustable sections are selected design defaults:
+
+| Parameter | Default / meaning |
+| --- | --- |
+| `perimeter_wall_mm` | 1.2 mm core-to-overlap connecting wall |
+| `hinge_arm_width_mm` | 2.4 mm moving arm/bridge width |
+| `captive_head_length_mm`, `captive_toe_width_mm` | 2.0 mm axial head, 0.8 mm bed-reaching toe |
+| `bearing_wall_mm` | At least 2.0 mm exterior wall/roof; throats/drainage excepted |
+| `stop_lug_width_mm`, `stop_lug_height_mm` | 1.4 × 1.4 mm moving lug section |
+| `fixed_stop_height_mm`, `fixed_stop_depth_mm` | 1.4 mm height, 1.8 mm contact depth |
+| `louver_roof_thickness_mm` | 1.6 mm nominal roof section; projection remains 5 mm |
+| `catch_anchor_width_mm`, `catch_hook_thickness_mm` | 14 mm rigid anchor, 1.6 mm rigid hook thickness |
+| `catch_beam_width_mm`, `catch_beam_thickness_mm`, `catch_free_length_mm` | 12 × 1.2 mm flexure, at least 4.6 mm unbraced length |
+| `finger_grip_width_mm`, `finger_grip_height_mm` | 12 mm width, 2.4 mm height |
+
+At defaults the hinge axis is Y=-48.5, Z=5.5 mm; each bearing is
+8 × 20.7288 × 15.8644 mm. The overlap underside is Z=4.0 mm and top Z=7.0 mm.
+The catch beam root is Z=3.6 mm, with its first rigid bridge attachment at
+Z=8.2 mm. The hook connects to that bridge without bracing the free span.
+The reinforced stop has a nominal 0.8 × 1.4 mm contact area at 90 degrees.
+The full-range radial bound gives at least 0.5066 mm clearance from rotating
+lower hinge supports/retainers to the fixed frame.
+Assertions reject insufficient bearing walls, lost retention, disconnected
+connections, invalid stop allocations, shortened flexure spans, and lower-frame
+interference from rotating bed legs/retainers. Changing
+sections requires coordinated clearance, motion and slicer inspection.
+
+The full default printable envelope is approximately **125 × 101.3644 × 15.8644 mm**,
 including hinges and catch, rather than the plate's 125 × 85 mm. It fits the
-nominal 256 × 256 mm P2S plate geometrically; slicer margins, brim and supports
-still need inspection. AMS 2 Pro compatibility depends on the selected filament;
+nominal 256 × 256 mm P2S plate geometrically, with centred nominal XY margins
+of 65.5 and 77.3178 mm before brim/supports. Slicer margins, first-layer expansion,
+brim and supports still need inspection. AMS 2 Pro compatibility depends on the
+selected filament;
 there is no multicolour requirement and preview colours do not assign filaments.
 
 Four local circular reliefs, nominal radius 4.9 mm, cut through the door at the
@@ -94,8 +124,9 @@ Choose filament whose manufacturer specifies suitability for outdoor UV/wet
 exposure and the required printer/AMS handling. Check temperature, creep and
 flexure limits as well as drying and printing requirements. No material endurance
 or catch elasticity has been established. The catch requires about 1.6 mm
-outward (+Y) release displacement for 0.4 mm clearance, with only about 4.6 mm
-of exposed beam above the frame: verify that it flexes and returns without damage
+outward (+Y) release displacement (1.614 mm modeled) for 0.4 mm clearance,
+with 4.6 mm of unbraced beam above the frame: verify that it flexes and returns
+without damage
 in the chosen material before routine use.
 
 To open, deflect the top catch outward toward the top plate edge (+Y), pull the
@@ -120,9 +151,10 @@ are permitted; each must stop within 15 seconds and outputs stay under `/tmp`.
 OpenSCAD may exit zero after an assertion error: read its diagnostics, not only
 the exit code. No unit tests are used in this repository.
 
-CAD validation on 2026-10-12 included bounded CSG/STL, independent mesh connectivity
+Reinforced-source CAD validation on 2026-10-12 included bounded CSG/STL, independent mesh connectivity
 and bed-contact checks, inspected layout/0/30/60/90-degree previews, analytical
-head/frame/retention/stop sweep assessment, invalid-input assertions and a valid
+head/frame/retention/stop sweep assessment, lower-hinge interference guards,
+invalid-input assertions and a valid
 135 mm width / 120 mm screw-spacing variation. Default geometry has two finite
 connected bodies, both reaching Z=0. `git diff --check` passed. This establishes
 modeled geometry only. Before printing for installation, measure wall opening,
