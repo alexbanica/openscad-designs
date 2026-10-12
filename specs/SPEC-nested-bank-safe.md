@@ -588,3 +588,158 @@ Document Status and all earlier content/approval history remain unchanged.
 This approval authorizes the corresponding PLAN amendment preparation only;
 PLAN-A3 requires separate manual approval. Implementation and Git delivery do
 not start during iteration.
+
+## Amendment 3 — 2026-10-12 — Nine-unit print-in-place hinged set
+
+- Amendment ID: SPEC-nested-bank-safe-A3
+- Previous version: complete approved SPEC through SPEC-nested-bank-safe-A2;
+  preceding file SHA-256
+  `c2263aa95f62d924b82616c9a84eab78287dfa8dd319d5fcd377d1d058665257`.
+- Approval: Explicitly approved by the user with `approve` on 2026-10-12,
+  covering the complete effective specification through A3. Original document
+  Status and earlier content/approval history remain unchanged.
+- Request and purpose: User invoked `$iterate safe, present alternatives of
+  making it even simpler, less components`, required `the hinges should be
+  printed in one go, should not require assembly`, and selected `do the 9`
+  after the nine-unit outer-working-latch/inner-snap option was presented.
+  Selection authorizes drafting this revision, not specification approval or
+  implementation.
+
+### Changes against the previous version
+
+| Section / requirement | Before | After | Reason |
+| --- | --- | --- | --- |
+| S1 inventory accounting | 36 source occurrences; seven separately printed objects per safe plus secret cover; maximum 50 | Exactly nine manufactured units containing fourteen connected solid components, enumerated below | Reduce handling and assembly without hiding disconnected moving solids |
+| S2 hinges | Integral barrels assembled with separate removable pin and clip per safe | All five body/door pairs print together with permanently captive rigid articulated hinges; no separately manufactured hinge axle, clip or retainer | No hinge assembly |
+| S2 disassembly | Tool-free intentional hinge disassembly | Hinges stay captive; hinge disassembly is no longer required | Permanent print-in-place articulation |
+| S3 inner closures | Working quarter-turn cams and operating knobs on Safes 2–5 | Integral localized flexible door tabs engage integral body catches; accessible deliberate-release pads unlock them; inner handles are fixed decoration | Remove twelve separate latch objects |
+| S3 outer closure | Three-spoke handle drives one retained quarter-turn cam | Preserve the working Safe 1 handle, handle/axle, cam and cam clip | Keep the outer vault experience |
+| S7 independent printing and orientation | Body and door separately printable with broad stable faces down | Body and door are one inseparable articulated manufacturing unit; permit a justified unit-level orientation exception, subject to support and clearance validation | Enable print-in-place hinges without unsupported starts |
+| S8 inventory/export and operation | Separate body/door and five hinge/latch mechanism objects per safe; quarter-turn latch operation at every level | Export each articulated pair together; obsolete separate hinge and inner latch selectors fail visibly; inner door opening uses snap release rather than knob rotation | Match selectors and guidance to actual manufactured geometry |
+
+### Confirmed behavior, definitions and constraints
+
+1. **P1 — Inventory.** A manufactured unit is one item printed and handled
+   together, including an articulated body/door pair. A connected solid component
+   is one geometrically connected solid; mechanical captivity does not make two
+   moving solids connected. Count both separately. Safe 1 comprises one articulated
+   pair plus one handle/axle, one cam and one cam clip: four units, five solids.
+   Safes 2–4 each comprise one articulated pair: one unit, two solids each.
+   Safe 5 comprises one articulated pair and the separate secret cover: two units,
+   three solids. Total: nine units and fourteen solids. No separate floating
+   captive axle or extra retention/support item may be counted as integral.
+   Sacrificial slicer supports are not installed components, but their removal
+   requirements must be documented. This explicitly replaces S1's prohibition
+   on treating an articulated disconnected pair as one manufacturing unit, while
+   preserving honest solid-component accounting and the previous 50-solid cap.
+2. **P2 — Captive hinges.** Every door prints mechanically captured by its own
+   body, using rigid pivot features connected to those two components. No pin
+   insertion, clip attachment, hinge assembly, glue, purchased hardware or tools
+   are required. Non-destructive manual freeing of printed running clearances
+   is permitted; cutting a hinge free, breaking structural hinge material or
+   adding retention afterward is not. Hinges remain captive throughout the
+   required 0–110 degree door travel and child extraction. Living hinges and
+   flexible primary shell panels remain excluded. Replacement of a failed door
+   independently of its body is no longer promised.
+3. **P3 — Inner snap closures.** Safes 2–5 close by pushing the hinged door until
+   its integral tab engages the body's catch. Opening requires deliberate manual
+   pressure on an accessible release pad followed by swinging the door open.
+   Flexure is confined to a named local tab, not a primary shell panel or hinge.
+   It must retain the door during ordinary handling and be releasable from outside
+   the closed safe without tools. When latched, the tab positively obstructs
+   opening; when released, it clears the catch and the child extraction path.
+   Release must not depend on forcing the catch by pulling the door. Closing
+   re-engages the tab; inactive nested descendants remain closed. No separate
+   closure components remain. The inner knobs are integral fixed
+   decoration and do not unlock doors. Snap endurance is not established by CAD.
+4. **P4 — Print-in-place manufacturing.** Each articulated unit needs a stated
+   manufacturing opening angle and orientation, with collision-free movement
+   from that pose into the operating range without defeating a physical stop.
+   Its placement must provide
+   first-layer support for both moving solids and a stable unit footprint; no
+   floating starts or unsupported cavity roofs may be assumed acceptable.
+   The individual broadest-face-down rule is relaxed only for the articulated
+   pair, in favor of an explicitly justified stable unit orientation. Retain it
+   for the outer latch pieces and secret cover. No inaccessible or trapped
+   supports may obstruct a hinge or running clearance. Any accessible supports
+   must be removable manually without damage or hinge assembly. Do not claim
+   that the present separately oriented body and door can simply be combined.
+   The PLAN must establish dimensioned hinge, snap and orientation allocations
+   and their feasible manufacturing/extraction geometry before implementation.
+   Default clearances remain as specified in A2; any changed named interface
+   allowance must be documented and validated, not silently inherited.
+5. **P5 — Interface.** Preserve default `render_mode="printable_layout"`, safe
+   selection, complete-set/selected-group workflows, group names, assembly views,
+   door travel, deterministic packing, plate controls, margins and spacing.
+   The `body` group contains the articulated pair; the `door` group is empty
+   because separate door manufacture is no longer supported. `mechanism` contains
+   the three outer latch pieces only; `details` contains Safe 5's secret cover
+   only. The new articulated-unit part ID is `body_door_unit` for all five safes.
+   Old separate body/door manufacturing IDs and removed hinge/inner-latch IDs
+   must fail explicitly instead of exporting a different item under the old name.
+   `latch_angle_deg` retains its outer rotary meaning only; a documented explicit
+   inner `snap_released=false` assembly state replaces rotary latch gating for
+   Safes 2–5; opening requires intentional release, and closing permits re-latching.
+   Required assembly states cover latched, released, open, extraction and both
+   Safe 5 reveals using the same manufactured geometry. No fixed plate count is
+   promised; footprints and packing must be recomputed for the articulated units.
+   The 3 mm layout gap applies between units; within each articulated pair use
+   its named hinge clearance. Each unit is packed as one rigid manufacturing pose.
+
+### Preserved behavior and impact
+
+Preserve five nested independently opening safes and their order, exact complete
+W/H/D envelopes 85/100/75, 71/90/54, 59/81/39, 49/73/27 and 40/65/17 mm,
+the nominal nesting allowances, minimum chambers/throats, at least 2 mm primary
+walls, shell-mounted retrieval lips and at least 12 x 6 mm finger access. These
+are manually selected CAD dimensions, not new physical measurements. Preserve
+Safe 1's three-spoke operating handle, fixed decorative dial and framed styling,
+exact exterior messages and suggested colours, and the text-free Safe 5 exterior.
+Preserve the first message `FUCKING NOSY, AREN'T YOU?`, intentional separate-cover
+removal revealing `UNBELIEVABLE.`, the 34 x 55 mm cover reservation and at least
+30 x 40 x 3 mm clear secret pocket above lettering. The secret cover remains
+reinstallable and is not exposed by merely releasing a snap or opening an outer
+safe. Preserve printed-only construction, Bambu Lab P2S / AMS 2 Pro compatibility,
+OpenSCAD 2021.01, one editable source, no external libraries and no security claim.
+
+Acceptance replaces removable-pin/clip and inner rotary-latch checks with explicit
+inventory accounting, captive hinge retention, running-clearance and full-sweep
+inspection, external snap-release access, local tab flexibility allocation,
+latched/released catch engagement, and clear nesting/extraction paths at every
+level. Confirm the three outer latch pieces can be installed and removed with
+the permanently captive door open; no step may require detaching that door.
+Inspect both moving solids' bed support, unit stability, overhangs/bridges,
+support access, actual connected-component counts and production-equivalent
+manufacturing poses. Each articulated unit must contain two individually
+manifold captive solids; each of the other four units must contain one manifold
+solid. Revalidate outer latch motion, both reveals, secret-cover
+access, complete envelopes, all populated groups, diagnostics and deterministic
+plate allocation. Nine units must not be reported as nine connected solids.
+
+Validation remains bounded printable_layout/reference-free assembly OpenSCAD
+inspection, no more than 15 seconds per render, temporary outputs under /tmp,
+approved complete subdivision evidence when needed, and `git diff --check`.
+Unit tests remain prohibited. CAD cannot establish actual hinge freeing, printed
+clearances, snap retention/fatigue, slicer behaviour, material performance or
+physical fit; those require slicer inspection and test prints and remain outside
+modeled acceptance. No such evidence has been obtained for this proposed design.
+
+README must document the nine-unit/fourteen-solid inventory, unit orientations,
+hinge freeing with no assembly, outer latch assembly, inner release operation,
+decorative inner handles, permanently captive doors, changed selectors/groups,
+revised plates, clearance allocations, colour guidance and physical-validation
+limitations. Body and door remain distinct moving solids but no longer offer
+independent manufacturing orientation; document slicer colour preparation without
+promising automatic object colour assignment or supplied slicer integration.
+No generated meshes enter source control. The current PLAN through
+A6 remains unchanged and does not authorize this new behavior; after SPEC approval
+it requires its own appended amendment and separate approval.
+
+### Approval record
+
+The user explicitly approved the complete effective specification with `approve`
+on 2026-10-12: original body, approved A1 and A2, and SPEC-nested-bank-safe-A3.
+Reviewed proposal SHA-256:
+`125cb643a2714e32d60c9891ebaf481d7c2fdd7c0ad015ade6cc20267bd6421b`.
+The earlier `do the 9` was option selection only. This approval authorizes PLAN
+amendment preparation; it does not approve the PLAN or start implementation.

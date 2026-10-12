@@ -2103,9 +2103,10 @@ Manual inspection for the Pi Zero USB Grove enclosure:
 
 ## Nested All-Printed Bank Safe
 
-`designs/nested_bank_safe.scad` defines five nested toy safes. Their complete
-installed envelopes are manually selected CAD dimensions (width × height ×
-depth), not measurements of purchased hardware:
+`designs/nested_bank_safe.scad` models five manually dimensioned toy safes that
+nest-fit as a matched set. The selected complete envelopes (width × height ×
+depth) are CAD choices, not measurements of purchased hardware or a claim that
+parts from different revisions interchange:
 
 | Safe | Complete envelope (mm) | Suggested color |
 | --- | --- | --- |
@@ -2115,118 +2116,126 @@ depth), not measurements of purchased hardware:
 | 4 | 49 × 73 × 27 | Black / gold |
 | 5 | 40 × 65 × 17 | Gold or yellow; blank exterior |
 
-This revision requires a new matched set of bodies, doors and mechanisms for
-all five safes. Interchangeability with earlier printed parts is unvalidated;
-reprint the matched set rather than assuming an older body accepts a new door.
+Print this revision as a matched set. Its captive body/door units and interfaces
+replace earlier printed geometry; cross-revision fit has not been established.
+Primary walls are at least 2 mm, nesting clearance is 0.5 mm per side, and
+nominal moving clearance is 0.35 mm. Inner snap geometry reserves at least
+0.36 mm running clearance; its derived release travel is 0.66 mm. The Safe 1
+keyed cam stack uses 0.05 mm static fit/stack allowances and a 1 mm rear recess.
+The Safe 1 cam clip has 0.15 mm nominal radial clearance (the actual faceted
+circle geometry is about 0.146 mm). These are modeled allocations, not measured
+printer clearances or physical fit results.
 
-Primary shell walls are at least 2 mm, nesting clearance is 0.5 mm per side,
-and nominal moving clearance is 0.35 mm. The keyed D interface has a named
-0.05 mm static fit allowance. The cam has a 1 mm rear recess for its retained
-collar and clip; the collar is 0.4 mm and the clip's rear approach uses an open
-side corridor. The hinge clip has a 0.4 mm mouth, a 0.6 mm pin neck and
-a 0.15 mm radial snap allowance. These are modeled allocations, not physical
-fit or strength results.
+### Manufactured units and appearance
 
-### Parts and appearance
-
-Each safe has seven printed objects: one `body`, one `door`, and five separate
-`mechanism` objects: `hinge_pin`, `hinge_clip`, `handle_axle`, `cam`, and
-`cam_clip`. Safe 5 also has one `secret_cover` in `details`, for eight objects.
-The full set is 36 objects, 7/7/7/7/8 by safe. Safes 1–4 have an empty
-`details` group. Body, door, integral lettering, plaques, trim, and Safe 1's
-dial are each connected geometry within their corresponding object; those
-features cannot receive separate AMS object colors. Use a supported slicer
-painting or other color strategy if desired; toolpaths and color separation are
-not validated here.
+The complete-set inventory contains nine manufactured units and fourteen
+separate solid bodies. Safes 1–5 each have one `body_door_unit`: its body and
+permanently captive rigid door remain two distinct solids. Safe 1 adds separate
+`handle_axle`, `cam`, and `cam_clip` units; Safe 5 adds one `secret_cover` unit.
+The other safes have no separate mechanism or detail units. The Safe 1 axle and
+cam each include their associated grip or knob geometry as one unit. Each
+manufactured unit can be isolated in printable layout; keep the two solids of
+each captive pair together in their modeled relative position.
 
 The four exact outer messages are `PRIVATE — DO NOT OPEN`, `NOT YOURS`,
-`SERIOUSLY?`, and `LAST WARNING`. Safe 5's exterior is blank. Its sliding first
-message reads `FUCKING NOSY, AREN'T YOU?`; the fixed message behind it reads
-`UNBELIEVABLE.` The cover's clear backing reservation is 34 × 55 mm. A
-30 × 40 × 3 mm pocket sits above the second message relief. Lettering and
-surrounding details are integral with the door or cover, not separate parts.
+`SERIOUSLY?`, and `LAST WARNING`. Safe 5's exterior is blank. Opening its door
+first reveals `FUCKING NOSY, AREN'T YOU?`; removing the cover reveals
+`UNBELIEVABLE.` Lettering, panels and decorative features are integral with
+their paired solids, so they cannot receive separate AMS object colors. A
+slicer painting strategy may add colors, but generated toolpaths and color
+separation are not established by the CAD.
 
 ### Source controls
 
-The source defaults to `render_mode="printable_layout"`, `safe_index=1`,
+Defaults are `render_mode="printable_layout"`, `safe_index=1`,
 `print_group="body"`, `print_scope="selected_group"`, `plate_index=1`, and an
-empty `part_id`. The supported render modes are `printable_layout`,
-`assembly`, and the explicit `individual_part` selector. In printable layout,
-`print_group` selects `body`, `door`, `mechanism`, or `details`; a nonempty
-`part_id` selects one named object. Set `safe_index` from 1 through 5.
+empty `part_id`. Safes are selected with `safe_index` 1 through 5. Printable
+groups are `body`, `door`, `mechanism`, and `details`: `body` contains the
+articulated unit, `door` is empty, and only Safe 1's three loose mechanism
+units and Safe 5's detail cover populate the other groups. Set `part_id` to
+`body_door_unit`, `handle_axle`, `cam`, `cam_clip`, or `secret_cover` where
+available. Old separate `body`, `door`, hinge pin/clip, inner cam, and other
+removed part identifiers are rejected for manufacturing selection.
 
-The assembly defaults are `assembly_view="single"`, `door_angle_deg=0`,
-`latch_angle_deg=90`, `secret_cover_removed=false`, and
-`extraction_distance_mm=0`. `individual_part` requires a nonempty `part_id`.
-Complete-set packing ignores valid safe/group filters; selected-group packing
-ignores `plate_index`, and assembly ignores printing controls.
+`print_scope="complete_set"` selects all nine units; keep `part_id` empty.
+It uses `plate_index=1` or `2` for a physical plate and `0` for an inspection
+overview. The overview places both plates in one enlarged view and is not a
+printable bed layout. Complete-set packing ignores `safe_index` and
+`print_group`; selected-group packing ignores `plate_index`. The source also
+supports `render_mode="individual_part"` as an explicit override, but repository
+examples and inspection use printable layout or reference-free assembly.
 
-Assembly view is selected with `assembly_view="single"` or `"nested"`.
-`door_angle_deg` ranges from 0 to 110; `latch_angle_deg` ranges from 0 to 90.
-The door opens only when the latch is at 90 degrees. `secret_cover_removed`
-is valid only for the active Safe 5 when its door is open and its latch is at
-90 degrees. In nested view, `extraction_distance_mm` moves the child subtree
-only when the active parent door is fully open at 110 degrees. The assembly
-view shows the selected safe and, in nested mode, its closed descendants.
+For assembly, `assembly_view` is `single` or `nested`. Defaults are
+`door_angle_deg=0`, `latch_angle_deg=90`, `snap_released=false`,
+`secret_cover_removed=false`, and `extraction_distance_mm=0`. Door travel is
+0–110 degrees. Safe 1 opens only with its quarter-turn latch at 90 degrees;
+Safes 2–5 open when `snap_released=true`. Their knobs are fixed decoration.
+The Safe 5 cover reveal requires active Safe 5, an open door, and the deliberate
+snap release. In nested view the active parent door must be fully open at 110
+degrees and its closure released before `extraction_distance_mm` can move the
+child subtree. Inactive descendants remain closed and engaged.
 
-Old rotor, bolt, catch, dial-motion, and leaf-part identifiers and controls
-were removed with the earlier mechanism. They have no compatibility aliases;
-use the current inventory and controls above. Removed controls are
-`secret_slide_mm`, `safe1_catch_engaged`, `safe1_catch_slide_mm`,
-`dial_angle_deg`, and `show_guide_plate`. Unsupported part IDs assert; arbitrary
-OpenSCAD `-D` variable assignments cannot reliably reject obsolete names.
+The former separate body/door, hinge, and inner-cam identifiers and obsolete
+controls have no compatibility aliases. `secret_slide_mm`,
+`safe1_catch_engaged`, `safe1_catch_slide_mm`, `dial_angle_deg`, and
+`show_guide_plate` were removed. Unsupported selected part IDs assert; arbitrary
+OpenSCAD `-D` assignments cannot reliably reject every obsolete variable.
 
 ### Printing and assembly
 
-The intended printer guidance remains Bambu Lab P2S with AMS 2 Pro. Printable
-objects are laid out in their manufacturing orientations. Print body and door
-with their broad rear faces down, the cover on its broad backing, the combined
-handle axle on its front face, the cam on its front face, the hinge clip on its
-flat face, and the hinge pin with its head flat on the plate. The hinge pin is
-1 mm in diameter and reaches 91 mm on the largest safe; the small clips and
-terminal collar also have fine features. The modeled angled rails and cover
-seat have supported underside geometry, but this does not establish slicer
-support behavior or successful printing. Check each selected plate in the
-slicer before printing.
+The intended printer is a Bambu Lab P2S with AMS 2 Pro and a 0.4 mm nozzle.
+The manufacturing output always places each body/door unit with its door open
+to 110 degrees and its tab seated in the printed pose. This pose is shared by
+the selected-group and complete-set layouts; assembly controls do not change
+the manufactured parts. Each pair has two stable broad regions on the plate.
+Five captive doors use rigid print-in-place pivots: there are no hinge pins,
+clips, or living hinges. The articulated pairs cannot be split into separately
+manufactured body and door objects.
 
-Fit the cam mechanism while the door is detached. Insert the combined handle
-axle from the front through the round door bearing. Slide the cam from the rear
-over the axle's integral terminal collar onto its D-shaped key. Insert the
-separate cam clip from the negative-X side through the open rear corridor, with
-its mouth facing +X, into the retaining neck. For removal, withdraw the clip
-sideways, slide the cam rearward off the key, and withdraw the handle forward.
-The handle turns the cam directly: 0 degrees is latched and 90 degrees is
-released. Safe 1 has a three-spoke handle and a fixed decorative dial; the dial
-does not turn or operate a combination.
+The deterministic complete-set layout has four units and five solids on plate
+1, then five units and nine solids on plate 2. It reserves a 5 mm bed margin,
+a 3 mm gap between conservative rectangular footprints, and a 0.01 mm XY
+reserve in each footprint. These bounds do not assert literal full-facet XYZ
+contact or predict slicer toolpaths. Plate count and placement describe this
+source and its defaults; inspect both beds in the slicer before printing.
 
-Then align the integral body and door hinge barrels. Feed the hinge pin from
-below (−Y) through the barrels until its head seats; install the snap clip from
-the front (+Z) through the localized access slot, with its mouth facing rear
-(−Z). For disassembly, pull the clip toward the front, then withdraw the pin
-downward before separating the door. The snap locally flexes at the clip jaws.
-Printed flexibility, installation force, wear, and repeated removal are
-unverified. Do not force a retainer through solid stock.
+For the articulated body/door unit, the accessible hinge roof may need supports.
+The modeled segmentation limits roof spans to 8 mm; that roof remains a bounded
+bridge allocation, not a claim that every slicer can bridge it. Remove accessible
+lower support sections first, then withdraw the roof supports 2 mm downward and
+forward through the opening. Fixed inner knobs on Safes 2–5 also need removable,
+consumable support guides. Treat each guide as a temporary printing aid, not an
+installed or separately inventoried part; its complete bounds fit within the
+corresponding normalized unit footprint, and its downward faces are at most 45°.
+The modeled guide leaves 0.36 mm and 0.37 mm front/back axial gaps and about
+0.358 mm radial normal clearance at the knob. These clearances do not establish
+slicer contact expansion or toolpaths: inspect support contact and bridging in
+the slicer, and confirm removal access before printing. Check bed contact,
+clearances, supports, separation, margins and color setup there as well.
 
-On Safe 5, press the front release pad through its 3 × 6 mm access area to
-locally deflect the cover's release tongue and tooth left (−X) by the modeled
-0.45 mm travel. The backing and rail ears stay seated. This clears the 0.30 mm
-detent engagement, leaving a 0.15 mm released gap. Hold the tongue released and
-slide the whole cover upward (+Y) along its rails through the 60 mm removal
-path. Reverse the path to reinstall it; the positive detent retains the
-unreleased position. Keep the backing reservation and fixed second message
-clear. Release uses local cover flex; the primary body walls remain rigid.
+Assemble Safe 1 without detaching its captive door. Place the cam first through
+the open rear from behind the door. Insert the handle and axle from the front,
+through the door bearing and into the cam key. Then advance the cam clip from
+the negative-X side toward +X through the rear corridor. Reverse that order to
+remove the loose mechanism units; the door remains captive. The handle turns
+the cam directly: 0 degrees is latched and 90 degrees is released. Safe 1's
+dial is fixed decoration and does not operate a combination. The clip jaws use
+a localized modeled flex route of about 10.7 degrees to pass the 1.2 mm neck
+through a 1.512 mm mouth; this is a geometric route, not material qualification.
 
-For views, render only `printable_layout` or reference-free `assembly` geometry.
-`individual_part` remains available as an explicit override, and printable
-layout can isolate one item with `part_id`. The complete-set allocator packs
-all 36 objects onto two physical plates: 14 on plate 1 and 22 on plate 2. It
-uses a 5 mm plate margin and at least 3 mm between conservative rectangular
-footprints. `plate_index=0` shows an inspection overview of both plates; it is
-larger than one build plate and is not a printable layout. The plate count is
-for this source and these defaults, not a universal constant.
+On Safes 2–5, the fixed inner knobs are decorative. Deliberately press the
+front 3 × 6 mm release pad, set `snap_released=true` for the assembly view, then
+swing the door open. Pushing the door closed follows its modeled ramp and
+re-engages the snap. On Safe 5, release the left-side 3 × 6 mm cover pad through
+its 0.45 mm travel, hold it, and slide the cover upward (+Y) 61 mm along its
+rails, then +Z 20 mm away to clear the assembly. Reverse the path to reinstall.
+The cover's 0.30 mm detent engagement clears to a 0.15 mm static gap; its first
+message panel is 34 × 55 mm with a 30 × 40 × 3 mm recess above the fixed second
+message. Keep the panel and rail path clear. These operations describe modeled
+access and movement, not physical force, fatigue, or successful printed release.
 
-For example, export temporary CSG previews for each physical plate and the
-inspection overview (change output paths as needed):
+For example, export temporary CSG previews for the two plates and overview
+(change output paths as needed):
 
 ```sh
 timeout 15s openscad -D 'print_scope="complete_set"' -D 'plate_index=1' -o /tmp/nested-safe-plate-1.csg designs/nested_bank_safe.scad
@@ -2234,40 +2243,39 @@ timeout 15s openscad -D 'print_scope="complete_set"' -D 'plate_index=2' -o /tmp/
 timeout 15s openscad -D 'print_scope="complete_set"' -D 'plate_index=0' -o /tmp/nested-safe-overview.csg designs/nested_bank_safe.scad
 ```
 
-Reference-free assembly examples show the closed nest, both Safe 5 messages,
-and a fully extracted Safe 5 from Safe 4:
+Reference-free assembly examples show the nested closed safes, Safe 5's first
+and second messages, and its extraction from Safe 4. Inner doors require the
+modeled deliberate release before opening:
 
 ```sh
-timeout 15s openscad -D 'render_mode="assembly"' -D 'assembly_view="nested"' -D 'latch_angle_deg=0' -o /tmp/nested-safe-closed.csg designs/nested_bank_safe.scad
-timeout 15s openscad -D 'render_mode="assembly"' -D 'safe_index=5' -D 'door_angle_deg=110' -o /tmp/nested-safe-first-message.csg designs/nested_bank_safe.scad
-timeout 15s openscad -D 'render_mode="assembly"' -D 'safe_index=5' -D 'door_angle_deg=110' -D 'secret_cover_removed=true' -o /tmp/nested-safe-second-message.csg designs/nested_bank_safe.scad
-timeout 15s openscad -D 'render_mode="assembly"' -D 'assembly_view="nested"' -D 'safe_index=4' -D 'door_angle_deg=110' -D 'extraction_distance_mm=32' -o /tmp/nested-safe-extracted.csg designs/nested_bank_safe.scad
+timeout 15s openscad -D 'render_mode="assembly"' -D 'assembly_view="nested"' -D 'safe_index=1' -D 'latch_angle_deg=0' -o /tmp/nested-safe-closed.csg designs/nested_bank_safe.scad
+timeout 15s openscad -D 'render_mode="assembly"' -D 'safe_index=5' -D 'door_angle_deg=110' -D 'snap_released=true' -o /tmp/nested-safe-first-message.csg designs/nested_bank_safe.scad
+timeout 15s openscad -D 'render_mode="assembly"' -D 'safe_index=5' -D 'door_angle_deg=110' -D 'snap_released=true' -D 'secret_cover_removed=true' -o /tmp/nested-safe-second-message.csg designs/nested_bank_safe.scad
+timeout 15s openscad -D 'render_mode="assembly"' -D 'assembly_view="nested"' -D 'safe_index=4' -D 'door_angle_deg=110' -D 'snap_released=true' -D 'extraction_distance_mm=32' -o /tmp/nested-safe-extracted.csg designs/nested_bank_safe.scad
 ```
 
-Keep generated exports outside source control, preferably under `/tmp`.
-The overview is for inspection only. Review actual clearances, support,
-adhesion, first layers, margins, separation, and color strategy in the slicer.
-OpenSCAD exports and modeled geometry do not prove slicing or physical results.
+Keep generated exports under `/tmp`, outside source control. OpenSCAD output
+validates modeled geometry only. Check real slicer output and physical prints
+for support, adhesion, clearance, removal, force, wear and material behavior.
 
 ### Validation and limits
 
-The accepted modeled validation used OpenSCAD 2021.01 and bounded commands of
-15 seconds or less, with temporary outputs. It covered all 36 occurrence
-meshes, all 16 nonempty safe/group meshes, selectors and assertions, continuous
-hinge and cam motion, the Safe 5 cover path, nested extraction, and allocator
-placements. Each of the 36 individual object meshes was connected and manifold
-by the recorded edge and vertex checks, with broad-face plate contact and the
-stated layout margins and gaps. Group and plate exports contain their intended
-separate objects. Independent final QA rechecked all 36 meshes and ran 25 fresh
-bounded checks after the review correction to hinge assembly access. Plate 1 rendered directly in 11.22 seconds. Plate 2 exceeded the
-15-second limit and was checked through the approved 22-object subdivision
-route against production placement geometry. The modeled cover detent has
-positive unreleased engagement and a clear released path. These are CAD checks,
-not slicer or physical testing.
+Accepted bounded OpenSCAD validation covered all nine units and fourteen
+closed solids, all five captive pairs, unit topology, articulated motion,
+closure release and re-engagement, Safe 1 cam assembly access and retention,
+Safe 5 cover movement, nested extraction, and deterministic bed placement.
+Final QA completed 115 selector and gate checks. Separately, nine fresh native
+exports were audited across all fourteen solids, including supports and bed
+placement; the approved-source-equivalent subdivision route also covered all
+nine units and fourteen solids. Plate 1 exported successfully. Plate 2 and the
+overview exceeded the 15-second render limit; subdivision checks validated
+their placed production geometry. This does not establish slicer output or
+physical bed contact.
 
-No unit tests are run in this repository. Run `git diff --check` after source or
-documentation edits. The 1 mm upright hinge pins, small clips, collar, snap
-flex, material response, installation force, retention, wear, and repeated
-cycles remain unverified in a slicer and physical prints. The design has not
-been physically fit-checked or qualified for strength or safe operation. It is
-a toy display mechanism, not a secure container.
+The recorded STL checks found degeneracies: 8, 7, 1, 11, and 0 in the five
+body/door units, and 23 in plate 1. They were retained without repair; no claim
+of clean STL output or slicer acceptance is made. No unit tests are run in this
+repository. Run `git diff --check` after source or documentation changes.
+Physical dimensions, material response, fit, support removal, operating force,
+retention, fatigue and repeated cycles remain unverified. This is a toy display
+mechanism, not a secure container.
