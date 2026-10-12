@@ -26,141 +26,176 @@ All files target OpenSCAD 2021.01 and have no external library dependencies.
 
 ## Shed Ventilation with Captive Downward-Opening Door
 
-`designs/shed_ventilation.scad` prints a mounting frame and one complete
-louvered door together, with integral captive journals, a top finger catch and
-90-degree stops. There are no separate pins, clips or assembly steps. The eight
-louvers and their centre division move with the door; no fixed centre bar
-obstructs the opening. Installed up is +Y, outside is +Z, and the flat rear
-mounting face is Z=0. The same rear plane rests on the print bed.
+`designs/shed_ventilation.scad` prints the complete replacement vent in one job:
+fixed mounting frame, full louvered door with an integral captive hinge, and a
+rigid captive lift-and-slide latch. These are three connected bodies, already
+captured without pins, clips, snap fitting, gluing or assembly. The full-width
+hinge has eleven alternating knuckles and two positive 180-degree stops. The
+whole panel, including its centre division and eight louvers, opens outward and
+downward. This replacement includes a new frame; compatibility with an older
+printed frame is not claimed.
 
-All inputs below are manually entered. The plate and screw spacing are
-provisional photo estimates, not physical measurements. Other inputs are selected
-design allowances. Measure the actual opening and fasteners before installation.
+Installed up is +Y and outside is +Z. The flat rear mounting face and print bed
+are Z=0. Gravity-seated latch operation requires this vertical installation.
+All dimensions are manually entered: plate and screw spacing are provisional
+photo estimates; other defaults are selected design allowances or derived
+geometry. Measure the actual opening and fasteners before installation.
 
-| Parameter | Default | Provenance / meaning |
+| Parameter / dimension | Default | Provenance / meaning |
 | --- | --- | --- |
-| `plate_width_mm`, `plate_height_mm` | 125 × 85 | Approximate photographed plate size |
-| `screw_spacing_x_mm`, `screw_spacing_y_mm` | 110 × 70 | Rounded photo-derived screw-centre estimates |
-| `screw_clearance_diameter_mm` | 4.5 | Selected shank clearance; actual screws unknown |
-| `screw_head_diameter_mm`, `screw_head_height_mm` | 9 × 4 | Selected cylindrical head envelope; actual heads unknown |
-| `frame_border_mm`, `frame_thickness_mm` | 10, 3.6 | Selected frame border and thickness |
-| Clear frame passage | 105 × 65 | Derived plate minus two borders; rounded corners, not measured wall opening |
-| `door_thickness_mm` | 3.0 | Selected panel thickness, excluding louvers/overlap/hinge |
-| `door_overlap_mm` | 3 | Straight-edge seam overlap; interrupted at screw-access corners |
-| `moving_clearance_mm` | 0.4 per side | Provisional moving-fit allowance |
-| `journal_diameter_mm` | 3.6 | Integral printed journal diameter; no separate pin |
-| `louver_projection_mm` | 5 | Selected outward louver projection |
-| `louver_rows`, `louver_columns` | 4 × 2 | Visible photographic arrangement; eight actual airflow passages |
-| `render_mode` | `"printable_layout"` | Complete captive mechanism in closed printing pose |
-| `door_angle_deg` | 0 | Assembly inspection angle, 0–90 degrees |
+| `plate_width_mm`, `plate_height_mm` | 125 × 85 mm | Approximate photographed mounting plate |
+| `screw_spacing_x_mm`, `screw_spacing_y_mm` | 110 × 70 mm | Rounded photo-derived screw-centre estimates |
+| `screw_clearance_diameter_mm` | 4.5 mm | Selected shank clearance; actual screws unknown |
+| `screw_head_diameter_mm`, `screw_head_height_mm` | 9 × 4 mm | Selected cylindrical head envelope; supported height is greater than zero and at most 4 mm |
+| `frame_border_mm`, `frame_thickness_mm` | 10, 3.6 mm | Selected reinforced frame sections |
+| Clear frame passage | 105 × 65 mm | Derived plate minus borders; rounded corners, not measured wall opening |
+| `door_thickness_mm`, `perimeter_wall_mm` | 3, 1.2 mm | Reinforced panel and core-to-overlap connection |
+| `door_overlap_mm` | 3 mm | Straight-edge overlap, interrupted at screw-access corners |
+| `moving_clearance_mm` | 0.4 mm per mating side | Provisional fit; supported proof domain greater than zero and at most 0.4 mm |
+| `shaft_diameter_mm`, `collar_radius_mm` | 5, 4.5 mm | Integral printed shaft and captive moving collars |
+| Hinge span / segments | 111 mm / 11 | Derived door width; six moving and five fixed knuckles, segment length 9.727273 mm with ten 0.4 mm axial gaps |
+| `hinge_arm_width_mm`, `bearing_wall_mm` | 2.4, 2 mm | Moving bridges and minimum housing side/normal roof material |
+| `stop_band_width_mm` | 2.4 mm | Width of each of the two stop stations |
+| `stop_lug_inner_radius_mm`, `stop_lug_outer_radius_mm` | 3.5, 7 mm | Moving annular-sector lug |
+| `fixed_stop_inner_radius_mm`, `fixed_stop_outer_radius_mm` | 6, 8 mm | Fixed stop sector, supported down to the bed |
+| `stop_sector_angle_deg` | 10 degrees | Moving sector 0–10 degrees, fixed sector 190–200 degrees; contact at door angle 180 degrees |
+| `upper_corner_relief_radius_mm`, `lower_corner_relief_radius_mm` | 5.4, 7.5 mm | Selected conservative full-sweep head/tool corner reliefs |
+| `louver_projection_mm`, `louver_roof_thickness_mm` | 5, 1.6 mm | Reinforced inclined louver roofs |
+| `louver_rows`, `louver_columns` | 4 × 2 | Visible photographic arrangement; eight airflow passages |
+| `render_mode` | `"printable_layout"` | Closed, fully retracted, seated one-print pose |
+| `door_angle_deg` | 0 degrees | Assembly inspection range 0–180 degrees |
+| `latch_slide_mm`, `latch_lift_mm` | 0, 0 mm | Assembly defaults locked; withdrawal toward -X is 0–16 mm, lift toward +Y is 0–3 mm |
 
-The durability revision increases selected modeled sections; it does not establish
-strength or service life. These adjustable sections are selected design defaults:
+At defaults the hinge axis is Y=-54, Z=8 mm. The axis height has an 8 mm
+minimum. The faceted bore radius is 2.903497 mm with a 45-degree roof; housing
+top is Z=14.934593 mm. Moving collars prevent axial escape through the smaller
+bores. Forward-only hinge feet contact the bed. The symmetric recessed core is
+approximately 104.2 × 63.4551 mm; its inset clears the top frame during rotation.
+The overlap underside/top are Z=4/7 mm. Upper/lower corner reliefs run through
+the panel and louvers, exposing local corner gaps while preserving straight-edge
+overlap. These corners have greater rain-entry exposure. Lower hinge openings
+remain unsealed for drainage. No watertightness, insect-proofing, rated airflow
+or proven weather-life claim is made.
 
-| Parameter | Default / meaning |
-| --- | --- |
-| `perimeter_wall_mm` | 1.2 mm core-to-overlap connecting wall |
-| `hinge_arm_width_mm` | 2.4 mm moving arm/bridge width |
-| `captive_head_length_mm`, `captive_toe_width_mm` | 2.0 mm axial head, 0.8 mm bed-reaching toe |
-| `bearing_wall_mm` | At least 2.0 mm exterior wall/roof; throats/drainage excepted |
-| `stop_lug_width_mm`, `stop_lug_height_mm` | 1.4 × 1.4 mm moving lug section |
-| `fixed_stop_height_mm`, `fixed_stop_depth_mm` | 1.4 mm height, 1.8 mm contact depth |
-| `louver_roof_thickness_mm` | 1.6 mm nominal roof section; projection remains 5 mm |
-| `catch_anchor_width_mm`, `catch_hook_thickness_mm` | 14 mm rigid anchor, 1.6 mm rigid hook thickness |
-| `catch_beam_width_mm`, `catch_beam_thickness_mm`, `catch_free_length_mm` | 12 × 1.2 mm flexure, at least 4.6 mm unbraced length |
-| `finger_grip_width_mm`, `finger_grip_height_mm` | 12 mm width, 2.4 mm height |
+The rigid latch uses a 16 × 16 × 3 mm captive flange, a 12 × 3 mm offset bed
+foot, a 3 × 3 mm stem, a 6 × 17 × 3 mm tongue and an 8 × 6 × 3 mm finger pad.
+The fixed guide has 2.4 mm walls/roof, two bottom retaining rails and enclosed
+end pockets. It retains the flange without the shed wall acting as a retainer.
+Locked and retracted centres are X=0/-16, Y=53 mm; lifting moves the centre to
+Y=56 mm. A door-mounted 10 mm wide receiver shelf engages the tongue without
+intentional flexing. Neither the guide nor receiver obstructs the clear passage.
+This is a manually operated closure latch with no automatic snap closure or
+security rating.
 
-At defaults the hinge axis is Y=-48.5, Z=5.5 mm; each bearing is
-8 × 20.7288 × 15.8644 mm. The overlap underside is Z=4.0 mm and top Z=7.0 mm.
-The catch beam root is Z=3.6 mm, with its first rigid bridge attachment at
-Z=8.2 mm. The hook connects to that bridge without bracing the free span.
-The reinforced stop has a nominal 0.8 × 1.4 mm contact area at 90 degrees.
-The full-range radial bound gives at least 0.5066 mm clearance from rotating
-lower hinge supports/retainers to the fixed frame.
-Assertions reject insufficient bearing walls, lost retention, disconnected
-connections, invalid stop allocations, shortened flexure spans, and lower-frame
-interference from rotating bed legs/retainers. Changing
-sections requires coordinated clearance, motion and slicer inspection.
+To open, lift the latch handle 3 mm toward +Y, slide it 16 mm toward -X, and
+lower it into the released end pocket. Lower the entire door outward/downward
+through up to 180 degrees. The retracted pocket keeps the bolt clear without
+continuous finger pressure. Keep the door open during cable use; it is not a
+load-bearing shelf or cable strain relief. Remove the cable before closing.
+Close with the bolt retracted, lift it, slide it back toward +X, then lower it
+into the locking pocket and confirm retention. Never close around a cable.
+No release step relies on bending, prying or a friction-only catch.
 
-The full default printable envelope is approximately **125 × 101.3644 × 15.8644 mm**,
-including hinges and catch, rather than the plate's 125 × 85 mm. It fits the
-nominal 256 × 256 mm P2S plate geometrically, with centred nominal XY margins
-of 65.5 and 77.3178 mm before brim/supports. Slicer margins, first-layer expansion,
-brim and supports still need inspection. AMS 2 Pro compatibility depends on the
-selected filament;
-there is no multicolour requirement and preview colours do not assign filaments.
+Print the source default as one job, rear mounting face down. Every body has
+direct bed contact and connected growth. Removing the print, accessible support
+cleanup and gently freeing printed gaps are preparation; mounting with the shed
+screws is installation. Do not separate the bodies, insert a pin, snap parts
+together or move beyond the permanent stop. **Exclude supports and brim from
+captive bearings, the latch chamber/channel and every moving gap.** Tune the
+0.4 mm clearance for the actual printer, material and layer settings; inspect
+geometry again after adjustment. Assertions reject nonpositive/collapsed inputs,
+lost capture, screw conflicts, incompatible poses, thin panels penetrating the
+rear plane and reliefs that remove essential material. The selected latch
+allocation is guarded by its reachable-motion proof; a
+clearance above 0.4 mm needs a new allocation and proof. Assertions do not
+certify arbitrary parameter combinations or a successful unfused print.
 
-Four local circular reliefs, nominal radius 4.9 mm, cut through the door at the
-screw positions so heads and mounting tools are accessible. They interrupt the
-3 mm overlap and leave small extra corner ventilation gaps. Straight edges retain
-rain-reducing overlap; the corners have greater local rain-entry exposure. This
-vent has no watertightness, insect-proofing, rated airflow or proven weather-life
-claim. The actual cable passage is the intersection with the existing wall opening;
-no connector fit or hidden wall dimension is established.
+Inspect the slicer layer by layer, including bed feet, collar lower overhangs,
+shaft intervals bridging about 10.5273 mm, six 2.4 mm wide door bridges with
+about 18.479 mm support-free spans, louver roofs and overlap lips. The guide's
+first flat roof spans a 19.8 mm deep chamber interrupted by the stem slot;
+inspect bridge directions and exposed slot edges. The front central roof strip
+is a 9.5 mm one-sided flat cantilever; other front/rear strips overhang 6.5 mm.
+Connected modeled growth does not prove these layers print accurately without
+sag or fusion. The flange overhangs its foot by 5.5/7.5 mm in Y and 2 mm in X;
+internal supports are inaccessible and prohibited.
 
-Print the source default as one job, rear mounting face down. Both fixed frame
-and moving door have connected bed-contact geometry; the door perimeter grows
-up to the overlap lip, whose underside is 0.4 mm above the frame. The captive
-journal heads include bed-reaching toes. Do not separate the bodies, print loose
-retainers or move the mechanism beyond its stop for preparation. Removing the
-print, accessible support cleanup and gently freeing moving gaps are preparation;
-mounting the completed mechanism with the shed screws is installation.
+Provide accessible exterior slicer support under the retracted tongue at
+X=-19..-13, Y=37.5..41.8 mm, outside the guide. Its underside is Z=9 mm; the
+remaining 9.7 mm span to the stem must bridge without internal support. Provide
+exterior support under the receiver shelf extension where needed, keeping
+support out of the 0.4 mm frame/door seam. Remove these supports through the
+exposed exterior sides with the bolt retracted. Where support rests over the
+frame or guide anchor, start it on their top surface (Z=3.6 mm at defaults)
+rather than filling that solid from the bed. Review the real slicer shape
+and removal path before printing; do not let supports enter captive spaces.
+Bridging, material behaviour, clean removal and an unfused print remain physical
+and slicer checks.
 
-Inspect the slicer layer by layer, especially initial bed contacts, thin head toes,
-horizontal journals, louver roofs, overlap bridges and catch lip. Bearing roofs
-use 45-degree geometry. **Exclude supports from captive bearing chambers and
-moving clearances**; those 0.4 mm gaps cannot be assumed cleanable. Exterior
-louver, overlap and catch support access is exposed, but successful bridging,
-clean support removal and an unfused hinge are unproven until sliced and printed.
-Avoid brim joining frame to door. Tune moving clearance for the actual printer,
-material and layer settings; changes require renewed geometry and slicer inspection.
-Assertions reject nonpositive inputs, collapsed vents, screw conflicts and
-unsupported journal/bridge combinations. The current modeled head-height domain
-is 0 < height <= 4 mm; taller fasteners require revisiting relief and motion,
-rather than bypassing the assertion. Passing assertions alone does not certify
-arbitrary parameter combinations or physical fit.
+The default printable envelope is approximately **125 × 128.6785 × 15 mm**,
+including hinge and guide, rather than the plate's 125 × 85 mm. Centred margins
+on the nominal 256 × 256 mm P2S plate are approximately 65.5/63.6608 mm before
+brim and exterior supports; inspect the complete sliced footprint. Preserve
+Bambu Lab P2S/AMS 2 Pro filament compatibility; preview colours do not assign
+filaments and there is no multicolour requirement. Select filament using its
+manufacturer's outdoor UV/wet-exposure, temperature, creep, drying and printer/
+AMS guidance. No material strength or service-life result is established here.
 
-Choose filament whose manufacturer specifies suitability for outdoor UV/wet
-exposure and the required printer/AMS handling. Check temperature, creep and
-flexure limits as well as drying and printing requirements. No material endurance
-or catch elasticity has been established. The catch requires about 1.6 mm
-outward (+Y) release displacement (1.614 mm modeled) for 0.4 mm clearance,
-with 4.6 mm of unbraced beam above the frame: verify that it flexes and returns
-without damage
-in the chosen material before routine use.
+With the vent off the wall, the guide permits limited normal play of the bolt.
+Installed wall contact constrains the foot at the mounting plane; the nominal
+lift-and-slide poses do not penetrate that plane. Off-wall captivity is a
+separate geometry requirement.
 
-To open, deflect the top catch outward toward the top plate edge (+Y), pull the
-door grip outward (+Z), and lower the whole door until the 90-degree stops engage.
-Hold catch release until the rim clears. Keep the door open during cable use;
-it is not a cable-support shelf or strain relief. Remove the cable before closing,
-then verify the catch retains the door. Never close around a cable. Confirm the
-real siding permits this swing and the hinge stays captive through repeated use.
+Rear-plane contact exceptions are the door's rear core/perimeter and forward
+hinge feet with adjoining low-Z swept material, plus the bolt foot and adjoining
+low-Z material during travel. These modeled surfaces may contact Z=0; no moving
+point passes behind it during modeled door travel and nominal latch motion.
+At 180 degrees the door has at least the configured
+rear gap (3.5 mm minimum at defaults). A flat-plane check does not establish
+clearance against rough siding: measure and inspect the real installation.
 
-`assembly` is an inspection mode, not a physical assembly requirement. For example:
+`assembly` is an inspection mode, not a physical assembly step. A nonzero door
+angle requires a fully retracted, seated bolt. Intermediate lateral positions
+require full lift; endpoint positions permit lift inspection. `printable_layout`
+uses the closed/retracted/seated pose independently of inspection overrides.
+For example:
 
 ```sh
-mkdir -p /tmp/shed-ventilation-validation
-timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/layout.csg -D 'render_mode="printable_layout"' designs/shed_ventilation.scad
-timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/open.csg -D 'render_mode="assembly"' -D 'door_angle_deg=90' designs/shed_ventilation.scad
+mkdir -p /tmp/shed-ventilation-validation/A6
+timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/A6/layout.csg -D 'render_mode="printable_layout"' designs/shed_ventilation.scad
+timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/A6/open.csg -D 'render_mode="assembly"' -D 'door_angle_deg=180' -D 'latch_slide_mm=16' -D 'latch_lift_mm=0' designs/shed_ventilation.scad
 ```
 
-Use the same bounded invocation for PNG inspection with an available display,
-`--imgsize=1200,900 --viewall --autocenter`, and inspect closed, 30, 60 and 90-degree
-poses plus the initial opening sweep. Only printable_layout and assembly renders
-are permitted; each must stop within 15 seconds and outputs stay under `/tmp`.
-OpenSCAD may exit zero after an assertion error: read its diagnostics, not only
-the exit code. No unit tests are used in this repository.
+Use an available display for PNG inspection with
+`--imgsize=1200,900 --viewall --autocenter`. Inspect layout, door 0/30/60/90/120/150/180 and locked/lifted/
+sliding/retracted latch states, supplemented by continuous geometric motion
+bounds. Only printable_layout and assembly are permitted; stop each invocation
+within 15 seconds and keep generated artifacts under `/tmp`. OpenSCAD can return
+zero after an assertion failure: read diagnostics as well as the exit code.
+No repository unit tests or conventional test-first checks are applicable.
 
-Reinforced-source CAD validation on 2026-10-12 included bounded CSG/STL, independent mesh connectivity
-and bed-contact checks, inspected layout/0/30/60/90-degree previews, analytical
-head/frame/retention/stop sweep assessment, lower-hinge interference guards,
-invalid-input assertions and a valid
-135 mm width / 120 mm screw-spacing variation. Default geometry has two finite
-connected bodies, both reaching Z=0. `git diff --check` passed. This establishes
-modeled geometry only. Before printing for installation, measure wall opening,
-all four screw positions, shanks, head diameters/heights and mounting coverage.
-Slicer inspection, actual freeing without assembly, catch retention/elasticity,
-connector passage, physical swing, cable safety and endurance remain user checks.
+CAD validation on 2026-10-12 passed independent integrated review and motion/
+capture and print-geometry QA. Continuous bounds establish captive hinge and
+bolt retention, engaged receiver obstruction, retracted clearance through the
+complete 0–180-degree door sweep and no nominal wall penetration. All sixteen
+required pose/detail previews were generated within the bounded limit and
+inspected. Fresh default, 135 mm width / 120 mm screw-spacing and 0.1 mm
+clearance meshes contain exactly three finite closed bodies, each with actual
+Z=0 contact and centre of mass inside its bed support polygon. At defaults the
+bolt bed area is 36 mm² and its centre of mass projects to Y=51.3330 mm within
+the Y=50.5..53.5 mm footprint. Eight real passages and connected growth were
+reconciled against the final geometry. All 44 negative guards rejected their
+intended inputs; `git diff --check` passed. This is modeled evidence, with no
+slicer or physical-print result.
+
+Before installation, measure the wood opening, all four screw positions,
+shanks, head diameters/heights and mounting coverage. Inspect the sliced
+cantilevers, bridges, clearance gaps, supports and footprint before printing.
+Then verify freeing without assembly, support removal, actual gravity-latch
+operation/retention, connector passage, siding clearance, repeated hinge/latch
+cycles, adhesion, material behaviour and outdoor endurance. No connector fit or
+hidden wall dimension was measured; the actual passage is the intersection
+with the existing wall opening.
 
 ## One-Piece Wardrobe Rod
 
