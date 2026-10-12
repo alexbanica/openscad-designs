@@ -20,8 +20,115 @@ This repository contains editable OpenSCAD designs.
 - `designs/voomy_power_s7_cable_management_case.scad`
 - `designs/wardrobe_rod.scad`
 - `designs/nested_bank_safe.scad`
+- `designs/shed_ventilation.scad`
 
 All files target OpenSCAD 2021.01 and have no external library dependencies.
+
+## Shed Ventilation with Captive Downward-Opening Door
+
+`designs/shed_ventilation.scad` prints a mounting frame and one complete
+louvered door together, with integral captive journals, a top finger catch and
+90-degree stops. There are no separate pins, clips or assembly steps. The eight
+louvers and their centre division move with the door; no fixed centre bar
+obstructs the opening. Installed up is +Y, outside is +Z, and the flat rear
+mounting face is Z=0. The same rear plane rests on the print bed.
+
+All inputs below are manually entered. The plate and screw spacing are
+provisional photo estimates, not physical measurements. Other inputs are selected
+design allowances. Measure the actual opening and fasteners before installation.
+
+| Parameter | Default | Provenance / meaning |
+| --- | --- | --- |
+| `plate_width_mm`, `plate_height_mm` | 125 × 85 | Approximate photographed plate size |
+| `screw_spacing_x_mm`, `screw_spacing_y_mm` | 110 × 70 | Rounded photo-derived screw-centre estimates |
+| `screw_clearance_diameter_mm` | 4.5 | Selected shank clearance; actual screws unknown |
+| `screw_head_diameter_mm`, `screw_head_height_mm` | 9 × 4 | Selected cylindrical head envelope; actual heads unknown |
+| `frame_border_mm`, `frame_thickness_mm` | 10, 3 | Selected frame border and thickness |
+| Clear frame passage | 105 × 65 | Derived plate minus two borders; rounded corners, not measured wall opening |
+| `door_thickness_mm` | 2.4 | Selected panel thickness, excluding louvers/overlap/hinge |
+| `door_overlap_mm` | 3 | Straight-edge seam overlap; interrupted at screw-access corners |
+| `moving_clearance_mm` | 0.4 per side | Provisional moving-fit allowance |
+| `journal_diameter_mm` | 3 | Integral printed journal diameter; no separate pin |
+| `louver_projection_mm` | 5 | Selected outward louver projection |
+| `louver_rows`, `louver_columns` | 4 × 2 | Visible photographic arrangement; eight actual airflow passages |
+| `render_mode` | `"printable_layout"` | Complete captive mechanism in closed printing pose |
+| `door_angle_deg` | 0 | Assembly inspection angle, 0–90 degrees |
+
+The full default printable envelope is approximately **125 × 97 × 14.25 mm**,
+including hinges and catch, rather than the plate's 125 × 85 mm. It fits the
+nominal 256 × 256 mm P2S plate geometrically; slicer margins, brim and supports
+still need inspection. AMS 2 Pro compatibility depends on the selected filament;
+there is no multicolour requirement and preview colours do not assign filaments.
+
+Four local circular reliefs, nominal radius 4.9 mm, cut through the door at the
+screw positions so heads and mounting tools are accessible. They interrupt the
+3 mm overlap and leave small extra corner ventilation gaps. Straight edges retain
+rain-reducing overlap; the corners have greater local rain-entry exposure. This
+vent has no watertightness, insect-proofing, rated airflow or proven weather-life
+claim. The actual cable passage is the intersection with the existing wall opening;
+no connector fit or hidden wall dimension is established.
+
+Print the source default as one job, rear mounting face down. Both fixed frame
+and moving door have connected bed-contact geometry; the door perimeter grows
+up to the overlap lip, whose underside is 0.4 mm above the frame. The captive
+journal heads include bed-reaching toes. Do not separate the bodies, print loose
+retainers or move the mechanism beyond its stop for preparation. Removing the
+print, accessible support cleanup and gently freeing moving gaps are preparation;
+mounting the completed mechanism with the shed screws is installation.
+
+Inspect the slicer layer by layer, especially initial bed contacts, thin head toes,
+horizontal journals, louver roofs, overlap bridges and catch lip. Bearing roofs
+use 45-degree geometry. **Exclude supports from captive bearing chambers and
+moving clearances**; those 0.4 mm gaps cannot be assumed cleanable. Exterior
+louver, overlap and catch support access is exposed, but successful bridging,
+clean support removal and an unfused hinge are unproven until sliced and printed.
+Avoid brim joining frame to door. Tune moving clearance for the actual printer,
+material and layer settings; changes require renewed geometry and slicer inspection.
+Assertions reject nonpositive inputs, collapsed vents, screw conflicts and
+unsupported journal/bridge combinations. The current modeled head-height domain
+is 0 < height <= 4 mm; taller fasteners require revisiting relief and motion,
+rather than bypassing the assertion. Passing assertions alone does not certify
+arbitrary parameter combinations or physical fit.
+
+Choose filament whose manufacturer specifies suitability for outdoor UV/wet
+exposure and the required printer/AMS handling. Check temperature, creep and
+flexure limits as well as drying and printing requirements. No material endurance
+or catch elasticity has been established. The catch requires about 1.6 mm
+outward (+Y) release displacement for 0.4 mm clearance, with only about 4.6 mm
+of exposed beam above the frame: verify that it flexes and returns without damage
+in the chosen material before routine use.
+
+To open, deflect the top catch outward toward the top plate edge (+Y), pull the
+door grip outward (+Z), and lower the whole door until the 90-degree stops engage.
+Hold catch release until the rim clears. Keep the door open during cable use;
+it is not a cable-support shelf or strain relief. Remove the cable before closing,
+then verify the catch retains the door. Never close around a cable. Confirm the
+real siding permits this swing and the hinge stays captive through repeated use.
+
+`assembly` is an inspection mode, not a physical assembly requirement. For example:
+
+```sh
+mkdir -p /tmp/shed-ventilation-validation
+timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/layout.csg -D 'render_mode="printable_layout"' designs/shed_ventilation.scad
+timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/open.csg -D 'render_mode="assembly"' -D 'door_angle_deg=90' designs/shed_ventilation.scad
+```
+
+Use the same bounded invocation for PNG inspection with an available display,
+`--imgsize=1200,900 --viewall --autocenter`, and inspect closed, 30, 60 and 90-degree
+poses plus the initial opening sweep. Only printable_layout and assembly renders
+are permitted; each must stop within 15 seconds and outputs stay under `/tmp`.
+OpenSCAD may exit zero after an assertion error: read its diagnostics, not only
+the exit code. No unit tests are used in this repository.
+
+CAD validation on 2026-10-12 included bounded CSG/STL, independent mesh connectivity
+and bed-contact checks, inspected layout/0/30/60/90-degree previews, analytical
+head/frame/retention/stop sweep assessment, invalid-input assertions and a valid
+135 mm width / 120 mm screw-spacing variation. Default geometry has two finite
+connected bodies, both reaching Z=0. `git diff --check` passed. This establishes
+modeled geometry only. Before printing for installation, measure wall opening,
+all four screw positions, shanks, head diameters/heights and mounting coverage.
+Slicer inspection, actual freeing without assembly, catch retention/elasticity,
+connector passage, physical swing, cable safety and endurance remain user checks.
 
 ## One-Piece Wardrobe Rod
 
