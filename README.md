@@ -26,207 +26,44 @@ All files target OpenSCAD 2021.01 and have no external library dependencies.
 
 ## Shed Ventilation with Captive Downward-Opening Door
 
-`designs/shed_ventilation.scad` prints the complete replacement vent in one job:
-fixed frame, full louvered door with an integral captive hinge, and a rigid captive
-quarter-turn latch. These are three permanent bodies, already captured without
-pins, clips, snap fitting, gluing or assembly. The eleven-knuckle full-width hinge
-has two positive 180-degree stops. The whole panel and its eight hood groups open
-outward and downward. This replacement includes a new frame; compatibility with
-an older printed frame is not established.
+`designs/shed_ventilation.scad` models a full replacement vent for a shed opening. Its five printable PETG bodies are the fixed frame and captive louvered door, plus a loose clasp, retaining pin, and service clip. The door remains captive on its eleven-knuckle hinge; the three latch parts assemble into a retained, serviceable mechanism. Print the complete layout in one job, then assemble the clasp parts. This is a full frame replacement: compatibility with the old printed frame is not established, and existing mounting-hole geometry is unchanged.
 
-Installed up is **+Y**, outside is **+Z**, and the rear mounting face/print bed is
-Z=0. This vertical orientation is necessary for gravity parking of the latch.
-All dimensions are manually entered photo estimates, selected design allowances
-or derived geometry; none is a new physical measurement. Measure the opening and
-fasteners before printing for installation.
+Installed up is **+Y**, outward is **+Z**, and the rear mounting face/print bed is Z=0. The default photo-estimated plate is 125 × 85 mm, with 110 × 70 mm screw spacing. These are provisional manually entered dimensions, not measured shed or hardware values. The frame has a 10 mm border and 3.6 mm thickness; its nominal clear passage is 105 × 65 mm. The four existing hole locations and frame opening remain unchanged by the latch revisions. Measure the opening, screw centres, shanks and heads before installation. The optional supported width case uses a 135 mm plate and 120 mm horizontal screw spacing; it opens the passage to 115 × 65 mm. Do not infer fit to an old frame or actual shed from either model.
 
-| Parameter / dimension | Default | Provenance / meaning |
+The default source uses `render_mode="printable_layout"` and `layout_part="all"`. Layout selection supports `all`, `vent`, `clasp`, `pin`, and `clip`. `assembly` is an explicit inspection override. `door_angle_deg` and `clasp_angle_deg` range from 0 to 180° (clasp 0 locked, 180 positively parked). `clasp_released=true` shows the 3.90 mm lateral tongue displacement; opening the door requires the clasp parked and relaxed. For service previews, `clip_spread_mm` ranges from 0 to 0.6 mm and `clip_withdrawal_mm` from 0 to 30 mm. Withdrawal greater than zero requires the full 0.6 mm clip spread. Printable layout ignores inspection poses and lays out each body for printing. The pin D-flat is exactly 2 mm; the final corner QA covered only four plate/clearance combinations (125/110 and 135/120 mm, each at 0.01 and 0.4 mm clearance). The source assertions do not prove arbitrary parameter overrides.
+
+| Feature | Current selected dimensions | Provenance and limit |
 | --- | --- | --- |
-| `plate_width_mm`, `plate_height_mm` | 125 × 85 mm | Provisional photographed plate estimate |
-| `screw_spacing_x_mm`, `screw_spacing_y_mm` | 110 × 70 mm | Rounded photo-derived centres |
-| `screw_clearance_diameter_mm` | 4.5 mm | Selected shank clearance |
-| `screw_head_diameter_mm`, `screw_head_height_mm` | 9 × 4 mm | Selected head envelope; supported height greater than zero and at most 4 mm |
-| `frame_border_mm`, `frame_thickness_mm` | 10, 3.6 mm | Reinforced frame |
-| Nominal clear frame passage | 105 × 65 mm | Derived opening with rounded corners; actual wall opening unknown |
-| `door_thickness_mm`, `perimeter_wall_mm`, `door_overlap_mm` | 3, 1.2, 3 mm | Panel, perimeter connection and straight-edge overlap |
-| `moving_clearance_mm` | 0.4 mm per mating side | Provisional fit; supported domain 0 < g <= 0.4 mm |
-| `shaft_diameter_mm`, `collar_radius_mm` | 5, 4.5 mm | Integral hinge shaft and retaining collars |
-| Hinge span / segments | 111 mm / 11 | Six moving and five fixed knuckles; 9.727273 mm segment length, ten 0.4 mm gaps |
-| `hinge_arm_width_mm`, `bearing_wall_mm` | 2.4, 2 mm | Bridges and minimum bearing side/normal roof sections |
-| `stop_band_width_mm`, `stop_sector_angle_deg` | 2.4 mm, 10° | Two door stop stations; moving sectors 0–10°, fixed 190–200°, contact at door 180° |
-| `stop_lug_inner_radius_mm`, `stop_lug_outer_radius_mm` | 3.5, 7 mm | Moving hinge stop radii |
-| `fixed_stop_inner_radius_mm`, `fixed_stop_outer_radius_mm` | 6, 8 mm | Fixed hinge stop radii |
-| `upper_corner_relief_radius_mm`, `lower_corner_relief_radius_mm` | 5.4, 7.5 mm | Full-depth screw-head sweep reliefs |
-| `louver_projection_mm`, `louver_roof_thickness_mm` | 9, 1.6 mm | Projection from door face; roof thickness is its vertical section |
-| `louver_cheek_width_mm`, `louver_rib_width_mm` | 1, 1.2 mm | Two cheeks and two permanent internal ribs per hood |
-| `louver_root_overlap_mm`, `louver_roof_overlap_mm` | 1, 0.4 mm | Bed-web root overlap and reinforcement/roof overlap |
-| `louver_rows`, `louver_columns` | 4 × 2 | Eight hood groups, three airflow channels each |
-| Latch pivot | X=-12, Y=53 mm | Selected axis perpendicular to mounting plane |
-| `render_mode` | `"printable_layout"` | Closed door, central latch angle 0° for printing |
-| `door_angle_deg`, `latch_angle_deg` | 0°, -45° | Assembly inspection; latch -45° released, +45° locked |
+| Mounting and door | 4.5 mm screw clearance; 9 × 4 mm head envelope; 3 mm door, 3 mm overlap, 1.2 mm perimeter wall | Selected clearances and photo estimates; measure actual hardware and opening. |
+| Hinge | 111 mm span, eleven alternating knuckles, 2.4 mm arms, 8 mm forward feet | Six moving and five fixed knuckles; door opens through 180° with modeled stops. Fit, freeing and retention are not physically demonstrated. |
+| Louvers | Eight groups (4 × 2), 9 mm projection, 1.6 mm roof section, 1 mm cheeks, 1.2 mm ribs | Downward-facing outlets with three channels per group; keep permanent blades and roots free of removable support. |
+| Clasp and pin | 5 mm pin with an exact 2 mm D-flat in a 5.2 mm bore; 25.8 mm hub; nominal hook overlap 1.8 mm; 3.90 mm release within a 4 mm maximum; 2 mm flex beam with 22 mm straight span of 24 mm and 2 mm root radius | Selected PETG interface geometry, not a force or fatigue result. Clasp finger pad is 8.4 × 8 mm at Y=31..39 mm. |
+| Pin retention and guide | 40 mm shaft, 10 × 2 mm head, 2.4 mm-wide groove and 1.2 mm end shoulder; guide 30 mm high with 3 mm axial and 16 mm transverse channel, 7.4 mm peaked clearance openings and 8 × 4 mm exposed finger faces | Selected dimensions. The larger guide openings do not enlarge the 5.2 mm bearing. |
+| Service clip | 2 mm thick; two 12 mm free arms; 4 mm core and 3 mm passages; 0.6 mm full spread gives a 4.2 mm throat | Selected release geometry, not a measured force or recovery result. |
+| Running clearances | `moving_clearance_mm` is 0.4 mm per side for the door/hinge; 0.01 mm is a CAD regression case. Separate assembled pin radial allowance and hub side gaps are 0.1 mm | Provisional allowances, not calibrated to a printer, material, or layer profile. The 0.01 mm case is not a print recommendation. |
 
-The mandatory 135 mm plate / 120 mm horizontal screw-spacing variation opens the
-frame passage to 115 × 65 mm. Selected mechanism dimensions are guarded allocations;
-overriding their values requires renewed geometry and capture evidence. Do not
-bypass assertions to force an unsupported combination.
+To open the vent, hold the clasp release in +X through its full swing to the positively parked 180° position, then relax it. Open the door outward through its modeled travel. Remove the cable before closing. Close the door while the clasp remains positively parked; press the release, hold it through the return swing to 0°, then relax into the locked position. Do not force the door against the hook or close it around a cable. The door is not a shelf or strain relief.
 
-At defaults the hinge axis is Y=-54, Z=8 mm, bore radius 2.903497 mm and bearing
-top Z=14.934593 mm. The recessed core is approximately 104.2 × 63.4551 mm;
-overlap underside/top are Z=4/7 mm. Straight edges overlap, while full-depth
-corner reliefs leave four local ventilation/weather gaps. Lower hinge openings
-remain unsealed for drainage. No watertightness, insect-proofing or rated airflow
-is claimed.
+The retained latch assembly is serviceable by a deliberate sequence. Insert the 5 mm pin from the −X head side. Install the clip with its long bar upward (+Z). To remove it, deliberately pinch the bar and spread both arms by 0.6 mm each, then withdraw it +Z up to 30 mm. Withdraw the pin toward −X by 45 mm. With the pin removed and the tongue release held, lift the parked clasp +Z out from between the mounting ears for replacement. Reverse the sequence to assemble; relax the clip only when fully seated. These are modeled geometric paths; hand access, force, fit, retention cycles and endurance have not been physically tested.
 
-Each hood has a selected 9 mm projection, positive roof/root/cheek/rib unions and
-a downward-facing outlet. At defaults the slot is 43.1 × 6.363767 mm. Its three
-straight channel widths are 13.766667 / 13.166667 / 13.766667 mm; rounded outer
-corners locally reduce the outer widths by 0.5 mm. The roof underside is about
-45.904° to the bed, advancing at most one horizontal millimetre per vertical
-millimetre as it grows from its anchored upper edge. The supported clearance
-domain retains the 45° floor (about 45.13° in the limit g approaches zero).
-The 1.6 mm vertical roof section corresponds to about 1.11337 mm normal thickness
-at defaults. Roof rows have 6 mm gaps; bed-root strips have 5 mm gaps.
+Print the vent rear-down, clasp flat on its carrier, clip on its flat profile, and pin on its D-flat. Default layout bounds are **182 × 161.9785 × 30 mm**; the wide case is 192 × 161.9785 × 30 mm. The default layout leaves 37 mm and 47.01075 mm centred margins on a nominal 256 × 256 mm plate before brim or supports; the wide case leaves 32 mm and 47.01075 mm. Loose parts have at least 10 mm modeled separation. The mounted closed frame bounds are 125 × 161.9785 × 30 mm (135 mm wide in the optional case). The door sweeps outward about 103.63 mm; at full opening its folded extent reaches approximately Y=-149.6 mm while the frame reaches Y=100.1 mm, so check available headroom at the actual mounting location.
 
-The two ribs reduce nominal total slot plan area to 2072.042 mm²; including
-rounded corners gives **2070.326 mm²**. Default individual channel plan areas are
-87.501 / 83.790 / 87.501 mm². Downward outlets have 7.4 mm clear height above
-the lower web, with sections 101.873 / 97.433 / 101.873 mm². These are different
-geometric sections, not airflow ratings. Permanent reinforcement stays on the
-door. **Do not put removable supports against the blades, roots, cheeks or ribs.**
-CAD growth and inspected mesh paths support this arrangement; successful
-support-free blade printing and elimination of the reported breakage remain
-unverified.
+The first-layer model has **12 separate bed-contact islands**: one frame/guide footprint (about 6981.61 mm²), one perforated door core (about 4522.61 mm²), six independent 9.727 × 8 mm hinge soles (about 77.819 mm² each), clasp (about 499.463 mm²), clip (about 143.413 mm²), and two pin contacts (about 90.26 mm² and 2.390 mm²). Each hinge sole joins substantial door geometry at Z=4 mm. The tiny pin-end island joins near Z=0.2913 mm; its small contact area remains an adhesion risk. Per-island growth and modeled centre-of-mass checks at sampled heights found positive support margins, but this does not establish adhesion. If slicer review supports it, a small brim may be applied only at the pin's free outer end; exclude its groove and mating surfaces, bearings, hook, captive gaps, and other bodies. Slicer first-layer/toolpath inspection remains pending.
 
-The latch has a radius-6 mm bed foot Z0..2.8, radius-8 mm retaining flange
-Z2.4..5.4 and radius-3 mm spindle Z5..17.5. Its radius-10.8 mm housing has a
-radius-(8+g) cavity, radius-(6+g) rear opening and radius-(3+g) spindle opening.
-The lower lip ends at Z2 and the roof occupies Z5.4+g..7.8+g. The rigid blocker
-is 3 × 19 × 3 mm at Z10.5..13.5; the finger tab/counterweight is 10 × 16 × 6 mm
-at Z15..21, joined by a 3 mm web. The door receiver spans X±5, Y33..41.6 and
-tops at Z8.6, leaving a nominal 1.9 mm blocker underside gap when locked.
+Other modeled printing risks include approximately 14.272 mm hinge bridges, a 6.9 mm hub cantilever on each side, 2.2 mm toe overhang, 6.7 mm parking-bridge reach, and guide roofs that grow upward from the bed. Do not add removable support to the louver blades, hinge/bearing surfaces, hook, clip interfaces, or captive gaps. CAD connectivity and the modeled COM checks do not prove successful support-free printing, first-layer adhesion, a freely moving hinge, or an unfused assembly.
 
-A sector neck at radii 7..13, angles 85..95°, Z10..13 joins the spindle through
-a 3 mm web. Fixed sectors at radii 9..14, angles 30..40° and 140..150°, Z0..13
-provide the two latch stops. Nominal rotation is -45° to +45°. Capture analysis
-bounds inclination below 3.26°, lateral centre play below 0.424 mm and axial
-freedom to 0.4+g, at most 0.8 mm. Including play, actual stop contact lies within
-38°..50° on each side; these are conservative bounds, not new nominal settings.
-The locked blocker catches the receiver before 3° of outward door movement;
-released geometry clears its complete swing. The counterweight biases both
-parked positions against their stops throughout the bounded play. Nominal gravity
-torque has one unstable crossover at 0°; each fixed tilted orientation shifts its
-crossover within ±3.26°, rather than sharing one universal zero.
-This is gravity-biased mechanical parking, not a security lock or wind-load rating.
+The 2026-10-16 final source passed independent code review and functional and print-geometry QA within the modeled scope. Four plate/clearance geometry variants and the five individual layout selectors were checked with bounded OpenSCAD 2021.01 exports. Slicer review and physical results are pending: no claim is made for adhesion, resolution of previously reported first-layer failures, unfused hinge motion, physical fit, clasp force/retention, fatigue, weather performance, cable fit or safety. PETG is the selected design material, not a validated material result.
 
-To open, turn the finger tab to the released stop, then lower the complete door
-outward/downward through up to 180°. Keep it open during cable use; the door is
-not a shelf or cable strain relief. Remove the cable before closing. Close with
-the latch released, then turn to the locked stop and confirm retention. Release
-before either opening or closing; do not force closure against the blocker or
-close around a cable. No motion depends on deliberate printed-part flexure.
-
-Print one job with the rear mounting face down and the source default layout.
-Removing the print, accessible support cleanup and gently freeing gaps are
-preparation; fitting pins, snapping together or separating captive bodies is not
-required. **Exclude supports/brim from bearings, the latch cavity and every
-moving clearance.** The 0.4 mm fit remains provisional for the actual printer,
-material and layer settings. Inspect slicing after any dimension change.
-
-Latch exterior supports may be needed in the following default print coordinates.
-Keep interface gaps suitable for removal; supports must not fuse the bodies.
-
-| Supported region | Accessible support / removal |
-| --- | --- |
-| Blocker underside Z10.5 | X=-13.5..-10.5, Y34..35.1 starts on door lip Z7; separate Y36..41.5 starts on frame Z3.6. Leave seam Y35.1..36 clear. Withdraw toward -X, away from receiver and blades. Remaining first-layer span to the spindle is about 8.5..8.902 mm. |
-| Counterweight underside Z15 | X=-17..-7, Y67.5..75, bed-starting outside housing/stops; withdraw +Y. Full first-layer span from existing spindle is 11.5..11.902 mm, plus lateral expansion beyond the narrow web. The 8.1 mm web-end-to-support gap alone understates this span. |
-| Optional stop-neck tip support below Z10 | X=-12.6..-11.4, Y64.5..65.8, bed-starting beyond housing/stops; withdraw +Y below the Z15 tab. This leaves about 8.5..8.56 mm back to the spindle. |
-
-Without tip support, the stop web extends 4.4 mm beyond the spindle and its sector
-another 5.6 mm, a complete 10 mm centre reach. The flange overhangs the foot by
-2 mm radially. The fixed roof reaches inward 5 mm over the captive cavity;
-internal support is prohibited. Retain slicer review of these unproven
-cantilevers/bridges, default shaft intervals around 10.527 mm, six hinge-arm spans around
-14.272 mm, overlap lips and receiver shelf. Any receiver support must remain
-exterior and removable laterally, clear of the frame/door seam and blade region.
-CAD-connected growth does not prove clean bridges, accurate clearances or an
-unfused print. Confirm actual support toolpaths and removal before printing.
-
-The default printable envelope is **125 × 136.8785 × 21 mm**, including hinge and
-latch, rather than just the mounting plate. The width variation is
-135 × 136.8785 × 21 mm. Centred margins on a nominal 256 × 256 mm plate are
-65.5/59.56075 mm, or 60.5/59.56075 mm for the width variation, before supports or
-brim. Preserve Bambu Lab P2S / AMS 2 Pro filament compatibility; preview colours
-do not assign filaments. Select material using manufacturer UV/wet-exposure,
-temperature, creep, drying and printer/AMS guidance; strength and service life
-have not been physically established.
-
-Rear-plane exceptions are the door core/perimeter and forward hinge feet with
-adjoining low-Z geometry, plus the rotor foot/adjoining low-Z flange. Nominal
-door and latch travel do not penetrate Z<0; the full door has a minimum 3.5 mm
-rear gap at 180° at defaults. Off the wall, captive rotor play may move its foot
-inward by a conservative 0.748 mm; capture remains independently established.
-Installed wall contact clips that inward play. This distinction does not establish
-free movement on rough siding, absence of rubbing or physical fit.
-
-`assembly` is an inspection mode, not an assembly step. Nonzero door angles
-require `latch_angle_deg=-45`. `printable_layout` overrides inspection poses with
-the closed door and central latch angle 0, avoiding fused stop contacts.
+For bounded local inspection, keep outputs under `/tmp` and limit each OpenSCAD command to 14 seconds (with a 1-second kill grace). Only `printable_layout` and `assembly` are supported inspection modes; do not include electronics. For example:
 
 ```sh
-mkdir -p /tmp/shed-ventilation-validation/A8
-timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/A8/layout.csg -D 'render_mode="printable_layout"' designs/shed_ventilation.scad
-timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/A8/open.csg -D 'render_mode="assembly"' -D 'door_angle_deg=180' -D 'latch_angle_deg=-45' designs/shed_ventilation.scad
+mkdir -p /tmp/shed-ventilation-validation
+timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/layout.csg -D 'render_mode="printable_layout"' designs/shed_ventilation.scad
+timeout -k 1s 14s openscad -o /tmp/shed-ventilation-validation/open.csg -D 'render_mode="assembly"' -D 'door_angle_deg=180' -D 'clasp_angle_deg=180' designs/shed_ventilation.scad
+git diff --check
 ```
 
-Use an available display for bounded PNG inspection with
-`--imgsize=1200,900 --viewall --autocenter`. Inspect locked/released/intermediate
-latch poses, layout, intermediate door angles, 90/180° and local details. Only
-printable_layout/assembly are permitted; stop each invocation within 15 seconds
-and retain generated files under `/tmp`. Read assertion diagnostics even when
-OpenSCAD returns zero. Unit tests and conventional test-first phases are
-prohibited and skipped; `git diff --check` remains required.
-
-CAD validation on 2026-10-16 passed independent integrated review and distinct
-mesh/island, continuous analytic motion/capture, and hood/guard/visual QA. Default,
-135/120 and g0.01 meshes have exactly three finite closed material bodies and
-nine actual bed-contact islands. Raw OFF processing also produces zero-area
-numerical slivers; raw processed OFF is not claimed watertight. Material-body
-analysis excludes only those zero-volume degeneracies.
-
-| Initial island | Modeled footprint / initial growth |
-| --- | --- |
-| Fixed frame | Connected rounded ring, four screw holes, hinge housings/ribs and latch housing/anchor; 4900.191 mm² at defaults. Mounting-hole/aperture corner neck has a conservative 1.2855 mm lower bound. |
-| Door core | Relieved perforated panel with bed-connected hood roots/ribs; 4522.607 mm². Five/seven mm column/row webs, 1.2 mm perimeter/ribs and 1 mm cheeks. |
-| Six independent hinge feet | Each 9.727273 × 8 mm, 77.818182 mm²; 85.090909 mm² in the width variation. No footprint neck. Grow separately until positive bridge/core union above Z4, or Z3.61 at g0.01. |
-| Rotor foot | 128-sided radius-6 mm footprint, 113.051917 mm²; analytic circle area 113.097336 mm², minimum caliper 11.996386 mm. Broad flange joins above Z2.4 through 0.4 mm overlap. |
-
-Each small sole exceeds the provisional 60 mm² / 4 mm floors; these are model
-floors, not empirical adhesion thresholds. QA clipped each variant at 25 heights,
-including Z0.2/1/2 and immediately around flange, hinge-bridge, blocker and tab
-transitions. Each positive clipped component was closed and its COM remained
-inside its own bed support polygon. Minimum sampled prejoin hinge margins were
-3.286925 mm (default/width) and 3.358981 mm (g0.01). A separate continuous,
-piecewise extrusion analysis covered rotor growth through the complete tab;
-minimum foot support margin was 0.889091 mm. Complete rotor uniform-density COM
-is local Y=+5.110644 mm, supporting the modeled gravity bias. These are modeled
-heights and mass assumptions, not sliced layers or physical adhesion evidence.
-
-QA also inspected 24 clear through-air paths and roof sections per variant,
-ten new pose/detail previews, continuous analytic clearance/capture bounds,
-four valid parameter cases and twelve expected assertion rejections. Intentional
-operating stop contacts are distinct from the three separated printable bodies.
-Slicer first-layer/toolpath review, a successful physical first layer, actual
-support-free blades, freeing, retention cycles and material/endurance/weather
-results remain pending. Neither the reported spaghetti failure nor blade
-breakage is claimed physically fixed.
-
-Before installation, measure the wood opening, all four screw positions, shanks,
-head dimensions and coverage; adjust and revalidate as needed. Inspect the actual
-sliced gaps, bridges, supports and contact islands. Verify freeing without
-assembly, support removal, gravity parking/retention, connector passage, siding
-clearance and repeated operation. The actual passage is the intersection with
-the existing wall opening. Physical fit, airflow, strength and cable safety remain
-unverified.
+Read assertion diagnostics even when OpenSCAD exits zero. Unit tests and conventional test-first phases are prohibited. Do not add generated mesh exports to source control.
 
 ## One-Piece Wardrobe Rod
 

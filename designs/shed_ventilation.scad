@@ -3,8 +3,29 @@
 // Adjustable Parameters
 render_mode = "printable_layout";
 door_angle_deg = 0;
-// Assembly inspection: -45 released, +45 locked; print at central angle 0.
-latch_angle_deg = -45;
+// Assembly: 0 locked, 180 positively parked; release before swinging.
+clasp_angle_deg = 0;
+clasp_released = false;
+// Deliberate assembly service path: spread fully before withdrawing +Z.
+clip_spread_mm = 0; // 0..0.6; ignored in printable_layout
+clip_withdrawal_mm = 0; // 0..30; ignored in printable_layout
+layout_part = "all"; // all, vent, clasp, pin, clip
+// A10 manually selected provisional PETG interface dimensions.
+clasp_pivot_y_mm = 64;
+clasp_pivot_z_mm = 10;
+clasp_pin_diameter_mm = 5;
+clasp_bore_diameter_mm = 5.2;
+clasp_hub_width_mm = 25.8;
+clasp_hub_diameter_mm = 10;
+clasp_beam_thickness_mm = 2;
+clasp_flex_length_mm = 24;
+clasp_max_release_mm = 4;
+clasp_commanded_release_mm = 3.90;
+clasp_root_radius_mm = 2;
+clasp_clip_thickness_mm = 2;
+clasp_clip_core_diameter_mm = 4;
+clasp_clip_overlap_mm = 0.5;
+clasp_pin_flat_width_mm = 2;
 // Photo-estimated mounting dimensions: measure before installation.
 plate_width_mm = 125;
 plate_height_mm = 85;
@@ -94,82 +115,40 @@ louver_slot_plan_area_mm2 = louver_rows*louver_columns*(slot_width_mm-2*louver_r
 // Full roof/slot footprint, including the inclined roof's upper connector.
 louver_outer_x_mm = (louver_columns-1)*slot_x_pitch_mm/2+slot_width_mm/2+1;
 louver_outer_y_mm = (louver_rows-1)*row_pitch_mm/2+slot_height_mm/2+1;
-// A8 B2 selected quarter-turn allocations. Local XY is relative to pivot.
-latch_pivot_x_mm = -12;
-latch_pivot_y_mm = 53;
-latch_foot_radius_mm = 6;
-latch_foot_top_mm = 2.8;
-latch_flange_radius_mm = 8;
-latch_flange_bottom_mm = 2.4;
-latch_flange_top_mm = 5.4;
-latch_spindle_radius_mm = 3;
-latch_spindle_bottom_mm = 5;
-latch_spindle_top_mm = 17.5;
-latch_housing_radius_mm = 10.8;
-latch_cavity_radius_mm = latch_flange_radius_mm+moving_clearance_mm;
-latch_lower_opening_radius_mm = latch_foot_radius_mm+moving_clearance_mm;
-latch_lower_lip_top_mm = 2;
-latch_roof_bottom_mm = latch_flange_top_mm+moving_clearance_mm;
-latch_roof_top_mm = 7.8+moving_clearance_mm;
-latch_spindle_opening_radius_mm = latch_spindle_radius_mm+moving_clearance_mm;
-latch_blocker_half_width_mm = 1.5;
-latch_blocker_length_mm = 19;
-latch_blocker_bottom_mm = 10.5;
-latch_blocker_top_mm = 13.5;
-latch_tab_half_width_mm = 5;
-latch_tab_y_min_mm = 6;
-latch_tab_y_max_mm = 22;
-latch_tab_bottom_mm = 15;
-latch_tab_top_mm = 21;
-latch_tab_web_end_mm = 6.4;
-latch_stop_root_end_mm = 7.4;
-latch_stop_neck_inner_radius_mm = 7;
-latch_stop_lug_inner_radius_mm = 10;
-latch_stop_lug_outer_radius_mm = 13;
-latch_stop_start_deg = 85;
-latch_stop_end_deg = 95;
-latch_stop_bottom_mm = 10;
-latch_stop_top_mm = 13;
-latch_fixed_stop_inner_radius_mm = 9;
-latch_fixed_stop_outer_radius_mm = 14;
+// A10 conditional full-play certificate. These arithmetic guards enforce the
+// selected enclosure; actual head/clip/ear non-crossing and coupled contact
+// premises still require independent geometric verification, not an echo.
 receiver_root_y_mm = 33;
 receiver_top_y_mm = 41.6;
 receiver_top_z_mm = lip_z_mm+4.6;
 receiver_sweep_y_mm = hinge_y_mm+sqrt(pow(receiver_top_y_mm-hinge_y_mm,2)+pow(max(abs(lip_z_mm+1.6-hinge_z_mm),abs(receiver_top_z_mm-hinge_z_mm)),2));
-latch_anchor_y_min_mm = receiver_sweep_y_mm+moving_clearance_mm;
-// These nominal gaps do not replace the required all-reachable-play proof.
-latch_axial_freedom_mm = latch_roof_bottom_mm-latch_lower_lip_top_mm-(latch_flange_top_mm-latch_flange_bottom_mm);
-latch_locked_under_gap_mm = latch_blocker_bottom_mm-receiver_top_z_mm;
-// A8 all-play certificate; these bounds do not change printable geometry.
-// First-departure box: tilt <7 deg, flange centre Z in [3,4.8].
-// Its full flange remains inside the housing's Z range. At radius 7,
-// vertical flange sections stay inside its inscribed polygon, outside both
-// retaining openings, and require 14*tan(beta)+3/cos(beta) <= .4+g+3.
-// Thus beta <3.26 deg; centre Z is [3.5,3.9+g], XY radius <.424.
-latch_play_tilt_deg = 3.26;
-latch_play_xy_mm = 0.424;
-latch_play_z_mm = 0.4;
-latch_flange_inscribed_radius_mm = latch_flange_radius_mm*cos(180/128);
-latch_play_initial_xy_mm = 8.4-latch_flange_inscribed_radius_mm*cos(7);
-latch_play_section_radius_mm = 7;
-latch_play_section_span_mm = 14*tan(latch_play_tilt_deg)+3/cos(latch_play_tilt_deg);
-function latch_play_xy_error_mm(r_mm,z_mm) = latch_play_xy_mm+abs(z_mm-3.9)*sin(latch_play_tilt_deg)+r_mm*(1-cos(latch_play_tilt_deg));
-function latch_play_z_error_mm(r_mm,z_mm) = latch_play_z_mm+r_mm*sin(latch_play_tilt_deg)+abs(z_mm-3.9)*(1-cos(latch_play_tilt_deg));
-latch_blocker_radius_mm = sqrt(pow(latch_blocker_length_mm,2)+pow(latch_blocker_half_width_mm,2));
-latch_blocker_min_play_z_mm = latch_blocker_bottom_mm-latch_play_z_error_mm(latch_blocker_radius_mm,latch_blocker_bottom_mm);
-// Stop envelope includes translation/tilt, rather than ideal +/-45 contacts.
-latch_stop_min_angle_deg = 38;
-latch_stop_max_angle_deg = 50;
-latch_witness_radius_mm = sqrt(pow(1.3,2)+pow(18.8,2));
-latch_witness_xy_error_mm = latch_play_xy_error_mm(latch_witness_radius_mm,latch_blocker_top_mm);
-function latch_witness_x_mm(a_deg) = latch_pivot_x_mm-1.3*cos(a_deg)+18.8*sin(a_deg);
-function latch_witness_y_mm(a_deg) = latch_pivot_y_mm-1.3*sin(a_deg)-18.8*cos(a_deg);
-// Receiver shelf bounds at 3 deg outward swing; root remains below witness.
-receiver_catch_angle_deg = 3;
-receiver_catch_y_max_mm = hinge_y_mm+(receiver_top_y_mm-hinge_y_mm)*cos(receiver_catch_angle_deg)-(receiver_top_z_mm-hinge_z_mm)*sin(receiver_catch_angle_deg);
-receiver_catch_y_min_mm = hinge_y_mm+(receiver_root_y_mm-hinge_y_mm)*cos(receiver_catch_angle_deg)-(receiver_top_z_mm-hinge_z_mm)*sin(receiver_catch_angle_deg);
-receiver_catch_z_min_mm = hinge_z_mm+(receiver_top_y_mm-hinge_y_mm)*sin(receiver_catch_angle_deg)+(lip_z_mm+1.6-hinge_z_mm)*cos(receiver_catch_angle_deg);
-receiver_catch_z_max_mm = hinge_z_mm+(receiver_root_y_mm-hinge_y_mm)*sin(receiver_catch_angle_deg)+(receiver_top_z_mm-hinge_z_mm)*cos(receiver_catch_angle_deg);
+clasp_hub_side_gap_mm = (26-clasp_hub_width_mm)/2;
+clasp_pin_radial_gap_mm = (clasp_bore_diameter_mm-clasp_pin_diameter_mm)/2;
+clasp_pin_flat_depth_mm = sqrt(pow(clasp_pin_diameter_mm/2,2)-pow(clasp_pin_flat_width_mm/2,2));
+clasp_bore_outer_radius_mm = clasp_bore_diameter_mm/2/cos(180/64);
+clasp_centre_slack_mm = clasp_bore_outer_radius_mm-clasp_pin_flat_depth_mm;
+clasp_centre_diameter_mm = (1+sqrt(2))*clasp_centre_slack_mm;
+clasp_pin_witness_span_mm = 32; // inner planes +/-16 exclude played groove
+clasp_pin_tilt_enclosure_deg = 2;
+clasp_pin_axial_enclosure_mm = 1.5;
+clasp_pin_tilt_bound_deg = atan(clasp_centre_diameter_mm/clasp_pin_witness_span_mm);
+clasp_play_tilt_deg = clasp_pin_tilt_bound_deg+atan(clasp_centre_diameter_mm/clasp_hub_width_mm);
+// Each eroded peaked bore centre has radius <=sqrt(2)*slack. Summing
+// ear/pin and hub/pin offsets gives <.90 at an ear-side hub rim witness.
+clasp_rim_offset_bound_mm = 2*sqrt(2)*clasp_centre_slack_mm;
+clasp_rim_offset_enclosure_mm = 0.90;
+clasp_rim_inradius_mm = clasp_hub_diameter_mm/2*cos(180/64);
+clasp_pin_axial_candidate_mm = 0.8+5*sin(clasp_pin_tilt_enclosure_deg)+40*(1-cos(clasp_pin_tilt_enclosure_deg));
+clasp_shaft_start_bound_mm = -18*cos(clasp_pin_tilt_enclosure_deg)+clasp_pin_axial_enclosure_mm+2.5*sin(clasp_pin_tilt_enclosure_deg);
+clasp_groove_start_bound_mm = 18.4*cos(clasp_pin_tilt_enclosure_deg)-clasp_pin_axial_enclosure_mm-2.5*sin(clasp_pin_tilt_enclosure_deg);
+clasp_toe_radius_mm = sqrt(pow(clasp_pivot_y_mm-35,2)+pow(clasp_pivot_z_mm-7.5,2));
+clasp_toe_lateral_error_mm = clasp_hub_side_gap_mm+11.4*(1-cos(clasp_play_tilt_deg))+clasp_toe_radius_mm*sin(clasp_play_tilt_deg);
+clasp_nominal_overlap_mm = 9-7.2;
+clasp_retained_overlap_bound_mm = clasp_nominal_overlap_mm-clasp_toe_lateral_error_mm;
+clasp_release_mm = clasp_commanded_release_mm;
+clasp_release_clearance_bound_mm = clasp_release_mm*cos(clasp_play_tilt_deg)-clasp_nominal_overlap_mm-clasp_toe_lateral_error_mm;
+clasp_straight_flex_length_mm = clasp_flex_length_mm-clasp_root_radius_mm;
+clasp_clip_throat_mm = clasp_clip_core_diameter_mm-2*clasp_clip_overlap_mm;
 // Conservative XY keepouts use the real aperture corner, bearing and latch housing.
 screw_corner_distance_mm = sqrt(pow(max((screw_spacing_x_mm-opening_width_mm)/2,0),2)+pow(max((screw_spacing_y_mm-opening_height_mm)/2,0),2));
 collar_bridge_overlap_mm = min(hinge_z_mm+collar_radius_mm,lip_z_mm+door_thickness_mm)-max(hinge_z_mm-collar_radius_mm,lip_z_mm);
@@ -196,7 +175,7 @@ assert(screw_head_height_mm<=4, "Screw head exceeds supported 4 mm motion envelo
 assert(screw_corner_distance_mm>screw_clearance_diameter_mm/2, "Screw shank intersects aperture corner");
 assert(collar_bridge_overlap_mm>0, "Collar and moving bridge require positive material overlap");
 for (sx=[-1,1],sy=[-1,1]) {
-    assert(rectangle_distance_mm(sx*screw_spacing_x_mm/2,sy*screw_spacing_y_mm/2,latch_pivot_x_mm-latch_fixed_stop_outer_radius_mm,latch_pivot_x_mm+latch_fixed_stop_outer_radius_mm,latch_anchor_y_min_mm,latch_pivot_y_mm+latch_fixed_stop_outer_radius_mm)>expanded_head_radius_mm, "Screw head/tool intersects latch housing/stops");
+    assert(rectangle_distance_mm(sx*screw_spacing_x_mm/2,sy*screw_spacing_y_mm/2,-20,20,42.2,100.1)>expanded_head_radius_mm, "Screw head/tool intersects clasp mount");
     assert(rectangle_distance_mm(sx*screw_spacing_x_mm/2,sy*screw_spacing_y_mm/2,-5,5,receiver_root_y_mm,receiver_top_y_mm)>expanded_head_radius_mm, "Screw head/tool intersects receiver");
 }
 assert(core_half_height_radicand_mm2>0 && core_top_sweep_mm<=opening_height_mm/2-moving_clearance_mm+0.000001, "Recessed core collides with frame top during sweep");
@@ -234,37 +213,29 @@ assert(row_pitch_mm-(louver_upper_y_mm-louver_lower_y_mm)==6 && row_pitch_mm-(lo
 // Preserve the six A7 independent hinge-foot floors.
 assert(hinge_segment_length_mm*hinge_foot_forward_mm>=60 && min(hinge_segment_length_mm,hinge_foot_forward_mm)>=4, "A7 hinge sole below 60 mm2 area or 4 mm short dimension");
 assert(hinge_foot_forward_mm==8, "A7 selected hinge sole depth is fixed");
-assert(latch_angle_deg>=-45 && latch_angle_deg<=45, "Latch range -45 released to +45 locked");
-assert(render_mode=="printable_layout" || door_angle_deg==0 || latch_angle_deg==-45, "Release latch to -45 before opening door");
-assert(latch_pivot_x_mm==-12 && latch_pivot_y_mm==53 && latch_foot_radius_mm==6 && latch_foot_top_mm==2.8 && latch_flange_radius_mm==8 && latch_flange_bottom_mm==2.4 && latch_flange_top_mm==5.4 && latch_spindle_radius_mm==3 && latch_spindle_bottom_mm==5 && latch_spindle_top_mm==17.5 && latch_housing_radius_mm==10.8 && latch_lower_lip_top_mm==2, "A8 selected pivot, foot, flange and housing allocation is fixed");
-assert(latch_blocker_half_width_mm==1.5 && latch_blocker_length_mm==19 && latch_blocker_bottom_mm==10.5 && latch_blocker_top_mm==13.5 && latch_tab_half_width_mm==5 && latch_tab_y_min_mm==6 && latch_tab_y_max_mm==22 && latch_tab_bottom_mm==15 && latch_tab_top_mm==21 && latch_tab_web_end_mm==6.4, "A8 selected blocker and counterweight allocation is fixed");
-assert(latch_stop_root_end_mm==7.4 && latch_stop_neck_inner_radius_mm==7 && latch_stop_lug_inner_radius_mm==10 && latch_stop_lug_outer_radius_mm==13 && latch_stop_start_deg==85 && latch_stop_end_deg==95 && latch_stop_bottom_mm==10 && latch_stop_top_mm==13 && latch_fixed_stop_inner_radius_mm==9 && latch_fixed_stop_outer_radius_mm==14, "A8 selected stop allocation is fixed");
-assert(PI*latch_foot_radius_mm*latch_foot_radius_mm>=60 && 2*latch_foot_radius_mm>=4, "A8 latch sole below 60 mm2 area or 4 mm short dimension");
-assert(latch_foot_top_mm>latch_flange_bottom_mm && latch_spindle_bottom_mm<latch_flange_top_mm && latch_spindle_top_mm>latch_tab_bottom_mm && latch_tab_web_end_mm>latch_tab_y_min_mm, "Latch positive-volume unions lost");
-assert(latch_cavity_radius_mm<latch_fixed_stop_inner_radius_mm && sqrt(pow(latch_stop_root_end_mm,2)+pow(latch_blocker_half_width_mm,2))<latch_fixed_stop_inner_radius_mm && latch_stop_neck_inner_radius_mm<latch_stop_root_end_mm && latch_stop_lug_outer_radius_mm>latch_fixed_stop_inner_radius_mm && latch_fixed_stop_inner_radius_mm<latch_housing_radius_mm, "Latch stop neck, housing union or root sweep invalid");
-assert(latch_lower_opening_radius_mm<latch_flange_radius_mm && latch_spindle_opening_radius_mm<latch_flange_radius_mm && latch_cavity_radius_mm<latch_housing_radius_mm && latch_axial_freedom_mm>0 && latch_axial_freedom_mm<=0.8+0.000001, "Nominal latch retaining openings or axial freedom invalid");
-assert(latch_pivot_y_mm-latch_housing_radius_mm-receiver_sweep_y_mm>=moving_clearance_mm && latch_anchor_y_min_mm>opening_height_mm/2 && latch_anchor_y_min_mm<plate_height_mm/2 && latch_anchor_y_min_mm<latch_pivot_y_mm, "Housing/anchor obstructs receiver sweep, frame passage or loses frame union");
-assert(latch_blocker_bottom_mm>latch_roof_top_mm+moving_clearance_mm && latch_locked_under_gap_mm>moving_clearance_mm, "Blocker intersects roof or closed receiver");
-assert(receiver_root_y_mm<door_height_mm/2 && receiver_root_y_mm>=core_height_mm/2 && lip_z_mm+1.6<receiver_top_z_mm, "Receiver loses upper lip root");
-// Capture proof prerequisites, including the complete clearance interval.
-assert(3-(8*sin(7)+1.5*cos(7))>0 && 4.8+8*sin(7)+1.5*cos(7)<7.8, "First-departure flange leaves housing Z range");
-assert(7/cos(7)+1.5*tan(7)<latch_flange_inscribed_radius_mm && 7-latch_play_initial_xy_mm>6.4, "Capture witness sections leave flange or enter retaining aperture");
-assert(latch_play_section_span_mm>3.4+moving_clearance_mm && 8.4-latch_flange_inscribed_radius_mm*cos(latch_play_tilt_deg)<latch_play_xy_mm, "All-play inclination/translation bound invalid");
-// At 38 degrees the entire neck/lug is separated from the nearest stop
-// plane by at least 9*sin(7). By 50 degrees a strict interior lug point
-// (r12, polar94.9, Z11.5) lies inside fixed sector140..150, forcing contact.
-assert(latch_play_xy_error_mm(13,13)<9*sin(7) && sqrt(pow(7.4,2)+pow(1.5,2))+latch_play_xy_error_mm(7.551,13)<9*cos(0.5), "Actual stop can contact before certified 38-degree bound");
-assert(latch_play_xy_error_mm(12,11.5)<12*sin(4.9) && latch_play_xy_error_mm(12,11.5)<min(12-9,14*cos(0.5)-12) && 11.5+latch_play_z_error_mm(12,11.5)<13 && 11.5-latch_play_z_error_mm(12,11.5)>0, "Stop does not force contact by certified 50-degree bound");
-assert(latch_pivot_y_mm-8-latch_play_xy_error_mm(8,5.4)>receiver_sweep_y_mm && latch_pivot_y_mm+6*cos(50)-5*sin(50)-latch_play_xy_error_mm(sqrt(509),21)>receiver_sweep_y_mm, "Released rotor flange or counterweight enters receiver sweep");
-// Low-Z flange/foot are rear-plane exceptions off wall; installed wall clips
-// negative Z play. No absent-wall or friction assumption enters capture.
-assert(latch_blocker_min_play_z_mm>latch_roof_top_mm+moving_clearance_mm && latch_blocker_min_play_z_mm>receiver_top_z_mm, "All-play blocker hits roof or closed receiver");
-assert(latch_stop_bottom_mm-latch_play_z_error_mm(13,latch_stop_bottom_mm)>latch_roof_top_mm, "All-play stop neck hits housing roof");
-assert(latch_tab_bottom_mm-latch_play_z_error_mm(sqrt(509),latch_tab_bottom_mm)>latch_roof_top_mm, "All-play counterweight hits housing roof");
-assert(latch_witness_xy_error_mm<1.01 && latch_witness_x_mm(latch_stop_min_angle_deg)-1.01>-5 && latch_witness_x_mm(latch_stop_max_angle_deg)+1.01<5 && latch_witness_y_mm(latch_stop_min_angle_deg)-1.01>receiver_catch_y_min_mm && latch_witness_y_mm(latch_stop_max_angle_deg)+1.01<receiver_catch_y_max_mm, "All-play locked witness leaves receiver before catch");
-assert(latch_blocker_bottom_mm+latch_play_z_error_mm(latch_witness_radius_mm,latch_blocker_bottom_mm)<receiver_catch_z_max_mm && latch_blocker_top_mm-latch_play_z_error_mm(latch_witness_radius_mm,latch_blocker_top_mm)>receiver_catch_z_min_mm, "Receiver does not catch all-play blocker by 3 degrees");
-assert(latch_pivot_x_mm+latch_blocker_half_width_mm*cos(latch_stop_min_angle_deg)+latch_play_xy_error_mm(latch_blocker_radius_mm,latch_blocker_top_mm)<-5, "Released blocker enters receiver sweep X range");
-echo(latch_all_play_bounds=[latch_play_tilt_deg,latch_play_xy_mm,latch_play_z_mm],latch_stop_angle_bounds=[latch_stop_min_angle_deg,latch_stop_max_angle_deg],latch_blocker_min_play_z_mm=latch_blocker_min_play_z_mm);
+assert(render_mode=="printable_layout" || (clip_spread_mm>=0 && clip_spread_mm<=0.6), "Clip spread range 0..0.6 mm");
+assert(render_mode=="printable_layout" || (clip_withdrawal_mm>=0 && clip_withdrawal_mm<=30), "Clip withdrawal range 0..30 mm");
+assert(render_mode=="printable_layout" || clip_withdrawal_mm==0 || clip_spread_mm==0.6, "Fully spread clip before withdrawal");
+assert(clasp_angle_deg>=0 && clasp_angle_deg<=180, "Clasp range 0..180 degrees");
+assert(layout_part=="all" || layout_part=="vent" || layout_part=="clasp" || layout_part=="pin" || layout_part=="clip", "Unknown printable part");
+assert(render_mode=="printable_layout" || door_angle_deg==0 || (clasp_angle_deg==180 && !clasp_released), "Park clasp before opening door");
+assert(clasp_pivot_y_mm==64 && clasp_pivot_z_mm==10 && clasp_hub_width_mm==25.8 && clasp_hub_diameter_mm==10, "A10 selected pivot/hub interface");
+assert(clasp_pin_diameter_mm==5 && clasp_bore_diameter_mm==5.2 && clasp_pin_flat_width_mm==2 && clasp_pin_flat_width_mm<clasp_pin_diameter_mm, "A10 pin/bore interface requires certified 2 mm D-flat");
+assert(clasp_beam_thickness_mm==2 && clasp_flex_length_mm==24 && clasp_max_release_mm==4, "A9 flex allocation");
+assert(clasp_clip_thickness_mm==2 && clasp_clip_core_diameter_mm==4 && clasp_clip_overlap_mm==0.5 && clasp_clip_throat_mm>0, "A9 clip interface");
+assert(clasp_hub_side_gap_mm>=0.1-0.000001 && clasp_release_mm==3.90 && clasp_release_mm<=clasp_max_release_mm, "A10 release/axial allocation");
+assert(clasp_root_radius_mm==2 && clasp_straight_flex_length_mm>=22, "A10 root/straight flex allocation");
+assert(clasp_shaft_start_bound_mm < -clasp_pin_witness_span_mm/2 && clasp_groove_start_bound_mm > clasp_pin_witness_span_mm/2, "Inner shaft witnesses enter head/groove");
+assert(clasp_pin_tilt_bound_deg<clasp_pin_tilt_enclosure_deg && clasp_pin_axial_candidate_mm<clasp_pin_axial_enclosure_mm, "Conditional pin enclosure fails");
+assert(clasp_rim_offset_bound_mm<clasp_rim_offset_enclosure_mm && clasp_rim_inradius_mm*cos(clasp_play_tilt_deg)-clasp_rim_offset_enclosure_mm>sqrt(2)*clasp_bore_outer_radius_mm && clasp_hub_diameter_mm/2+clasp_rim_offset_enclosure_mm<6, "Conditional hub rim loses solid ear witness");
+// f(a)=12.9cos(a)+rim*sin(a) is concave on this interval; endpoints
+// >=12.9 imply every intermediate projected axial rim reaches the ear.
+assert(clasp_hub_width_mm/2*cos(clasp_play_tilt_deg)+clasp_rim_inradius_mm*sin(clasp_play_tilt_deg)>=clasp_hub_width_mm/2, "Hub axial projection loses ear contact");
+assert(clasp_retained_overlap_bound_mm>0 && clasp_release_clearance_bound_mm>=0.4, "Conditional retention/release margin fails");
+assert(42.2-receiver_sweep_y_mm>=0.4, "Fixed mount enters receiver sweep");
+assert(receiver_root_y_mm<door_height_mm/2 && receiver_root_y_mm>=core_height_mm/2, "Receiver loses upper perimeter root");
+echo(conditional_retention_overlap_mm=clasp_retained_overlap_bound_mm,conditional_release_clearance_mm=clasp_release_clearance_bound_mm,conditional_rim_offset_mm=clasp_rim_offset_bound_mm);
+echo(clasp_release_mm=clasp_release_mm,clasp_play_tilt_deg=clasp_play_tilt_deg,clasp_pin_flat_depth_mm=clasp_pin_flat_depth_mm);
 echo(hinge_span_mm=hinge_span_mm,segment_length_mm=hinge_segment_length_mm,bore_radius_mm=bore_radius_mm,housing_top_mm=housing_top_mm,retention_overlap_mm=collar_radius_mm*cos(180/hinge_facets)-bore_roof_radius_mm);
 echo(collar_bridge_overlap_mm=collar_bridge_overlap_mm,lower_frame_sweep_clearance_mm=lower_frame_sweep_clearance_mm,head_relief_bounds_mm=[head_relief_bound_mm(screw_spacing_y_mm/2),head_relief_bound_mm(-screw_spacing_y_mm/2)]);
 
@@ -324,7 +295,7 @@ module fixed_frame() {
     }
     for(i=[1:2:9]) fixed_hinge_knuckle(i);
     fixed_stop_station(2,1); fixed_stop_station(8,9,true);
-    fixed_latch_housing();
+    fixed_clasp_mount();
 }
 module vent_slots() {
     for (row=[0:louver_rows-1],column=[0:louver_columns-1]) {
@@ -413,58 +384,184 @@ module moving_door() {
 module door_at_angle(angle_deg) {
     translate([0,hinge_y_mm,hinge_z_mm]) rotate([angle_deg,0,0]) translate([0,-hinge_y_mm,-hinge_z_mm]) moving_door();
 }
-module fixed_latch_housing() {
-    translate([latch_pivot_x_mm,latch_pivot_y_mm,0]) {
-        difference() {
-            union() {
-                cylinder(r=latch_housing_radius_mm,h=latch_roof_top_mm,$fn=128);
-                translate([-latch_housing_radius_mm,latch_anchor_y_min_mm-latch_pivot_y_mm,0])
-                    cube([2*latch_housing_radius_mm,latch_pivot_y_mm-latch_anchor_y_min_mm,frame_thickness_mm]);
-            }
-            // Cut the anchor too: no material enters either captive opening.
-            translate([0,0,-0.1]) cylinder(r=latch_lower_opening_radius_mm,h=latch_lower_lip_top_mm+0.11,$fn=128);
-            translate([0,0,latch_lower_lip_top_mm]) cylinder(r=latch_cavity_radius_mm,h=latch_roof_bottom_mm-latch_lower_lip_top_mm,$fn=128);
-            translate([0,0,latch_roof_bottom_mm-0.01]) cylinder(r=latch_spindle_opening_radius_mm,h=latch_roof_top_mm-latch_roof_bottom_mm+0.11,$fn=128);
+// All new pivot parts are assembled after printing; no bearing support/fusion.
+module clasp_axis_prism(x_mm,length_mm) {
+    translate([x_mm,clasp_pivot_y_mm,clasp_pivot_z_mm])
+        rotate([90,0,90]) linear_extrude(height=length_mm) children();
+}
+module clasp_bore_profile() {
+    r_mm=clasp_bore_diameter_mm/2/cos(180/64);
+    polygon(concat([for(a=[135:360/64:405]) [r_mm*cos(a),r_mm*sin(a)]],[[0,sqrt(2)*r_mm]]));
+}
+// New plates alone receive the larger shaft clearance; the existing ear's
+// 5.2 mm bearing is cut separately and preserved when these bodies are united.
+module clasp_clip_guide() {
+    for(x_mm=[15.4,21]) difference() {
+        translate([x_mm,53,0]) cube([2.6,22,30]);
+        clasp_axis_prism(x_mm-0.01,2.62) {
+            r_mm=3.7/cos(180/64);
+            polygon(concat([for(a=[135:360/64:405]) [r_mm*cos(a),r_mm*sin(a)]],[[0,sqrt(2)*r_mm]]));
         }
-        for(bounds=[[30,40],[140,150]])
-            linear_extrude(height=latch_stop_top_mm)
-                annular_sector(latch_fixed_stop_inner_radius_mm,latch_fixed_stop_outer_radius_mm,bounds[0],bounds[1]);
+        translate([x_mm-0.01,60,22]) cube([2.62,8,8.01]);
     }
+    for(y_mm=[53,72]) translate([15.4,y_mm,0]) cube([8.2,3,30]);
+    translate([15.4,53,0]) cube([8.2,22,3.6]);
+}
+module fixed_clasp_mount() {
+    clasp_clip_guide();
+    translate([0,(42.2+100.1)/2,0]) linear_extrude(height=3.6)
+        rounded_rectangle(40,100.1-42.2,3);
+    for(x_mm=[-18,13]) difference() {
+        clasp_axis_prism(x_mm,5)
+            polygon([[-6,-10],[6,-10],[6,2.5],[0,8.5],[-6,2.5]]);
+        clasp_axis_prism(x_mm-0.01,5.02) clasp_bore_profile();
+    }
+    // Radius3 concave ear/base roots; confined to each stationary ear band.
+    for(x_mm=[-18,13], side=[-1,1])
+        clasp_axis_prism(x_mm,5)
+            polygon(concat([[side*6,-6.4],[side*9,-6.4]],
+                [for(a=[-90:5:0]) [side*(9-3*cos(a)),-3.4+3*sin(a)]]));
+    // A10 upper bridge: complete unsupported inward reach is 6.7 mm.
+    // No low gusset may intrude into the played toe/retaining-wall sweep.
+    translate([7,90,12.9]) cube([2,3,2]);
+    translate([7,92.6,12.9]) cube([2,4.5,2]);
+    translate([7,96.7,0]) cube([3,3.4,14.9]);
 }
 module door_receiver() {
     translate([-5,receiver_root_y_mm,lip_z_mm]) cube([10,35.5-receiver_root_y_mm,receiver_top_z_mm-lip_z_mm]);
     translate([-5,receiver_root_y_mm,lip_z_mm+1.6]) cube([10,receiver_top_y_mm-receiver_root_y_mm,3]);
+    // Broad 3 mm root joins the inherited receiver; lip is 0.4 above toe.
+    translate([2,35,receiver_top_z_mm-0.2]) cube([3,3,12-receiver_top_z_mm+0.2]);
+    translate([3,35,10]) cube([6,3,2]);
+    // Local 2 mm concave root fillet, trimmed to the lip envelope.
+    translate([3,35,8]) difference() {
+        cube([4,3,4]);
+        translate([4,-0.01,0]) rotate([-90,0,0]) cylinder(r=2,h=3.02);
+    }
 }
-module quarter_turn_latch() {
-    // Rear-plane exception: foot and adjoining low-Z flange material.
-    // Nominal rotation preserves Z; off-wall play must be certified separately.
-    cylinder(r=latch_foot_radius_mm,h=latch_foot_top_mm,$fn=128);
-    translate([0,0,latch_flange_bottom_mm]) cylinder(r=latch_flange_radius_mm,h=latch_flange_top_mm-latch_flange_bottom_mm,$fn=128);
-    translate([0,0,latch_spindle_bottom_mm]) cylinder(r=latch_spindle_radius_mm,h=latch_spindle_top_mm-latch_spindle_bottom_mm,$fn=128);
-    translate([-latch_blocker_half_width_mm,-latch_blocker_length_mm,latch_blocker_bottom_mm])
-        cube([2*latch_blocker_half_width_mm,latch_blocker_length_mm,latch_blocker_top_mm-latch_blocker_bottom_mm]);
-    translate([-latch_tab_half_width_mm,latch_tab_y_min_mm,latch_tab_bottom_mm])
-        cube([2*latch_tab_half_width_mm,latch_tab_y_max_mm-latch_tab_y_min_mm,latch_tab_top_mm-latch_tab_bottom_mm]);
-    translate([-latch_blocker_half_width_mm,0,latch_tab_bottom_mm])
-        cube([2*latch_blocker_half_width_mm,latch_tab_web_end_mm,latch_tab_top_mm-latch_tab_bottom_mm]);
-    translate([-latch_blocker_half_width_mm,0,latch_stop_bottom_mm])
-        cube([2*latch_blocker_half_width_mm,latch_stop_root_end_mm,latch_stop_top_mm-latch_stop_bottom_mm]);
-    translate([0,0,latch_stop_bottom_mm]) linear_extrude(height=latch_stop_top_mm-latch_stop_bottom_mm)
-        annular_sector(latch_stop_neck_inner_radius_mm,latch_stop_lug_outer_radius_mm,latch_stop_start_deg,latch_stop_end_deg);
+module clasp_tongue(release_mm=0) {
+    // Smooth cubic displacement over the 22 mm straight span; radius2
+    // transition and its root stay fixed while the free end moves +X.
+    for(i=[0:23]) {
+        y0_mm=36+i; y1_mm=i==23 ? 60.35 : 37+i;
+        t0=max(0,(58-y0_mm)/clasp_straight_flex_length_mm); t1=max(0,(58-y1_mm)/clasp_straight_flex_length_mm);
+        hull() {
+            translate([9.4+release_mm*t0*t0*(3-2*t0),y0_mm,9]) cube([clasp_beam_thickness_mm,0.05,6.4]);
+            translate([9.4+release_mm*t1*t1*(3-2*t1),y1_mm,9]) cube([clasp_beam_thickness_mm,0.05,6.4]);
+        }
+    }
+    // Radius2 concave transition occupies Y58..60 of the nominal beam.
+    // It remains fixed with the root; the straight compliant region is 22 mm.
+    translate([7.4,58,12.4]) linear_extrude(height=3) difference() {
+        square([clasp_root_radius_mm,clasp_root_radius_mm+0.4]);
+        circle(r=clasp_root_radius_mm,$fn=64);
+    }
+    translate([release_mm,0,0]) {
+        difference() {
+            translate([7.2,35,7.5]) cube([4.2,3,2.1]);
+            // One-millimetre 45 degree engagement lead-in at free toe edge.
+            translate([7.2,35-0.01,7.5]) rotate([-90,0,0]) linear_extrude(height=3.02)
+                polygon([[0,0],[1,0],[0,-1]]);
+        }
+        // Finger pad projects sideways, clear of the door catch and carrier.
+        translate([11,31,12.4]) cube([8.4,8,3]);
+    }
 }
-module latch_at_angle(angle_deg) {
-    translate([latch_pivot_x_mm,latch_pivot_y_mm,0]) rotate([0,0,angle_deg]) quarter_turn_latch();
+module clasp_carrier(release_mm=0) {
+    difference() {
+        union() {
+            clasp_axis_prism(-clasp_hub_width_mm/2,clasp_hub_width_mm)
+                circle(d=clasp_hub_diameter_mm,$fn=64);
+            translate([-6,34,12.4]) cube([12,26.4,3]);
+            translate([4,60,12.4]) cube([7.4,4,3]);
+            // Hub/carrier transition stays within rigid carrier X bounds.
+            translate([-6,59,12.4]) cube([12,5,3]);
+            translate([3,33,9.6]) cube([3,1.6,5.8]);
+        }
+        clasp_axis_prism(-13,26) clasp_bore_profile();
+    }
+    clasp_tongue(release_mm);
 }
-module vent_assembly(angle_deg,latch_pose_deg) {
+module clasp_pin() {
+    difference() {
+        union() {
+            clasp_axis_prism(-20,2) circle(d=10,$fn=64);
+            clasp_axis_prism(-18,40) circle(d=clasp_pin_diameter_mm,$fn=64);
+        }
+        // Annular groove leaves an intact 1.2 mm end shoulder.
+        clasp_axis_prism(18.4,2.4) difference() {
+            circle(d=6,$fn=64); circle(d=clasp_clip_core_diameter_mm,$fn=64);
+        }
+        // Matching head/shaft D-flat; pin remains inside nominal circular fit.
+        translate([-21,clasp_pivot_y_mm-6,clasp_pivot_z_mm-6])
+            cube([44,12,6-clasp_pin_flat_depth_mm]);
+    }
+}
+// A11 geometric service pose, not an elastic/material simulation. Roots
+// stay fixed; cubic arm displacement has zero end slope over v=-11..1.
+function clip_arm_shift_mm(v_mm,spread_mm) =
+    let(t=max(0,min(1,(v_mm+11)/12))) spread_mm*t*t*(3-2*t);
+module clasp_clip_arm(sx,spread_mm) {
+    // Rounded 2 mm arm, u=4..6 (mirrored), v=-15..2. The sampled
+    // boundary follows the same smooth displacement on both sides.
+    polygon([for(p=concat(
+        [for(a=[180:5:360]) [5+cos(a),-14+sin(a)]],
+        [for(v=[-13.5:0.5:1]) [6,v]],
+        [for(a=[5:5:180]) [5+cos(a),1+sin(a)]],
+        [for(v=[0.5:-0.5:-13.5]) [4,v]]))
+            [sx*(p[0]+clip_arm_shift_mm(p[1],spread_mm)),p[1]]]);
+}
+module clasp_clip_flat(spread_mm=0) {
+    linear_extrude(height=clasp_clip_thickness_mm) difference() {
+        union() {
+            hull() for(sx=[-1,1]) translate([sx*4,-15]) circle(r=2,$fn=64);
+            for(sx=[-1,1]) {
+                clasp_clip_arm(sx,spread_mm);
+                // Concave radius2 transition stays below free-arm v=-11.
+                scale([sx,1]) translate([2,-13]) difference() {
+                    square([2,2]);
+                    translate([0,2]) circle(r=2,$fn=64);
+                }
+                // Cut the relaxed tooth first, then translate that same material.
+                translate([sx*spread_mm,0]) difference() {
+                    translate([sx*3.75,2]) rounded_rectangle(4.5,2,0.4);
+                    circle(r=2.1,$fn=64);
+                }
+            }
+            // Fixed stop: u=-1..1, v=-14..-2.1, positively rooted.
+            translate([-1,-14]) square([2,11.9]);
+        }
+        circle(r=2.1,$fn=64);
+        translate([-clasp_clip_throat_mm/2,0]) square([clasp_clip_throat_mm,10]);
+    }
+}
+module clasp_at_angle(a_deg,release_mm=0) {
+    translate([0,clasp_pivot_y_mm,clasp_pivot_z_mm]) rotate([-a_deg,0,0])
+        translate([0,-clasp_pivot_y_mm,-clasp_pivot_z_mm]) clasp_carrier(release_mm);
+}
+module vent_assembly(angle_deg,clasp_pose_deg,released=false) {
     color("silver") fixed_frame();
     color("steelblue") door_at_angle(angle_deg);
-    color("darkorange") latch_at_angle(latch_pose_deg);
+    color("darkorange") clasp_at_angle(clasp_pose_deg,released ? clasp_release_mm : 0);
+    color("gold") clasp_pin();
+    color("coral") translate([18.6,clasp_pivot_y_mm,clasp_pivot_z_mm+clip_withdrawal_mm])
+        rotate([90,0,90]) rotate([0,0,180]) clasp_clip_flat(clip_spread_mm);
 }
-echo(first_layer_soles_mm=[hinge_segment_length_mm,hinge_foot_forward_mm,2*latch_foot_radius_mm],sole_areas_mm2=[hinge_segment_length_mm*hinge_foot_forward_mm,PI*latch_foot_radius_mm*latch_foot_radius_mm]);
-echo(latch_nominal_axial_freedom_mm=latch_axial_freedom_mm,latch_nominal_locked_gap_mm=latch_locked_under_gap_mm,receiver_sweep_y_mm=receiver_sweep_y_mm);
+module printable_parts() {
+    if(layout_part=="all" || layout_part=="vent") {
+        fixed_frame(); door_at_angle(0);
+    }
+    if(layout_part=="all" || layout_part=="clasp")
+        translate([plate_width_mm/2+30,44,15.4]) rotate([180,0,0]) clasp_carrier();
+    if(layout_part=="all" || layout_part=="pin")
+        translate([plate_width_mm/2+35,-40,clasp_pin_flat_depth_mm-clasp_pivot_z_mm])
+            translate([0,-clasp_pivot_y_mm,0]) clasp_pin();
+    if(layout_part=="all" || layout_part=="clip")
+        translate([plate_width_mm/2+36,40,0]) clasp_clip_flat();
+}
+echo(first_layer_hinge_soles_mm=[hinge_segment_length_mm,hinge_foot_forward_mm],hinge_sole_area_mm2=hinge_segment_length_mm*hinge_foot_forward_mm);
 echo(hood_roof_angle_deg=atan(louver_roof_slope),hood_vertical_section_mm=louver_roof_thickness_mm,
      hood_channels_mm=[louver_outer_channel_mm,louver_middle_channel_mm,louver_outer_channel_mm],
      hood_slot_plan_area_mm2=louver_slot_plan_area_mm2);
-// Ignore inspection poses for the closed, central-angle printable layout.
-vent_assembly(render_mode=="printable_layout" ? 0 : door_angle_deg,
-              render_mode=="printable_layout" ? 0 : latch_angle_deg);
+if(render_mode=="printable_layout") printable_parts();
+else vent_assembly(door_angle_deg,clasp_angle_deg,clasp_released);

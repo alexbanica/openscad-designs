@@ -539,3 +539,91 @@ Allowed eventual implementation paths are designs/shed_ventilation.scad, README.
 ### Approval record
 
 Approved on 2026-10-16 by the user's exact reply “approve” to the complete effective SPEC through SPEC-shed-ventilation-A8. Approval covers the quarter-turn closure, positive indexing/capture, reinforced 9 mm projecting support-free blade design, accepted airflow tradeoff, preserved behavior and validation/documentation boundaries in this amendment. Earlier document status, bodies and approvals are preserved. This approval permits PLAN drafting; it does not authorize source changes, PLAN approval, implementation, commit or push.
+
+## Amendment 9 — 2026-10-16 — replaceable PETG flip-over clasp
+
+- Amendment ID: SPEC-shed-ventilation-A9
+- Previous version: complete approved effective A8, implemented at 49076eb42a01a106bebaf0c50e952f058f9ee048.
+- Approval: Approved under the explicit user instruction recorded below.
+- Request and purpose: the user reports the quarter-turn closure could not rotate and broke when forced; fusion is a plausible explanation, not an established diagnosis. The user selected the pictured hinged box-clasp style, accepted modest flex, specified everything is PETG, allowed one complete reprint and instructed “update the spec and plan and approve them”.
+
+### Changes against the previous version
+
+| Requirement | Before | After | Reason |
+| --- | --- | --- | --- |
+| A9-C1 closure | A8 captive quarter-turn rotor/housing | Separate flip-over clasp on an inserted retained pivot pin; distal hook engages a shallow door catch. Finger-release hook, swing clasp clear, then open door. | Avoid printing the new latch pivot trapped in its bearing. |
+| A9-C2 assembly and replacement | Three captive bodies, no assembly | Preserve captive frame/door hinge. Independently print and assemble clasp, pin and retainer; retain them throughout normal use. Deliberate retainer removal permits clasp replacement without reprinting frame/door. | No loose operational bolt or repeated full-cap replacement. |
+| A9-C3 elasticity | No moving-part flexure | Modest PETG flex accepted for hook engagement/release; broad mounts, rounded roots, stout main body and a longer compliant region. Accessible finger release without prying the door. | User-selected reference and durability preference. |
+| A9-C4 installation | A8 rotor housing/receiver | Replace local closure mounts/catch; one complete revised vent print accepted. Preserve existing shed mounting holes; no new shed drilling. No retrofit or old/new interchangeability promise. | Resolve attachment without unverified retrofit. |
+| A9-C5 material/printing | Filament-dependent general guidance | Everything PETG, including pin/retainer; no metal, glue or magnets. Independent latch parts have accessible mating surfaces and stable print poses, with no removable support in bearing or hook contact surfaces. | User material choice and fusion concern. |
+
+New dimensions in the paired PLAN are manually selected provisional design values, not measurements or PETG strength data. The image is a style reference, not performance evidence.
+
+### Preserved behavior and impact
+
+A9-P1 preserves A8 eight hood groups, 9 mm projection, cheeks/ribs and support-free blade intent; nominal 125 × 85 mm plate, 110 × 70 mm screw centres, 105 × 65 mm passage, screw/head reliefs, mandatory 135/120 variation, full-panel 0–180-degree downward opening, captive full-width hinge/positive stops, A7 hinge sole floors, cable removal before closing, rear plane and no Z<0 operation. Preserve OpenSCAD 2021.01, one source, no libraries, P2S/AMS 2 Pro compatibility and printable_layout default plus assembly mode. New latch envelope may grow and must be documented. The existing print-in-place door hinge still requires physical freedom verification; A9 changes only the closure.
+
+### Acceptance, validation and documentation
+
+- A9-V1: demonstrate positive hook engagement, accessible release, separate pivot assembly, captive pin/clasp throughout normal motion, and deliberate independent replacement. Document engagement overlap and release displacement; no CAD claim of elastic force or fatigue life.
+- A9-V2: inspect broad positive-volume mount/root unions, fillets, flex-region dimensions/orientation and geometrically displaced release pose. Physical PETG flex, retention and repeated operation remain pending until observed.
+- A9-V3: inspect complete door sweep with clasp parked clear, clasp/catch/frame/wall/head clearances, mounting access and passage preservation, including default and mandatory width variation. Remove obsolete rotor proofs/bodies instead of preserving three-body assumptions.
+- A9-V4: inspect actual material bodies, every first-layer island, footprint areas/narrow dimensions, initial growth and preconnection stability, including separate clasp/pin/retainer. Preserve hinge sole floors; inspect pivot-hole growth, bridges and support access. Every object must be independently printable in a stable pose.
+- A9-V5: bounded OpenSCAD assertions, geometry checks and viewed printable_layout/assembly previews; stop renders over 15 seconds, keep outputs in /tmp, run git diff --check. No unit tests/test-first or tracked mesh exports.
+- A9-V6: update README shed guidance for all-PETG parts, dimensions/provenance, assembly, retained pin, replacement, release, print poses/support exclusions and envelope. Separate CAD, slicer/toolpath and physical evidence; unavailable physical adhesion, pivot freedom, flex/retention/endurance and weather outcomes remain pending.
+
+Eventual ownership is limited to designs/shed_ventilation.scad, README.md's shed section and this existing SPEC/PLAN pair. AGENTS.md and unrelated designs remain unchanged.
+
+### Approval record
+
+Approved on 2026-10-16 under the user's exact instruction “update the spec and plan and approve them”, following acceptance of the reference style, modest flex, all-PETG construction and one complete reprint. This explicitly authorizes approval of the generated complete effective A9 SPEC and paired A9 PLAN without another prompt; it does not claim the user inspected the generated wording. Preserve original status, earlier amendments and historical evidence. This turn updates planning artifacts only; implementation requires a separate request and valid entry.
+
+## Amendment 10 — 2026-10-16 — retain the clasp across pivot play
+
+- Amendment ID: SPEC-shed-ventilation-A10
+- Previous version: complete approved effective SPEC through A9.
+- Approval: Automatically approved during the active implementation requested by `$implement specs/PLAN-shed-ventilation.md`.
+- Request and purpose: correct implementation-discovered A9 retention and parking interference while preserving the selected replaceable all-PETG clasp. A rigid +X0.30 mm / yaw0.7° pose clears the A9 hook without flex; the original parking gusset also intersects the parked toe. Evidence is recorded with the paired PLAN.
+
+### Changes against the previous version
+
+| Requirement | Before | After | Reason |
+| --- | --- | --- | --- |
+| A9-C1/V1 engagement | 0.6 mm nominal hook overlap, 5.8 mm bearing envelope and 25.2 mm hub | 1.8 mm nominal overlap, 5.2 mm bearing envelope around the unchanged 5 mm pin, 25.8 mm hub between unchanged ears; demonstrate positive retained overlap across reachable play and at least 0.4 mm lip clearance after a derived release no greater than 4 mm | The original interface admits release without intentional flex |
+| A9-C3/V2 root | 24 mm free flex length with radius2 root | 24 mm nominal beam allocation including a 2 mm radius root transition; at least 22 mm straight compliant region | Make the required fillet geometrically explicit; PETG force/fatigue remains unproved |
+| A9-C1/V3/V4 parking | Rear support at Y93.6 and low gusset | Support begins Y96.7; base ends Y100.1; remove intersecting low gusset and connect the parking lip to the rear support through an upper bridge. Inspect and disclose the complete 6.7 mm unsupported inward cantilever | Clear toe and retaining-wall sweep without support on hook contacts |
+
+### Preserved behavior and impact
+
+Preserve all A9 behavior and A9-P1 except these explicit interface, flex-region and envelope replacements. All parts remain PETG; frame and door remain captive, and clasp, pin and retainer remain independently replaceable. Keep mounting holes, open passage, full door motion/stops, louvers, hinge soles, default/wide/gap domains, supported render modes, stable independent print poses and no removable support on bearing/hook contacts. A10 does not claim physical fit at the provisional 0.1 mm radial bearing allowance. Accessible separate mating surfaces permit inspection and ordinary cleanup; calibration remains pending.
+
+Acceptance adds an explicit full-play retention/release certificate and parking support/sweep inspection to A9-V1–V5. Report the cantilever and small pin-end first-layer island separately from slicer and physical outcomes. README must describe changed dimensions, nominal versus straight beam length, complete envelope, assembly/cleanup and pending fit, flex, adhesion and support-free outcomes. No physical success or repair is inferred from CAD.
+
+### Approval record
+
+On 2026-10-16 the complete effective SPEC through A10 is automatically approved under the originating implementation request and the implement skill's implementation-required amendment procedure. This is automatic implementation authority, not a claim that the user manually inspected this generated revision. Earlier bodies, document status and approvals remain unchanged. The paired PLAN-A10 must receive planning assurance and automatic approval before affected source work resumes.
+
+## Amendment 11 — 2026-10-16 — long-arm serviceable pin retainer
+
+- Amendment ID: SPEC-shed-ventilation-A11
+- Previous version: complete approved effective SPEC through A10.
+- Approval: Automatically approved under the active `$implement specs/PLAN-shed-ventilation.md` request and implementation-required amendment procedure.
+- Request and purpose: preserve the selected minimum12 mm retainer flex length and verify capture without relying on a freely rotated long clip staying upright. The first clip's central ring braces its arms, leaving only4.536 mm free; this is a source conformance finding, not physical strength evidence.
+
+### Changes against the previous version
+
+| Requirement | Before | After | Reason |
+| --- | --- | --- | --- |
+| A9-C2/C5 retainer | Ring-braced C clip | Independently printed PETG open retainer with two12 mm straight compliant arms, inward retaining teeth and a fixed central stop;2 mm arms/thickness,3 mm throat,4 mm groove core,0.5 mm nominal engagement | Meet the existing long-arm requirement instead of equating overall rail length with free flex length |
+| Retainer pose/capture | Nominal clip orientation, unconstrained rotation | Upward-facing long root bar within a fixed open-top guide; guide is part of the revised closure mount. Finger windows expose the bar for deliberate removal. Inspect independent clip rotation/tilt, release and capture | Keep clip, pin and clasp retained in use, clear of the wall, while preserving independent replacement |
+| A9-V3/V4/V6 guide/envelope | No guide | Manual selected guide dimensions are given in PLAN-A11; guide height30 mm, new plate clearance openings7.4 mm. Recompute bounds and inspect guide growth, bearing preservation and assembly access | A nominal pose alone does not prove all-reachable capture or no-Z<0 operation |
+
+### Preserved behavior and impact
+
+Preserve A10 clasp/pivot/catch/parking dimensions, mounting holes, full hinge/louver behavior, five permanent material bodies, PETG-only construction and independent pin/clip/clasp replacement. Preserve no removable support on bearing/hook contacts, render modes/default, dimensional domains and all evidence boundaries. The guide is united with the fixed frame, never an added loose part. New clip arms may be shown geometrically spread0.6 mm each for deliberate extraction, providing a4.2 mm throat around the4 mm core; elastic force, recovery and fatigue remain unproved. Tool-free finger access is required in the model, not claimed physically demonstrated.
+
+A11 acceptance requires actual12 mm unbraced arm regions and finite tooth/post shoulder contact; independent clip seating, rotation/tilt and guide/window capture; deliberate insertion/removal trajectory; pin head/groove/ear non-crossing and A10 axial-witness closure. Assess guide bore growth, stable clip footprint and minimum8 mm layout spacing. Update README for the revised retainer, upward orientation, pinch/spread/pull sequence and dimensions, with slicer/physical outcomes pending. Nothing authorizes a wall, hinge, louver or shed-hole change.
+
+### Approval record
+
+On2026-10-16, complete effective SPEC through A11 is automatically approved under the originating implementation request and implement skill. This is automatic approval of a required implementation correction, not manual user inspection. Earlier document bodies/status/approvals remain unchanged. Paired PLAN-A11 requires independent planning assurance and automatic approval before source changes.
