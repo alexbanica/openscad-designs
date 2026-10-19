@@ -2063,3 +2063,191 @@ Parent accepts integrated review and distinct functional/printing QA within the 
 Required independent documentation writer synchronized only the README shed section after accepted review/QA: current controls/service, extendedY1..3 taper,92.296mm2 cartridge footprint, narrow bed-flat growth, sampled2.933mm support margin, modeled reversible closure and explicit slicer/physical limitations. Source and specification remain unchanged; README bytes outside that section are identical to baseline4a41612. Parent inspected the final source/document/artifact diffs and confirmed the original approved SPEC A13/PLAN A22 bytes remain exact prefixes. Fresh current-mesh sine/cosine vertex extrema reproduce the documented nominal full-sweep enclosure125/135×157.002×81.556mm. Final `git diff --check` passed. No generated mesh or diagnostic file is staged for delivery.
 
 All approved modeled behavior, independent review/corrections, distinct functional/printing QA, documentation and permitted validation criteria are satisfied; physical/slicer criteria remain expressly pending as defined by the approved CAD completion scope. Authorized remaining delivery is parent-owned transfer of the four accepted paths into verified localmain, inspection/staging, Conventional Commit, pushorigin/main, exact remote/upstream verification and guarded removal of only the planned temporary worktree. Git and the final execution-end report establish actual delivery; this pre-commit receipt does not embed or invent its future commit SHA.
+
+## Amendment 31 — 2026-10-19 — one integral frame clip and rounded door peg
+
+- Amendment ID: PLAN-shed-ventilation-A31
+- Previous version: complete approved effective PLAN through A30 and its execution receipts, delivered at e305c0a1609f869585e397ecf86e60e6596c127a.
+- Approval: Approved by explicit user decision on2026-10-19.
+- Approved specification: COMPLETE effective SPEC through SPEC-shed-ventilation-A15, SHA-256 `eb43a7a24f6ec539ee1690a26ff045b4a2994255fc536dbd5f235d9bb9a9011b`, approved2026-10-19 by the user's exact reply “appeove” to the SPEC approval question.
+- Request and purpose: explicit `$iterate change it to a single element print`, clarified as a simpler frame clip and door male pin to reduce small-scale fit/breakage concerns. Replace the delivered removable twin-jaw cartridge with one integral clip. Do not claim the user's concern is a measured failure diagnosis or that the proposed dimensions prove physical reliability.
+
+### Changes against the previous version
+
+| Area | Before | Final planned implementation | Reason |
+| --- | --- | --- | --- |
+| Closure bodies | Frame, captive door and separate cartridge | Exactly two operational bodies: frame with integral flexible clip, and captive door with integral rounded peg/grip | One print-in-place assembly, no closure-part installation |
+| Clip | Two tapered1.4-to0.8mm jaws with approximate width-cubed poses | One uniform2.0mm lateral ×1.4mm vertical tongue,28.2mm free span, rounded contact corners and root; simple uniform cantilever inspection pose | Larger minimum load section and fewer features/interfaces; no force/strength claim |
+| Root and service | Keyed socket,0.03/0.05mm fits, tabs, rails, tooth, pad, service arm | Solid frame-integral root/plinth; delete cartridge receiver/retention and every service/extraction mechanism | No precision cartridge fit or replacement assembly |
+| Male closure | A29 broad rounded head/stem/root hull, bridge, spine and grip | Preserve the same integral male geometry and finger grip | Already short/broad rather than a slender separate pin; avoid unnecessary changed interfaces |
+| Print controls | all/vent/catch selection and independent jaw/service controls | printable_layout emits the complete frame/door pair; assembly exposes door angle and one clip-flex inspection coordinate | Retire obsolete mechanism and separate-part selectors |
+| Evidence | Twin-jaw/cartridge contact/service/stock certificates | New single-clip capture, curved cam, root/initial-growth/support and two-body printing evidence | Old mechanism proofs do not establish new clip behavior |
+
+### Current evidence, ownership and no-research boundary
+
+Planning remains in invoking `/home/alexbanica/workspace/openscad-designs` onmain. Observed HEAD and localorigin/main are e305c0a1609f869585e397ecf86e60e6596c127a; no fresh remote fetch or execution base is claimed during planning. Current SCAD SHA-256 is397d0f734ad118bab498bc15e4745e6008a4a2c7235e7943861b1acfa3f11292. Current README/source and delivered A30 are the geometry baseline, not older single hooks/pins. Only the SPEC A15 approval/draft is modified before this PLAN append. No source/README changes, prototype, new render or physical result occurred during this planning pass.
+
+Own only `designs/shed_ventilation.scad`, the README shed section and append-only/approval/execution fields in this existing SPEC/PLAN pair. Preserve all other files, credentials, unrelated work and historical artifact content/status. Named source boundaries are closure parameters/derived values/guards, `fixed_socket` replacement and its `fixed_frame` call, jaw/cartridge/service modules replaced by integral clip helpers, `vent_assembly` and `printable_parts`. Preserve original hinge modules/parameters/stops, mounting/screw-hole logic, swept screw-head relief, passage/slots/louvers, door-surface reliefs and the entire `rounded_stud_and_grip` male geometry. Reuse those only through checked dependency closure. No external library, research, plugin, printer operation or unrelated audit is needed. Required in-scope corrections discovered during valid implement follow its automatic amendment procedure; this explicit iterate retains separate manual gates.
+
+### Selected provisional interface and printing allocation
+
+All new numbers are manually selected provisional PETG dimensions, not hardware measurements or calibrated fits. Coordinates are nominal closed assembly millimetres; add existing `catch_x_offset_mm=(plate_width_mm-125)/2` to every closureXcoordinate for the wide variant. Preserve nominal125/135×85×12mm closed limits,143/153×85×12mm layout caps, A14's separate inherited-play reporting, rear mounting plane, unchanged hinge and all mounting/passage/louver dimensions in approved A15.
+
+1. **Tongue and lip:** relaxed uniform stockX54.9..56.9,Y−20..8.2,Z10.6..12.0. Free length28.2, lateral thickness2.0, vertical breadth1.4. Neutral lineX55.9,Z11.3. Round only the inner upper/lower XZ contact cornersR0.4 inside the2×1.4 section; retain a square outer face and at least1.6mm nominal lower flat across the tongue. Use actual32-facet rounded profiles; preserve real finite extrusion/hull/cap stock. The open single lip is the retaining edge of this tongue, not another hook pin, opposing jaw or enclosed socket.
+2. **Integral root:** plinthX53.6..58.1,Y−27..−21.2,Z3.4..12.0, embedded0.2mm into the existing3.6mm frame. A root neckX54.9..56.9,Y−22..−20,Z10.6..12 overlaps the plinth by0.8mm inY and the full2×1.4 section. Add R1.2 concave shoulder transitions on both lateral sides overY−21.2..−20, entirely behind the free start; their outer boundsX53.7..58.1 remain within the root allocation. Do not describe a fillet buried inside an unchanged square plinth as an exposed rounded root. The free region begins atY−20; fixed root material must not shorten it. Actual positive union and local section/root screening are mandatory.
+3. **Peg and grip:** retain A29's nativefn64 convex hull of the4.4mm sphere centred(58,8,8) and two ellipsoids centred(58,9.4,5.5)/(58,12.6,5.5), semiaxes(1.4,1.4,1.1), plus its existing spine, transverse bridge, door web and raised grip. Their analytic top10.2 gives0.4mm nominal vertical separation below clip underside10.6 in the relaxed closed printing pose. Verify complete surfaces, finite profiles and all variants; this scalar gap is not the full nonfusion proof. Ordinary opening force must flex the clip, not the peg/root or panel.
+4. **Clip inspection pose:** replace independent jaw/service parameters with `clip_flex_mm`, source default0 and supported0..2.4, displacement toward−X at free-end stationY8.2. For free-span coordinatet=clamp((Y+20)/28.2,0,1), usef(t)=t²(3−t)/2, lateral shift−clip_flex_mm*f(t), with the same local tangent rotation on each emitted cross-section. Root stock stays fixed. Above the free-end station use tangent continuation only as needed to build the finite cap, then trim actual stock atY8.2. Use0.5mm or smaller section spacing including both exact endpoints; report the chosen finite station list. This is a geometric inspection law, not a force/elasticity model. Guard negative/over2.4 flex and incompatible render modes. Printable layout ignores inspection angle/flex and always prints relaxed, door closed. Retire `layout_part`, all jaw/cartridge dimensions and service/withdrawal/lift controls, guards and unused helpers rather than leaving inert public settings.
+5. **Capture and travel screens:** a previous, still unvalidated as a new closure, finite-hinge screen bounded head lateral displacement below0.9931mm over0..10degrees. An inner faceX56.1 was rejected: a permitted+0.35mm axial door shift lets the peg bypass it without clip motion. X56.9 instead leaves approximately0.1069mm scalar overlap against that older bound; opposite displacement suggests up to2.093mm interference, motivating2.4mm inspection capacity. These are allocation leads ONLY: derive current finite occupied hinge premises and actual single-clip capture/contact with relevant correlated play; no independently maximized box or predecessor twin-jaw proof substitutes for it. Establish a continuous reversible minimum-flex branch, rounded cam direction, relaxed nominal seat and release of the COMPLETE male geometry by12degrees; subsequently show all0..180degree clearance. Renew finite bounds over the full new contact interval rather than extending an old0..10 certificate silently. Any demonstrated bypass, trapped contact, support or required deformation of peg/door/hinge blocks acceptance and triggers in-scope correction/amendment.
+6. **Printing support and cleanup:** print rear-down, closed and relaxed as one complete operational assembly; frame remains on its existing broad bed ring, door on its existing core/hinge soles. The raised tongue begins atZ10.6; it is not claimed self-supporting. Specify local removable exterior slicer supports below the tongue overX54.9..56.9,Y−19.6..4.8. A provisional support spanZ3.8..10.35 reserves0.20mm above the frame and0.25mm below the tongue. Exact toolpath/layer rounding remains slicer evidence, not proven by these numbers. This main support region is forward-separated from male sourceY>=5.8 and has a candidate straight+X removal corridor with the door closed and clip unflexed. For the lastY4.8..8.2, use an accessible optional narrow outer support stripX54.9..55.4; this stays nominally>=0.4mm from male sourceX>=55.8. Its candidate removal sequence is−X0.6mm then+Z outside clipX54.9, without moving or flexing the latch. Verify actual support-region nonintersection and complete extraction sweep against all source door/frame/clip material, including root fillets, pin, bridge and trim; the old core/lip corridor is only a lead. If the optional strip is omitted, document/assess the last3.4mm local overhang explicitly. CAD diagnostics may model temporary support/enforcer envelopes under/tmp; do not add a third permanent operational body, model sacrificial fusing ties, or commit generated supports/meshes. No blanket support/brim may enter hinge or latch gaps. Actual slicer/support-removal/print evidence remains pending under the approved CAD completion boundary.
+
+The uniform beam ideal-clamp screen at2.4mm travel suggests roughly0.91% outer-fibre strain. Recompute actual rounded cross-section/root geometry with stated boundary conditions; this is not a PETG allowable, load rating, measured force or recovery/fatigue result. The simpler topology and larger section do not by themselves establish reliable fit or breakage resistance.
+
+### Execution location, delivery and recovery
+
+After separate PLAN approval and valid implement entry, refresh `origin/main` explicitly and record the resolved commit before edits. Use the existing delivered implementation as the minimum accepted baseline; if remote changes affect owned geometry/artifacts, stop for reconciliation rather than overwrite them. Prepare clean detached `/tmp/agent-worktrees/openscad-designs/shed-ventilation-integral-clip` at that refreshed ref. For this new path, require absence/unregistered state; if only the exact planned registered path is missing, remove that registration non-forcibly before recreating it. Other present/dirty/conflicting states block safe preparation. Capture invoking HEAD/index/dirty bytes and byte-verify SPEC/PLAN transfer with recovery copies. Do not prune or alter unrelated worktrees.
+
+Repository main-delivery instructions override generic task-branch defaults: temporary detached mechanics only, final accepted four-path integration and Conventional Commit on localmain, normal push toorigin/main and independent exact remote/upstream/artifact verification. No task branch/PR or deployment is planned. Parent alone performs Git/worktree/integration/delivery. Preserve invoking unrelated edits and newer artifact changes; conflicts or unsafe main transfer/push block delivery as evidenced DRAFT. Main must finish approved review, corrections, validation, distinct QA, documentation and safe recovery rather than stop at a handoff or checkpoint. Never push unaccepted geometry merely to create a checkpoint. After verified final delivery, clean only exact byte-identical delivered duplicates and remove the planned clean worktree without force; invokingmain must be clean or explicitly reconciled. No implementation, commit or push occurs under iterate itself.
+
+### Units, dependencies, ownership and assurance
+
+Select **full assurance** for the complete change: physical moving-body/contact behavior, printing topology and uncertain regression coupling require independent coverage beyond a routine prose change. Contract/security reviews are deterministically inapplicable: no external/shared executable interface, dependency, trust, deployment, credentials or operational change. No unit tests or conventional test-first phase; prohibited by repository. Required roles are bounded developers, one independent integrated code-reviewer, distinct functional and printing QA agents, and final documentation-writer. Parent owns requirements, artifact amendments, sequencing, findings, integration, Git and acceptance. Each assignment aims3minutes/hard5minutes, with a fresh bounded successor after verified partial handoff; scheduling saturation is not a terminal blocker. No overlapping source ownership or unchecked predecessor reuse.
+
+| Unit | Ownership and prerequisites | Completion and validation |
+| --- | --- | --- |
+| C1 integral clip geometry | Developer, SCAD closure modules/selected variables only; approved pair and prepared worktree | Replace socket/cartridge with allocated positive-root uniform clip, preserve entire male and named nonclosure dependencies; freeze source and exact diff |
+| C2 controls/print integration | Developer, same SCAD exclusively after verified C1 handoff | Retire old selectors/service controls, add clip_flex and actual two-body print/assembly outputs, source default printable_layout, meaningful guards and no stale helpers |
+| C3 source-exact development evidence | Bounded developers, read-only source plus/tmp diagnostics after C2; disjoint contact vs printing/spatial evidence | Current finite-play capture/continuous reversible cam/seat/travel/exit, full sweep, root/mechanics, both width/gap meshes, actual island/growth/support extraction and nominal bounds; no source edits during frozen checks |
+| C4 integrated assurance | Independent code-reviewer after C3; parent dispositions and one consolidated developer correction batch; affected validation | Full integrated diff/effective criteria/dependencies reviewed; all supported findings disposed, no unaccepted geometry or missing criterion. A qualifying acceptance failure starts the required fresh assurance cycle; speculation alone does not |
+| C5 distinct final QA | Independent functional and printing QA after integrated assessment | Independently check actual clip capture and reverse trajectory, finite hinge play, no bypass and preserved interfaces; independently check every body/island/growth/support removal, profile/mode guards and variants. Main verifies evidence and git diff --check |
+| C6 documentation | Documentation-writer after accepted QA; README shed section only | Actual two-body operation/controls/selected dimensions and provenance, integral clip nonreplaceability, print/support strategy and distinct pending physical evidence; semantic mismatch returns to parent |
+| C7 delivery | Parent only, accepted C1–C6 and all owned artifacts | Reconcile/stage exact accepted paths, inspect staged diff, commit localmain, pushorigin/main, independently verify remote SHA/upstream/artifact hashes, guarded cleanup and clean invoking checkout |
+
+### Permitted validation and terminal evidence
+
+Use OpenSCAD2021.01-compatible source and only `render_mode="printable_layout"` or `"assembly"`, without electronics. Every native invocation is bounded with `timeout -k 1s 13s openscad ...`; stop above this bound and never retry an unchanged timeout. Keep preview/mesh/analytic artifacts under/tmp. Inspect ERROR/WARNING/assertion diagnostics even on exit0. Use exact component diagnostics for larger scenes when necessary, recording dependency/transform/coverage equivalence; a timed-out whole render is missing evidence, not success. Software views of actual meshes may supplement native preview when PNG is unavailable. Do not render unrelated individual-part/electronics modes or add tracked exports.
+
+Required matrix is defaultwidth125/screwX110 and wide135/screwX120, moving_clearance0.4 and0.01; also inspect the supported continuous0<g<=0.4 domain analytically where relevant. Verify exactly two closed connected operational mesh bodies, nominal closed/layout bounds, positive print separation, and every independent Z0 island with modeled area/shape/neck dimensions, initial growth/first substantial union and own support polygon. Clip root growth and peg overhangs need local analysis even when connected to a large completed body. Report CAD static/geometry, slicer first-layer/toolpaths and physical print/adhesion/fit/force/recovery separately. No actual failure is claimed fixed without physical evidence. Native representative states include relaxed/entering/maximum-required-flex/seated/exiting and fully open; derive required flex from actual contact rather than merely rendering a prescribed full-flex opening. Check both forward and reverse, finite caps/contact births and peg-root/nonclip collisions; review finite captured-hinge dependencies rather than importing cartridge play. Actual support envelopes/extraction and no trapped cleanup route are separate modeled criteria. Assert invalid flex, angle, dimension pairs and obsolete-mode use as appropriate; print layout ignores assembly inspection poses by definition.
+
+### Requirement-to-delivery trace
+
+| Effective SPEC anchor | Units/owned paths | Required evidence or explicit no-source outcome |
+| --- | --- | --- |
+| A15 topology/service/print rows; acceptance1 | C1/C2 SCAD, C3/C5 QA, C6 README | Two integral operational bodies in one no-installation print, positive roots, removed cartridge/service/selector topology and truthful loss of replaceability |
+| A15 operation/fit rows and definitions; acceptance2 | C1/C3/C4/C5 SCAD/tmp, C6 README | Single compliant clip, short broad rounded peg, captured closed state and continuous curved push/pull/reverse with relevant play, no extra release action or peg/door/hinge flex |
+| A15 dimensions/preserved behavior; A14; acceptance3 | C1–C5 SCAD/tmp, C6 README | Nominal size/plate-interface caps, unchanged hinge/stops/mount/screw/passage/louvers and full sweep, both widths/gap regressions, inherited play reported separately |
+| A15 support/cleanup definitions; acceptance1/4 | C1–C5 SCAD/tmp, C6 README | Stable rear-down poses, all actual independent islands/local growth/own-support evidence, root/peg section analysis and accessible nonfusing support-region/extraction geometry |
+| A15 acceptance5 | C3–C5 plus parent checks | Permitted bounded modes, actual logs/mesh/analytic checks, source default and guards, diff check; unit tests/test-first N/A and no tracked generated files |
+| A15 acceptance6 and physical limitations | C5/C6/C7 README/artifacts | Updated usage/dimensions/provenance/nonreplaceability/printing risks and explicit pending slicer/physical evidence; no invented force, fit, adhesion, breakage fix or durability success |
+| Effective pair/authority and delivery | C7 four owned paths | Separate approvals, complete assurance/DoD, verifiedmain/origin/main commit and artifact bytes, safe temporary-worktree removal and clean invoking checkout |
+
+### Definition of Done and approval record
+
+Complete all effective A15/A14 trace criteria within the approved modeled CAD scope, full integrated review/disposition/corrections, distinct final functional/printing QA, final README synchronization, parent diff/staging checks and authorized verified main/origin/main delivery/cleanup. Physical/slicer outcomes remain explicitly pending and are not claimed by modeled delivery. Missing authority/facts/capability, a required geometry incompatibility or unsafe concurrent state blocks affected work as evidenced DRAFT after safe independent work; routine stages, partial handoffs or temporary agent capacity do not end the execution. Preserve exact remaining obligations/recovery state and do not substitute an unaccepted main push for completion.
+
+Pending mandatory independent explorer/architect assurance and parent finding disposition, then separate explicit user approval of the COMPLETE effective PLAN through A31. Preserve original document status and all preceding bodies/deltas/approval records. SPEC A15 approval alone does not approve this PLAN or implement it. No source edits, new mesh/printing evidence, commit or push are claimed by planning.
+
+### A31 support-independence clarification before assurance disposition
+
+The support regions above are maximum allowed envelopes, not permission to fuse the main block and terminal strip. When both are used, end main support material atY4.8 and begin the terminal strip atY5.2, leaving a0.4mm longitudinal separation so their distinct removal directions do not rely on first breaking an inaccessible joined block. Assess this short0.4mm unsupported tongue interval explicitly. The terminal strip's actual material isX54.9..55.4,Y5.2..8.2 within its earlier candidate envelope; its−X0.6/+Z extraction and all gap/obstacle checks remain unchanged. Keep any slicer support expansion/connectors outside the separating seam, moving gaps and forbidden volumes. Omitting the terminal strip still leaves the previously identified last3.4mm overhang to assess. The purpose is accessible temporary support cleanup, not a new permanent body or claimed successful slicer/physical removal. Complete effective A31 overrides stale historical top-level mechanism/delivery fields only where explicitly specified; all original artifact content/status/approval records are preserved.
+
+### A31 independent planning assurance and disposition — 2026-10-19
+
+Independent explorer and architect each verified the approved complete SPEC A15 SHAeb43a7a24f6ec539ee1690a26ff045b4a2994255fc536dbd5f235d9bb9a9011b, unchanged source397d0f73, observedmaine305c0a and complete proposed PLAN including the support clarification, reviewed SHA-256 `c6e536c3c139509a7d6a17f7c520aa8bf1f3f531caf61ec076f683ab5d025b79`. Explorer traced allocation, source ownership/dependencies, dimension/variant requirements, printing/cleanup/physical limits, execution/delivery and every A15 trace row; no supported contradiction remained. Its caution about stale historical top-level fields is disposed by the explicit effective-A31 override clarification, preserving original content/status. Architect independently checked the2×1.4mm/28.2mm tongue, positive root/plinth/frame allocation, exposed shoulder boundary, preserved male geometry, nominal0.4mm gap, simple cantilever pose, finite-play/capture and first-layer/support obligations, serialized units, full assurance and main-delivery recovery; it found no supported blocking planning contradiction. Both checked the separated main/tip support envelopes and required0.4mm unsupported interval/extraction evidence.
+
+Parent accepts these advisory reports and retains their conditions as implementation acceptance gates: source-exact finite-play capture/continuous reversible cam and no bypass; root/section union; actual two-body mesh/bounds/islands/local growth; complete occupied-geometry support extraction; required review, distinct QA, documentation and verified delivery. These reports do not establish geometry, physical strength/fit, toolpath or successful support removal. Prior cartridge/two-jaw proofs remain invalidated where the topology or dependency changed. No current source or README edit, render/prototype, unit test, commit or push occurred. SPEC A15 is approved; the COMPLETE effective PLAN through A31 remains pending separate explicit user approval, with original document status and all prior approval records unchanged.
+
+### A31 explicit user approval record — 2026-10-19
+
+Approved on2026-10-19 by the user's exact reply “approve” to the presented complete effective PLAN through PLAN-shed-ventilation-A31, after independent explorer/architect assurance and support-independence clarification. The approved presented revision was SHA-25604799689cb7596a5cc29208e79f44e90c38dc96ae9c568717d991b1f6402331a, paired with approved complete SPEC A15 SHA-256eb43a7a24f6ec539ee1690a26ff045b4a2994255fc536dbd5f235d9bb9a9011b. This record supersedes A31's pending-approval descriptions without changing original document status or preceding amendment content/approvals. Approval covers the complete concrete integral single-clip/rounded-peg allocation, two-body no-assembly printing/support strategy, preserved interfaces and dimensions, selected controls, full assurance/validation/documentation and parent-owned isolated-worktree integration/verifiedmain/origin/main delivery/cleanup lifecycle. It does not claim implementation, CAD/slicer/physical success, commit or push. Explicit iterate ends with this consistent approved pair; implementation requires a new session, cleared context or explicit same-context implementation consent under the implement workflow.
+
+### A31 implementation and assurance receipt — 2026-10-19
+
+The originating `$implement specs/PLAN-shed-ventilation.md` request entered with the
+complete explicitly approved SPEC A15 (`eb43a7a24f6ec539ee1690a26ff045b4a2994255fc536dbd5f235d9bb9a9011b`)
+and PLAN A31 (`0e9831ccaa90c1844a3741c6fbd659b6aebdf03da96a95a18299ffdce50da524`).
+The parent refreshed `origin/main` and verified local main and the execution base as
+`e305c0a1609f869585e397ecf86e60e6596c127a`, prepared the planned detached
+`/tmp/agent-worktrees/openscad-designs/shed-ventilation-integral-clip`, and copied
+both artifacts byte-for-byte with recovery copies. A later remote refresh retained
+the same base. Unrelated worktrees and files were preserved.
+
+C1–C3 implement the allocated integral frame clip, positive root, actual rounded
+section, 58 free-span stations and finite tangent cap; retain the entire male,
+hinge, stops, mounting, passage and louvers; remove cartridge/service topology and
+controls; and expose the complete relaxed two-body layout plus assembly angle/flex
+inspection. Frozen SCAD SHA-256 is
+`6c1943ea9173e1541f39d08cd3c7193cf41ea525200a505e7372ca6463b5f2af`.
+Development inspection found coincident shoulder/neck mesh faces. Adding 0.01 mm
+hidden shoulder-square overlap inside existing neck/plinth stock resolved them
+without changing exposed R1.2 profiles, dimensions, free span or operating allocation.
+No implementation-required SPEC/PLAN amendment or new automatic approval was needed.
+
+C4 independent integrated code review covered the complete source/diff, effective
+criteria, contact/caps, finite hinge premises, printing, support removal and preserved
+dependencies. Its narrow initial capture-derivation coverage gap was closed by a
+self-contained finite occupied-shaft/collar bootstrap and current 0–12 degree
+no-bypass derivation, followed by focused independent reinspection with unchanged
+source, requirements and prior coverage. No supported source finding remained.
+C5 distinct functional and printing QA independently checked the current geometry
+and relevant calculations; neither reported a blocking modeled-scope finding.
+Contract/security assurance remained inapplicable for the reasons selected in A31.
+
+Validation evidence includes:
+
+- Four native complete-layout meshes at widths 125/135 and gaps 0.4/0.01, each with
+  exactly two closed connected bodies, zero nonpaired edges and nominal complete
+  bounds 125/135 × 85 × 12 mm. Native commands used `timeout -k 1s 13s`; final
+  complete meshes took approximately 11.0–11.54 seconds without warning/error
+  diagnostics. Only printable_layout/assembly and no electronics were used.
+- Source-exact finite hinge constraints and actual faceted head/clip retention:
+  no-relaxed-bypass margin at least 0.06389 mm. All 6,144 native male generator
+  points were checked against the 4,350 restored convex contact facets; every
+  restored hull vertex maps to an actual source generator.
+- Coupled finite-hinge contact exclusion for 188 potentially adverse facets across
+  45,120 continuous angle/width slabs, with independently verified repaired Farkas
+  multipliers. The remaining facet and finite-cap support/KKT arguments retain
+  positive separating work after reserve. Strict available-flex clearance exceeds
+  0.01349 mm, establishing a continuous reversible minimum-flex branch together
+  with nominal seating, capture and neighboring-material checks.
+- Same-pose branch/core clearance exceeds 0.26308 mm; nonconvex male additions are
+  separately excluded. The complete male clears by 12 degrees; continuous subsequent
+  sweep and all-roll new-root clearance are checked. These bounds concern the
+  required operating branch, not every independent inspection-angle/flex combination.
+- Contact-derived representative assembly CSGs include sufficient nominal flex
+  1.1607421875 mm at 3.25 degrees. Exact source-component intersection is occupied
+  at that angle with zero flex and empty at the derived flex; commands took 5.428
+  and 12.499 seconds respectively. Empty intersection returned exit 1 as expected;
+  diagnostics were inspected. Sampled poses supplement the continuous argument.
+- Every actual Z0 island was measured: one connected island per body in all cases.
+  At 24 sampled growth heights from 0.05 through 12 mm, each partial body remained
+  connected to its own bed footprint. Root/peg local starts, narrow webs and hinge
+  soles were assessed separately from completed-body area and static support.
+- Complete temporary support envelopes and extraction sweeps were checked against
+  frame/root/fillets and all door/peg/bridge/grip stock. The separated main/tip
+  supports, 0.4 mm seam and remaining local cantilevers are documented as slicer
+  risks, not demonstrated deposition or physical support removal.
+- Invalid controls/modes/dimension pairs asserted as expected, including OpenSCAD's
+  possible exit-0 assertion behavior; distinct functional QA also exercised a
+  supported wide/tiny-gap assembly and invalid flex/angle/mounting inputs.
+  Preserved module/global-parameter equality was independently verified.
+
+C6's required documentation writer synchronized the README shed section. Parent
+inspection corrected support translation, captive-part replacement wording,
+operating-branch scope, web/sole terminology and small prose issues; bytes outside
+that section remain unchanged. Final README SHA-256 is
+`39c66890d299ba412145e00d9be45dc5c2d0ae4239e20479fff89198dbb7808f`.
+`git diff --check` passed. Unit tests and conventional test-first phases were
+prohibited and not performed; no generated mesh is an accepted tracked output.
+
+CAD-only acceptance remains distinct from pending slicer/toolpaths, actual support
+cleanup, adhesion, hardware fit, PETG forces/friction/recovery/strength/durability,
+weather and cable safety. No physical first-layer failure or breakage concern is
+claimed fixed. Temporary diagnostic evidence is under `/tmp/shed-integral-analysis`.
+
+The accepted delivery set is exactly README.md, designs/shed_ventilation.scad and
+this existing SPEC/PLAN pair. C1–C6 are accepted within the approved modeled scope.
+C7 remains parent-owned: reconcile exact accepted bytes to local main, commit,
+push origin/main, independently verify remote/upstream/artifact equality, then
+remove only the verified clean planned worktree and reconcile the invoking checkout.
+This pre-commit receipt does not invent its own future commit SHA or claim a push;
+the execution-end report records actual verified Git delivery and cleanup.

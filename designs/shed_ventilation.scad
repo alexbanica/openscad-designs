@@ -3,29 +3,14 @@
 // Adjustable Parameters
 render_mode = "printable_layout";
 door_angle_deg = 0;
-// Assembly geometric poses; printable layout ignores these controls.
-jaw_left_spread_mm = 0; // outward -X, 0..2.2
-jaw_right_spread_mm = 0; // outward +X, 0..2.2
-catch_service_mm = 0; // downward service flexure depression, 0..1
-catch_withdrawal_mm = 0; // +Y service travel, 0..3
-catch_lift_mm = 0; // +Z extraction after complete withdrawal
-// A22 manually selected provisional PETG cartridge sections.
-jaw_section_width_mm = 1.4;
-jaw_section_height_mm = 2;
-jaw_max_spread_mm = 2.2;
-jaw_root_radius_mm = 1;
-// A24 selected tip stock and inner-throat corner relief.
-jaw_min_section_width_mm = 0.8;
-jaw_inner_corner_radius_mm = 0.3;
-jaw_tip_material_end_y_mm = 8.2;
-cartridge_guide_clearance_mm = 0.03;
-// A25 provisional vertical tab fit, independent of hinge and lateral gaps.
-cartridge_vertical_clearance_mm = 0.05;
-service_free_length_mm = 10;
-service_thickness_mm = 0.8;
-service_breadth_mm = 1.2;
-service_root_radius_mm = 0.6;
-layout_part = "all"; // all, vent, catch
+// Assembly geometric inspection pose; printable layout is always relaxed.
+clip_flex_mm = 0; // free-end displacement toward -X, 0..2.4
+// A31 manually selected provisional PETG clip dimensions, not strength data.
+clip_section_width_mm = 2;
+clip_section_height_mm = 1.4;
+clip_inner_corner_radius_mm = 0.4;
+clip_root_radius_mm = 1.2;
+clip_max_flex_mm = 2.4;
 // Photo-estimated mounting dimensions: measure before installation.
 plate_width_mm = 125;
 plate_height_mm = 85;
@@ -69,7 +54,6 @@ louver_columns = 2;
 $fn = 32;
 
 // Derived Values
-cartridge_roof_underside_mm = 10.6 + cartridge_vertical_clearance_mm;
 opening_width_mm = plate_width_mm - 2*frame_border_mm;
 opening_height_mm = plate_height_mm - 2*frame_border_mm;
 core_width_mm = opening_width_mm - 2*moving_clearance_mm;
@@ -132,30 +116,23 @@ louver_slot_plan_area_mm2 = louver_rows*louver_columns*(slot_width_mm-2*louver_r
 // Full roof/slot footprint, including the inclined roof's upper connector.
 louver_outer_x_mm = (louver_columns-1)*slot_x_pitch_mm/2+slot_width_mm/2+1;
 louver_outer_y_mm = (louver_rows-1)*row_pitch_mm/2+slot_height_mm/2+1;
-// A22 closure coordinates follow the right mounting border.
+// A31 closure coordinates follow the right mounting border.
 catch_x_offset_mm = (plate_width_mm-125)/2;
-jaw_free_start_y_mm = -16;
-jaw_free_end_y_mm = 8;
-// A24 smooth taper leaves the relaxed outer beam faces square and fixed.
-// The central section is 0.8 wide from Y3 through the trimmed tip.
-function jaw_width_mm(y) = let(t=max(0,min(1,(y-1)/2)))
-    jaw_section_width_mm-(jaw_section_width_mm-jaw_min_section_width_mm)*t*t*(3-2*t);
-// Approximate width-cubed geometric pose law, normalized at Y8.
-// This is not the inertia of the rounded XZ section or a root/strain proof.
-jaw_integral_steps = 96;
-function jaw_integral(s,n=jaw_integral_steps) = let(ds=s/n)
-    ds*sum_list([for(i=[0:n-1]) let(u=(i+0.5)*ds)
-        (s-u)*(24-u)/pow(jaw_width_mm(-16+u),3)]);
-function sum_list(v,i=0) = i>=len(v) ? 0 : v[i]+sum_list(v,i+1);
-jaw_tip_compliance = jaw_integral(24);
-function jaw_shape(y) = y<=-16 ? 0 : y>=8 ? 1+(y-8)*jaw_tip_slope : jaw_integral(y+16)/jaw_tip_compliance;
-function jaw_slope(y) = (jaw_shape(min(y+0.005,8))-jaw_shape(max(y-0.005,-16)))/(min(y+0.005,8)-max(y-0.005,-16));
-jaw_tip_slope = (jaw_integral(24)-jaw_integral(23.99))/0.01/jaw_tip_compliance;
-function jaw_rotation_deg(y,spread,side) = -atan(side*spread*(y>=8 ? jaw_tip_slope : jaw_slope(y)));
-function service_curve(t) = let(q=max(0,min(1,t))) q*q*(3-q)/2;
-function service_slope(t) = let(q=max(0,min(1,t))) 3*q-1.5*q*q;
-function service_shift_mm(y,stroke) = -stroke*service_curve((y+27)/service_free_length_mm);
-function service_rotation_deg(y,stroke) = -atan(stroke/service_free_length_mm*service_slope((y+27)/service_free_length_mm));
+clip_free_start_y_mm = -20;
+clip_free_end_y_mm = 8.2;
+clip_free_length_mm = clip_free_end_y_mm-clip_free_start_y_mm;
+// 57 equal intervals: exact endpoints, maximum spacing 28.2/57 < 0.5 mm.
+clip_station_count = 57;
+clip_station_y_mm = [for(i=[0:clip_station_count])
+    clip_free_start_y_mm+clip_free_length_mm*i/clip_station_count];
+function clip_curve(t) = let(q=max(0,min(1,t))) q*q*(3-q)/2;
+function clip_curve_slope(t) = let(q=max(0,min(1,t))) 3*q-1.5*q*q;
+// Tangent continuation above the end is solely finite-cap construction stock.
+function clip_shape(y) = y>clip_free_end_y_mm ?
+    1+(y-clip_free_end_y_mm)*1.5/clip_free_length_mm :
+    clip_curve((y-clip_free_start_y_mm)/clip_free_length_mm);
+function clip_rotation_deg(y,flex) = atan(flex/clip_free_length_mm*
+    clip_curve_slope((y-clip_free_start_y_mm)/clip_free_length_mm));
 // Conservative XY keepouts use the real aperture corner, bearing and latch housing.
 screw_corner_distance_mm = sqrt(pow(max((screw_spacing_x_mm-opening_width_mm)/2,0),2)+pow(max((screw_spacing_y_mm-opening_height_mm)/2,0),2));
 collar_bridge_overlap_mm = min(hinge_z_mm+collar_radius_mm,lip_z_mm+door_thickness_mm)-max(hinge_z_mm-collar_radius_mm,lip_z_mm);
@@ -165,6 +142,8 @@ function rectangle_distance_mm(x_mm,y_mm,x0_mm,x1_mm,y0_mm,y1_mm) = sqrt(pow(max
 core_top_sweep_mm = hinge_y_mm + sqrt(pow(core_height_mm/2-hinge_y_mm,2)+pow(hinge_z_mm,2));
 
 assert(render_mode=="printable_layout" || render_mode=="assembly", "Only permitted inspection modes");
+// Reject removed CLI inspection/selectors instead of silently changing their meaning.
+assert(is_undef(layout_part) && is_undef(jaw_left_spread_mm) && is_undef(jaw_right_spread_mm) && is_undef(catch_service_mm) && is_undef(catch_withdrawal_mm) && is_undef(catch_lift_mm), "Obsolete separate-catch/jaw/service controls; use clip_flex_mm in assembly");
 assert(plate_width_mm>0 && plate_height_mm>0 && frame_border_mm>0 && frame_thickness_mm>0 && door_thickness_mm>0, "Positive dimensions required");
 assert(door_thickness_mm>=0.2, "Louver connector penetrates rear mounting/print plane");
 assert(moving_clearance_mm>0 && shaft_diameter_mm>0 && door_overlap_mm>0, "Positive moving clearances required");
@@ -217,15 +196,9 @@ assert(row_pitch_mm-(louver_upper_y_mm-louver_lower_y_mm)>=6-0.000001 && row_pit
 // Preserve minimum floors for the four actual A15 moving soles.
 assert(hinge_segment_length_mm*hinge_foot_forward_mm>=60 && min(hinge_segment_length_mm,hinge_foot_forward_mm)>=4, "A7 hinge sole below 60 mm2 area or 4 mm short dimension");
 assert(hinge_foot_forward_mm==8, "A7 selected hinge sole depth is fixed");
-assert(layout_part=="all" || layout_part=="vent" || layout_part=="catch", "Unknown printable part");
-assert(jaw_section_width_mm==1.4 && jaw_section_height_mm==2 && jaw_root_radius_mm==1 && jaw_max_spread_mm==2.2 && cartridge_guide_clearance_mm==0.03, "A24 selected jaw sections/fit");
-assert(jaw_min_section_width_mm==0.8 && jaw_inner_corner_radius_mm==0.3 && jaw_tip_material_end_y_mm==8.2, "A24 selected taper, inner lip corners and finite tip trim");
-assert(cartridge_vertical_clearance_mm==0.05, "A25 selected provisional vertical cartridge fit");
-assert(service_free_length_mm==10 && service_thickness_mm==0.8 && service_breadth_mm==1.2 && service_root_radius_mm==0.6, "A22 selected service flexure");
-assert(render_mode=="printable_layout" || (jaw_left_spread_mm>=0 && jaw_left_spread_mm<=jaw_max_spread_mm && jaw_right_spread_mm>=0 && jaw_right_spread_mm<=jaw_max_spread_mm && catch_service_mm>=0 && catch_service_mm<=1 && catch_withdrawal_mm>=0 && catch_withdrawal_mm<=3 && catch_lift_mm>=0), "Jaw/service pose outside selected travel");
-assert(render_mode=="printable_layout" || (catch_service_mm==0 && catch_withdrawal_mm==0 && catch_lift_mm==0) || (door_angle_deg==180 && jaw_left_spread_mm==0 && jaw_right_spread_mm==0), "Service requires open door and relaxed jaws");
-assert(render_mode=="printable_layout" || catch_withdrawal_mm==0 || catch_withdrawal_mm==3 || catch_service_mm==1, "Depress fully during longitudinal service travel");
-assert(render_mode=="printable_layout" || catch_lift_mm==0 || (catch_withdrawal_mm==3 && catch_service_mm==0), "Slide completely and relax before lifting");
+assert(clip_section_width_mm==2 && clip_section_height_mm==1.4 && clip_inner_corner_radius_mm==0.4 && clip_root_radius_mm==1.2 && clip_max_flex_mm==2.4, "A31 selected uniform clip section and root");
+assert(clip_flex_mm>=0 && clip_flex_mm<=clip_max_flex_mm, "Clip inspection flex outside 0..2.4 mm");
+echo(clip_free_station_y_mm=clip_station_y_mm,clip_cap_station_y_mm=clip_free_end_y_mm+0.5);
 echo(hinge_span_mm=hinge_span_mm,segment_length_mm=hinge_segment_length_mm,bore_radius_mm=bore_radius_mm,housing_top_mm=housing_top_mm,retention_overlap_mm=collar_radius_mm*cos(180/hinge_facets)-bore_roof_radius_mm);
 echo(collar_bridge_overlap_mm=collar_bridge_overlap_mm,lower_frame_initial_normal_clearance_mm=lower_frame_initial_normal_clearance_mm,
      lower_lip_cut_y_mm=lower_lip_cut_y_mm,local_lower_overlap_mm=-lower_lip_cut_y_mm-opening_height_mm/2,
@@ -308,7 +281,7 @@ module fixed_frame() {
     }
     for(i=[0:2:8]) fixed_hinge_knuckle(i);
     fixed_planar_stops();
-    fixed_socket();
+    integral_frame_clip(render_mode=="assembly" ? clip_flex_mm : 0);
 }
 module vent_slots() {
     for (row=[0:louver_rows-1],column=[0:louver_columns-1]) {
@@ -454,138 +427,75 @@ module moving_door() {
 module door_at_angle(angle_deg) {
     translate([0,hinge_y_mm,hinge_z_mm]) rotate([angle_deg,0,0]) translate([0,-hinge_y_mm,-hinge_z_mm]) moving_door();
 }
-// A22 keyed socket. Roofs capture only the discrete low flange tabs;
-// high central root stock stays between the roof edges throughout sliding.
-module fixed_socket() {
-    translate([catch_x_offset_mm,0,0]) union() {
-        difference() {
-            // The broad floor carries inward snap loads independently of
-            // the service arm. Its local pocket is 1.2 mm below the floor.
-            translate([53.6,-28.4,3.6]) cube([8.8,12.8,6]);
-            translate([57.35,-27.05,8.4]) cube([1.9,11.46,1.21]);
-        }
-        // Side posts have positive floor unions and stay outside the root.
-        translate([53.6,-28.4,9.59]) cube([1.25,12.8,2.41]);
-        translate([61.75,-28.4,9.59]) cube([0.65,12.8,2.41]);
-        for(y=[-27,-21]) {
-            translate([53.6,y,cartridge_roof_underside_mm]) cube([2.2,2,12-cartridge_roof_underside_mm]);
-            translate([60.8,y,cartridge_roof_underside_mm]) cube([1.6,2,12-cartridge_roof_underside_mm]);
-        }
-        // Dedicated lands clear the low tabs and retain central-root faces.
-        for(y=[-27.8,-18.4]) {
-            translate([54.84,y-0.2,10.9])
-                cube([56.2-cartridge_guide_clearance_mm-54.84,0.4,0.9]);
-            translate([60.4+cartridge_guide_clearance_mm,y-0.2,10.9])
-                cube([61.76-60.4-cartridge_guide_clearance_mm,0.4,0.9]);
-        }
-        // Rear stop takes -Y loads; the low forward stop engages the square
-        // shoulder below the finger pad and releases on deliberate depression.
-        translate([55,-28.4,9.59]) cube([6.6,0.4,2.21]);
-        // A26: one floor-embedded side column supports a short retaining
-        // lip outside the arm, leaving the vertical service path open.
-        translate([59.15,-17.25,7.8]) cube([0.4,0.6,4.2]);
-        translate([58.8,-16.85,11]) cube([0.5,0.6,1]);
-    }
+// A31 frame-integral fixed root, positive 0.2 mm embedding into frame.
+module clip_root() {
+    translate([53.6,-27,3.4]) cube([4.5,5.8,8.6]);
+    translate([54.9,-22,10.6]) cube([2,2,1.4]);
+    // Exposed concave R1.2 shoulders, entirely behind free start Y=-20.
+    for(side=[-1,1])
+        translate([side<0 ? 53.7 : 56.9,-21.2,10.6])
+            linear_extrude(height=1.4) difference() {
+                // Hidden overlap into plinth and neck; exposed R1.2 is unchanged.
+                translate([side<0 ? 0 : -0.01,-0.01])
+                    square([clip_root_radius_mm+0.01,clip_root_radius_mm+0.01]);
+                translate([side<0 ? 0 : clip_root_radius_mm,clip_root_radius_mm])
+                    circle(r=clip_root_radius_mm,$fn=32);
+            }
 }
-// Left/right section centres follow the variable-section neutral-line pose.
-module jaw_attachment(y,spread,side) {
-    x0=side<0 ? 56.4 : 59.6;
-    translate([x0+side*spread*jaw_shape(y),y,10.8])
-        rotate([0,0,jaw_rotation_deg(y,spread,side)]) children();
-}
-// XZ profile in a width-by-2 box: only the inner upper/lower corners
-// are rounded. The outer face stays square; minimum bed flat is 0.5.
-module jaw_section_profile(w,side) {
-    r=jaw_inner_corner_radius_mm;
-    if(side<0) jaw_inner_rounded_profile(w,r);
-    else translate([w,0]) mirror([1,0]) jaw_inner_rounded_profile(w,r);
-}
-module jaw_inner_rounded_profile(w,r) {
+// XZ profile: square outer face, R0.4 inner top/bottom contact corners.
+// Bounds [-1,1] x [-0.7,0.7], lower flat width 1.6 mm.
+module clip_section_profile() {
+    w=clip_section_width_mm;
+    h=clip_section_height_mm;
+    r=clip_inner_corner_radius_mm;
     union() {
-        translate([0,-1]) square([w-r,2]);
-        translate([w-r,-1+r]) square([r,2-2*r]);
-        for(z=[-1+r,1-r]) translate([w-r,z]) circle(r=r,$fn=32);
+        translate([-w/2,-h/2]) square([w-r,h]);
+        translate([w/2-r,-h/2+r]) square([r,h-2*r]);
+        for(z=[-h/2+r,h/2-r])
+            translate([w/2-r,z]) circle(r=r,$fn=32);
     }
 }
-module jaw_section(y,spread,side) {
-    w=jaw_width_mm(y);
-    // Recenter the complete post-contact tip section inward, preserving
-    // its thickness while accommodating tangent extrapolation beyond Y8.
-    tip_inset=max(0,y-8)*0.2;
-    jaw_attachment(y,spread,side)
-        translate([(side<0 ? -0.7 : 0.7-w)-side*tip_inset,0,0])
+module clip_section(y,flex) {
+    translate([55.9-flex*clip_shape(y),y,11.3])
+        rotate([0,0,clip_rotation_deg(y,flex)])
             rotate([90,0,0]) linear_extrude(height=0.05,center=true)
-                jaw_section_profile(w,side);
+                clip_section_profile();
 }
-module jaw_arm(spread,side) {
+module clip_tongue(flex=0) {
     intersection() {
-        union() for(y=[-16:0.25:9.75]) hull() {
-            jaw_section(y,spread,side); jaw_section(y+0.25,spread,side);
-        }
-        // Trim the finite tangent-rotated section stock at the selected tip.
-        translate([50,-30,9.79]) cube([16,jaw_tip_material_end_y_mm+30,2.02]);
-    }
-}
-module service_attachment(y,stroke) {
-    translate([58,y,10.2+service_shift_mm(y,stroke)])
-        rotate([service_rotation_deg(y,stroke),0,0]) children();
-}
-module service_section(y,stroke) {
-    service_attachment(y,stroke) translate([-0.6,-0.025,-0.4]) cube([1.2,0.05,0.8]);
-}
-module cartridge_root() {
-    difference() {
         union() {
-            translate([56.2,-28,9.8]) cube([4.2,12,2]);
-            // Discrete low tabs only: no continuous flange beneath the roofs.
-            for(x=[55,60.4],y=[-26.8,-20.8]) translate([x,y,9.8]) cube([1.2,1.6,1]);
-            // R1 concave transitions are wholly behind free start Y-16.
-            for(side=[-1,1]) translate([side<0 ? 55.7 : 60.3,-17,9.8])
-                linear_extrude(height=2) scale([side<0 ? 1 : -1,1])
-                    difference() { square([1,1]); translate([0,0]) circle(r=1,$fn=32); }
+            // Hidden 0.05 mm root overlap leaves the free start exactly Y=-20.
+            hull() {
+                clip_section(clip_free_start_y_mm-0.05,flex);
+                clip_section(clip_free_start_y_mm,flex);
+            }
+            for(i=[0:clip_station_count-1]) hull() {
+                clip_section(clip_station_y_mm[i],flex);
+                clip_section(clip_station_y_mm[i+1],flex);
+            }
+            // Complete tangent-rotated cap before trimming to actual Y8.2.
+            hull() {
+                clip_section(clip_free_end_y_mm,flex);
+                clip_section(clip_free_end_y_mm+0.5,flex);
+            }
         }
-        // Open flexure slot and pad pocket; retained side rails remain rigid.
-        translate([57.1,-27,9.79]) cube([1.8,11.41,2.02]);
-        // Retain the forward slot; the A26 side corridor clears the tooth
-        // and side stop throughout +Y3 withdrawal without cutting the rail.
-        translate([56.85,-19.9,9.79]) cube([2.3,4.31,2.02]);
-        translate([59.15,-20.3,9.79]) cube([0.45,4.29,2.02]);
-        translate([56.29,-25.01,10.65]) cube([4.02,4.2,1.16]);
+        translate([50,clip_free_start_y_mm-0.05,10.59])
+            cube([10,clip_free_length_mm+0.05,1.42]);
     }
-    // R0.6 roots behind Y-27 free-span start, inside the rear crossbar.
-    for(side=[-1,1]) translate([58+side*0.6,-27.6,9.8])
-        linear_extrude(height=0.8) scale([side,1]) difference() {
-            square([0.6,0.6]); translate([0.6,0.6]) circle(r=0.6,$fn=32);
-        }
 }
-module jaw_cartridge(left_mm=0,right_mm=0,service_mm=0) {
-    cartridge_root();
-    jaw_arm(left_mm,-1); jaw_arm(right_mm,1);
-    for(y=[-27:0.25:-17.25]) hull() { service_section(y,service_mm); service_section(y+0.25,service_mm); }
-    // A23 pad attaches only at midspan; no rigid cross-brace to the root.
-    // At tip depression1 this attachment descends0.3125, not a force model.
-    service_attachment(-22,service_mm) {
-        translate([-0.6,-0.1,0.3]) cube([1.2,0.2,0.9]);
-        translate([-1.7,-3,1]) cube([4,4,0.6]);
+module integral_frame_clip(flex=0) {
+    translate([catch_x_offset_mm,0,0]) {
+        clip_root();
+        clip_tongue(flex);
     }
-    // A26 lateral tooth retains a 0.8 square face, with 0.01 hidden
-    // overlap into the arm top for a positive material attachment.
-    service_attachment(-17.45,service_mm)
-        translate([-0.6,-0.4,0.39]) cube([1.65,0.8,0.81]);
-}
-module catch_pose(left_mm=0,right_mm=0,service_mm=0,withdrawal_mm=0,lift_mm=0) {
-    translate([catch_x_offset_mm,withdrawal_mm,-0.2+lift_mm]) jaw_cartridge(left_mm,right_mm,service_mm);
 }
 module vent_assembly(angle_deg) {
     color("silver") fixed_frame();
     color("steelblue") door_at_angle(angle_deg);
-    color("darkorange") catch_pose(jaw_left_spread_mm,jaw_right_spread_mm,catch_service_mm,catch_withdrawal_mm,catch_lift_mm);
 }
 module printable_parts() {
-    if(layout_part=="all" || layout_part=="vent") { fixed_frame(); door_at_angle(0); }
-    if(layout_part=="all" || layout_part=="catch")
-        // Root leftmost X55 -> plate edge+8; common underside Z9.8.
-        translate([plate_width_mm/2+8-55,0,-9.8]) jaw_cartridge();
+    fixed_frame();
+    door_at_angle(0);
 }
 echo(hinge_fixed_segments=[0,2,4,6,8],hinge_moving_segments=[1,3,5,7],
      hinge_outer_unsupported_shaft_reach_mm=hinge_outer_initial_shaft_reach_mm,
