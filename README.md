@@ -26,54 +26,116 @@ All files target OpenSCAD 2021.01 and have no external library dependencies.
 
 ## Shed Ventilation with Captive Downward-Opening Door
 
-`designs/shed_ventilation.scad` models a three-body PETG vent: a fixed frame, a captive
-print-in-place hinged door, and a separate flat replacement spring catch. The spring is
-replaceable; it is not an additional pin, clip, or other retainer. Installed up is **+Y**,
-outward is **+Z**, and the rear mounting face/print bed is Z=0. The assembly is a full frame
-replacement; fit to an existing shed opening and hardware must be measured.
+`designs/shed_ventilation.scad` models three PETG bodies: a fixed frame, a captive
+print-in-place hinged door with an integral rounded stud and pull grip, and a separate
+replaceable two-jaw cartridge. Installed up is **+Y**, outward is **+Z**, and the rear
+mounting face/print bed is Z=0. This is a complete frame replacement; compatibility with
+an earlier printed frame or the actual shed opening must be measured.
 
-The default source uses `render_mode="printable_layout"` and `layout_part="all"`. Layout
-selection supports `all`, `vent`, and `catch`. `assembly` is an explicit inspection
-override. Its `door_angle_deg` range is 0–180°. The modeled spring controls are
-`catch_release_mm` 0–4 mm, `catch_service_mm` 0–1.4 mm, `catch_withdrawal_mm` −0.1–3.5 mm,
-and `catch_sideways_mm` 0–6 mm. Release is modeled beam-tip displacement; service is
-modeled bump displacement. These are inspection coordinates and strokes, not measured
-physical travel. Printable layout ignores these poses and arranges each body for printing.
-For example:
+The source defaults to `render_mode="printable_layout"`. `layout_part` selects `all`,
+`vent`, or `catch`; the cartridge prints separately, flat beside the rear-down vent.
+`assembly` is an explicit inspection override. `door_angle_deg` ranges from 0 to 180.
+Independent `jaw_left_spread_mm` and `jaw_right_spread_mm` range from 0 to 2.2 mm;
+`catch_service_mm` from 0 to 1 mm models downward service-tip depression;
+`catch_withdrawal_mm` from 0 to 3 mm models +Y sliding; `catch_lift_mm` models subsequent
++Z removal. These are geometric inspection poses, not force or measured travel.
+Printable layout ignores all pose controls. There is no separate normal-release control.
 
 ```sh
 mkdir -p /tmp/shed-ventilation-validation
-timeout -k 1s 13s openscad -o /tmp/shed-ventilation-validation/layout.csg -D 'render_mode="printable_layout"' -D 'layout_part="all"' designs/shed_ventilation.scad
+timeout -k 1s 13s openscad -o /tmp/shed-ventilation-validation/layout.csg -D 'render_mode="printable_layout"' designs/shed_ventilation.scad
 timeout -k 1s 13s openscad -o /tmp/shed-ventilation-validation/open.csg -D 'render_mode="assembly"' -D 'door_angle_deg=180' designs/shed_ventilation.scad
-timeout -k 1s 13s openscad -o /tmp/shed-ventilation-validation/catch-service.csg -D 'render_mode="assembly"' -D 'door_angle_deg=180' -D 'catch_service_mm=1.4' -D 'catch_withdrawal_mm=3.5' designs/shed_ventilation.scad
+timeout -k 1s 13s openscad -o /tmp/shed-ventilation-validation/service.csg -D 'render_mode="assembly"' -D 'door_angle_deg=180' -D 'catch_service_mm=1' -D 'catch_withdrawal_mm=3' designs/shed_ventilation.scad
 ```
 
-The default photo-estimated plate is 125 × 85 mm, with 110 × 70 mm screw spacing. These manually entered values are estimates, not measured shed or hardware dimensions. The supported wide case is 135 × 85 mm with 120 × 70 mm spacing. Measure the opening, screw centres, shanks, and heads before installation. Both cases use a 9 × 4 mm maximum screw-head envelope and 4.5 mm shank clearance. The nominal straight passage is 105 × 65 mm by default and 115 × 65 mm wide. The frame is 3.6 mm thick; the door is 3 mm thick with 3 mm nominal overlap. OpenSCAD and mesh checks establish modeled geometry, not physical fit.
+The photo-estimated plate is 125 × 85 mm with 110 × 70 mm screw spacing; the supported
+wide case is 135 × 85 mm with 120 × 70 mm spacing. These manually entered dimensions
+are estimates, not hardware measurements. Measure opening, screw centres, shanks and
+heads before installation. Both cases retain 4.5 mm shank holes, a maximum 9 × 4 mm screw-head
+envelope, a 3.6 mm frame, a 3 mm door and 3 mm nominal overlap. Straight passages are
+105 × 65 mm and 115 × 65 mm. Local door reliefs do not enlarge the fixed passage or provide
+a weather seal. Four corner reliefs use upper/lower radius floors 6.1/8.0 mm with
+0.001 mm padding and 64-facet circumscription. The closure-side lip is locally trimmed
+at X 52.5 over Y−29.4..10 mm (add 5 mm X in the wide case); the core remains intact.
 
-| Feature | Selected dimensions and modeled limits |
+| Feature | Selected provisional dimensions |
 | --- | --- |
-| Hinge and door | Hinge axis Y=−39.5 mm, Z=6.5 mm; nine alternating bands with five fixed housings and four moving collars; 2.6 mm shaft and 2.8 mm collar radius. The 8 mm-deep soles start 1.55 mm forward of the axis; each stop station has opposed 1.15 mm axial contact bands. Rear housing wall is at least 1.29795 mm; other selected walls are 1.5 mm. Eight reinforced hoods project 9 mm. Modeled door travel is 0–180°. Fit, hinge freedom, and strength are unverified. |
-| Vent | Eight louver groups (4 × 2), 9 mm projection, 1.6 mm vertical roof section, 1 mm cheeks, and 1.2 mm ribs, with modeled underside growth at least 45° to the bed. Keep blades and roots clear of removable support. |
-| Spring catch | One separate flat replacement body. Its main flex beam has 32 mm free length and 2 × 2 mm section with a 0.8 mm root fillet. The service arm has a 16 mm span to the bump centre and a 1.2 × 1.2 mm section. Its socket uses separately selected 0.1 mm lateral and 0.05 mm vertical root allowances, independent of the hinge gap. Modeled strokes do not establish force, recovery, or fatigue life. |
-| Running gaps | Default `moving_clearance_mm` is 0.4 mm. The 0.01 mm case is a CAD regression comparison, not a print recommendation. Four width/gap pairs (125/135 mm and 0.4/0.01 mm) were checked; arbitrary overrides are not certified. |
+| Hinge | Axis Y−39.5/Z 6.5 mm; nine alternating bands, five fixed housings and four moving collars; 2.6 mm shaft, 2.8 mm collar radius, opposed 1.15 mm axial stop bands; 0–180° travel. Current hinge, stops and mounting geometry are preserved. |
+| Louvers | Eight reinforced hoods, 9 mm projection, 1.6 mm roof section, 1 mm cheeks, 1.2 mm ribs; modeled underside growth at least 45° to the bed. |
+| Stud/grip | One convex rounded profile joins the unchanged 4.4 mm spherical head to two 2.8 × 2.8 × 2.2 mm ellipsoidal feet. Their centres are Y 9.4/12.6, Z 5.5; the head centre is Y 8, Z 8. A 1 mm-wide flat spine and broad transverse bridge support the raised profile. Pull purchase remains underside Z 8/top Z 10. Dimensions are selected design values, not measured fits. |
+| Jaws | 24 mm free span Y−16..8, actual tip trimmed at Y 8.2; 1.4 × 2 mm main section tapering smoothly to 0.8 × 2 mm over Y 1..3; only inner upper/lower corners rounded R 0.3; R 1 root transition. Each jaw has independent 0–2.2 mm inspection travel. |
+| Service arm | 10 mm free length, 1.2 × 0.8 mm section, R 0.6 root, midspan pad, lateral 0.45 mm tooth projection with 0.8 mm square engagement face. Rigid root rails have local minima 0.65 mm left and 0.8 mm right. |
+| Cartridge fit | Dedicated 0.03 mm lateral guide and 0.05 mm tab/roof gaps, independent of the hinge gap. Assembly seat is 0.2 mm below intrinsic cartridge coordinates: underside Z 9.6, top Z 11.6; roof underside 10.65/top 12. These demanding provisional fits have not been demonstrated in PETG on the P2S. Enlarging them requires renewed retention, play and closed-size validation. |
+| Hinge gap | Default 0.4 mm; supported CAD domain 0 < `moving_clearance_mm` ≤0.4. The 0.01 mm regression case is not a print recommendation. Supported width/screw pairs are guarded. |
 
-To open the vent, press the spring outward through the finger recess. Start opening the door while holding the spring, continue until the door reaches 10°, then relax the spring and open to 180°. To close, remove the cable, push the cable-free door closed so the lead-in cams the spring outward and the hook seats as the spring relaxes. This describes modeled contact geometry; hand force, spring recovery, and physical automatic closing are unverified. Do not force the door against the hook or close it around a cable. The door is not a shelf or strain relief.
+Normal operation is push closed and pull the raised grip to open: the rounded stud
+spreads the two jaws and they return around it. No separate release press is intended.
+CAD analysis bounds a continuous reversible jaw-spread path with up to 2.2 mm available
+spread, nominal seating and stud exit by 10 degrees. This geometric result does not
+establish physical force, friction or elastic recovery. Remove cables before closing; do
+not force the door or use it as a shelf or strain relief. Opening/closing force, retention,
+wear and reliable cycling require a printed PETG trial.
 
-Service the spring only with the door at 180° and the main spring relaxed. Seat the spring rearward in −Y to its hard stop at `catch_withdrawal_mm=−0.1`; press its service pad to the modeled 1.4 mm bump stroke; slide it in +Y through the nominal seat to `catch_withdrawal_mm=3.5`; relax the arm, then move +X up to 6 mm to remove it. Installation reverses this side-entry sequence: align at withdrawal +3.5 with the arm relaxed, insert from +X, depress the service arm, slide rearward to −0.1, then relax the bump before returning to the nominal 0 position. No tool, glue, pin, or extra retaining part is modeled. These are modeled paths; physical access, force, recovery, and retention are unverified.
+Replace the cartridge only with the door fully open at 180° and both jaws relaxed.
+Seat it rearward at withdrawal 0; depress the service pad to the modeled 1 mm tip stroke;
+slide +Y 3 mm while holding depression; relax, then lift the complete cartridge in +Z.
+Installation reverses that sequence. The side tooth and fixed side stop retain normal
+withdrawal while leaving the plain arm's lift corridor open. The root and side column have an exact nominal face contact during part of the slide;
+CAD nonpenetration does not establish positive physical sliding clearance. No glue, pin or
+additional retaining body is modeled. Actual finger access, service force and recovery remain unverified.
 
-Plate and opening values are estimates. Measure the actual opening and screw pattern before installation; check screw shank and head fit. The selected default and wide cases preserve the frame opening and mounting lands. Local modeled door overlap exceptions are 1.8 mm on the right side over Y=−29.4..10.5 mm, about 2.0716 mm at the lower hinge for the default 0.4 mm gap (2.8244 mm at 0.01 mm), and the four screw-head corner reliefs. The finger recess retains a 2 mm floor. The corner cuts use selected upper/lower radius floors of 6.1/8.0 mm, with 0.001 mm padding and 64-facet circumscription. They are local door reliefs, not a change to the nominal frame passage; enlarged corner gaps are not a fixed opening enlargement or weather seal. The corner-only retained top-edge interval is about 97.8324 mm default and 107.8324 mm wide. The corresponding bottom interval is 94.0278/104.0278 mm and is further interrupted by the hinge. Screw-head and panel clearances remain dependent on measured hardware.
+The nominal mounted closed size cap is 125 × 85 × 12 mm (135 × 85 × 12 mm wide). Relaxed layouts
+measure 139.6 × 85 × 12 mm and 149.6 × 85 × 12 mm, within the 143/153 mm approved width caps
+and the nominal 256 × 256 mm Bambu Lab P2S plate. The unchanged hinge can shift within its
+clearance: a modeled closed Y shift of 0.3 mm gives an 85.1 mm height. This example
+is reported separately from nominal dimensions and is not a maximal play envelope. Slicer reserved areas and profile limits
+still need checking. PETG and AMS 2 Pro compatibility are design targets, not print evidence.
+The nominal full 0–180° swept assembly occupies approximately 125/135 × 157.002 ×
+81.556 mm; this is a continuous vertex-envelope bound, separate from collision and
+contact-path validation. Service removal travel is additional.
 
-The complete closed envelope is 125 × 85 × 12 mm (135 × 85 × 12 mm wide). Printable layouts are 143 × 85 × 12 mm and 153 × 85 × 12 mm, respectively, on the nominal 256 × 256 mm Bambu Lab P2S plate. Print the vent rear-down and the replacement spring flat. These modeled extents fit the nominal plate; slicer placement and profile limits remain to be checked. The selected PETG design has default gap 0.4 mm; four width/gap cases and continuous geometric enclosures were checked for 0 < gap ≤ 0.4 mm, while the 0.01 mm regression case is not a print recommendation.
+The model has three independent bed-contact islands, one connected footprint per body.
+At default gap 0.4, actual mesh contact areas are approximately 4738.902 mm² door,
+3333.945 mm² frame and 92.296 mm² cartridge; the wide door/frame areas are 5146.215 and
+3494.837 mm². The cartridge footprint spans 6.6 × 36.2 mm, with long narrow arms attached
+to the root at the bed; approximately 0.5 mm-wide flats extend from Y3 toward the Y8 tip,
+with sampled section width growing to 0.8 mm by Z0.3. This narrow contact remains a
+first-layer deposition and adhesion risk. The smallest relieved hinge
+sole is about 7.544 × 8 mm, already joined to the door core at Z 0. Thin frame/door features, the cartridge's 0.65/0.8 mm rails and a connected
+0.25 × 0.4 mm root spur need toolpath inspection. Each body's own modeled
+bed support polygon was checked against its partial-growth centre of mass at selected
+heights 0.05..12 mm; the cartridge's minimum sampled support margin is 2.933 mm. This is
+a static stability screen and does not prove adhesion.
 
-The first-layer model has **three independent bed-contact islands**, one for each body, and each forms one connected island. At the default gap, measured mesh areas are approximately 4738.902 mm² (door), 3333.945 mm² (frame), and 144.304 mm² (spring tongue); the wide case is 5146.215, 3494.837, and 144.304 mm². The door soles join the door core at Z=0. The smallest relieved sole is 7.544 × 8 mm (60.356 mm²); narrow frame and stop features are 1.2 and 1.1 mm, the door web is 1.2 mm, spring rails are 1.2 mm, and the main beam is 2 mm. The tongue footprint spans 5.25 × 54.03 mm, while its overall printed part is wider. At sampled growth heights, each body's own support polygon had positive modeled stability margin. This does not establish adhesion or successful toolpaths.
+Printing risks include the unchanged hinge shaft starting at Z 5.2 before its stop anchors:
+worst wide/gap 0.4 outer/internal/central reaches are 13.7056/14.1056/12.5556 mm. Fixed stop
+axial reach is at most 1.55 mm; moving stops extend 1.9699/1.5 mm radially. The stud's
+spine/bridge begins at Z 4.4. The rounded nose grows forward beyond the spine's
+Y 10 edge, and the bridge extends laterally from the retained door web. Inspect
+these early cantilevers and their connections in the slicer. The cartridge pad grows
+from a 1.2 × 0.2 mm standoff with up to 3 mm rear and 2.3 mm lateral reach. Its tooth
+projects 0.45 mm; the socket roofs overhang their posts by about 1 mm. The single service-stop column
+is 0.4 × 0.6 mm and its lip extends 0.35 mm inward/0.4 mm forward. Inspect actual sliced
+bridging, layer growth, narrow lines and support removability before printing. Plan bridge
+directions or local removable exterior supports for the raised shelf, and verify cleanup
+access in the slicer. No blanket
+brim or support that fuses the hinge, jaws or mating gaps is specified. Keep bearings,
+blades and mating faces clear. Earlier physical first-layer failures are not claimed fixed.
 
-The hinge shaft begins growing at Z=5.2 mm before stop anchors start at Z=5.5 and 6.5 mm. The worst wide-case 0.4 mm gap has modeled outer, internal, and central shaft reaches of 13.7056, 14.1056, and 12.5556 mm. The moving stops extend 1.9699 and 1.5 mm radially; fixed-bar axial reach is at most 1.55 mm. Other modeled early features include a 5.5 mm lateral socket bridge and 1.6 mm guide reach, a 1.9 mm sideways and 1.5 mm longitudinal spring-pad overhang, and a 2.25 mm hook overhang. Keep the vent rear-down and spring flat; no internal supports or brim that fuses gaps are specified. Do not support blades, bearings, or mating faces. Actual toolpaths, bridging, first-layer behavior, and adhesion have not been reviewed in a slicer, and earlier physical first-layer failures are not claimed fixed.
+CAD checks, assertion diagnostics and temporary meshes establish modeled geometry only.
+Slicer first-layer/toolpath review, physical adhesion, hardware fit, hinge freedom,
+PETG force/recovery/fatigue, retention cycles, weather/thermal behavior and cable safety
+remain pending. The source pose law is approximate width-cubed flexure geometry;
+actual rounded-section/root screening does not establish physical strain or force limits.
 
-The final source passed independent review and distinct functional and printing/geometry QA for the modeled scope. Four width/gap mesh variants, body connectivity, bed islands and sampled growth, relevant motion and capture, and bounded OpenSCAD controls were checked. A nominal automatic-contact path and a relevant played-root case were assessed; this is not proof of every possible play trajectory. Slicer first-layer/toolpath review and physical print, adhesion, hinge freedom, measured fit, spring force and recovery, fatigue, retention cycles, weather behavior, thermal behavior, and cable safety remain unverified. PETG is the selected design material, not a validated physical result.
-
-For local inspection, use OpenSCAD 2021.01-compatible syntax, keep outputs under `/tmp`, and limit each command to 13 seconds with a 1-second kill grace. Only `printable_layout` and `assembly` are supported inspection modes; do not include electronics. Read assertion diagnostics even when OpenSCAD exits zero. Unit tests and conventional test-first phases are prohibited. Do not add generated mesh exports to source control. `git diff --check` is the documented whitespace check.
-
-
+For inspection use OpenSCAD 2021.01-compatible syntax, outputs under `/tmp`, and 13-second
+commands with 1-second kill grace. Only `printable_layout` and `assembly` are permitted;
+do not include electronics. Read assertion diagnostics even when OpenSCAD exits zero.
+Where a whole mesh exceeds that bound, inspect exact component meshes and verify their
+source dependencies and transforms; a timeout is missing evidence, not success.
+Native PNG rendering is unavailable in this environment; temporary software views of
+actual CGAL meshes supplement geometry inspection. Unit tests and conventional test-first
+phases are prohibited. Keep generated meshes out of Git. Run `git diff --check`.
 
 ## One-Piece Wardrobe Rod
 
