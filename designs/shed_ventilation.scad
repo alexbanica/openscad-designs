@@ -4,14 +4,14 @@
 render_mode = "printable_layout";
 door_angle_deg = 0;
 // Assembly geometric inspection pose; printable layout is always relaxed.
-clip_flex_mm = 0; // free-end displacement toward -X, 0..2.0
+clip_flex_mm = 0; // free-end displacement toward -X, 0..2.6
 open_hold_flex_mm = 0; // assembly only: inward -Y displacement, 0..2.8
 // A32-A35 selected provisional PETG leaf dimensions, not strength data.
 clip_section_width_mm = 1;
 clip_section_height_mm = 12;
 clip_inner_corner_radius_mm = 0; // flat full-width bed foot
 clip_root_radius_mm = 1.2;
-clip_max_flex_mm = 2;
+clip_max_flex_mm = 2.6; // A43 geometric inspection ceiling, not a material allowable
 // Photo-estimated mounting dimensions: measure before installation.
 plate_width_mm = 125;
 plate_height_mm = 85;
@@ -220,10 +220,10 @@ assert(row_pitch_mm-(louver_upper_y_mm-louver_lower_y_mm)>=6-0.000001 && row_pit
 // Preserve minimum floors for the three retained moving soles.
 assert(hinge_segment_length_mm*hinge_foot_forward_mm>=60 && min(hinge_segment_length_mm,hinge_foot_forward_mm)>=4, "A7 hinge sole below 60 mm2 area or 4 mm short dimension");
 assert(hinge_foot_forward_mm==8, "A7 selected hinge sole depth is fixed");
-assert(clip_section_width_mm==1 && clip_section_height_mm==12 && clip_inner_corner_radius_mm==0 && clip_root_radius_mm==1.2 && clip_max_flex_mm==2, "A32-A35 selected full-height flat-foot leaf and root");
+assert(clip_section_width_mm==1 && clip_section_height_mm==12 && clip_inner_corner_radius_mm==0 && clip_root_radius_mm==1.2 && clip_max_flex_mm==2.6, "A32-A35 leaf/root and A43 inspection ceiling");
 assert(open_hold_flex_mm>=0 && open_hold_flex_mm<=2.8, "Open hold inspection flex outside 0..2.8 mm");
 assert(right_shaft_start_mm==moving_clearance_mm+0.5 && right_shaft_start_mm<right_trim_end_mm, "A36 recessed moving cap allocation");
-assert(clip_flex_mm>=0 && clip_flex_mm<=clip_max_flex_mm, "Clip inspection flex outside 0..2 mm");
+assert(clip_flex_mm>=0 && clip_flex_mm<=clip_max_flex_mm, "Clip inspection flex outside 0..2.6 mm");
 echo(clip_free_station_y_mm=clip_station_y_mm,clip_cap_station_y_mm=clip_free_end_y_mm);
 echo(hinge_span_mm=hinge_span_mm,segment_length_mm=hinge_segment_length_mm,bore_radius_mm=bore_radius_mm,housing_top_mm=housing_top_mm,retention_overlap_mm=collar_radius_mm*cos(180/hinge_facets)-bore_roof_radius_mm);
 echo(collar_bridge_overlap_mm=collar_bridge_overlap_mm,upper_frame_initial_normal_clearance_mm=upper_frame_initial_normal_clearance_mm,
@@ -505,14 +505,16 @@ module clip_root() {
         rounded_rectangle(4.5,7,clip_root_radius_mm);
 }
 // Local XZ section about X55.8. The entire 1 mm foot stays flat at Z0.
-// Nose is confined to terminal Y5..8.2, with eased Y entry/exit corners.
+// A43 nose: 1.6 mm projection, full plateau Y(5+1.6/6)..7.8.
+// Confined to terminal Y5..8.2; retained 45-degree underside and 1 mm tip crown.
 function clip_nose_extension(y) = y<5 || y>8.2 ? 0 :
-    max(0,min(1.2,6*(y-5),3*(8.2-y)));
+    max(0,min(1.6,6*(y-5),4*(8.2-y)));
 // Hull each convex component separately: hulling the combined concave
 // profile would fill the intended 45-degree clearance beneath the nose.
 module clip_section_profile(y,nose=false) {
     e=clip_nose_extension(y);
-    t=0.5*max(0,min(1,(y-7.8)/0.4));
+    r=max(0,min(1,(y-7.8)/0.4));
+    t=0.5*r*r;
     if(nose)
         if(e>0)
             polygon([[0.45,9.4],[0.5,9.4],[0.5+e,9.4+e],
@@ -531,10 +533,16 @@ module clip_section(y,flex,nose=false) {
 module clip_tongue(flex=0) {
     // Stations explicitly include nose entry/exit and root overlap. Global
     // end trim bounds the actual finite body, including its rotated cap.
+    // A44: eight quadratic-easing intervals; retain exact Y8/8.2 stations.
+    terminal_stations=[for(i=[0:8])
+        i==4 ? 8 : i==8 ? 8.2 : 7.8+0.4*i/8];
     stations=concat([-20.2],
-        [for(y=clip_station_y_mm) if(y<5) y], [5,5.2],
-        [for(y=clip_station_y_mm) if(y>5.2 && y<7.8) y], [7.8],
-        [for(y=clip_station_y_mm) if(y>7.8 && y<8) y], [8,8.2]);
+        [for(y=clip_station_y_mm) if(y<5) y], [5],
+        [for(y=clip_station_y_mm) if(y>5 && y<5+1.6/6) y], [5+1.6/6],
+        [for(y=clip_station_y_mm) if(y>5+1.6/6 && y<7.8) y],
+        [for(i=[0:8]) each concat([terminal_stations[i]],
+            i<8 ? [for(y=clip_station_y_mm)
+                if(y>terminal_stations[i] && y<terminal_stations[i+1]) y] : [])]);
     intersection() {
         union() {
             // The nose embeds 0.05 mm in the rectangular body at every

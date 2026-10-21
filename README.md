@@ -27,11 +27,22 @@ All files target OpenSCAD 2021.01 and have no external library dependencies.
 ## Shed Ventilation with Top-Hinged Door
 
 `designs/shed_ventilation.scad` models two integral PETG bodies: a fixed mounting frame
-and a captive louvered door. The print-in-place hinge needs no hardware or assembly;
-the clip is part of the frame and cannot be replaced separately. A damaged clip or
-hinge may require reprinting the complete vent. Installed up is +Y, outward is +Z,
-and the rear mounting face rests on the bed. The door swings outward and upward around
-a top hinge; its louvers point down when closed.
+with a bed-grown flexible catch leaf, and a captive louvered door with a broad
+chamfered rectangular male paddle. The print-in-place hinge needs no hardware or
+assembly; the catch is part of the frame and cannot be replaced separately. A damaged
+catch or hinge may require reprinting the complete vent. Installed up is +Y, outward
+is +Z, and the rear mounting face rests on the bed. The door swings outward and upward
+around a top hinge; its louvers point down when closed.
+
+The user reported that a printed vent closed fully but its catch missed. The updated
+catch projects 1.6 mm from the frame body and has 1.2 mm nominal projected overlap with
+the paddle, compared with the previous 0.8 mm. The modeled minimum retaining reserve
+under the assessed hinge play is about 0.410 mm. This is a modeled margin correction:
+the printed failure's dimensional cause and a successful physical catch have not been
+verified. The revised catch requires a complete vent reprint; retrofit fit with the
+previously printed vent is not promised. The catch’s upper rear edge has gradual
+relief for the modeled motion of pulling open and pushing closed, with no separate
+release press.
 
 The hinge axis is at Y=38.5/Z=6.5 mm and rotates around X from 0 to 180 degrees.
 Three moving collars alternate with five fixed bearing groups, with two shaft segments.
@@ -57,8 +68,9 @@ not a cable strain relief or shelf.
 
 The source default is `render_mode="printable_layout"`, showing the relaxed closed
 print layout. `assembly` is an explicit inspection override; its `door_angle_deg`
-range is 0..180. `clip_flex_mm` is limited to 0..2 and `open_hold_flex_mm` to 0..2.8.
-These are inspection coordinates, not force or displacement instructions. The layout
+range is 0..180. `clip_flex_mm` is limited to 0..2.6 and `open_hold_flex_mm` to 0..2.8.
+These are geometric inspection coordinates, not required operating strokes, force or
+displacement instructions; the clip ceiling is not a material allowable. The layout
 ignores the angle and flex coordinates; flex range guards still apply. The default gap
 is 0.4 mm; supported CAD values are 0 < `moving_clearance_mm` ≤ 0.4 mm. The 0.01 mm
 regression case is not print advice.
@@ -74,8 +86,8 @@ QT_QPA_PLATFORM=offscreen timeout -k 1s 13s openscad -o /tmp/shed-ventilation-va
 QT_QPA_PLATFORM=offscreen timeout -k 1s 13s openscad -o /tmp/shed-ventilation-validation/open-flex.csg -D 'render_mode="assembly"' -D 'door_angle_deg=180' -D 'open_hold_flex_mm=0.8' designs/shed_ventilation.scad
 ```
 
-Optional flex inspection may set `clip_flex_mm=2` or `open_hold_flex_mm=2.8`; flex
-values do not describe physical motion or authorize forcing the parts. Keep generated
+Optional flex inspection may set `clip_flex_mm=2.6` or `open_hold_flex_mm=2.8`; flex
+values do not establish required physical motion or authorize forcing the parts. Keep generated
 meshes and previews under `/tmp`. The source targets OpenSCAD 2021.01 without external
 libraries. PETG, the Bambu Lab P2S nominal 256 × 256 mm plate and AMS 2 Pro are design
 targets, not evidence of a successful print.
@@ -104,7 +116,7 @@ universal collision freedom against rough walls or physical play.
 The final modeled print has two positive, watertight bodies, each with one bed-contact
 footprint. At default gap, the frame/door contact areas are 3262.066/4658.825 mm²
 (narrow) and 3432.736/5055.991 mm² (wide). At the 0.01 mm regression gap they are
-3287.087/4696.247 mm² (narrow) and 3457.755/5092.107 mm² (wide). A 36-height growth
+3287.087/4696.247 mm² (narrow) and 3457.755/5092.107 mm² (wide). A 37-height growth
 sample found bed-grown geometry; these CAD results do not prove adhesion. The frame
 footprint is a perforated rounded ring with leaf roots; the door has a vented core,
 webs, ribs, three hinge soles and the cam root. The closed leaf has a local
@@ -132,8 +144,9 @@ An idealized homogeneous PETG model (density 1.27 mg/mm³, modulus 1500 N/mm², 
 linear Euler-beam shape) estimates an open-hold energy barrier of at least
 0.001940674 N·mm and local restoring moment at least 0.235050738 N·mm; modeled
 critical modulus is about 1483.3 N/mm². The small margin is not a physical retention
-or force guarantee. At maximum inspection flex, idealized root strains are 0.3772%
-(clip at 2 mm) and 2.5926% (open leaf at 2.8 mm); these are not material allowables.
+or force guarantee. At maximum inspection flex, idealized root strain proxies are about 0.4904%
+(clip at 2.6 mm) and 2.5926% (open leaf at 2.8 mm); these are not material
+allowables or recovery guarantees.
 
 Slicer first-layer/toolpath review, physical adhesion and printing, freeing the moving
 clearances, support removal, hardware fit, forces, retention, creep, cycling, support
